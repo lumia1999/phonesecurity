@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">手机防盗</string>
+	<string name="security_setting">安全选项设置</string>
+	<string name="security_enabled_title">防盗状态</string>
+	<string name="security_enabled_summaryon">开启</string>
+	<string name="security_enabled_summaryoff">关闭</string>
+	<string name="security_disabled_title">注意</string>
+	<string name="security_disabled_msg">您的手机将失去防盗保护，建议开启此项服务</string>
+
+	<string name="trust_number_title">受信号码</string>
+	<string name="trust_number_summary">当您手机不幸丢失的时候，我们将发送丢失信息到此号码
+	</string>
+	<string name="trust_number_input_title">请输入您信任的手机号码</string>
+
+	<string name="no_sim_title">无SIM卡</string>
+	<string name="no_sim_msg">请检查SIM卡设置</string>
+
+	<string name="reset_title">重置</string>
+	<string name="reset_dlg_title">重置您的基本信息</string>
+	<string name="reset_dlg_msg">将清除原有防盗信息，请确认信任手机号是否需要改变
+	</string>
+	<string name="reset_summary">将复位您的基本信息，您可以接着使用</string>
+
+	<string name="other_title">其他</string>
+	<string name="other_show_title">关于</string>
+	<string name="other_show_summary">介绍软件使用相关细节</string>
+	<string name="other_dlg_msg">
+		开发者: Xinwei.Yi\nEmail: Xinwei.Yi@gmail.com\n这是一个以SIM卡更换为判断基础的安全小软件，如果您是主动更换SIM卡，请预先进入软件设置状态为：关闭，更换SIM卡之后先进行一次重置，再设置状态为：开启.(本软件不存在任何违法行为，请放心使用)
+	</string>
+	
+	<string name="sms_content">检查到手机SIM卡有变化，请确认</string>
+	<string name="defend_open">开启防盗</string>
+</resources>

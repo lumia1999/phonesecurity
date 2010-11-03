@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="pref_security_enabled_key">enable</string>
+	<string name="pref_trust_num_key">trust_number</string>
+	<string name="pref_reset_key">reset</string>
+	<string name="pref_other_key">other</string>
+</resources>
