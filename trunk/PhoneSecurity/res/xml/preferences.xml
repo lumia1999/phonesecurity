@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="@string/security_setting">
+  	<com.herry.phonesecurity.preferences.DialogCheckBoxPreference
+  		android:key="@string/pref_security_enabled_key"
+  		android:title="@string/security_enabled_title"
+  		android:summaryOn="@string/security_enabled_summaryon"
+  		android:summaryOff="@string/security_enabled_summaryoff"
+  		android:defaultValue="true"/>
+  	<EditTextPreference android:key="@string/pref_trust_num_key"
+  		android:title="@string/trust_number_title"
+  		android:summary="@string/trust_number_summary"
+  		android:dialogTitle="@string/trust_number_input_title"/>
+  	<com.herry.phonesecurity.preferences.DialogPreference
+  		android:key="@string/pref_reset_key"
+  		android:dialogIcon="@android:drawable/ic_dialog_alert"
+  		android:title="@string/reset_title"
+  		android:dialogTitle="@string/reset_dlg_title"
+  		android:dialogMessage="@string/reset_dlg_msg"
+  		android:summary="@string/reset_summary" />
+  </PreferenceCategory>
+  <PreferenceCategory android:title="@string/other_title">
+  	<com.herry.phonesecurity.preferences.AboutDialogPreference
+  	android:key="@string/pref_other_key"
+  	android:dialogIcon="@android:drawable/ic_dialog_alert"
+  	android:title="@string/other_show_title"
+  	android:dialogTitle="@string/app_name"
+  	android:summary="@string/other_show_summary"
+  	android:negativeButtonText="@null"/>
+  </PreferenceCategory>
+</PreferenceScreen>
