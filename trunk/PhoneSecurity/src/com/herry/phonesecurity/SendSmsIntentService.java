@@ -4,8 +4,8 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.PowerManager;
-import android.telephony.SmsManager;
 import android.util.Log;
 
 public class SendSmsIntentService extends IntentService {
@@ -44,6 +44,7 @@ public class SendSmsIntentService extends IntentService {
 		ctx.startService(intent);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void onSendSms(String destAddr) {
 		try {
 			// just wait for a while
@@ -51,7 +52,23 @@ public class SendSmsIntentService extends IntentService {
 		} catch (InterruptedException e) {
 			Log.e(TAG, "InterruptedException!!!", e);
 		}
-		SmsManager sm = SmsManager.getDefault();
+		if(Integer.valueOf(Build.VERSION.SDK) > 3){
+			Log.d(TAG, "sdk version  > 3");
+//			android.telephony.SmsManager sm = android.telephony.SmsManager.getDefault();
+//			String scAddr = null;
+//			String text = getString(R.string.sms_content);
+//			PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0,
+//					new Intent(Const.ACTION_SENT), 0);
+//			PendingIntent deliveryIntent = PendingIntent.getBroadcast(this, 0,
+//					new Intent(Const.ACTION_DELIVERED), 0);
+//			if (destAddr != null) {
+//				sm.sendTextMessage(destAddr, scAddr, text, sentIntent,
+//						deliveryIntent);
+//			}
+		}else{
+			Log.d(TAG, "sdk version  < 3");
+		}
+		android.telephony.gsm.SmsManager sm = android.telephony.gsm.SmsManager.getDefault();
 		String scAddr = null;
 		String text = getString(R.string.sms_content);
 		PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0,
@@ -62,5 +79,6 @@ public class SendSmsIntentService extends IntentService {
 			sm.sendTextMessage(destAddr, scAddr, text, sentIntent,
 					deliveryIntent);
 		}
+
 	}
 }
