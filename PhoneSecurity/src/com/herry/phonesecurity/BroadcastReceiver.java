@@ -26,7 +26,7 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
 					Prefs.setNewSim(context, imsi);
 				}
 				String old_sim = Prefs.getOldSim(context);
-				if (!old_sim.equals(imsi)) {
+				if (!old_sim.equals(imsi) && reason == null) {
 					SendSmsIntentService.runIntentService(context, intent);
 				}
 			}
