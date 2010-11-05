@@ -1,5 +1,7 @@
 package com.herry.phonesecurity;
 
+import com.herry.phonesecurity.os.OsDeffer;
+
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -25,7 +27,7 @@ public class SendSmsIntentService extends IntentService {
 			boolean enable = Utils.getEnable(ctx);
 			String trust_number = Utils.getTrustNum(ctx);
 			if (enable && trust_number != null) {
-				onSendSms(trust_number);
+				onSendSms(ctx, trust_number);
 			}
 		} finally {
 			mWakeLock.release();
@@ -45,37 +47,26 @@ public class SendSmsIntentService extends IntentService {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void onSendSms(String destAddr) {
+	private void onSendSms(Context ctx, String destAddr) {
 		try {
 			// just wait for a while
 			Thread.sleep(10 * 1000);
 		} catch (InterruptedException e) {
 			Log.e(TAG, "InterruptedException!!!", e);
 		}
-		if(Integer.valueOf(Build.VERSION.SDK) > 3){
+		if (Integer.valueOf(Build.VERSION.SDK) > 3) {
 			Log.d(TAG, "sdk version  > 3");
-//			android.telephony.SmsManager sm = android.telephony.SmsManager.getDefault();
-//			String scAddr = null;
-//			String text = getString(R.string.sms_content);
-//			PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0,
-//					new Intent(Const.ACTION_SENT), 0);
-//			PendingIntent deliveryIntent = PendingIntent.getBroadcast(this, 0,
-//					new Intent(Const.ACTION_DELIVERED), 0);
-//			if (destAddr != null) {
-//				sm.sendTextMessage(destAddr, scAddr, text, sentIntent,
-//						deliveryIntent);
-//			}
-		}else{
+			OsDeffer.onSendSms(ctx, destAddr);
+		} else {
 			Log.d(TAG, "sdk version  < 3");
-		}
-		android.telephony.gsm.SmsManager sm = android.telephony.gsm.SmsManager.getDefault();
-		String scAddr = null;
-		String text = getString(R.string.sms_content);
-		PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0,
-				new Intent(Const.ACTION_SENT), 0);
-		PendingIntent deliveryIntent = PendingIntent.getBroadcast(this, 0,
-				new Intent(Const.ACTION_DELIVERED), 0);
-		if (destAddr != null) {
+			android.telephony.gsm.SmsManager sm = android.telephony.gsm.SmsManager
+					.getDefault();
+			String scAddr = null;
+			String text = getString(R.string.sms_content);
+			PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0,
+					new Intent(Const.ACTION_SENT), 0);
+			PendingIntent deliveryIntent = PendingIntent.getBroadcast(this, 0,
+					new Intent(Const.ACTION_DELIVERED), 0);
 			sm.sendTextMessage(destAddr, scAddr, text, sentIntent,
 					deliveryIntent);
 		}
