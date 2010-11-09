@@ -3,5 +3,9 @@
 	<string name="pref_security_enabled_key">enable</string>
 	<string name="pref_trust_num_key">trust_number</string>
 	<string name="pref_reset_key">reset</string>
+	<string name="pref_alarm_key">alarm</string>
+	<string name="pref_myphonenum_key">myphonenum</string>
+	<string name="pref_ringtone_key">ringtone</string>
+	<string name="pref_alarm_test_key">alarmtest</string>
 	<string name="pref_other_key">other</string>
 </resources>

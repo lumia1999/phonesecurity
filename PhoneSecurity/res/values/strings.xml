@@ -21,7 +21,23 @@
 	<string name="reset_dlg_msg">将清除原有防盗信息，请确认信任手机号是否需要改变
 	</string>
 	<string name="reset_summary">将复位您的基本信息，您可以接着使用</string>
-
+	
+	<string name="alarm_title">报警设置</string>
+	<string name="alarm_summary">设置短信报警铃声，为手机保驾护航</string>
+	<string name="ringtone_title">选择铃声</string>
+	<string name="ringtone_summary">手机收到报警请求短信后，将大声播放此铃声，方便主人寻找</string>
+	
+	<string name="myphonenum_title">本机号码</string>
+	<string name="myphonenum_summary">设置您的本机号码，此号码用于匹配您的报警请求短信</string>
+	<string name="myphonenum_input_title">请输入您的本机号码</string>
+	
+	<string name="alarm_test_title">测试报警</string>
+	<string name="alarm_test_summary">测试短信报警铃声</string>
+	<string name="alarm_test_dlg_msg">正在测试报警铃声</string>
+	<string name="alarm_test_dlg_msg_error">请先设置报警铃声！</string>
+	<string name="alarm_test_dlg_pos_text">停止测试</string>
+	<string name="alarm_test_dlg_pos_text_error">退出</string>
+	
 	<string name="other_title">其他</string>
 	<string name="other_show_title">关于</string>
 	<string name="other_show_summary">介绍软件使用相关细节</string>

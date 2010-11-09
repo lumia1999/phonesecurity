@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
 
 public class Utils {
-	private static String PREF_NAME = "com.herry.phonesecurity" + "_"
+	private static final String PREF_NAME = "com.herry.phonesecurity" + "_"
 			+ "preferences";
 
 	public static String getIMSI(Context ctx) {
@@ -17,8 +17,8 @@ public class Utils {
 	public static boolean getEnable(Context ctx) {
 		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
 				Context.MODE_PRIVATE);
-		return prefs.getBoolean(ctx
-				.getString(R.string.pref_security_enabled_key), true);
+		return prefs.getBoolean(
+				ctx.getString(R.string.pref_security_enabled_key), true);
 	}
 
 	public static String getTrustNum(Context ctx) {
@@ -26,5 +26,11 @@ public class Utils {
 				Context.MODE_PRIVATE);
 		return prefs
 				.getString(ctx.getString(R.string.pref_trust_num_key), null);
+	}
+
+	public static String getRingtone(Context ctx) {
+		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
+				Context.MODE_PRIVATE);
+		return prefs.getString(ctx.getString(R.string.pref_ringtone_key), null);
 	}
 }

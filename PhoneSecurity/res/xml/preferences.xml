@@ -20,6 +20,26 @@
   		android:dialogMessage="@string/reset_dlg_msg"
   		android:summary="@string/reset_summary" />
   </PreferenceCategory>
+  <PreferenceScreen  android:key="@string/pref_alarm_key"
+  	android:title="@string/alarm_title"
+  	android:summary="@string/alarm_summary">
+  		<EditTextPreference android:key="@string/pref_myphonenum_key"
+  			android:title="@string/myphonenum_title"
+  			android:summary="@string/myphonenum_summary"
+  			android:dialogTitle="@string/myphonenum_input_title"/>
+  		<RingtonePreference android:key="@string/pref_ringtone_key"
+  			android:title="@string/ringtone_title"
+  			android:summary="@string/ringtone_summary"
+  			android:dependency="@string/pref_myphonenum_key">  			
+  		</RingtonePreference>
+  		<com.herry.phonesecurity.preferences.TestAlarmDialogPreference
+  			android:key="@string/pref_alarm_test_key"
+  			android:title="@string/alarm_test_title"
+  			android:summary="@string/alarm_test_summary"
+  			android:dialogIcon="@drawable/android:ic_dialog_alert"
+  			android:dependency="@string/pref_ringtone_key"
+  			android:negativeButtonText="@null"/>
+  </PreferenceScreen>
   <PreferenceCategory android:title="@string/other_title">
   	<com.herry.phonesecurity.preferences.AboutDialogPreference
   	android:key="@string/pref_other_key"
