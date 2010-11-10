@@ -1,10 +1,16 @@
 package com.herry.phonesecurity;
 
+import com.herry.phonesecurity.os.OsDeffer;
+
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 public class Utils {
+	private static final String TAG = "Utils";
 	private static final String PREF_NAME = "com.herry.phonesecurity" + "_"
 			+ "preferences";
 
@@ -32,5 +38,56 @@ public class Utils {
 		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
 				Context.MODE_PRIVATE);
 		return prefs.getString(ctx.getString(R.string.pref_ringtone_key), null);
+	}
+
+	public static String getSelfNumber(Context ctx) {
+		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
+				Context.MODE_PRIVATE);
+		return prefs.getString(ctx.getString(R.string.pref_myphonenum_key),
+				null);
+	}
+
+	// intercept sms,obtain its message body
+	@SuppressWarnings("deprecation")
+	public static String getSmsBody(Intent intent) {
+		Object[] messages = (Object[]) intent.getSerializableExtra("pdus");
+		if (messages == null || messages.length == 0) {
+			return null;
+		}
+		byte[][] pduObjs = new byte[messages.length][];
+		for (int i = 0; i < messages.length; i++) {
+			pduObjs[i] = (byte[]) messages[i];
+		}
+		byte[][] pdus = new byte[pduObjs.length][];
+		if (Integer.valueOf(Build.VERSION.SDK) > 3) {
+			Log.d(TAG, "sdk version  > 3");
+			return OsDeffer.getSmsBody(pduObjs, pdus);
+		} else {
+			int pduCount = pdus.length;
+			Log.d(TAG, "sdk version  < 3");
+			android.telephony.gsm.SmsMessage[] msgs = new android.telephony.gsm.SmsMessage[pduCount];
+			for (int i = 0; i < pduCount; i++) {
+				pdus[i] = pduObjs[i];
+				msgs[i] = android.telephony.gsm.SmsMessage
+						.createFromPdu(pdus[i]);
+			}
+			android.telephony.gsm.SmsMessage sms = msgs[0];
+			String body = "";
+			try {
+				if (msgs.length == 1 || sms.isReplace()) {
+					body = sms.getDisplayMessageBody();
+				} else {
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < pduCount; i++) {
+						sb.append(msgs[i].getDisplayMessageBody());
+					}
+					body = sb.toString();
+				}
+			} catch (Exception e) {
+				Log.d(TAG, "Exception", e);
+				return null;
+			}
+			return body;
+		}
 	}
 }

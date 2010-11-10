@@ -12,7 +12,7 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
 		Log.d(TAG, "onReceive,action : " + action);
-		if (action.equals("android.intent.action.SIM_STATE_CHANGED")) {
+		if (action.equals(Const.ACTION_SIM_CHANGED)) {
 			Bundle b = intent.getExtras();
 			String phoneName = b.getString("phoneName");
 			String ss = b.getString("ss");

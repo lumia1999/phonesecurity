@@ -34,9 +34,10 @@
 	<string name="alarm_test_title">测试报警</string>
 	<string name="alarm_test_summary">测试短信报警铃声</string>
 	<string name="alarm_test_dlg_msg">正在测试报警铃声</string>
-	<string name="alarm_test_dlg_msg_error">请先设置报警铃声！</string>
+	<string name="alarm_test_dlg_msg_no">请先设置报警铃声！</string>
+	<string name="alarm_test_dlg_msg_error">无法播放，请重新选择报警铃声</string>
 	<string name="alarm_test_dlg_pos_text">停止测试</string>
-	<string name="alarm_test_dlg_pos_text_error">退出</string>
+	<string name="alarm_test_dlg_pos_text_quit">退出</string>
 	
 	<string name="other_title">其他</string>
 	<string name="other_show_title">关于</string>

@@ -6,6 +6,7 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
@@ -21,13 +22,23 @@ public class SendSmsIntentService extends IntentService {
 	}
 
 	@Override
-	protected void onHandleIntent(Intent Intent) {
+	protected void onHandleIntent(Intent intent) {
 		try {
-			Context ctx = getApplicationContext();
-			boolean enable = Utils.getEnable(ctx);
-			String trust_number = Utils.getTrustNum(ctx);
-			if (enable && trust_number != null) {
-				onSendSms(ctx, trust_number);
+			String action = intent.getAction();
+			if (action.equals(Const.ACTION_SIM_CHANGED)) {
+				Context ctx = getApplicationContext();
+				boolean enable = Utils.getEnable(ctx);
+				String trust_number = Utils.getTrustNum(ctx);
+				if (enable && trust_number != null) {
+					onSendSms(ctx, trust_number);
+				}
+			} else if (action.equals(Const.ACTION_SMS_RECEIVED)) {
+				Uri data = intent.getData();
+				if (data != null && data.toString().equals(Const.ALARM)) {
+					//launch a notification to play ringtone
+					//TODO
+				}
+
 			}
 		} finally {
 			mWakeLock.release();
