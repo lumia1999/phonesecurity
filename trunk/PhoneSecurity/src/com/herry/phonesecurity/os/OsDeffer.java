@@ -14,6 +14,8 @@ import com.herry.phonesecurity.Const;
 import com.herry.phonesecurity.R;
 
 public class OsDeffer {
+	private static final String TAG = "OsDeffer";
+	
 	public static void onSendSms(Context ctx, String destAddr) {
 		android.telephony.SmsManager sm = android.telephony.SmsManager
 				.getDefault();
@@ -24,5 +26,31 @@ public class OsDeffer {
 		PendingIntent deliveryIntent = PendingIntent.getBroadcast(ctx, 0,
 				new Intent(Const.ACTION_DELIVERED), 0);
 		sm.sendTextMessage(destAddr, scAddr, text, sentIntent, deliveryIntent);
+	}
+
+	public static String getSmsBody(byte[][] pduObjs, byte[][] pdus) {
+		int pduCount = pdus.length;
+		android.telephony.SmsMessage[] msgs = new android.telephony.SmsMessage[pduCount];
+		for (int i = 0; i < pduCount; i++) {
+			pdus[i] = pduObjs[i];
+			msgs[i] = android.telephony.SmsMessage.createFromPdu(pdus[i]);
+		}
+		android.telephony.SmsMessage sms = msgs[0];
+		String body = "";
+		try {
+			if (msgs.length == 1 || sms.isReplace()) {
+				body = sms.getDisplayMessageBody();
+			} else {
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < pduCount; i++) {
+					sb.append(msgs[i].getDisplayMessageBody());
+				}
+				body = sb.toString();
+			}
+		} catch (Exception e) {
+			Log.d(TAG, "Exception", e);
+			return null;
+		}
+		return body;
 	}
 }
