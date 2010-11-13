@@ -6,7 +6,6 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
@@ -22,6 +21,19 @@ public class SendSmsIntentService extends IntentService {
 	}
 
 	@Override
+	public void onCreate() {
+		Log.d(TAG, "onCreate");
+		super.onCreate();
+
+	}
+
+	@Override
+	public void onDestroy() {
+		Log.d(TAG, "onDestroy");
+		super.onDestroy();
+	}
+
+	@Override
 	protected void onHandleIntent(Intent intent) {
 		try {
 			String action = intent.getAction();
@@ -33,12 +45,7 @@ public class SendSmsIntentService extends IntentService {
 					onSendSms(ctx, trust_number);
 				}
 			} else if (action.equals(Const.ACTION_SMS_RECEIVED)) {
-				Uri data = intent.getData();
-				if (data != null && data.toString().equals(Const.ALARM)) {
-					//launch a notification to play ringtone
-					//TODO
-				}
-
+				//
 			}
 		} finally {
 			mWakeLock.release();
@@ -73,7 +80,12 @@ public class SendSmsIntentService extends IntentService {
 			android.telephony.gsm.SmsManager sm = android.telephony.gsm.SmsManager
 					.getDefault();
 			String scAddr = null;
-			String text = getString(R.string.sms_content);
+			String selfNum = Utils.getSelfNumber(this);
+			if(selfNum == null || "".equals(selfNum.trim())){
+				selfNum = getString(R.string.unknown_self_num);
+			}
+			String text = getString(R.string.sms_content).replace("{phoneNum}",
+					selfNum);
 			PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0,
 					new Intent(Const.ACTION_SENT), 0);
 			PendingIntent deliveryIntent = PendingIntent.getBroadcast(this, 0,

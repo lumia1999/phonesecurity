@@ -9,6 +9,7 @@ import com.herry.phonesecurity.preferences.AboutDialogPreference;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -40,7 +41,19 @@ public class SecuritySettingActivity extends PreferenceActivity {
 		aboutPref.setDialogTitle(getString(R.string.app_name) + version);
 		aboutPref.setDialogLayoutResource(R.layout.about);
 
+		final AboutDialogPreference alarmAboutPref = (AboutDialogPreference) findPreference(getString(R.string.pref_alarm_about_key));
+		alarmAboutPref.setDialogLayoutResource(R.layout.alarmabout);
+
 		initSim();
+		if (Const.mbTest) {
+			startActivity(new Intent(this, TestActivity.class));
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.d(TAG, "onDestory");
+		super.onDestroy();
 	}
 
 	private void initSim() {

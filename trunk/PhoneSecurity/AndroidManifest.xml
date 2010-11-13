@@ -12,7 +12,12 @@
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
-		</activity>
+		</activity>		
+		<activity android:name=".view.PlayRingActivity"
+			android:configChanges="orientation|keyboardHidden"
+			android:launchMode="singleTop"/>
+		<activity android:name=".view.TestActivity"
+			android:configChanges="orientation|keyboardHidden"/>
 		<receiver android:name=".BroadcastReceiver">
 			<intent-filter>
 				<action android:name="android.intent.action.SIM_STATE_CHANGED"/>
@@ -30,6 +35,7 @@
 				<action android:name="android.provider.Telephony.SMS_RECEIVED"/>
 			</intent-filter>
 		</receiver>
+		<service android:name=".HandleAlarmService"/>
     </application>
 
 	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
