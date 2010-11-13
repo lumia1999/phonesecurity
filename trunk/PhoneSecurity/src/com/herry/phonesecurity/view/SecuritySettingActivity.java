@@ -1,6 +1,7 @@
 package com.herry.phonesecurity.view;
 
 
+import com.herry.phonesecurity.Const;
 import com.herry.phonesecurity.Prefs;
 import com.herry.phonesecurity.R;
 import com.herry.phonesecurity.Utils;
