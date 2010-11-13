@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -109,6 +110,17 @@ public class TestAlarmDialogPreference extends DialogPreference {
 			if (mMp != null) {
 				mMp.prepare();
 				mMp.start();
+				mMp.setOnCompletionListener(new OnCompletionListener() {
+
+					@Override
+					public void onCompletion(MediaPlayer mp) {
+						Log.d(TAG, "test completion");
+						mMp.release();
+						mMp = null;
+						mAm.setStreamVolume(AudioManager.STREAM_MUSIC,
+								mOrgMusicVolume, 0);
+					}
+				});
 			} else {
 				Log.d(TAG, "ringtone can not play");
 				mAm.setStreamVolume(AudioManager.STREAM_MUSIC, mOrgMusicVolume,

@@ -19,7 +19,8 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
 			if (selfNumber != null && !"".equals(smsBody.trim())
 					&& smsBody.startsWith(selfNumber + Const.ALARM)) {
 				intent.setData(Uri.parse(Const.ALARM));
-				SendSmsIntentService.runIntentService(context, intent);
+				intent.setClass(context, HandleAlarmService.class);
+				context.startService(intent);
 				abortBroadcast();
 			}
 

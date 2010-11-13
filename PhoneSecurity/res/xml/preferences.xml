@@ -39,6 +39,13 @@
   			android:dialogIcon="@drawable/android:ic_dialog_alert"
   			android:dependency="@string/pref_ringtone_key"
   			android:negativeButtonText="@null"/>
+		<com.herry.phonesecurity.preferences.AboutDialogPreference
+		  	android:key="@string/pref_alarm_about_key"
+		  	android:dialogIcon="@android:drawable/ic_dialog_alert"
+		  	android:title="@string/alarm_about_title"
+		  	android:dialogTitle="@string/alarm_about_title"
+		  	android:summary="@string/alarm_about_summary"
+		  	android:negativeButtonText="@null"/>
   </PreferenceScreen>
   <PreferenceCategory android:title="@string/other_title">
   	<com.herry.phonesecurity.preferences.AboutDialogPreference

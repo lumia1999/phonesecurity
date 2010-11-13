@@ -18,7 +18,7 @@
 
 	<string name="reset_title">重置</string>
 	<string name="reset_dlg_title">重置您的基本信息</string>
-	<string name="reset_dlg_msg">将清除原有防盗信息，请确认信任手机号是否需要改变
+	<string name="reset_dlg_msg">软件将复位，请确认信任手机号、报警本机号是否需要改变
 	</string>
 	<string name="reset_summary">将复位您的基本信息，您可以接着使用</string>
 	
@@ -38,14 +38,25 @@
 	<string name="alarm_test_dlg_msg_error">无法播放，请重新选择报警铃声</string>
 	<string name="alarm_test_dlg_pos_text">停止测试</string>
 	<string name="alarm_test_dlg_pos_text_quit">退出</string>
+	<string name="alarm_about_title">关于报警</string>
+	<string name="alarm_about_summary">介绍有关短信报警使用细节</string>
+	<string name="alarm_about_dlg_msg">1.首先请一定设置<b><i>本机号码</i></b>，用于匹配您的报警短信（否则报警将不起作用！）\n
+		2.选择您的<b><i>报警铃声</i></b>（最好选择自己喜欢的铃声，这样便于自己识别）\n
+		3.做到上述两点，您的手机将具备短信报警功能，报警短信输入格式：<b><i>本机号码+alarm</i></b>（加号不要输入）\n
+		4.假如手机失窃，您可以发送短信到对方的号码；假如是在公共场合（例如公车上），您及时发现了手机失窃，趁窃贼来不及处理之际，可以发送报警短信到自己手机号码，尽最大可能找回您的财物！</string>
 	
 	<string name="other_title">其他</string>
 	<string name="other_show_title">关于</string>
 	<string name="other_show_summary">介绍软件使用相关细节</string>
 	<string name="other_dlg_msg">
-		开发者: Xinwei.Yi\nEmail: Xinwei.Yi@gmail.com\n这是一个以SIM卡更换为判断基础的安全小软件，如果您是主动更换SIM卡，请预先进入软件设置状态为：关闭，更换SIM卡之后先进行一次重置，再设置状态为：开启.(本软件不存在任何违法行为，请放心使用)
+		开发者: Xinwei.Yi\nEmail: Xinwei.Yi@gmail.com\n
+		1.这是一个以SIM卡更换为判断基础的安全小软件，如果您是主动更换SIM卡，请预先进入软件设置状态为：关闭，更换SIM卡之后先进行一次重置，再设置状态为：开启。\n
+		2.如果您使用短信报警功能，请参考报警设置里面的设置教程。
 	</string>
 	
-	<string name="sms_content">检查到手机SIM卡有变化，请确认</string>
+	<string name="sms_content">检查到手机号为：{phoneNum} 的手机SIM卡有变化，请确认</string>
+	<string name="unknown_self_num">未知号码</string>
 	<string name="defend_open">开启防盗</string>
+	<string name="alarming">有警报</string>
+	<string name="alarm_tip">正在播放报警音乐，要选择停止吗？</string>
 </resources>
