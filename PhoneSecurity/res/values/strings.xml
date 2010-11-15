@@ -24,7 +24,7 @@
 	
 	<string name="alarm_title">报警设置</string>
 	<string name="alarm_summary">设置短信报警铃声，为手机保驾护航</string>
-	<string name="ringtone_title">选择铃声</string>
+	<string name="ringtone_title">报警铃声</string>
 	<string name="ringtone_summary">手机收到报警请求短信后，将大声播放此铃声，方便主人寻找</string>
 	
 	<string name="myphonenum_title">本机号码</string>
@@ -59,4 +59,15 @@
 	<string name="defend_open">开启防盗</string>
 	<string name="alarming">有警报</string>
 	<string name="alarm_tip">正在播放报警音乐，要选择停止吗？</string>
+	
+	<!-- setting quit resources -->
+	<string name="setting_quit_no_trustnum">请设置受信号码</string>
+	<string name="setting_quit_no_selfnum">请设置本机号码</string>
+	<string name="setting_quit_no_ringtone">请设置报警铃声</string>
+	<string name="setting_quit_no_trustnum_selfnum">请设置受信号码和本机号码</string>
+	<string name="setting_quit_no_trustnum_ringtone">请设置受信号码和报警铃声</string>
+	<string name="setting_quit_no_selfnum_ringtone">请设置本机号码和报警铃声</string>
+	<string name="setting_quit_no_trustnum_selfnum_ringtone">请设置受信号码、本机号码和报警铃声</string>
+	<string name="setting_quit_resetting">返回设置</string>
+	<string name="setting_quit_nonreminder">不再提醒</string>
 </resources>
