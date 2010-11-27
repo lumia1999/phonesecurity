@@ -72,20 +72,20 @@ public class SendSmsIntentService extends IntentService {
 		} catch (InterruptedException e) {
 			Log.e(TAG, "InterruptedException!!!", e);
 		}
+		String selfNum = Utils.getSelfNumber(this);
+		if(selfNum == null || "".equals(selfNum.trim())){
+			selfNum = getString(R.string.unknown_self_num);
+		}
+		String text = getString(R.string.sms_content).replace("{phoneNum}",
+				selfNum);
 		if (Integer.valueOf(Build.VERSION.SDK) > 3) {
 			Log.d(TAG, "sdk version  > 3");
-			OsDeffer.onSendSms(ctx, destAddr);
+			OsDeffer.onSendSms(ctx, destAddr,text);
 		} else {
 			Log.d(TAG, "sdk version  < 3");
 			android.telephony.gsm.SmsManager sm = android.telephony.gsm.SmsManager
 					.getDefault();
 			String scAddr = null;
-			String selfNum = Utils.getSelfNumber(this);
-			if(selfNum == null || "".equals(selfNum.trim())){
-				selfNum = getString(R.string.unknown_self_num);
-			}
-			String text = getString(R.string.sms_content).replace("{phoneNum}",
-					selfNum);
 			PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0,
 					new Intent(Const.ACTION_SENT), 0);
 			PendingIntent deliveryIntent = PendingIntent.getBroadcast(this, 0,

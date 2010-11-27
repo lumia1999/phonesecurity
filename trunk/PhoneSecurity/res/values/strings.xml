@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
 	<string name="app_name">手机防盗</string>
 	<string name="security_setting">安全选项设置</string>
@@ -18,19 +18,20 @@
 
 	<string name="reset_title">重置</string>
 	<string name="reset_dlg_title">重置您的基本信息</string>
-	<string name="reset_dlg_msg">软件将复位，请确认信任手机号、报警本机号是否需要改变
-	</string>
+	<string name="reset_dlg_msg">
+		软件将复位，请重新设置信任手机号、本机号码、报警铃声以及报警密码</string>
 	<string name="reset_summary">将复位您的基本信息，您可以接着使用</string>
-	
+
+	<string name="config_alarm">短信报警设置</string>
 	<string name="alarm_title">报警设置</string>
 	<string name="alarm_summary">设置短信报警铃声，为手机保驾护航</string>
 	<string name="ringtone_title">报警铃声</string>
 	<string name="ringtone_summary">手机收到报警请求短信后，将大声播放此铃声，方便主人寻找</string>
-	
+
 	<string name="myphonenum_title">本机号码</string>
 	<string name="myphonenum_summary">设置您的本机号码，此号码用于匹配您的报警请求短信</string>
 	<string name="myphonenum_input_title">请输入您的本机号码</string>
-	
+
 	<string name="alarm_test_title">测试报警</string>
 	<string name="alarm_test_summary">测试短信报警铃声</string>
 	<string name="alarm_test_dlg_msg">正在测试报警铃声</string>
@@ -38,13 +39,34 @@
 	<string name="alarm_test_dlg_msg_error">无法播放，请重新选择报警铃声</string>
 	<string name="alarm_test_dlg_pos_text">停止测试</string>
 	<string name="alarm_test_dlg_pos_text_quit">退出</string>
-	<string name="alarm_about_title">关于报警</string>
+	<string name="alarm_about_title">如何使用</string>
 	<string name="alarm_about_summary">介绍有关短信报警使用细节</string>
-	<string name="alarm_about_dlg_msg">1.首先请一定设置<b><i>本机号码</i></b>，用于匹配您的报警短信（否则报警将不起作用！）\n
-		2.选择您的<b><i>报警铃声</i></b>（最好选择自己喜欢的铃声，这样便于自己识别）\n
-		3.做到上述两点，您的手机将具备短信报警功能，报警短信输入格式：<b><i>本机号码+alarm</i></b>（加号不要输入）\n
-		4.假如手机失窃，您可以发送短信到对方的号码；假如是在公共场合（例如公车上），您及时发现了手机失窃，趁窃贼来不及处理之际，可以发送报警短信到自己手机号码，尽最大可能找回您的财物！</string>
-	
+	<string name="alarm_about_dlg_msg">
+		<b>1.</b>请牢记
+		<b>
+			<i>报警密码</i>
+		</b>，为了安全起见，即使使用重置功能也无法清除报警密码；\n
+		<b>2.</b>请一定设置
+		<b>
+			<i>本机号码</i>
+		</b>
+		，用于和报警密码一起匹配您的报警短信（否则报警将不起作用！）；\n
+		<b>3.</b>选择您的
+		<b>
+			<i>报警铃声</i>
+		</b>
+		（最好选择自己喜欢的铃声，这样便于自己识别）；\n
+
+		<b>4.</b>做到上述三点，您的手机将具备短信报警功能，报警短信输入格式：
+		<b>
+			<i>本机号码+报警密码+alarm</i>
+		</b>
+		（加号不要输入）。例如：本机号码为13800000000，报警密码为123456，那么报警短信内容为：13800000000123456alarm（注意：alarm为小写）；\n
+		<b>5.</b>假如手机失窃，您可以发送短信到对方的号码；假如是在公共场合（例如公车上），您及时发现了手机失窃，趁窃贼来不及处理之际，可以发送报警短信到自己手机号码，尽最大可能找回您的财物；\n
+		<b>6.</b><b><i>额外功能</i></b>：在您记不得手机放在哪里的时候发挥作用！（比如手机设置为静音，拨打电话无效的情况下，发一条报警短信到您的手机号码，此时手机将会播放铃声指引你寻找，即使是在静音状态下^_^）；\n
+		<b>7.</b><b><i>友情提示</i></b>：最好在您信赖的地方将以上设置保存一份，以防忘记。
+	</string>
+
 	<string name="other_title">其他</string>
 	<string name="other_show_title">关于</string>
 	<string name="other_show_summary">介绍软件使用相关细节</string>
@@ -53,14 +75,15 @@
 		1.这是一个以SIM卡更换为判断基础的安全小软件，如果您是主动更换SIM卡，请预先进入软件设置状态为：关闭，更换SIM卡之后先进行一次重置，再设置状态为：开启。\n
 		2.如果您使用短信报警功能，请参考报警设置里面的设置教程。
 	</string>
-	
+
 	<string name="sms_content">检查到手机号为：{phoneNum} 的手机SIM卡有变化，请确认</string>
 	<string name="unknown_self_num">未知号码</string>
 	<string name="defend_open">开启防盗</string>
 	<string name="alarming">有警报</string>
 	<string name="alarm_tip">正在播放报警音乐，要选择停止吗？</string>
-	
+
 	<!-- setting quit resources -->
+	<string name="setting_incompleted">设置未完成</string>
 	<string name="setting_quit_no_trustnum">请设置受信号码</string>
 	<string name="setting_quit_no_selfnum">请设置本机号码</string>
 	<string name="setting_quit_no_ringtone">请设置报警铃声</string>
@@ -70,4 +93,18 @@
 	<string name="setting_quit_no_trustnum_selfnum_ringtone">请设置受信号码、本机号码和报警铃声</string>
 	<string name="setting_quit_resetting">返回设置</string>
 	<string name="setting_quit_nonreminder">不再提醒</string>
+	<string name="set_alarm_pwd_title">请设置报警密码</string>
+	<string name="set_alarm_pwd_tip">
+		<b>1.</b>
+		请设置报警密码，敬告：务必避免泄露密码！\n
+		<b>2.</b>
+		请牢记报警密码，丢失密码将失去报警功能，应用暂不提供密码重置服务！\n
+		<b>3.</b>
+		目前只提供一次设置机会，请珍惜慎重！
+	</string>
+	<string name="set_alarm_pwd_firsttip">请输入密码</string>
+	<string name="set_alarm_pwd_secondtip">请再次输入密码</string>
+	<string name="set_alarm_pwd_hint">至少六个字符</string>
+	<string name="set_alarm_pwd_error_tip">密码长度不够或者两次密码输入不匹配</string>
+	<string name="set_alarm_pwd_canceled">您取消了设置报警密码，请登录设置</string>
 </resources>
