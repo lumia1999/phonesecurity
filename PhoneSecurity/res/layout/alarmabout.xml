@@ -7,7 +7,6 @@
     android:layout_height="wrap_content"
     android:textColor="?android:attr/textColorPrimaryDisableOnly"
     android:textAppearance="?android:attr/textAppearanceMedium"
-    android:autoLink="all"
-    android:padding="11dp"
+    android:paddingLeft="5dip"
     android:text="@string/alarm_about_dlg_msg"/>
 </ScrollView>

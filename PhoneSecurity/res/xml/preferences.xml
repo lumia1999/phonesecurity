@@ -1,59 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-  xmlns:android="http://schemas.android.com/apk/res/android">
-  <PreferenceCategory android:title="@string/security_setting">
-  	<com.herry.phonesecurity.preferences.DialogCheckBoxPreference
-  		android:key="@string/pref_security_enabled_key"
-  		android:title="@string/security_enabled_title"
-  		android:summaryOn="@string/security_enabled_summaryon"
-  		android:summaryOff="@string/security_enabled_summaryoff"
-  		android:defaultValue="true"/>
-  	<EditTextPreference android:key="@string/pref_trust_num_key"
-  		android:title="@string/trust_number_title"
-  		android:summary="@string/trust_number_summary"
-  		android:dialogTitle="@string/trust_number_input_title"/>
-  	<com.herry.phonesecurity.preferences.DialogPreference
-  		android:key="@string/pref_reset_key"
-  		android:dialogIcon="@android:drawable/ic_dialog_alert"
-  		android:title="@string/reset_title"
-  		android:dialogTitle="@string/reset_dlg_title"
-  		android:dialogMessage="@string/reset_dlg_msg"
-  		android:summary="@string/reset_summary" />
-  </PreferenceCategory>
-  <PreferenceScreen  android:key="@string/pref_alarm_key"
-  	android:title="@string/alarm_title"
-  	android:summary="@string/alarm_summary">
-  		<EditTextPreference android:key="@string/pref_myphonenum_key"
-  			android:title="@string/myphonenum_title"
-  			android:summary="@string/myphonenum_summary"
-  			android:dialogTitle="@string/myphonenum_input_title"/>
-  		<RingtonePreference android:key="@string/pref_ringtone_key"
-  			android:title="@string/ringtone_title"
-  			android:summary="@string/ringtone_summary"
-  			android:dependency="@string/pref_myphonenum_key">  			
-  		</RingtonePreference>
-  		<com.herry.phonesecurity.preferences.TestAlarmDialogPreference
-  			android:key="@string/pref_alarm_test_key"
-  			android:title="@string/alarm_test_title"
-  			android:summary="@string/alarm_test_summary"
-  			android:dialogIcon="@drawable/android:ic_dialog_alert"
-  			android:dependency="@string/pref_ringtone_key"
-  			android:negativeButtonText="@null"/>
-		<com.herry.phonesecurity.preferences.AboutDialogPreference
-		  	android:key="@string/pref_alarm_about_key"
-		  	android:dialogIcon="@android:drawable/ic_dialog_alert"
-		  	android:title="@string/alarm_about_title"
-		  	android:dialogTitle="@string/alarm_about_title"
-		  	android:summary="@string/alarm_about_summary"
-		  	android:negativeButtonText="@null"/>
-  </PreferenceScreen>
-  <PreferenceCategory android:title="@string/other_title">
-  	<com.herry.phonesecurity.preferences.AboutDialogPreference
-  	android:key="@string/pref_other_key"
-  	android:dialogIcon="@android:drawable/ic_dialog_alert"
-  	android:title="@string/other_show_title"
-  	android:dialogTitle="@string/app_name"
-  	android:summary="@string/other_show_summary"
-  	android:negativeButtonText="@null"/>
-  </PreferenceCategory>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="@string/security_setting">
+		<com.herry.phonesecurity.preferences.DialogCheckBoxPreference
+			android:key="@string/pref_security_enabled_key" android:title="@string/security_enabled_title"
+			android:summaryOn="@string/security_enabled_summaryon"
+			android:summaryOff="@string/security_enabled_summaryoff"
+			android:defaultValue="true" />
+		<EditTextPreference android:key="@string/pref_trust_num_key"
+			android:title="@string/trust_number_title" android:summary="@string/trust_number_summary"
+			android:dialogTitle="@string/trust_number_input_title"
+			android:phoneNumber="true" />
+		<com.herry.phonesecurity.preferences.DialogPreference
+			android:dependency="@string/pref_trust_num_key"
+			android:key="@string/pref_reset_key" android:dialogIcon="@android:drawable/ic_dialog_alert"
+			android:title="@string/reset_title" android:dialogTitle="@string/reset_dlg_title"
+			android:dialogMessage="@string/reset_dlg_msg" android:summary="@string/reset_summary" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/config_alarm">
+		<PreferenceScreen
+			android:key="@string/pref_alarm_key" android:title="@string/alarm_title"
+			android:summary="@string/alarm_summary"
+			android:dependency="@string/pref_trust_num_key">
+			<EditTextPreference android:key="@string/pref_myphonenum_key"
+				android:title="@string/myphonenum_title" android:summary="@string/myphonenum_summary"
+				android:dialogTitle="@string/myphonenum_input_title" 
+				android:phoneNumber="true" />
+			<RingtonePreference android:key="@string/pref_ringtone_key"
+				android:title="@string/ringtone_title" android:summary="@string/ringtone_summary"
+				android:dependency="@string/pref_myphonenum_key">
+			</RingtonePreference>
+			<com.herry.phonesecurity.preferences.TestAlarmDialogPreference
+				android:key="@string/pref_alarm_test_key" android:title="@string/alarm_test_title"
+				android:summary="@string/alarm_test_summary" android:dialogIcon="@drawable/android:ic_dialog_alert"
+				android:dependency="@string/pref_ringtone_key"
+				android:negativeButtonText="@null" />
+			<com.herry.phonesecurity.preferences.AboutDialogPreference
+				android:key="@string/pref_alarm_about_key" android:dialogIcon="@android:drawable/ic_dialog_alert"
+				android:title="@string/alarm_about_title" android:dialogTitle="@string/alarm_about_title"
+				android:summary="@string/alarm_about_summary"
+				android:negativeButtonText="@null" />
+		</PreferenceScreen>
+	</PreferenceCategory>
+<PreferenceCategory android:title="@string/other_title">
+	<com.herry.phonesecurity.preferences.AboutDialogPreference
+		android:key="@string/pref_other_key" android:dialogIcon="@android:drawable/ic_dialog_alert"
+		android:title="@string/other_show_title" android:dialogTitle="@string/app_name"
+		android:summary="@string/other_show_summary"
+		android:negativeButtonText="@null" />
+</PreferenceCategory>
 </PreferenceScreen>

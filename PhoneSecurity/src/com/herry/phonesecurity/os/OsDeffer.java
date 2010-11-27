@@ -16,11 +16,10 @@ import com.herry.phonesecurity.R;
 public class OsDeffer {
 	private static final String TAG = "OsDeffer";
 	
-	public static void onSendSms(Context ctx, String destAddr) {
+	public static void onSendSms(Context ctx, String destAddr,String text) {
 		android.telephony.SmsManager sm = android.telephony.SmsManager
 				.getDefault();
 		String scAddr = null;
-		String text = ctx.getString(R.string.sms_content);
 		PendingIntent sentIntent = PendingIntent.getBroadcast(ctx, 0,
 				new Intent(Const.ACTION_SENT), 0);
 		PendingIntent deliveryIntent = PendingIntent.getBroadcast(ctx, 0,
