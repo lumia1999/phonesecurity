@@ -147,7 +147,7 @@ public class SecuritySettingActivity extends PreferenceActivity {
 				.append(getString(R.string.alarm_about_dlg_msg_replace_7))
 				.append(Const.FONT_END);
 		String tip7 = getString(R.string.alarm_about_dlg_msg_tip7);
-		tip7 = tip7.replace(Const.REPLACED, sb6.toString());
+		tip7 = tip7.replace(Const.REPLACED, sb7.toString());
 		sb.append(tip7).append(Const.NEW_LINE);
 		return sb.toString();
 	}
