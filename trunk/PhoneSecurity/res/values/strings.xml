@@ -41,10 +41,24 @@
 	<string name="alarm_test_dlg_pos_text_quit">退出</string>
 	<string name="alarm_about_title">如何使用</string>
 	<string name="alarm_about_summary">介绍有关短信报警使用细节</string>
+	<string name="alarm_about_dlg_msg_replace_1">报警密码</string>
+	<string name="alarm_aboult_dlg_msg_tip1">1.请牢记：{?}，为了安全起见，即使使用重置功能也无法清除报警密码；</string>
+	<string name="alarm_about_dlg_msg_replace_2">本机号码</string>
+	<string name="alarm_about_dlg_msg_tip2">2.请一定设置：{?}，用于和报警密码一起匹配您的报价短信（否则报警将不起作用！）；</string>
+	<string name="alarm_about_dlg_msg_replace_3">报警铃声</string>
+	<string name="alarm_about_dlg_msg_tip3">3.请选择您的：{?}，最好选择自己熟悉的铃声以便于识别；</string>
+	<string name="alarm_about_dlg_msg_replace_4">本机号码+报警密码+alarm（加号不要输入）</string>
+	<string name="alarm_about_dlg_msg_tip4">4.完成以上步骤，您的手机将具备短信报警功能，报警短信输入格式：{?}。例如：本机号码为13800000000，报警密码为123456，那么报警短信内容为：13800000000123456alarm（注意：alarm为小写）；</string>
+	<string name="alarm_about_dlg_msg_replace_5">趁窃贼来不及处理之际</string>
+	<string name="alarm_about_dlg_msg_tip5">5.假如手机失窃，您可以发送短信到对方的号码；假如是在公共场合（例如公车上），您及时发现了手机失窃，{?}，可以发送报警短信到自己手机号码，尽最大可能找回您的财物；</string>
+	<string name="alarm_about_dlg_msg_replace_6">额外功能</string>
+	<string name="alarm_about_dlg_msg_tip6">6.{?}：在您记不得手机放在哪里的时候发挥作用！（比如手机设置为静音，拨打电话无效的情况下，发一条报警短信到您的手机号码，此时手机将会播放铃声指引你寻找，即使是在静音状态下^_^）；</string>
+	<string name="alarm_about_dlg_msg_replace_7">友情提示</string>
+	<string name="alarm_about_dlg_msg_tip7">7.{?}：最好在您信赖的地方将以上设置保存一份，以防忘记。</string>
 	<string name="alarm_about_dlg_msg">
 		<b>1.</b>请牢记
 		<b>
-			<i>报警密码</i>
+			<i>{?1}</i>
 		</b>，为了安全起见，即使使用重置功能也无法清除报警密码；\n
 		<b>2.</b>请一定设置
 		<b>
@@ -93,7 +107,7 @@
 	<string name="setting_quit_no_trustnum_selfnum_ringtone">请设置受信号码、本机号码和报警铃声</string>
 	<string name="setting_quit_resetting">返回设置</string>
 	<string name="setting_quit_nonreminder">不再提醒</string>
-	<string name="set_alarm_pwd_title">请设置报警密码</string>
+	<string name="set_alarm_pwd_title">请先设置报警密码</string>
 	<string name="set_alarm_pwd_tip">
 		<b>1.</b>
 		请设置报警密码，敬告：务必避免泄露密码！\n

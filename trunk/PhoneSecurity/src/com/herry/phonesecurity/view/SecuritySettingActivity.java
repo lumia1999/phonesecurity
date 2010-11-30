@@ -16,6 +16,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -59,7 +60,9 @@ public class SecuritySettingActivity extends PreferenceActivity {
 		aboutPref.setDialogLayoutResource(R.layout.about);
 
 		final AboutDialogPreference alarmAboutPref = (AboutDialogPreference) findPreference(getString(R.string.pref_alarm_about_key));
-		alarmAboutPref.setDialogLayoutResource(R.layout.alarmabout);
+		// alarmAboutPref.setDialogLayoutResource(R.layout.alarmabout);
+		String styledTxt = formatTxt();
+		alarmAboutPref.setDialogMessage(Html.fromHtml(styledTxt));
 
 		final PreferenceScreen alarmPref = (PreferenceScreen) findPreference(getString(R.string.pref_alarm_key));
 		alarmPref.setOnPreferenceClickListener(prefLsn);
@@ -86,6 +89,67 @@ public class SecuritySettingActivity extends PreferenceActivity {
 				Prefs.setOldSim(this, imsi);
 			}
 		}
+	}
+
+	private String formatTxt() {
+		StringBuilder sb = new StringBuilder();
+		// ///////////1111////////////////////////////////////////////////////
+		StringBuilder sb1 = new StringBuilder();
+		sb1.append(Const.FONT_START)
+				.append(getString(R.string.alarm_about_dlg_msg_replace_1))
+				.append(Const.FONT_END);
+		String tip1 = getString(R.string.alarm_aboult_dlg_msg_tip1);
+		tip1 = tip1.replace(Const.REPLACED, sb1.toString());
+		sb.append(tip1).append(Const.NEW_LINE);
+		// ///////////2222///////////////////////////////////////////////////
+		StringBuilder sb2 = new StringBuilder();
+		sb2.append(Const.FONT_START)
+				.append(getString(R.string.alarm_about_dlg_msg_replace_2))
+				.append(Const.FONT_END);
+		String tip2 = getString(R.string.alarm_about_dlg_msg_tip2);
+		tip2 = tip2.replace(Const.REPLACED, sb2.toString());
+		sb.append(tip2).append(Const.NEW_LINE);
+		// ///////////3333////////////////////////////////////////////////////
+		StringBuilder sb3 = new StringBuilder();
+		sb3.append(Const.FONT_START)
+				.append(getString(R.string.alarm_about_dlg_msg_replace_3))
+				.append(Const.FONT_END);
+		String tip3 = getString(R.string.alarm_about_dlg_msg_tip3);
+		tip3 = tip3.replace(Const.REPLACED, sb3.toString());
+		sb.append(tip3).append(Const.NEW_LINE);
+		/////////////4444/////////////////////////////////////////////////////
+		StringBuilder sb4 = new StringBuilder();
+		sb4.append(Const.FONT_START)
+				.append(getString(R.string.alarm_about_dlg_msg_replace_4))
+				.append(Const.FONT_END);
+		String tip4 = getString(R.string.alarm_about_dlg_msg_tip4);
+		tip4 = tip4.replace(Const.REPLACED, sb4.toString());
+		sb.append(tip4).append(Const.NEW_LINE);
+		///////////5555//////////////////////////////////////////////////////
+		StringBuilder sb5 = new StringBuilder();
+		sb5.append(Const.FONT_START)
+				.append(getString(R.string.alarm_about_dlg_msg_replace_5))
+				.append(Const.FONT_END);
+		String tip5 = getString(R.string.alarm_about_dlg_msg_tip5);
+		tip5 = tip5.replace(Const.REPLACED, sb5.toString());
+		sb.append(tip5).append(Const.NEW_LINE);
+		//////////6666///////////////////////////////////////////////////////
+		StringBuilder sb6 = new StringBuilder();
+		sb6.append(Const.FONT_START)
+				.append(getString(R.string.alarm_about_dlg_msg_replace_6))
+				.append(Const.FONT_END);
+		String tip6 = getString(R.string.alarm_about_dlg_msg_tip6);
+		tip6 = tip6.replace(Const.REPLACED, sb6.toString());
+		sb.append(tip6).append(Const.NEW_LINE);
+		/////////7777//////////////////////////////////////////////////////
+		StringBuilder sb7 = new StringBuilder();
+		sb7.append(Const.FONT_START)
+				.append(getString(R.string.alarm_about_dlg_msg_replace_7))
+				.append(Const.FONT_END);
+		String tip7 = getString(R.string.alarm_about_dlg_msg_tip7);
+		tip7 = tip7.replace(Const.REPLACED, sb6.toString());
+		sb.append(tip7).append(Const.NEW_LINE);
+		return sb.toString();
 	}
 
 	@Override

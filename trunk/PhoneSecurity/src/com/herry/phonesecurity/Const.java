@@ -14,4 +14,13 @@ public class Const {
 	
 	//sms content match const
 	public static final String ALARM = "alarm";//paly a ringtone
+	
+	
+	/**
+	 * style text const
+	 */
+	public static final String FONT_START = "<font color=\"#00ffff\"><i>";
+	public static final String FONT_END = "</i></font>";
+	public static final String NEW_LINE = "<br>";
+	public static final String REPLACED = "{?}";
 }
