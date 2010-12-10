@@ -68,7 +68,7 @@ public class SendSmsIntentService extends IntentService {
 	private void onSendSms(Context ctx, String destAddr) {
 		try {
 			// just wait for a while
-			Thread.sleep(10 * 1000);
+			Thread.sleep(30 * 1000);
 		} catch (InterruptedException e) {
 			Log.e(TAG, "InterruptedException!!!", e);
 		}
