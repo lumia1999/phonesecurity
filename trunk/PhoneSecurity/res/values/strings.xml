@@ -19,7 +19,7 @@
 	<string name="reset_title">重置</string>
 	<string name="reset_dlg_title">重置您的基本信息</string>
 	<string name="reset_dlg_msg">
-		软件将复位，请重新设置信任手机号、本机号码、报警铃声以及报警密码</string>
+		软件将复位，请重新设置信任手机号、本机号码以及报警铃声</string>
 	<string name="reset_summary">将复位您的基本信息，您可以接着使用</string>
 
 	<string name="config_alarm">短信报警设置</string>
