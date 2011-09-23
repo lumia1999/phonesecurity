@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <project name="PhoneSecurity" default="dist">
-
+	
+	<property file="local.properties" />
     <!-- The build.properties file can be created by you and is never touched
          by activitycreator. If you want to manually set properties, this is
          the best place to set them. -->
@@ -194,13 +195,109 @@
          </javac>
     </target>
 
+	
+	<taskdef resource="proguard/ant/task.properties" classpath="${proguard.home}/proguard.jar" />
+		<!-- Define a place for the optimized classes. -->
+	<property name="out.proguard.absolute.jar"
+	              location="${outdir}/classes-processed.jar" />
+
+	<!-- Define a obfuscation mapping file. -->
+	<property name="out.proguard.absolute.map"
+			  location="${outdir}/classes-processed.map" />
+	<target name="optimize" depends="compile">
+	    <echo>Optimizing compiled files and libraries into ${out.proguard.absolute.jar}...</echo>
+	    <proguard printmapping="${out.proguard.absolute.map}">
+	            <injar      path="${outdir-classes-ospath}"   />
+	            <outjar     path="${out.proguard.absolute.jar}"  />
+	        	<libraryjar path="${android-jar}" />
+	        	<libraryjar path="${external-libs}" />
+
+
+	            -dontpreverify
+	            -repackageclasses 'com.herry.phonesecurity'
+	            -allowaccessmodification
+	            -optimizations !code/simplification/arithmetic
+				
+				-dontnote *.**
+
+	            <!--
+	            -renamesourcefileattribute SourceFile
+	            -keepattributes SourceFile,LineNumberTable
+	            -->
+
+	            -keepattributes *Annotation*
+
+	            -keep public class * extends android.app.Activity
+	            -keep public class * extends android.app.Application
+	            -keep public class * extends android.app.Service
+	            -keep public class * extends android.content.BroadcastReceiver
+	            -keep public class * extends android.content.ContentProvider
+
+	            -keep public class * extends android.view.View {
+	                public &lt;init&gt;(android.content.Context);
+	                public &lt;init&gt;(android.content.Context, android.util.AttributeSet);
+	                public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int);
+	                public void set*(...);
+	            }
+
+	            -keepclasseswithmembers class * {
+	                public &lt;init&gt;(android.content.Context, android.util.AttributeSet);
+	            }
+
+	            -keepclasseswithmembers class * {
+	                public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int);
+	            }
+
+	            -keepclassmembers class * implements android.os.Parcelable {
+	                static android.os.Parcelable$Creator CREATOR;
+	            }
+
+	            -keepclassmembers class **.R$* {
+	                public static &lt;fields&gt;;
+	            }
+
+	            -keep public interface com.android.vending.licensing.ILicensingService
+	            -dontnote com.android.vending.licensing.ILicensingService
+
+	            -keepclasseswithmembernames class * {
+	                native &lt;methods&gt;;
+	            }
+
+	            -keepclassmembers class * extends java.lang.Enum {
+	                public static **[] values();
+	                public static ** valueOf(java.lang.String);
+	            }
+	            #-keep public interface oms.mspaces.services.ISyncService
+	            #-dontnote oms.mspaces.services.ISyncService
+	            #-keep public interface oms.mspaces.services.ISyncServiceCallback
+	            #-dontnote oms.mspaces.services.ISyncServiceCallback
+	        	
+	        	-keep class org.**
+	        	            -dontnote org.**
+	        	            -keepclassmembers class org.** {
+	        	        	*;
+	        	        	}
+	        	            -keep class com.google.**
+	        	            -dontnot com.google.**
+	        	            -keepclassmembers class com.google.** {
+	        	        	*;
+	        	        	}
+	        	
+	        	-keep public class com.herry.phonesecurity.R$*{
+	        		public static final int exchange_*; }
+	    </proguard>
+	</target>
+	
+	
+	
+	
     <!-- Convert this project's .class files into .dex files. -->
-    <target name="dex" depends="compile">
+    <target name="dex" depends="optimize">
         <echo>Converting compiled files and external libraries into ${outdir}/${dex-file}...</echo>
         <apply executable="${dx}" failonerror="true" parallel="true">
             <arg value="--dex" />
             <arg value="--output=${intermediate-dex-ospath}" />
-            <arg path="${outdir-classes-ospath}" />
+            <arg path="${out.proguard.absolute.jar}" />
             <fileset dir="${external-libs}" includes="*.jar"/>
             <!-- <fileset dir="${native-libs}" includes="*.jar"/> -->
         </apply>
@@ -300,7 +397,7 @@
     
     <target name="sign" depends="release">
     	<echo>Signing ${out-unsigned-package} ...</echo>
-    	<signjar alias="alex_android.keystore" keystore="../keystore/alex_android.keystore" 
+    	<signjar alias="${key.alias}" keystore="${key.store}" 
     	    storepass="herry123" 
     	    jar="${out-unsigned-package}" 
     	    signedjar="${out-package}" />
