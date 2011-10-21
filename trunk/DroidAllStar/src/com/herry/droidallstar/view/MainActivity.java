@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.herry.droidallstar.R;
+import com.herry.droidallstar.util.Utils;
 
 public class MainActivity extends ListActivity {
 	private static final String TAG = "MainActivity";
@@ -33,6 +34,7 @@ public class MainActivity extends ListActivity {
 		initData();
 		fillData();
 		test("wifi.interface");
+		Utils.getDevTimeInfo();
 	}
 
 	@Override
@@ -49,6 +51,9 @@ public class MainActivity extends ListActivity {
 		} else if (TextUtils.equals(title,
 				getString(R.string.item_sdcard_perform_check))) {
 			startActivity(new Intent(this, StorageSpeedCheckActivity.class));
+		} else if (TextUtils.equals(title,
+				getString(R.string.item_boottime_report))) {
+			startActivity(new Intent(this, BootTimeReportSettingActivity.class));
 		}
 	}
 
@@ -73,6 +78,10 @@ public class MainActivity extends ListActivity {
 		// sdcard performance check
 		temp = new HashMap<String, String>();
 		temp.put(ITEM_TITLE, getString(R.string.item_sdcard_perform_check));
+		mDataList.add(temp);
+		// boot time report
+		temp = new HashMap<String, String>();
+		temp.put(ITEM_TITLE, getString(R.string.item_boottime_report));
 		mDataList.add(temp);
 	}
 

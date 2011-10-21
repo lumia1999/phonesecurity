@@ -7,11 +7,13 @@
 	<string name="item_system_feature">系统特性</string>
 	<string name="item_battery_info">电池信息</string>
 	<string name="item_sdcard_perform_check">存储卡性能测试</string>
+	<string name="item_boottime_report">开机时间提示</string>
 
 	<!-- title -->
 	<string name="screen_info_label">屏幕详情</string>
 	<string name="system_feature_label">您的手机拥有如下功能</string>
 	<string name="battery_info_label">电池详情</string>
+	<string name="boottime_report_setting_label">开机时间提示设置</string>
 
 
 	<string name="feature_hardware_audio_low_latency">录音低延时功能</string>
