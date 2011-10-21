@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">DroidAllStar</string>
+	<!-- main item -->
+	<string name="item_basic_info">基本信息</string>
+	<string name="item_screen_info">屏幕信息</string>
+	<string name="item_system_feature">系统特性</string>
+	<string name="item_battery_info">电池信息</string>
+	<string name="item_sdcard_perform_check">存储卡性能测试</string>
+
+	<!-- title -->
+	<string name="screen_info_label">屏幕详情</string>
+	<string name="system_feature_label">您的手机拥有如下功能</string>
+	<string name="battery_info_label">电池详情</string>
+
+
+	<string name="feature_hardware_audio_low_latency">录音低延时功能</string>
+	<string name="feature_hardware_bluetooth">蓝牙功能</string>
+	<string name="feature_hardware_camera">拍照功能</string>
+	<string name="feature_hardware_camera_autofocus">相机自动对焦功能</string>
+	<string name="feature_hardware_camera_flash">相机闪光功能</string>
+	<string name="feature_hardware_camera_front">前置摄像头功能</string>
+	<string name="feature_software_live_wallpaper">动态壁纸功能</string>
+	<string name="feature_hardware_location">定位功能</string>
+	<string name="feature_hardware_location_gps">GPS定位功能</string>
+	<string name="feature_hardware_location_network">网络辅助定位功能</string>
+	<string name="feature_hardware_microphone">录音功能</string>
+	<string name="feature_hardware_nfc">NFC功能</string>
+	<string name="feature_hardware_sensor_accelerometer">加速度传感器功能</string>
+	<string name="feature_hardware_sensor_barometer">气压传感器功能</string>
+	<string name="feature_hardware_sensor_compass">罗盘功能</string>
+	<string name="feature_hardware_sensor_gyroscope">陀螺仪传感器功能</string>
+	<string name="feature_hardware_sensor_light">光传感器功能</string>
+	<string name="feature_hardware_sensor_proximity">距离传感器功能</string>
+	<string name="feature_software_sip">SIP功能</string>
+	<string name="feature_software_sip_voip">基于SIP的VOIP功能</string>
+	<string name="feature_hardware_telephony">语言通话功能</string>
+	<string name="feature_hardware_telephony_cdma">CDMA通信功能</string>
+	<string name="feature_hardware_telephony_gsm">GSM通信功能</string>
+	<string name="feature_hardware_touchscreen">触摸功能</string>
+	<string name="feature_hardware_touchscreen_multitouch">二指多点触摸功能</string>
+	<string name="feature_hardware_touchscreen_multitouch_distinct">多指多点触摸功能</string>
+	<string name="feature_hardware_touchscreen_multitouch_jazzhand">五指多点触摸功能</string>
+	<string name="feature_hardware_wifi">WIFI功能</string>
+
+	<!-- basic string -->
+	<string name="basic_dev_model">手机型号：</string>
+	<string name="basic_sys_version">系统版本：</string>
+	<string name="basic_imei">手机串号：</string>
+	<string name="basic_cpu_info">CPU信息</string>
+	<string name="basic_cpu_model_tip">型号：</string>
+	<string name="basic_cpu_max_freq_tip">最高频率：</string>
+	<string name="basic_cpu_min_freq_tip">最低频率：</string>
+	<string name="basic_memory_info">存储信息</string>
+	<string name="basic_memory_sdcard_tip">SD卡：</string>
+	<string name="memory_sdcard_value_none">请确认SD卡正确安装</string>
+	<string name="basic_memory_rom_tip">Rom：</string>
+	<string name="basic_memory_ram_tip">Ram：</string>
+	<string name="memory_ram_value_none">无法获取Ram信息</string>
+	<string name="cpu_model_value_none">无法获取CPU型号</string>
+	<string name="cpu_max_freq_value_none">无法获取CPU最高频率</string>
+	<string name="cpu_min_freq_value_none">无法获取CPU最低频率</string>
+
+	<!-- screen string -->
+	<string name="screen_resolution_tip">屏幕分辨率：</string>
+	<string name="screen_density_tip">屏幕密度：</string>
+	<string name="screen_density_dpi_tip">屏幕像素密度：</string>
+	<string name="screen_type_tip">屏幕类型：</string>
+
+	<!-- battery string -->
+	<string name="battery_level_tip">电量：</string>
+	<string name="battery_status_tip">状态：</string>
+	<string name="battery_health_tip">健康情况：</string>
+	<string name="battery_voltage_tip">电压：</string>
+	<string name="battery_temperature_tip">温度：</string>
+	<string name="battery_technology_tip">电池类型：</string>
+	<string name="battery_pluggled_tip">充电状态：</string>
+	<string name="battery_present_tip">是否就绪：</string>
+	<string name="battery_status_charging">正在充电</string>
+	<string name="battery_status_discharging">正在放电</string>
+	<string name="battery_status_full">已充满</string>
+	<string name="battery_status_not_charging">正常使用中</string>
+	<string name="battery_status_unknown">未知</string>
+	<string name="battery_health_dead">电池已坏</string>
+	<string name="battery_health_good">良好</string>
+	<string name="battery_health_overheat">电池过热</string>
+	<string name="battery_health_over_voltage">电池电压过高</string>
+	<string name="battery_health_unknown">未知</string>
+	<string name="battery_health_unspecified_failure">未知原因导致不可用</string>
+	<string name="battery_present_yes">是</string>
+	<string name="battery_present_no">否</string>
+	<string name="battery_plggled_ac">电源充电中</string>
+	<string name="battery_pluggled_usb">USB充电中</string>
+	<string name="battery_pluggled_none">未充电</string>
+
+	<!-- dialog string -->
+	<string name="dlg_fetch_data_msg">正在收集信息...</string>
+	<string name="dlg_storage_check_no_exist_title">无存储卡</string>
+	<string name="dlg_storage_check_no_exist_msg">未检查到存储卡，
+		请确认您已经正确安装并且未进入大容量存储模式</string>
+	<string name="dlg_storage_check_insufficient_space_title">空间不足</string>
+	<string name="dlg_storage_check_insufficient_space_msg">您的存储卡剩余空间不足，
+		必须保证至少300MB的剩余空间才能得到正确的测试值</string>
+
+	<!-- storage string -->
+	<string name="storage_basic_info_tip">基本信息</string>
+	<string name="storage_type_tip">类型：</string>
+	<string name="storage_name_tip">名称：</string>
+	<string name="storage_serial_tip">序列号：</string>
+	<string name="storage_date_tip">生产日期：</string>
+	<string name="storage_oemid_tip">OEMID：</string>
+	<string name="storage_cid_tip">CID：</string>
+	<string name="storage_csd_tip">CSD：</string>
+	<string name="storage_scr_tip">SCR：</string>
+	<string name="storage_write_speed_tip">写入速度：</string>
+	<string name="storage_read_speed_tip">读取速度：</string>
+	<string name="speed_check_writing">正在测试写入速度</string>
+	<string name="speed_check_reading">正在测试读取速度</string>
+	<string name="write_speed_test_fail">未能正确获取写入速度</string>
+	<string name="read_speed_test_fail">未能正确获取读取速度</string>
+
+</resources>
