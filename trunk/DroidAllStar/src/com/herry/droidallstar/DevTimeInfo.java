@@ -8,4 +8,12 @@ public final class DevTimeInfo {
 		this.mUptime = uptime;
 		this.mIdleTime = idleTime;
 	}
+
+	public double getUptime() {
+		return this.mUptime;
+	}
+
+	public double getIdleTime() {
+		return this.mIdleTime;
+	}
 }
