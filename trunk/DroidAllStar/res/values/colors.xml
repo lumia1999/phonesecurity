@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<drawable name="white">#ffffffff</drawable>
+	<drawable name="dark">#ff000000</drawable>
+	<color name="txt_label_black">#ff2e3d47</color>
+	<color name="green">#ff267724</color>
+	<color name="red">#ff9d2c2a</color>
+	<color name="big_divider">#ff83a4b4</color>
+</resources>
