@@ -1,12 +1,9 @@
 package com.herry.droidallstar.util;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import android.app.Activity;
@@ -20,15 +17,17 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 
+import com.herry.droidallstar.DevTimeInfo;
 import com.herry.droidallstar.R;
 import com.herry.droidallstar.ScreenInfo;
 import com.herry.droidallstar.ScreenType;
-import com.herry.droidallstar.StorageInfo;
 
 public final class Utils {
 	private static final String TAG = "Utils";
 
 	private static final String CPU_PATH = "/proc/cpuinfo";
+	private static final String DEV_BOOTTIME_PATH = "/proc/uptime";
+
 	private static final String CPU_MAX_FREQ_PATH = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq";
 	private static final String CPU_MIN_RREQ_PATH = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq";
 	private static final String RAM_PATH = "/proc/meminfo";
@@ -449,4 +448,27 @@ public final class Utils {
 		}
 	}
 
+	public static DevTimeInfo getDevTimeInfo() {
+		BufferedReader br = null;
+		try {
+			File f = new File(DEV_BOOTTIME_PATH);
+			br = new BufferedReader(new FileReader(f));
+			String line = null;
+			StringBuilder sb = new StringBuilder();
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+			String value = sb.toString();
+			String[] splits = value.split(" ");
+			Log.d(TAG, "[0] :  " + splits[0] + ",[1] : " + splits[1]);
+			return new DevTimeInfo(Double.valueOf(splits[0]), Double
+					.valueOf(splits[1]));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
