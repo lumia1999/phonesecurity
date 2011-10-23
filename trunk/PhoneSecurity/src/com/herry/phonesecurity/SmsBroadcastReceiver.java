@@ -27,7 +27,6 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
 				context.startService(intent);
 				abortBroadcast();
 			}
-
 		}
 	}
 

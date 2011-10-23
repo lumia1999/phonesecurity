@@ -1,0 +1,15 @@
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189): FATAL EXCEPTION: main
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189): java.lang.IllegalStateException
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at android.media.MediaPlayer.isPlaying(Native Method)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at com.herry.phonesecurity.view.PlayRingActivity.stop(PlayRingActivity.java:64)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at com.herry.phonesecurity.view.PlayRingActivity.access$1(PlayRingActivity.java:61)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at com.herry.phonesecurity.view.PlayRingActivity$1.onClick(PlayRingActivity.java:51)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at com.android.internal.app.AlertController$ButtonHandler.handleMessage(AlertController.java:159)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at android.os.Handler.dispatchMessage(Handler.java:99)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at android.os.Looper.loop(Looper.java:143)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at android.app.ActivityThread.main(ActivityThread.java:4277)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at java.lang.reflect.Method.invokeNative(Native Method)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at java.lang.reflect.Method.invoke(Method.java:507)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:839)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:597)
+10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at dalvik.system.NativeStart.main(Native Method)

@@ -39,10 +39,9 @@ public class PlayRingActivity extends Activity {
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DLG_CANCEL:
-			return new AlertDialog.Builder(this)
-					.setTitle(getTitle())
-					.setMessage(R.string.alarm_tip)
-					.setPositiveButton(getString(android.R.string.ok),
+			return new AlertDialog.Builder(this).setTitle(getTitle())
+					.setMessage(R.string.alarm_tip).setPositiveButton(
+							getString(android.R.string.ok),
 							new DialogInterface.OnClickListener() {
 
 								@Override
@@ -50,16 +49,16 @@ public class PlayRingActivity extends Activity {
 										int which) {
 									stop(orgMusicVolume);
 								}
-							})
-					.setNegativeButton(getString(android.R.string.cancel), null)
-					.create();
+							}).setNegativeButton(
+							getString(android.R.string.cancel), null).create();
 		default:
 			return super.onCreateDialog(id);
 		}
 	}
 
 	private void stop(final int orgMusicVolume) {
-		if (HandleAlarmService.mMp != null) {
+		if (HandleAlarmService.mMp != null
+				&& !HandleAlarmService.mAlarmFinished) {
 			Log.d(TAG, "not null");
 			if (HandleAlarmService.mMp.isPlaying()) {
 				Log.d(TAG, "playing");
@@ -69,8 +68,12 @@ public class PlayRingActivity extends Activity {
 			HandleAlarmService.mNm.cancel(HandleAlarmService.NOTI_ALARM_TAG);
 			AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 			am.setStreamVolume(AudioManager.STREAM_MUSIC, orgMusicVolume, 0);
+			stopService(new Intent(this, HandleAlarmService.class));
+			finish();
+		} else {
 			finish();
 		}
+
 	}
 
 }
