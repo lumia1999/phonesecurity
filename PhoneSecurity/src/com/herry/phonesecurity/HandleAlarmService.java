@@ -3,7 +3,6 @@ package com.herry.phonesecurity;
 import java.io.IOException;
 
 import com.herry.phonesecurity.view.PlayRingActivity;
-import com.herry.phonesecurity.view.SecuritySettingActivity;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -25,9 +24,10 @@ public class HandleAlarmService extends Service {
 	public static final int NOTI_ALARM_TAG = 1;
 	public static final String EXTRA_ORG_VOLUME = "org_music_volume";
 	public static MediaPlayer mMp;
+	public static boolean mAlarmFinished;
 
 	@Override
-	public IBinder onBind(Intent arg0) {
+	public IBinder onBind(Intent intent) {
 		return null;
 	}
 
@@ -48,11 +48,19 @@ public class HandleAlarmService extends Service {
 	@Override
 	public void onStart(Intent intent, int startId) {
 		Log.d(TAG, "onStart");
-		if (intent.getAction().equals(Const.ACTION_SMS_RECEIVED)) {
+		if (intent == null) {
+			super.onStart(intent, startId);
+			return;
+		}
+		String action = intent.getAction();
+		if (action == null) {
+			super.onStart(intent, startId);
+			return;
+		}
+		if (action.equals(Const.ACTION_SMS_RECEIVED)) {
 			Uri data = intent.getData();
 			if (data != null && data.toString().equals(Const.ALARM)) {
 				// launch a notification to play ringtone
-				// TODO
 				Context ctx = getApplicationContext();
 				mMp = MediaPlayer
 						.create(ctx, Uri.parse(Utils.getRingtone(ctx)));
@@ -70,8 +78,8 @@ public class HandleAlarmService extends Service {
 	}
 
 	private void notifyRingtone(int orgMusicVolume) {
-		Notification noti = new Notification(R.drawable.icon, null,
-				System.currentTimeMillis());
+		Notification noti = new Notification(R.drawable.icon, null, System
+				.currentTimeMillis());
 		Intent i = new Intent(this, PlayRingActivity.class);
 		i.setAction(Intent.ACTION_MAIN);
 		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -99,13 +107,13 @@ public class HandleAlarmService extends Service {
 				mOrgMusicVolume = mAm
 						.getStreamVolume(AudioManager.STREAM_MUSIC);
 				mAm.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
-				mMp = MediaPlayer.create(mCtx,
-						Uri.parse(Utils.getRingtone(mCtx)));
+				mMp = MediaPlayer.create(mCtx, Uri.parse(Utils
+						.getRingtone(mCtx)));
 				if (mMp != null) {
 					mMp.stop();
 				}
-				Log.d(TAG, "null ? " + (mMp == null));
 				if (mMp != null) {
+					mAlarmFinished = false;
 					mMp.prepare();
 					mMp.start();
 					mMp.setOnCompletionListener(new OnCompletionListener() {
@@ -117,6 +125,8 @@ public class HandleAlarmService extends Service {
 							mAm.setStreamVolume(AudioManager.STREAM_MUSIC,
 									mOrgMusicVolume, 0);
 							mNm.cancelAll();
+							mAlarmFinished = true;
+							stopSelf();
 						}
 					});
 				} else {

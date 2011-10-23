@@ -20,7 +20,9 @@
 		<PreferenceScreen
 			android:key="@string/pref_alarm_key" android:title="@string/alarm_title"
 			android:summary="@string/alarm_summary"
-			android:dependency="@string/pref_trust_num_key">
+			android:dependency="@string/pref_trust_num_key"
+			>
+			<!-- 
 			<EditTextPreference android:key="@string/pref_myphonenum_key"
 				android:title="@string/myphonenum_title" android:summary="@string/myphonenum_summary"
 				android:dialogTitle="@string/myphonenum_input_title" 
@@ -39,6 +41,7 @@
 				android:title="@string/alarm_about_title" android:dialogTitle="@string/alarm_about_title"
 				android:summary="@string/alarm_about_summary"
 				android:negativeButtonText="@null" />
+			 -->
 		</PreferenceScreen>
 	</PreferenceCategory>
 <PreferenceCategory android:title="@string/other_title">

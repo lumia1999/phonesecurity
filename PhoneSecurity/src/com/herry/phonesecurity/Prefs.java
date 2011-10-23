@@ -5,11 +5,19 @@ import android.content.SharedPreferences;
 
 public class Prefs {
 	private static final String PREF_NAME = "pref";
-	private static final String OLD_SIM = "old_sim";/*string value*/
-	private static final String NEW_SIM = "new_sim";/*string value*/
-	private static final String SETTING_REMINDER = "setting_reminder";/*boolean value*/
-	private static final String ALARM_PWD = "alarm_pwd";/*string value*/
-	private static final String ALARM_PWD_REMINDER = "alarm_pwd_reminder";/*boolean value*/
+	private static final String OLD_SIM = "old_sim";/* string value */
+	private static final String NEW_SIM = "new_sim";/* string value */
+	private static final String SETTING_REMINDER = "setting_reminder";/*
+																	 * boolean
+																	 * value
+																	 */
+	private static final String ALARM_SETTING_REMINDER = "alarm_setting_reminder";
+	private static final String ALARM_PWD = "alarm_pwd";/* string value */
+	private static final String ALARM_PWD_REMINDER = "alarm_pwd_reminder";/*
+																		 * boolean
+																		 * value
+																		 */
+	private static final String SHOW_PWD_INTERVAL = "show_pwd_interval";
 
 	public static SharedPreferences get(Context ctx) {
 		return ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -50,13 +58,25 @@ public class Prefs {
 		editor.putBoolean(SETTING_REMINDER, false);
 		return editor.commit();
 	}
-	
-	public static String getAlarmPwd(Context ctx){
+
+	public static boolean getAlarmReminder(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		return pref.getBoolean(ALARM_SETTING_REMINDER, true);
+	}
+
+	public static boolean setAlarmReminder(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putBoolean(ALARM_SETTING_REMINDER, false);
+		return editor.commit();
+	}
+
+	public static String getAlarmPwd(Context ctx) {
 		SharedPreferences pref = get(ctx);
 		return pref.getString(ALARM_PWD, null);
 	}
-	
-	public static boolean setAlarmPwd(Context ctx,String pwd){
+
+	public static boolean setAlarmPwd(Context ctx, String pwd) {
 		SharedPreferences pref = get(ctx);
 		SharedPreferences.Editor editor = pref.edit();
 		editor.putString(ALARM_PWD, pwd);
@@ -77,7 +97,7 @@ public class Prefs {
 		return editor.commit();
 	}
 
-	//do not clear pwd and pwd reminder
+	// do not clear pwd and pwd reminder
 	public static boolean reset(Context ctx) {
 		SharedPreferences pref = get(ctx);
 		SharedPreferences.Editor editor = pref.edit();
@@ -85,5 +105,17 @@ public class Prefs {
 		editor.putString(NEW_SIM, null);
 		editor.putBoolean(SETTING_REMINDER, true);
 		return editor.commit();
+	}
+
+	public static boolean setShowPwdInterval(Context ctx, int index) {
+		SharedPreferences pref = get(ctx);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putInt(SHOW_PWD_INTERVAL, index);
+		return editor.commit();
+	}
+
+	public static int getShowPwdInterval(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		return pref.getInt(SHOW_PWD_INTERVAL, 0);
 	}
 }

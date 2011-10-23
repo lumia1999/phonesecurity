@@ -23,8 +23,8 @@ public class Utils {
 	public static boolean getEnable(Context ctx) {
 		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
 				Context.MODE_PRIVATE);
-		return prefs.getBoolean(
-				ctx.getString(R.string.pref_security_enabled_key), true);
+		return prefs.getBoolean(ctx
+				.getString(R.string.pref_security_enabled_key), true);
 	}
 
 	public static String getTrustNum(Context ctx) {
@@ -47,36 +47,37 @@ public class Utils {
 				null);
 	}
 
-	public static String onSettingKeyDown(Context ctx) {
+	public static String onSmsSettingKeyDown(Context ctx) {
 		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
 				Context.MODE_PRIVATE);
-		String trustNum = prefs.getString(
-				ctx.getString(R.string.pref_trust_num_key), null);
-		String selfNum = prefs.getString(
-				ctx.getString(R.string.pref_myphonenum_key), null);
-		String ringtone = prefs.getString(
-				ctx.getString(R.string.pref_ringtone_key), null);
+		String trustNum = prefs.getString(ctx
+				.getString(R.string.pref_trust_num_key), null);
 		boolean trust = trustNum == null || "".equals(trustNum.trim());
+		if (!trust) {
+			return null;
+		} else {
+			return ctx.getString(R.string.setting_quit_no_trustnum);
+		}
+	}
+
+	public static String onAlarmSettingKeyDown(Context ctx) {
+		// TODO
+		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
+				Context.MODE_PRIVATE);
+		String selfNum = prefs.getString(ctx
+				.getString(R.string.pref_myphonenum_key), null);
+		String ringtone = prefs.getString(ctx
+				.getString(R.string.pref_ringtone_key), null);
 		boolean self = selfNum == null || "".equals(selfNum.trim());
 		boolean ring = ringtone == null || "".equals(ringtone.trim());
-		if (trust && self && ring) {
-			return ctx
-					.getString(R.string.setting_quit_no_trustnum_selfnum_ringtone);
-		} else if (trust && self && !ring) {
-			return ctx.getString(R.string.setting_quit_no_trustnum_selfnum);
-		} else if (trust && !self && ring) {
-			return ctx.getString(R.string.setting_quit_no_trustnum_ringtone);
-		} else if (!trust && self && ring) {
+		if (self && ring) {
 			return ctx.getString(R.string.setting_quit_no_selfnum_ringtone);
-		} else if (trust && !self && !ring) {
-			return ctx.getString(R.string.setting_quit_no_trustnum);
-		} else if (!trust && self && !ring) {
+		} else if (self && !ring) {
 			return ctx.getString(R.string.setting_quit_no_selfnum);
-		} else if (!trust && !self && ring) {
+		} else if (!self && ring) {
 			return ctx.getString(R.string.setting_quit_no_ringtone);
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	// intercept sms,obtain its message body
