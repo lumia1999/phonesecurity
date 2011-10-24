@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+	<string name="app_label">手机防盗</string>
+	<string name="app_name">手机防盗(widget)</string>
+	<string name="security_setting">安全选项设置</string>
+	<string name="security_enabled_title">防盗状态</string>
+	<string name="security_enabled_summaryon">开启</string>
+	<string name="security_enabled_summaryoff">关闭</string>
+	<string name="security_disabled_title">注意</string>
+	<string name="security_disabled_msg">您的手机将失去防盗保护，建议开启此项服务</string>
+
+	<string name="trust_number_title">受信号码</string>
+	<string name="trust_number_summary">当您手机不幸丢失的时候，我们将发送丢失信息到此号码
+	</string>
+	<string name="trust_number_input_title">请输入您信任的手机号码</string>
+
+	<string name="no_sim_title">无SIM卡</string>
+	<string name="no_sim_msg">请检查SIM卡设置</string>
+
+	<string name="reset_title">重置</string>
+	<string name="reset_dlg_title">重置您的基本信息</string>
+	<string name="reset_dlg_msg">
+		软件将复位，请重新设置信任手机号、本机号码以及报警铃声</string>
+	<string name="reset_summary">将复位您的基本信息，您可以接着使用</string>
+
+	<string name="config_alarm">短信报警设置</string>
+	<string name="alarm_title">报警设置</string>
+	<string name="alarm_summary">设置短信报警铃声，为手机保驾护航</string>
+	<string name="ringtone_title">报警铃声</string>
+	<string name="ringtone_summary">手机收到报警请求短信后，将大声播放此铃声，方便主人寻找</string>
+
+	<string name="myphonenum_title">本机号码</string>
+	<string name="myphonenum_summary">设置您的本机号码，此号码用于匹配您的报警请求短信</string>
+	<string name="myphonenum_input_title">请输入您的本机号码</string>
+
+	<string name="alarm_test_title">测试报警</string>
+	<string name="alarm_test_summary">测试短信报警铃声</string>
+	<string name="alarm_test_dlg_msg">正在测试报警铃声</string>
+	<string name="alarm_test_dlg_msg_no">请先设置报警铃声！</string>
+	<string name="alarm_test_dlg_msg_error">无法播放，请重新选择报警铃声</string>
+	<string name="alarm_test_dlg_pos_text">停止测试</string>
+	<string name="alarm_test_dlg_pos_text_quit">退出</string>
+	<string name="alarm_about_title">如何使用</string>
+	<string name="alarm_about_summary">介绍有关短信报警使用细节</string>
+
+	<string name="other_title">其他</string>
+	<string name="other_show_title">关于</string>
+	<string name="other_show_summary">介绍软件使用相关细节</string>
+	<string name="other_dlg_msg">
+		开发者: Xinwei.Yi\nEmail: Xinwei.Yi@gmail.com\n
+		1.这是一个以SIM卡更换为判断基础的安全小软件，如果您是主动更换SIM卡，请预先进入软件设置状态为：关闭，更换SIM卡之后先进行一次重置，再设置状态为：开启。\n
+		2.如果您使用短信报警功能，请参考报警设置里面的设置教程。
+	</string>
+
+	<string name="sms_content">检查到手机号为：{phoneNum} 的手机SIM卡有变化，请确认</string>
+	<string name="unknown_self_num">未知号码</string>
+	<string name="defend_open">开启防盗</string>
+	<string name="alarming">有警报</string>
+	<string name="alarm_tip">正在播放报警音乐，要选择停止吗？</string>
+
+	<!-- setting quit resources -->
+	<string name="setting_incompleted">设置未完成</string>
+	<string name="setting_quit_no_trustnum">请设置受信号码</string>
+	<string name="setting_quit_no_selfnum">请设置本机号码</string>
+	<string name="setting_quit_no_ringtone">请设置报警铃声</string>
+	<string name="setting_quit_no_trustnum_selfnum">请设置受信号码和本机号码</string>
+	<string name="setting_quit_no_trustnum_ringtone">请设置受信号码和报警铃声</string>
+	<string name="setting_quit_no_selfnum_ringtone">请设置本机号码和报警铃声</string>
+	<string name="setting_quit_no_trustnum_selfnum_ringtone">请设置受信号码、本机号码和报警铃声</string>
+	<string name="setting_quit_resetting">返回设置</string>
+	<string name="setting_quit_nonreminder">不再提醒</string>
+	<string name="set_alarm_pwd_title">请设置用户密码</string>
+	<string name="set_alarm_pwd_tip">
+		<b>1.</b>
+		请设置用户密码，敬告：务必避免泄露密码！
+		请牢记用户密码，丢失密码将失去报警功能！
+	</string>
+	<string name="set_alarm_pwd_firsttip">请输入密码</string>
+	<string name="set_alarm_pwd_secondtip">请再次输入密码</string>
+	<string name="set_alarm_pwd_hint">至少六个字符</string>
+	<string name="set_alarm_pwd_error_tip">密码长度不够或者两次密码输入不匹配</string>
+	<string name="user_pwd_setting">密码设置</string>
+	<string name="set_pwd_title">设置密码</string>
+	<string name="set_pwd_desc">您需要设置用户密码才能正常使用此软件功能，
+		此用户密码还将在短信报警中起作用。</string>
+	<string name="set_pwd_ok">您的密码已设置成功</string>
+	<string name="set_pwd_not_allow">您的密码已经设置，如需更改请选择更改密码项</string>
+	<string name="change_pwd_title">更改密码</string>
+	<string name="change_pwd_desc">如果您的密码已泄露或太简单，
+		您可以在此更改之前设置的用户密码。</string>
+	<string name="change_pwd_no_pwd_exist">请先设置密码才能修改</string>
+	<string name="cur_pwd_tip">请输入当前密码：</string>
+	<string name="new_pwd_tip">请输入新密码：</string>
+	<string name="new_pwd_again_tip">请再次输入新密码：</string>
+	<string name="cur_pwd_input_error">原始密码输入有误</string>
+	<string name="change_pwd_success_toast">更改密码成功</string>
+	<string name="require_pwd_when_enter_tip">进入软件输入密码时间间隔设置</string>
+	<string name="show_pwd_title">当前时间间隔</string>
+	<string name="select_show_pwd_time_interval">请选择时间间隔</string>
+	<string name="input_pwd_desc">您总共有三次尝试机会，三次过后还不能正确输入密码将退出应用！</string>
+	<string name="pwd_retry_times_left_tip">当前剩余次数：</string>
+	<string name="input_pwd_tip">输入密码进入应用</string>
+	<string name="pwd_mismatch_toast">密码输入有误，请重新输入</string>
+</resources>

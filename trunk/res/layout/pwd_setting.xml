@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical">
+  <ListView android:id="@android:id/list"
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:footerDividersEnabled="true"/>
+  <TextView android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:textAppearance="?android:attr/textAppearanceSmall"
+  	android:paddingTop="5dip"
+  	android:paddingBottom="5dip"
+  	android:gravity="center_vertical"
+  	android:text="@string/require_pwd_when_enter_tip"
+  	android:background="@drawable/bg_gray"/>
+  	<LinearLayout android:id="@+id/show_pwd_time_interval_setting"
+  		android:layout_width="fill_parent"
+  		android:layout_height="wrap_content"
+  		android:orientation="vertical"
+  		android:minHeight="?android:attr/listPreferredItemHeight"
+  		android:background="@android:drawable/list_selector_background"
+  		android:clickable="true"
+  		android:focusable="true"
+  		android:padding="5dip">
+  		<TextView android:id="@+id/show_pwd_title"
+  			android:layout_width="fill_parent"
+  			android:layout_height="wrap_content"
+  			android:textAppearance="?android:attr/textAppearanceLarge"
+  			android:text="@string/show_pwd_title"/>
+  		<TextView android:id="@+id/show_pwd_desc"
+  			android:layout_width="fill_parent"
+  			android:layout_height="wrap_content"
+  			android:textAppearance="?android:attr/textAppearanceSmall"
+  			android:text="fdsdsddddddddddddddd"/>
+  	</LinearLayout>
+</LinearLayout>
