@@ -18,6 +18,7 @@ public class Prefs {
 																		 * value
 																		 */
 	private static final String SHOW_PWD_INTERVAL = "show_pwd_interval";
+	private static final String LAST_ACTIVIE_TS = "last_active_ts";
 
 	public static SharedPreferences get(Context ctx) {
 		return ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -111,11 +112,25 @@ public class Prefs {
 		SharedPreferences pref = get(ctx);
 		SharedPreferences.Editor editor = pref.edit();
 		editor.putInt(SHOW_PWD_INTERVAL, index);
+		editor.putLong(LAST_ACTIVIE_TS, System.currentTimeMillis());
 		return editor.commit();
 	}
 
 	public static int getShowPwdInterval(Context ctx) {
 		SharedPreferences pref = get(ctx);
 		return pref.getInt(SHOW_PWD_INTERVAL, 0);
+	}
+
+	public static boolean setPwdLastShowTS(Context ctx, long ts) {
+		SharedPreferences pref = get(ctx);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putLong(LAST_ACTIVIE_TS, ts);
+		return editor.commit();
+	}
+
+	// default value is -1
+	public static long getPwdLastShowTS(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		return pref.getLong(LAST_ACTIVIE_TS, -1L);
 	}
 }

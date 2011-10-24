@@ -88,7 +88,16 @@
 	<string name="change_pwd_desc">如果您的密码已泄露或太简单，
 		您可以在此更改之前设置的用户密码。</string>
 	<string name="change_pwd_no_pwd_exist">请先设置密码才能修改</string>
+	<string name="cur_pwd_tip">请输入当前密码：</string>
+	<string name="new_pwd_tip">请输入新密码：</string>
+	<string name="new_pwd_again_tip">请再次输入新密码：</string>
+	<string name="cur_pwd_input_error">原始密码输入有误</string>
+	<string name="change_pwd_success_toast">更改密码成功</string>
 	<string name="require_pwd_when_enter_tip">进入软件输入密码时间间隔设置</string>
 	<string name="show_pwd_title">当前时间间隔</string>
 	<string name="select_show_pwd_time_interval">请选择时间间隔</string>
+	<string name="input_pwd_desc">您总共有三次尝试机会，三次过后还不能正确输入密码将退出应用！</string>
+	<string name="pwd_retry_times_left_tip">当前剩余次数：</string>
+	<string name="input_pwd_tip">输入密码进入应用</string>
+	<string name="pwd_mismatch_toast">密码输入有误，请重新输入</string>
 </resources>

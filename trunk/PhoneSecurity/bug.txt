@@ -1,3 +1,6 @@
+1.stop alarm force close if alarm play finished
+2.onKeyDown implements error
+
 10-22 23:03:34.362: ERROR/AndroidRuntime(11189): FATAL EXCEPTION: main
 10-22 23:03:34.362: ERROR/AndroidRuntime(11189): java.lang.IllegalStateException
 10-22 23:03:34.362: ERROR/AndroidRuntime(11189):     at android.media.MediaPlayer.isPlaying(Native Method)
