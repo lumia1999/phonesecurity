@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-	<string-array name="show_pwd_time_interval">
-		<item>每次</item>
-		<item>每半小时</item>
-		<item>每天</item>
-		<item>从不</item>
-	</string-array>
-</resources>
