@@ -6,13 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class Utils {
 	private static final String TAG = "Utils";
-	private static final String PREF_NAME = "com.herry.phonesecurity" + "_"
-			+ "preferences";
 
 	public static String getIMSI(Context ctx) {
 		TelephonyManager tm = (TelephonyManager) ctx
@@ -21,35 +20,35 @@ public class Utils {
 	}
 
 	public static boolean getEnable(Context ctx) {
-		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
 		return prefs.getBoolean(ctx
 				.getString(R.string.pref_security_enabled_key), true);
 	}
 
 	public static String getTrustNum(Context ctx) {
-		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
 		return prefs
 				.getString(ctx.getString(R.string.pref_trust_num_key), null);
 	}
 
 	public static String getRingtone(Context ctx) {
-		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
 		return prefs.getString(ctx.getString(R.string.pref_ringtone_key), null);
 	}
 
 	public static String getSelfNumber(Context ctx) {
-		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
 		return prefs.getString(ctx.getString(R.string.pref_myphonenum_key),
 				null);
 	}
 
 	public static String onSmsSettingKeyDown(Context ctx) {
-		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
 		String trustNum = prefs.getString(ctx
 				.getString(R.string.pref_trust_num_key), null);
 		boolean trust = trustNum == null || "".equals(trustNum.trim());
@@ -61,9 +60,8 @@ public class Utils {
 	}
 
 	public static String onAlarmSettingKeyDown(Context ctx) {
-		// TODO
-		SharedPreferences prefs = ctx.getSharedPreferences(PREF_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
 		String selfNum = prefs.getString(ctx
 				.getString(R.string.pref_myphonenum_key), null);
 		String ringtone = prefs.getString(ctx
