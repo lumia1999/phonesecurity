@@ -34,7 +34,7 @@ import com.herry.phonesecurity.R;
 public class PwdSettingActivity extends ListActivity {
 	private static final String TAG = "PwdSettingActivity";
 
-	private ListAdapter mAdapter = null;
+	private SimpleAdapter mAdapter = null;
 	private List<Map<String, String>> mDataList = null;
 	private static final String ITEM_TITLE = "title";
 	private static final String ITEM_DESC = "desc";
@@ -50,6 +50,8 @@ public class PwdSettingActivity extends ListActivity {
 	private static final int DLG_SET_PWD_ID = 1;
 	private static final int DLG_CHANGE_PWD_ID = 2;
 	private static final int DLG_SELECT_SHOW_PWD_INTERVAL_ID = 3;
+
+	LayoutInflater inflater;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +85,35 @@ public class PwdSettingActivity extends ListActivity {
 	}
 
 	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch (id) {
+		case DLG_SET_PWD_ID:
+			EditText firstEditText = (EditText) ((AlertDialog) dialog)
+					.findViewById(R.id.set_alarm_pwd);
+			EditText secondEditText = (EditText) ((AlertDialog) dialog)
+					.findViewById(R.id.check_alarm_pwd);
+			firstEditText.setText("");
+			secondEditText.setText("");
+			break;
+		case DLG_CHANGE_PWD_ID:
+			EditText curPwdEditText = (EditText) ((AlertDialog) dialog)
+					.findViewById(R.id.cur_pwd);
+			EditText newPwdEditText = (EditText) ((AlertDialog) dialog)
+					.findViewById(R.id.new_pwd);
+			EditText newPwdAgainEditText = (EditText) ((AlertDialog) dialog)
+					.findViewById(R.id.new_pwd_again);
+			curPwdEditText.setText("");
+			newPwdEditText.setText("");
+			newPwdAgainEditText.setText("");
+			break;
+		}
+		super.onPrepareDialog(id, dialog);
+	}
+
+	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DLG_SET_PWD_ID:
-			// TODO
-			LayoutInflater inflater = LayoutInflater.from(this);
 			final View view = inflater.inflate(R.layout.set_alarm_password,
 					null);
 			final EditText firstEdit = (EditText) view
@@ -124,6 +150,9 @@ public class PwdSettingActivity extends ListActivity {
 										Prefs.setAlarmPwd(
 												getApplicationContext(),
 												firstText);
+										mDataList.get(0).put(ITEM_DESC,
+												getString(R.string.set_pwd_ok));
+										mAdapter.notifyDataSetChanged();
 										dialog.dismiss();
 									}
 								}
@@ -133,7 +162,8 @@ public class PwdSettingActivity extends ListActivity {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									finish();
+									// finish();
+									dialog.dismiss();
 								}
 							}).setCancelable(false).create();
 			try {
@@ -148,7 +178,83 @@ public class PwdSettingActivity extends ListActivity {
 			}
 			return dlg;
 		case DLG_CHANGE_PWD_ID:
-			// TODO
+			View changePwdView = inflater.inflate(
+					R.layout.change_alarm_password, null);
+			final EditText curPwdEditText = (EditText) changePwdView
+					.findViewById(R.id.cur_pwd);
+			final EditText newPwdEditText = (EditText) changePwdView
+					.findViewById(R.id.new_pwd);
+			final EditText newPwdAgainEditText = (EditText) changePwdView
+					.findViewById(R.id.new_pwd_again);
+			AlertDialog changePwdDlg = new AlertDialog.Builder(this).setIcon(
+					android.R.drawable.ic_dialog_alert).setTitle(
+					R.string.change_pwd_title).setView(changePwdView)
+					.setPositiveButton(android.R.string.ok,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									String prefPwd = Prefs
+											.getAlarmPwd(getApplicationContext());
+									String curPwd = curPwdEditText.getText()
+											.toString();
+									if (!TextUtils.equals(prefPwd, curPwd)) {
+										Toast.makeText(getApplicationContext(),
+												R.string.cur_pwd_input_error,
+												Toast.LENGTH_SHORT).show();
+										curPwdEditText.setText("");
+										newPwdEditText.setText("");
+										newPwdAgainEditText.setText("");
+									} else {
+										String newPwd = newPwdEditText
+												.getText().toString();
+										String newPwdAgain = newPwdAgainEditText
+												.getText().toString();
+										if (newPwd.length() < 6
+												|| newPwdAgain.length() < 6
+												|| !TextUtils.equals(newPwd,
+														newPwdAgain)) {
+											Toast
+													.makeText(
+															getApplicationContext(),
+															R.string.set_alarm_pwd_error_tip,
+															Toast.LENGTH_LONG)
+													.show();
+											curPwdEditText.setText("");
+											newPwdEditText.setText("");
+											newPwdAgainEditText.setText("");
+										} else {
+											// change pwd success
+											Prefs.setAlarmPwd(
+													getApplicationContext(),
+													newPwd);
+											dialog.dismiss();
+										}
+									}
+
+								}
+							}).setNegativeButton(android.R.string.cancel,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+								}
+							}).setCancelable(false).create();
+			try {
+				Field field = changePwdDlg.getClass()
+						.getDeclaredField("mAlert");
+				field.setAccessible(true);
+				Object obj = field.get(changePwdDlg);
+				field = obj.getClass().getDeclaredField("mHandler");
+				field.setAccessible(true);
+				field.set(obj, new ButtonHandler(changePwdDlg));
+			} catch (Exception e) {
+				//
+			}
+			return changePwdDlg;
 		case DLG_SELECT_SHOW_PWD_INTERVAL_ID:
 			return new AlertDialog.Builder(this).setIcon(
 					android.R.drawable.ic_dialog_alert).setTitle(
@@ -189,6 +295,7 @@ public class PwdSettingActivity extends ListActivity {
 				showDialog(DLG_SELECT_SHOW_PWD_INTERVAL_ID);
 			}
 		});
+		inflater = LayoutInflater.from(this);
 	}
 
 	private void initData() {

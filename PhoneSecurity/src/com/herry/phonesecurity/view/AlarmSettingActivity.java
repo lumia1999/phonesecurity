@@ -6,8 +6,6 @@ import java.lang.reflect.Field;
 import com.herry.phonesecurity.Prefs;
 import com.herry.phonesecurity.R;
 import com.herry.phonesecurity.Utils;
-import com.herry.phonesecurity.preferences.AboutDialogPreference;
-import com.herry.phonesecurity.preferences.AlarmAboutDialogPrefrence;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,7 +19,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -46,13 +43,14 @@ public final class AlarmSettingActivity extends PreferenceActivity {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		Log.d(TAG, "onKeyDown");
-		mSettingRetult = Utils.onAlarmSettingKeyDown(this);
-		if (mSettingRetult != null
-				&& (Prefs.getSettingReminder(this) && Prefs
-						.getAlarmReminder(this))) {
-			showDialog(DLG_INCOMPLETE_SETTING);
-			return true;
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			mSettingRetult = Utils.onAlarmSettingKeyDown(this);
+			if (mSettingRetult != null && Prefs.getAlarmReminder(this)) {
+				showDialog(DLG_INCOMPLETE_SETTING);
+				return true;
+			} else {
+				return super.onKeyDown(keyCode, event);
+			}
 		} else {
 			return super.onKeyDown(keyCode, event);
 		}
@@ -142,6 +140,7 @@ public final class AlarmSettingActivity extends PreferenceActivity {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
+									dialog.dismiss();
 									finish();
 								}
 							}).setCancelable(false).create();
