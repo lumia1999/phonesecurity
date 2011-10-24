@@ -1,0 +1,22 @@
+1.开机启动出现：
+01-06 08:01:26.500: ERROR/AndroidRuntime(760): java.lang.RuntimeException: Unable to start receiver com.herry.droidallstar.receiver.Receiver: android.util.AndroidRuntimeException: Calling startActivity() from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at android.app.ActivityThread.handleReceiver(ActivityThread.java:2043)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at android.app.ActivityThread.access$2400(ActivityThread.java:132)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1098)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at android.os.Handler.dispatchMessage(Handler.java:99)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at android.os.Looper.loop(Looper.java:143)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at android.app.ActivityThread.main(ActivityThread.java:4277)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at java.lang.reflect.Method.invokeNative(Native Method)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at java.lang.reflect.Method.invoke(Method.java:507)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:839)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:597)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at dalvik.system.NativeStart.main(Native Method)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760): Caused by: android.util.AndroidRuntimeException: Calling startActivity() from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at android.app.ContextImpl.startActivity(ContextImpl.java:678)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at android.content.ContextWrapper.startActivity(ContextWrapper.java:258)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at android.content.ContextWrapper.startActivity(ContextWrapper.java:258)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at com.herry.droidallstar.service.GetUptimeIntentService.runIntentService(GetUptimeIntentService.java:35)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at com.herry.droidallstar.receiver.Receiver.onReceive(Receiver.java:17)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     at android.app.ActivityThread.handleReceiver(ActivityThread.java:2028)
+01-06 08:01:26.500: ERROR/AndroidRuntime(760):     ... 10 more
+01-06 08:01:26.710: WARN/dalvikvm(236): disableGcForExternalAlloc: false
