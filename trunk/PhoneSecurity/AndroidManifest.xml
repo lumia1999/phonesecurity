@@ -49,6 +49,7 @@
 			</intent-filter>
 		</receiver>
 		<service android:name=".HandleAlarmService"/>
+		<service android:name=".SimChangeNotifyService"/>
     </application>
 
 	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>

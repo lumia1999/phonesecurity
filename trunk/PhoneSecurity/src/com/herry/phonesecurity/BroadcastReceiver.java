@@ -27,8 +27,10 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
 				}
 				String old_sim = Prefs.getOldSim(context);
 				if (old_sim != null && !old_sim.equals(imsi) && reason == null) {
-					SendSmsIntentService.runIntentService(context, intent);
+					// SendSmsIntentService.runIntentService(context, intent);
+					SimChangeNotifyService.onSimChangeNoti(context);
 				}
+				// SimChangeNotifyService.onSimChangeNoti(context);
 			}
 		} else if (action.equals(Const.ACTION_SENT)) {
 			// TODO
