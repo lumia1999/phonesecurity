@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">数据管理</string>
+	<string name="main_calllog_title">通话记录</string>
+	<string name="main_calllog_desc">备份您的通话记录，方便查阅</string>
+	<string name="main_sms_title">短消息</string>
+	<string name="main_sms_desc">管理您的短消息，节省内存空间</string>
+	<string name="main_backup_all_title">一键备份</string>
+	<string name="main_backup_all_desc">一次操作，完成手机通话记录、短消息的备份，让您不再为丢失信息而担忧</string>
+	<string name="main_delete_all_title">一键删除</string>
+	<string name="main_delete_all_desc">一次操作，将删除您手机上的通话记录、短消息以便清理内存节省空间，执行此操作前，请一定先完成备份</string>
+	<string name="main_howto_title">功能介绍</string>
+	<string name="main_howto_desc">介绍本软件可以为您带来哪些帮助，以及如何使用</string>
+	<string name="main_about_title">关于</string>
+	<string name="main_about_desc">软件版本、作者信息</string>
+	<string name="version_info">软件版本：</string>
+	<string name="no_version_current">无法取得版本信息</string>
+	<string name="author">Email:Xinwei.Yi@gmail.com\n\n如您在使用过程中遇到任何疑问，请发邮件通知我。</string>
+	<string name="alarm_on_toast">提醒通知已开启</string>
+	<string name="alarm_off_title">提醒已关闭</string>
+	<string name="alarm_off_msg">建议您开启提醒，记录达到一定数量会严重影响手机速度，请定期备份清理</string>
+	<string name="backup_item_total_txt">总共记录条数为：</string>
+
+	<!-- calllog Preference values -->
+	<string name="calllog_pref_title">通话记录备份设置</string>
+	<string name="calllog_backup_title">备份通话记录</string>
+	<string name="calllog_backup_summary">将备份您的手机通话记录到指定的SDCard目录</string>
+	<string name="calllog_backup_dialog_title">请输入备份名称</string>
+	<string name="calllog_alarm_pref_title">通话记录提醒设置</string>
+	<string name="calllog_alarm_title">开启提醒</string>
+	<string name="calllog_alarm_summary_on">启用提醒，当通话记录达到设定最高值时，会弹出通知以提醒用户数据量较大，定期备份</string>
+	<string name="calllog_alarm_summary_off">已关闭</string>
+	<string name="calllog_alarm_number_title">提醒值设置</string>
+	<string name="calllog_alarm_number_summary">当通话记录达到您设置的最大值时，将会以通知的形式通知您及时备份清理</string>
+	<string name="calllog_alarm_number_dialog_title">请输入提醒值</string>
+	<string name="calllog_test_alarm_title">测试提醒</string>
+	<string name="calllog_test_alarm_summary">您可以在这里看到提醒效果</string>
+	<string name="calllog_test_alarm_dialog_message">正在测试提醒！</string>
+	<!-- end calllog SPreference values -->
+
+	<!-- sms Preference values -->
+	<string name="sms_pref_title">短信备份设置</string>
+	<string name="sms_backup_title">备份短消息</string>
+	<string name="sms_backup_summary">将备份您的手机短消息到指定的SDCard目录</string>
+	<string name="sms_backup_dialog_title">请输入备份名称</string>
+	<string name="sms_no_subject">无主题</string>
+	<string name="sms_no_servicecenter">默认服务中心</string>
+	<string name="sms_view_title">查看备份</string>
+	<string name="sms_detail_view_title">短信详情查看</string>
+	<string name="sms_view_summary">浏览您备份在SD卡上的短消息</string>
+	<string name="sms_detail_sender_me">Me:</string>
+	<string name="sms_delete_title">删除备份</string>
+	<string name="sms_delete_summary">您可以删除不再需要的短消息备份，以节省存储空间</string>
+	<string name="sms_alarm_pref_title">短消息提醒设置</string>
+	<string name="sms_alarm_title">开启提醒</string>
+	<string name="sms_alarm_summary_on">启用提醒，当短消息达到设定最高值时，会弹出通知以提醒用户数据量较大，定期备份</string>
+	<string name="sms_alarm_summary_off">已关闭</string>
+	<string name="sms_alarm_number_title">提醒值设置</string>
+	<string name="sms_alarm_number_summary">当短消息达到您设置的最大值时，将会以通知的形式通知您及时备份清理</string>
+	<string name="sms_alarm_number_dialog_title">请输入提醒值</string>
+	<string name="sms_test_alarm_title">测试提醒</string>
+	<string name="sms_test_alarm_summary">您可以在这里看到提醒效果</string>
+	<string name="sms_test_alarm_dialog_message">正在测试提醒！</string>
+	<!-- end sms Preference valuesS -->
+
+	<!-- others -->
+	<string name="backup_progress_title_waiting">请稍等...</string>
+	<string name="backup_progress_title_ongoing">正在备份...</string>
+	<string name="backup_progress_title_nosdcard">无SD卡</string>
+	<string name="backup_progress_title_no_calllog">无通话记录</string>
+	<string name="backup_progress_title_no_sms">无短信</string>
+	<string name="backup_progress_title_failed">备份失败</string>
+	<string name="backup_progress_title_success">备份成功</string>
+	<string name="backup_progress_finish">完成</string>
+	<string name="backup_progress_cancel">取消</string>
+	<string name="calllog_view_title">查看备份</string>
+	<string name="calllog_view_summary">浏览您备份在SD卡上的通话记录</string>
+	<string name="calllog_view_no_item">您尚未备份通话记录</string>
+	<string name="sms_view_no_item">您尚未备份短消息</string>
+	<string name="contact_no_name">未知名</string>
+	<string name="parse_xml_fail">备份文件存在错误</string>
+	<string name="calllog_delete_title">删除备份</string>
+	<string name="calllog_delete_summary">您可以删除不再需要的通话记录备份，以节省存储空间</string>
+	<string name="backup_progress_message_delete">正在删除，请稍等</string>
+	<string name="backup_progress_delete_success_toast">备份删除成功</string>
+	<string name="content_observer_service_label">提醒服务</string>
+	<string name="calllog_noti_title">通话记录提醒</string>
+	<string name="calllog_noti_content">您的通话记录已达到您设置的提醒值，
+		请及时清理以便留出更多内存空间，为手机提速</string>
+	<string name="calllog_noti_default_number">默认值为100</string>
+	<string name="sms_noti_default_number">默认值为300</string>
+	<string name="sms_noti_title">短消息提醒</string>
+	<string name="sms_noti_content">您的短消息已达到您设置的提醒值，
+		请及时清理以便留出更多内存空间，为手机提速</string>
+	<string name="delete_all_dlg_msg">此操作将删除您手机的通话记录与短消息，
+		请在删除前使用一键备份功能确保个人信息不会丢失！</string>
+	<string name="backup_all_calllog_fail">备份通话记录失败</string>
+	<string name="backup_all_calllog_start">开始备份通话记录</string>
+	<string name="backup_all_calllog_finish">通话记录备份完成</string>
+	<string name="backup_all_sms_fail">备份短消息失败</string>
+	<string name="backup_all_sms_start">开始备份短消息</string>
+	<string name="delete_all_ongoing_msg">正在清除，请稍等...</string>
+	<string name="delete_all_success_toast">清除成功</string>
+	<!-- function values -->
+	<string name="call">呼叫</string>
+	<string name="send_sms">发送短消息</string>
+	<string name="copy">复制电话号码</string>
+	<string name="insert">插入联系人</string>
+	<string name="copy_complete_toast">已复制</string>
+</resources>

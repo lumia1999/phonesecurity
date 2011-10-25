@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- calllog keys -->
+	<string name="key_calllog_backup">calllog_backup</string>
+	<string name="key_calllog_view">calllog_view</string>
+	<string name="key_calllog_delete">calllog_delete</string>
+	<string name="key_calllog_alarm">calllog_alarm</string>
+	<string name="key_calllog_alarm_number">calllog_alarm_number</string>
+	<string name="key_calllog_test_alarm">calllog_alarm_test</string>
+	<!-- sms keys -->
+	<string name="key_sms_backup">sms_backup</string>
+	<string name="key_sms_view">sms_view</string>
+	<string name="key_sms_delete">sms_delete</string>
+	<string name="key_sms_alarm">sms_alarm</string>
+	<string name="key_sms_alarm_number">sms_alarm_number</string>
+	<string name="key_sms_test_alarm">sms_alarm_test</string>
+</resources>
