@@ -32,6 +32,6 @@ public class GetUptimeIntentService extends IntentService {
 
 	public static void runIntentService(Context ctx, Intent intent) {
 		intent.setClass(ctx, GetUptimeIntentService.class);
-		ctx.startActivity(intent);
+		ctx.startService(intent);
 	}
 }
