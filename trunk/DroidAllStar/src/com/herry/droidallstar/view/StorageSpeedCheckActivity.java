@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -164,7 +165,18 @@ public class StorageSpeedCheckActivity extends Activity {
 							finish();
 
 						}
-					}).setCancelable(false).create();
+					}).setCancelable(false).setOnKeyListener(
+					new OnKeyListener() {
+
+						@Override
+						public boolean onKey(DialogInterface dialog,
+								int keyCode, KeyEvent event) {
+							if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+								return true;
+							}
+							return false;
+						}
+					}).create();
 		case DLG_SDCARD_INSUFFICIENT_SPACE:
 			return new AlertDialog.Builder(this).setIcon(
 					android.R.drawable.ic_dialog_alert).setTitle(
@@ -180,7 +192,18 @@ public class StorageSpeedCheckActivity extends Activity {
 									finish();
 
 								}
-							}).setCancelable(false).create();
+							}).setCancelable(false).setOnKeyListener(
+							new OnKeyListener() {
+
+								@Override
+								public boolean onKey(DialogInterface dialog,
+										int keyCode, KeyEvent event) {
+									if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+										return true;
+									}
+									return false;
+								}
+							}).create();
 		default:
 			return super.onCreateDialog(id, args);
 		}
