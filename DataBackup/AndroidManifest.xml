@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.herry.databackup"
+      android:versionCode="10006"
+      android:versionName="01.00.05">
+    <application android:name=".DatabackupApp" 
+    	android:icon="@drawable/app_icon" android:label="@string/app_name">
+        <activity android:name=".view.MainActivity"
+                  android:label="@string/app_name"
+                  android:configChanges="orientation|keyboardHidden"
+				  android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+		<activity android:name=".view.CalllogPrefActivity"
+			android:label="@string/main_calllog_title"
+			android:configChanges="orientation|keyboardHidden"
+			android:launchMode="singleTop"
+			android:windowSoftInputMode="stateHidden|adjustPan"/>
+		<activity android:name=".view.SmsPrefActivity"
+			android:label="@string/main_sms_title"
+			android:configChanges="orientation|keyboardHidden"
+			android:launchMode="singleTop"/>
+		<activity android:name=".view.CalllogViewListActivity"
+			android:label="@string/calllog_view_title"
+			android:configChanges="orientation|keyboardHidden"
+			android:launchMode="singleTop"/>
+		<activity android:name=".view.TestEapandActivity"
+			android:configChanges="orientation|keyboardHidden"
+			android:launchMode="singleTop"/>
+		<activity android:name=".view.SmsViewListActivity"
+			android:configChanges="orientation|keyboardHidden"
+			android:launchMode="singleTop"
+			android:label="@string/sms_view_title"/>
+		<activity android:name=".view.SmsDetailViewListActivity"
+			android:configChanges="orientation|keyboardHidden"
+			android:launchMode="singleTop"
+			android:label="@string/sms_detail_view_title"/>
+		<activity android:name=".view.HowtoActivity"
+			android:configChanges="orientation|keyboardHidden"
+			android:launchMode="singleTop"
+			android:label="@string/main_howto_title"/>
+		<service android:name=".service.ContentObserverService"
+			android:label="@string/content_observer_service_label"/>
+		<receiver android:name=".receiver.AlarmBroadcastReceiver">
+			<intent-filter>
+				<action 
+					android:name="com.herry.databackup.intent.ACTION_RESTART_ALARM"/>
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.SIM_STATE_CHANGED"/>
+			</intent-filter>
+		</receiver>
+    </application>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.READ_CONTACTS"/>
+	<uses-permission android:name="android.permission.READ_SMS"/>
+	<uses-permission android:name="android.permission.CALL_PHONE"/>
+	<uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+	<uses-permission android:name="android.permission.WRITE_SMS"/>
+	<uses-sdk android:minSdkVersion="7"/>
+</manifest> 
