@@ -49,6 +49,7 @@
 			</intent-filter>
 		</receiver>
 		<service android:name=".HandleAlarmService"/>
+		<service android:name=".SimChangeNotifyService"/>
 		<!-- widget -->
 		<receiver android:name=".SecretAppWidgetProvider">
 			<intent-filter>
