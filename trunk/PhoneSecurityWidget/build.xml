@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="PhoneSecurity" default="dist">
+<project name="PhoneSecurityWidget" default="dist">
 	
 	<property file="local.properties" />
     <!-- The build.properties file can be created by you and is never touched
@@ -214,7 +214,7 @@
 
 
 	            -dontpreverify
-	            -repackageclasses 'com.herry.phonesecurity'
+	            -repackageclasses 'com.herry.phonesecurity.widget'
 	            -allowaccessmodification
 	            -optimizations !code/simplification/arithmetic
 				
@@ -283,7 +283,7 @@
 	        	        	*;
 	        	        	}
 	        	
-	        	-keep public class com.herry.phonesecurity.R$*{
+	        	-keep public class com.herry.phonesecurity.widget.R$*{
 	        		public static final int exchange_*; }
 	    </proguard>
 	</target>
