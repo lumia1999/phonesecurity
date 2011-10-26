@@ -17,7 +17,6 @@ public class GetUptimeIntentService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		// TODO
 		String action = intent.getAction();
 		if (TextUtils.equals(action, Intent.ACTION_BOOT_COMPLETED)) {
 			onBootCompleted();
@@ -25,6 +24,7 @@ public class GetUptimeIntentService extends IntentService {
 	}
 
 	private void onBootCompleted() {
+		// TODO
 		// 1.notify uptime if user needed
 		// 2.save this boot action as history in db
 		DevTimeInfo sInfo = Utils.getDevTimeInfo();

@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
+import android.telephony.ServiceState;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +39,22 @@ public class MainActivity extends ListActivity {
 		fillData();
 		test("wifi.interface");
 		Utils.getDevTimeInfo();
+		listen();
+	}
+
+	private void listen() {
+		TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		PhoneStateListener lsn = new PhoneStateListener() {
+
+			@Override
+			public void onServiceStateChanged(ServiceState serviceState) {
+				super.onServiceStateChanged(serviceState);
+				Log.d(TAG, "" + serviceState.toString() + ",state : "
+						+ serviceState.getState());
+			}
+
+		};
+		tm.listen(lsn, PhoneStateListener.LISTEN_SERVICE_STATE);
 	}
 
 	@Override
