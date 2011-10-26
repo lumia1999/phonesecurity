@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-	<string name="app_label">手机防盗</string>
-	<string name="app_name">手机防盗(widget)</string>
+	<string name="app_name">手机防盗桌面版</string>
 	<string name="security_setting">安全选项设置</string>
 	<string name="security_enabled_title">防盗状态</string>
 	<string name="security_enabled_summaryon">开启</string>
