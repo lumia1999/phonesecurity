@@ -120,5 +120,10 @@
 	<string name="speed_check_reading">正在测试读取速度</string>
 	<string name="write_speed_test_fail">未能正确获取写入速度</string>
 	<string name="read_speed_test_fail">未能正确获取读取速度</string>
-
+	
+	<!-- boot time report -->
+	<string name="boottime_report_title">开机时间提示，掌握手机状态</string>
+	<string name="boottimpe_report_on">已开启</string>
+	<string name="boottime_report_off">已关闭，建议您开启提示</string>
+	<string name="boottime_affect_apps_list">影响开机速度应用列表</string>
 </resources>

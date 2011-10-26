@@ -1,6 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content">
+ 	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+  	android:orientation="vertical"
+  	android:gravity="center_vertical"
+  	android:padding="5dip">
+  <LinearLayout android:id="@+id/boottime_report_state_set"
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:focusable="true"
+  	android:clickable="true"
+  	android:background="@android:drawable/list_selector_background"
+  	android:minHeight="?android:attr/listPreferredItemHeight"
+  	android:gravity="center_vertical">
+  	<CheckBox android:id="@+id/boottime_report_state"
+  		android:layout_width="wrap_content"
+  		android:layout_height="wrap_content"
+  		android:clickable="false"
+  		android:checked="true"/>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:paddingLeft="5dip">
+	  	<TextView android:layout_width="fill_parent"
+	  		android:layout_height="wrap_content"	  		
+	  		android:textAppearance="?android:attr/textAppearanceMedium"
+	  		android:text="@string/boottime_report_title"/>
+  		<TextView android:id="@+id/boottime_report_tip"
+  			android:layout_width="fill_parent"
+  			android:layout_height="wrap_content"
+  			android:textAppearance="?android:attr/textAppearanceSmall"
+  			android:text="@string/boottimpe_report_on"/>
+	</LinearLayout>
+  </LinearLayout>
+  	<RelativeLayout android:layout_width="fill_parent"
+  		android:layout_height="wrap_content"
+	  	android:layout_marginTop="3dip"
+	  	android:gravity="center_vertical"
+	  	android:background="@drawable/bg_gray">
+  	    <TextView android:layout_width="wrap_content"
+	  		android:layout_height="wrap_content"
+	  		android:textAppearance="?android:attr/textAppearanceSmall"
+	  		android:paddingLeft="2dip"
+	  		android:paddingTop="5dip"
+	  		android:paddingBottom="5dip"
+	  		android:text="@string/boottime_affect_apps_list"/>
+	  	<ProgressBar android:id="@android:id/progress"
+	  		android:layout_width="wrap_content"
+	  		android:layout_height="wrap_content"
+	  		style="?android:attr/progressBarStyleSmallTitle"
+	  		android:layout_alignParentRight="true"
+	  		android:paddingTop="5dip"
+	  		android:paddingBottom="5dip"
+	  		android:paddingRight="5dip"
+	  		android:gravity="center_vertical"/>
+  	</RelativeLayout>
+	<ListView android:id="@android:id/list"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"/>
+  
 </LinearLayout>
