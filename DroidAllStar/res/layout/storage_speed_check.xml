@@ -27,7 +27,7 @@
   				android:layout_height="10dip"
   				style="?android:attr/progressBarStyleHorizontal"
   				android:max="100"
-  				android:progress="10"  				
+  				android:progress="0"  				
   				android:progressDrawable="@drawable/progressbar_green_red_selector"/>
   			<TextView android:id="@+id/speed_check_tip"
   				android:layout_width="fill_parent"
