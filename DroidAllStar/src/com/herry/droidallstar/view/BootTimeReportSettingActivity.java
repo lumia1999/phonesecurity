@@ -107,7 +107,8 @@ public class BootTimeReportSettingActivity extends ExpandableListActivity {
 		Map<String, String> userGroup = new HashMap<String, String>();
 		Map<String, String> systemGroup = new HashMap<String, String>();
 		userGroup.put(GROUP_TITLE,
-				getString(R.string.boottime_affect_user_apps));
+				getString(R.string.expandable_group_indicator_minus)
+						+ getString(R.string.boottime_affect_user_apps));
 		systemGroup.put(GROUP_TITLE,
 				getString(R.string.expandable_group_indicator_plus)
 						+ getString(R.string.boottime_affect_sys_apps));
