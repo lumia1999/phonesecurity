@@ -1,0 +1,458 @@
+<?xml version="1.0" ?>
+<project name="AppMgr" default="dist">
+	
+	<property file="local.properties" />
+    <!-- The build.properties file can be created by you and is never touched
+         by activitycreator. If you want to manually set properties, this is
+         the best place to set them. -->
+    <property file="build.properties"/>
+
+    <!-- The default.properties file is created and updated by activitycreator.
+         It will set any properties not already defined by build.properties. -->
+    <property file="default.properties"/>
+
+    <!-- ************************************************************************************* -->
+    <!-- These settings were written by activitycreator.
+         Do not change them unless you really know what you are doing. -->
+
+    <!-- Application Package Name -->
+    <property name="application-package" value="com" />
+
+    <!-- The intermediates directory, Eclipse uses "bin"
+         for its own output, so we do the same. -->
+    <property name="outdir" value="bin" />
+    <property name="dist" value="dist" />
+    
+    <!-- ************************************************************************************* -->
+    <!-- No user servicable parts below. -->
+
+    <property name="android-tools" value="${sdk-folder}/tools" />
+    <property name="android-framework" value="${android-tools}/lib/framework.aidl" />
+
+    <!-- Input directories -->
+    <property name="resource-dir" value="res" />
+    <property name="asset-dir" value="assets" />
+    <property name="srcdir" value="src" />
+    <condition property="srcdir-ospath"
+            value="${basedir}\${srcdir}"
+            else="${basedir}/${srcdir}" >
+        <os family="windows"/>
+    </condition>
+
+    <!-- folder for the 3rd party java libraries -->
+    <property name="external-libs" value="libs" />
+    <condition property="external-libs-ospath"
+            value="${basedir}\${external-libs}"
+            else="${basedir}/${external-libs}" >
+        <os family="windows"/>
+    </condition>
+
+    <!-- folder for the native libraries -->
+    <property name="native-libs" value="../lib" />
+    <condition property="native-libs-ospath"
+            value="${basedir}\${native-libs}"
+            else="${basedir}/${native-libs}" >
+        <os family="windows"/>
+    </condition>
+
+    <!-- Output directories -->
+    <property name="outdir-classes" value="${outdir}/classes" />
+    <condition property="outdir-classes-ospath"
+            value="${basedir}\${outdir-classes}"
+            else="${basedir}/${outdir-classes}" >
+        <os family="windows"/>
+    </condition>
+
+    <!-- Create R.java in the source directory -->
+    <property name="outdir-r" value="gen" />
+
+    <!-- Intermediate files -->
+    <property name="dex-file" value="classes.dex" />
+    <property name="intermediate-dex" value="${outdir}/${dex-file}" />
+    <condition property="intermediate-dex-ospath"
+            value="${basedir}\${intermediate-dex}"
+            else="${basedir}/${intermediate-dex}" >
+        <os family="windows"/>
+    </condition>
+
+    <!-- The final package file to generate -->
+    <property name="resources-package" value="${outdir}/${ant.project.name}.ap_" />
+    <condition property="resources-package-ospath"
+            value="${basedir}\${resources-package}"
+            else="${basedir}/${resources-package}" >
+        <os family="windows"/>
+    </condition>
+
+    <property name="out-debug-package" value="${outdir}/${ant.project.name}-debug.apk" />
+    <condition property="out-debug-package-ospath"
+            value="${basedir}\${out-debug-package}"
+            else="${basedir}/${out-debug-package}" >
+        <os family="windows"/>
+    </condition>
+
+    <property name="out-unsigned-package" value="${outdir}/${ant.project.name}-unsigned-${deployment.number}.apk"/>
+    <condition property="out-unsigned-package-ospath"
+            value="${basedir}\${out-unsigned-package}"
+            else="${basedir}/${out-unsigned-package}" >
+        <os family="windows"/>
+    </condition>
+    
+    <property name="out-package" value="${outdir}/${ant.project.name}-${deployment.number}.apk" />
+    <condition property="out-package-ospath"
+            value="${basedir}\${out-package}"
+            else="${basedir}/${out-package}" >
+        <os family="windows"/>
+    </condition>
+    
+    <!-- Tools -->
+    <condition property="aapt" value="${android-tools}/aapt.exe" else="${android-tools}/aapt" >
+        <os family="windows"/>
+    </condition>
+    <condition property="aidl" value="${android-tools}/aidl.exe" else="${android-tools}/aidl" >
+        <os family="windows"/>
+    </condition>
+    <condition property="adb" value="${android-tools}/adb.exe" else="${android-tools}/adb" >
+        <os family="windows"/>
+    </condition>
+    <condition property="dx" value="${android-tools}/dx.bat" else="${android-tools}/dx" >
+        <os family="windows"/>
+    </condition>
+    <condition property="apk-builder" value="${android-tools}/apkbuilder.bat" else="${android-tools}/apkbuilder" >
+        <os family="windows"/>
+    </condition>
+
+    <property name="android-jar" value="${sdk-folder}/android.jar" />
+	<!--	<property name="internal-jar" value="${sdk-folder}/internal.jar" />-->
+   <!-- <property name="oms-jar" value="${sdk-folder}/oms.jar" />-->
+
+    <!-- Rules -->
+    
+    <target name="increment-app-version" if="app-version.autoincrement">
+        <propertyfile file="default.properties">
+            <entry key="deployment.counter" type="int" operation="+" default="2" pattern="0"/>
+            <entry key="deployment.number" value="000000${deployment.counter}"/>
+        </propertyfile>
+        <property name="deployment.number.pattern" value="\1\3.\4\6.\7\9"/>
+        <replaceregexp byline="true" file="default.properties" match="^deployment.number=[0-9]*(0|([1-9]))([0-9])(0|([1-9]))([0-9])(0|([1-9]))([0-9])$" replace="deployment.number=${deployment.number.pattern}"/>
+        <replaceregexp byline='false' file='AndroidManifest.xml' match='android:versionCode=\"[^\"]*\"' replace='android:versionCode="${deployment.counter}"'/>
+        <replaceregexp byline='false' file='AndroidManifest.xml' match='android:versionName=\"[^\"]*\"' replace='android:versionName="${deployment.number}"'/>
+        
+        <propertyfile file="${dist}/version.txt"> 
+        	<entry  key="version" value="${deployment.number}"/>
+        </propertyfile>
+    </target>
+
+    <!-- Create the output directories if they don't exist yet. -->
+    <target name="dirs">
+        <echo>Creating output directories if needed...</echo>
+    	<echo>Ant project name : ${ant.project.name}</echo>
+        <mkdir dir="${outdir}" />
+        <mkdir dir="${outdir-classes}" />
+    	<mkdir dir="${dist}"/>
+    </target>
+
+    <!-- Generate the R.java file for this project's resources. -->
+    <target name="resource-src" depends="dirs">
+        <echo>Generating R.java / Manifest.java from the resources...</echo>
+        <exec executable="${aapt}" failonerror="true">
+            <arg value="package" />
+            <arg value="-m" />
+            <arg value="-J" />
+            <arg value="${outdir-r}" />
+            <arg value="-M" />
+            <arg value="AndroidManifest.xml" />
+            <arg value="-S" />
+            <arg value="${resource-dir}" />
+            <arg value="-I" />
+            <arg value="${android-jar}" />
+        </exec>
+    </target>
+
+    <!-- Generate java classes from .aidl files. -->
+    <target name="aidl" depends="dirs">
+        <echo>Compiling aidl files into Java classes...</echo>
+        <apply executable="${aidl}" failonerror="true">
+            <arg value="-p${android-framework}" />
+            <arg value="-I${srcdir}" />
+        	<arg value="-o${outdir-r}" />
+        	<fileset dir="${srcdir}">
+                <include name="**/*.aidl"/>
+            </fileset>
+        </apply>
+    </target>
+
+    <!-- Compile this project's .java files into .class files. -->
+    <target name="compile" depends="dirs, resource-src, aidl">
+        <javac encoding="ascii" target="1.5" debug="true" extdirs=""
+                srcdir="."
+                destdir="${outdir-classes}"
+            bootclasspath="${oms-jar}:${internal-jar}:${android-jar}">
+            <classpath>
+                <fileset dir="${external-libs}" includes="*.jar"/>
+            </classpath>
+        <!-- <classpath>
+                 <fileset dir="${native-libs}" includes="*.jar"/>
+             </classpath> -->
+         </javac>
+    </target>
+
+	
+	<taskdef resource="proguard/ant/task.properties" classpath="${proguard.home}/proguard.jar" />
+		<!-- Define a place for the optimized classes. -->
+	<property name="out.proguard.absolute.jar"
+	              location="${outdir}/classes-processed.jar" />
+
+	<!-- Define a obfuscation mapping file. -->
+	<property name="out.proguard.absolute.map"
+			  location="${outdir}/classes-processed.map" />
+	<target name="optimize" depends="compile">
+	    <echo>Optimizing compiled files and libraries into ${out.proguard.absolute.jar}...</echo>
+	    <proguard printmapping="${out.proguard.absolute.map}">
+	            <injar      path="${outdir-classes-ospath}"   />
+	            <outjar     path="${out.proguard.absolute.jar}"  />
+	        	<libraryjar path="${android-jar}" />
+	        	<libraryjar path="${external-libs}" />
+
+
+	            -dontpreverify
+	            -repackageclasses 'com.herry.fastappmgr'
+	            -allowaccessmodification
+	            -optimizations !code/simplification/arithmetic
+				
+				-dontnote *.**
+
+	            <!--
+	            -renamesourcefileattribute SourceFile
+	            -keepattributes SourceFile,LineNumberTable
+	            -->
+
+	            -keepattributes *Annotation*
+
+	            -keep public class * extends android.app.Activity
+	            -keep public class * extends android.app.Application
+	            -keep public class * extends android.app.Service
+	            -keep public class * extends android.content.BroadcastReceiver
+	            -keep public class * extends android.content.ContentProvider
+
+	            -keep public class * extends android.view.View {
+	                public &lt;init&gt;(android.content.Context);
+	                public &lt;init&gt;(android.content.Context, android.util.AttributeSet);
+	                public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int);
+	                public void set*(...);
+	            }
+
+	            -keepclasseswithmembers class * {
+	                public &lt;init&gt;(android.content.Context, android.util.AttributeSet);
+	            }
+
+	            -keepclasseswithmembers class * {
+	                public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int);
+	            }
+
+	            -keepclassmembers class * implements android.os.Parcelable {
+	                static android.os.Parcelable$Creator CREATOR;
+	            }
+
+	            -keepclassmembers class **.R$* {
+	                public static &lt;fields&gt;;
+	            }
+
+	            -keep public interface com.android.vending.licensing.ILicensingService
+	            -dontnote com.android.vending.licensing.ILicensingService
+
+	            -keepclasseswithmembernames class * {
+	                native &lt;methods&gt;;
+	            }
+
+	            -keepclassmembers class * extends java.lang.Enum {
+	                public static **[] values();
+	                public static ** valueOf(java.lang.String);
+	            }
+	            #-keep public interface oms.mspaces.services.ISyncService
+	            #-dontnote oms.mspaces.services.ISyncService
+	            #-keep public interface oms.mspaces.services.ISyncServiceCallback
+	            #-dontnote oms.mspaces.services.ISyncServiceCallback
+	    	
+	    	
+	    		-keep class * implements android.os.Parcelable {
+	    	  		public static final android.os.Parcelable$Creator *;
+	    			}
+	    	
+	        	-keep class org.**
+	        	            -dontnote org.**
+	        	            -keepclassmembers class org.** {
+	        	        	*;
+	        	        	}
+	        	            -keep class com.google.**
+	        	            -dontnot com.google.**
+	        	            -keepclassmembers class com.google.** {
+	        	        	*;
+	        	        	}
+	        	-keep public class com.herry.fastappmgr.R$*{
+	        		public static final int exchange_*; }
+	    </proguard>
+	</target>
+	
+	
+	
+	
+    <!-- Convert this project's .class files into .dex files. -->
+    <target name="dex" depends="optimize">
+        <echo>Converting compiled files and external libraries into ${outdir}/${dex-file}...</echo>
+        <apply executable="${dx}" failonerror="true" parallel="true">
+            <arg value="--dex" />
+            <arg value="--output=${intermediate-dex-ospath}" />
+            <arg path="${out.proguard.absolute.jar}" />
+            <fileset dir="${external-libs}" includes="*.jar"/>
+            <!-- <fileset dir="${native-libs}" includes="*.jar"/> -->
+        </apply>
+    </target>
+
+    <!-- Put the project's resources into the output package file. -->
+    <target name="package-res-and-assets">
+        <echo>Packaging resources and assets...</echo>
+        <exec executable="${aapt}" failonerror="true">
+            <arg value="package" />
+            <arg value="-f" />
+            <arg value="-M" />
+            <arg value="AndroidManifest.xml" />
+            <arg value="-S" />
+            <arg value="${resource-dir}" />
+            <arg value="-A" />
+            <arg value="${asset-dir}" />
+            <arg value="-I" />
+            <arg value="${android-jar}" />
+            <arg value="-F" />
+            <arg value="${resources-package}" />
+        </exec>
+    </target>
+
+    <!-- Same as package-res-and-assets, but without "-A ${asset-dir}" -->
+    <target name="package-res-no-assets">
+        <echo>Packaging resources...</echo>
+        <exec executable="${aapt}" failonerror="true">
+            <arg value="package" />
+            <arg value="-f" />
+            <arg value="-M" />
+            <arg value="AndroidManifest.xml" />
+            <arg value="-S" />
+            <arg value="${resource-dir}" />
+            <!-- No assets directory -->
+            <arg value="-I" />
+            <arg value="${internal-jar}" />
+            <arg value="-I" />
+            <arg value="${oms-jar}" />
+            <arg value="-I" />
+            <arg value="${android-jar}" />
+            <arg value="-F" />
+            <arg value="${resources-package}" />
+        </exec>
+    </target>
+
+    <!-- Invoke the proper target depending on whether or not
+         an assets directory is present. -->
+    <!-- TODO: find a nicer way to include the "-A ${asset-dir}" argument
+         only when the assets dir exists. -->
+    <target name="package-res">
+        <available file="${asset-dir}" type="dir"
+                property="res-target" value="and-assets" />
+        <property name="res-target" value="no-assets" />
+        <antcall target="package-res-${res-target}" />
+    </target>
+
+    <!-- Package the application and sign it with a debug key.
+         This is the default target when building. It is used for debug. -->
+    <target name="debug" depends="dex, package-res">
+        <echo>Packaging ${out-debug-package}, and signing it with a debug key...</echo>
+        <exec executable="${apk-builder}" failonerror="true">
+            <arg value="${out-debug-package-ospath}" />
+            <arg value="-z" />
+            <arg value="${resources-package-ospath}" />
+            <arg value="-f" />
+            <arg value="${intermediate-dex-ospath}" />
+            <arg value="-rf" />
+            <arg value="${srcdir-ospath}" />
+            <arg value="-rj" />
+            <arg value="${external-libs-ospath}" />
+            <!--arg value="-nf" />
+            <arg value="${native-libs-ospath}" /-->
+        </exec>
+    </target>
+
+    <!-- Package the application without signing it.
+         This allows for the application to be signed later with an official publishing key. -->
+    <target name="release" depends="dex, increment-app-version, package-res">
+        <echo>Packaging ${out-unsigned-package} for release...</echo>
+        <exec executable="${apk-builder}" failonerror="true">
+            <arg value="${out-unsigned-package-ospath}" />
+            <arg value="-u" />
+            <arg value="-z" />
+            <arg value="${resources-package-ospath}" />
+            <arg value="-f" />
+            <arg value="${intermediate-dex-ospath}" />
+            <arg value="-rf" />
+            <arg value="${srcdir-ospath}" />
+            <arg value="-rj" />
+            <arg value="${external-libs-ospath}" />
+            <!--arg value="-nf" />
+            <arg value="${native-libs-ospath}" /-->
+        </exec>
+        <echo>It will need to be signed with jarsigner before being published.</echo>
+    </target>
+    
+    <target name="sign" depends="release">
+    	<echo>Signing ${out-unsigned-package} ...</echo>
+    	<signjar alias="${key.alias}" keystore="${key.store}" 
+    	    storepass="herry123" 
+    	    jar="${out-unsigned-package}" 
+    	    signedjar="${out-package}" />
+    </target>
+    
+    <target name="dist" depends="sign">
+    	<mkdir dir="${dist}"/>
+    	<move file="${outdir}/${ant.project.name}-${deployment.number}.apk" todir="${dist}"/>
+    	<move file="${outdir}/${ant.project.name}-unsigned-${deployment.number}.apk" todir="${dist}"/>
+    </target>
+
+    <!-- Install the package on the default emulator -->
+    <target name="installsigned" depends="sign">
+        <echo>Installing ${out-package} onto default emulator...</echo>
+        <exec executable="${adb}" failonerror="true">
+            <arg value="install" />
+            <arg value="${out-package}" />
+        </exec>
+    </target>
+    
+    <!-- Install the package on the default emulator -->
+    <target name="install" depends="debug">
+        <echo>Installing ${out-debug-package} onto default emulator...</echo>
+        <exec executable="${adb}" failonerror="true">
+            <arg value="install" />
+            <arg value="${out-debug-package}" />
+        </exec>
+    </target>
+
+    <target name="reinstall" depends="debug">
+        <echo>Installing ${out-debug-package} onto default emulator...</echo>
+        <exec executable="${adb}" failonerror="true">
+            <arg value="install" />
+            <arg value="-r" />
+            <arg value="${out-debug-package}" />
+        </exec>
+    </target>
+
+    <!-- Uinstall the package from the default emulator -->
+    <target name="uninstall">
+        <echo>Uninstalling ${application-package} from the default emulator...</echo>
+        <exec executable="${adb}" failonerror="true">
+            <arg value="uninstall" />
+            <arg value="${application-package}" />
+        </exec>
+    </target>
+    
+    <target name="clean">
+    	<delete dir="${outdir}"/>
+    	<delete dir="${dist}"/>
+    </target>
+
+</project>
