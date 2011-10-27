@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.herry.fastappmgr"
+      android:versionCode="10006"
+      android:versionName="01.00.05">
+    <application android:name=".FastAppMgrApp"
+    	android:icon="@drawable/app_icon" android:label="@string/app_name">
+    	<activity android:name=".view.AppTabActivity"
+    		android:label="@string/app_name"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar"
+			android:launchMode="singleTop">
+    		<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+    	</activity>
+    	<activity android:name=".view.RecentAddedActivity"
+            android:configChanges="orientation|keyboardHidden"
+			android:launchMode="singleTop"/>
+        <activity android:name=".view.UninstallActivity"
+                  android:label="@string/app_name"
+                  android:configChanges="orientation|keyboardHidden"
+				  android:launchMode="singleTop">
+        </activity>
+		<receiver android:name=".receiver.PackageBroascastReceiver">
+			<intent-filter>
+				<action android:name="android.intent.action.PACKAGE_REMOVED"/>
+				<data android:scheme="package"/>
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.PACKAGE_ADDED"/>
+				<data android:scheme="package"/>
+			</intent-filter>
+		</receiver>
+		<!-- ad -->
+		<activity android:name="net.youmi.android.AdActivity"
+			android:configChanges="keyboard|keyboardHidden|orientation" />
+		<activity android:name="net.youmi.android.appoffers.AppOffersActivity"
+			android:configChanges="keyboard|keyboardHidden|orientation"/>
+    </application>
+	 <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"/>
+	 
+	<!-- ads -->
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+</manifest> 

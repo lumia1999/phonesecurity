@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, MainActivity!</string>
+    <string name="app_name">应用管理</string>
+    <string name="tab_uninstall">一键卸载</string>
+    <string name="tab_recet_install">最近安装</string>
+    <string name="no_item">您最近没有安装新的应用</string>
+    <string name="about_txt">关于</string>
+    <string name="app_offer_txt">有米推荐</string>
+    
+    <string name="version_info">软件版本：</string>
+    <string name="author">Email:Xinwei.Yi@gmail.com\n\n如您在使用过程中遇到任何疑问，请发邮件通知我。</string>
+    <string name="no_version_current">无法取得版本信息</string>
+    
+    <string name="youmioffertip">点击Menu，下载您中意的应用\n
+		积分达到200分，即可升级为无广告版本</string>
+	<string name="youmioffertip_noad">点击Menu，查看下载您中意的App</string>
+</resources>
