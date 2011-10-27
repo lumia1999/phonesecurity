@@ -56,8 +56,11 @@
 	  		android:paddingRight="5dip"
 	  		android:gravity="center_vertical"/>
   	</RelativeLayout>
-	<ListView android:id="@android:id/list"
+  	<View android:layout_width="fill_parent"
+  	    android:layout_height="3dip"/>
+	<ExpandableListView android:id="@android:id/list"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"/>
-  
+		android:layout_height="fill_parent"
+		android:fastScrollEnabled="true"
+		android:paddingBottom="5dip"/>
 </LinearLayout>
