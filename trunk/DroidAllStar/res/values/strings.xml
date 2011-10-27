@@ -125,5 +125,10 @@
 	<string name="boottime_report_title">开机时间提示，掌握手机状态</string>
 	<string name="boottimpe_report_on">已开启</string>
 	<string name="boottime_report_off">已关闭，建议您开启提示</string>
-	<string name="boottime_affect_apps_list">影响开机速度应用列表</string>
+	<string name="boottime_affect_apps_list">开机自启动应用列表</string>
+	<string name="boottime_affect_user_apps">普通应用</string>
+	<string name="boottime_affect_sys_apps">系统应用</string>
+	<string name="expandable_group_indicator_plus">+</string>
+	<string name="expandable_group_indicator_minus">-</string>
+	<string name="activity_not_exist_toast">无法查看应用详情</string>
 </resources>
