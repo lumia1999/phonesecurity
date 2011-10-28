@@ -41,6 +41,9 @@ public final class Utils {
 	private static final String BLOCK_SCR_PATH = "/sys/block/mmcblk0/device/scr";
 	private static final String BLOCK_DATE_PATH = "/sys/block/mmcblk0/device/date";
 
+	private static final long HOUR_UNIT = 60 * 60;
+	private static final long MINUTE_UNIT = 60;
+
 	public static ScreenInfo getScreenInfo(Activity activity) {
 		Display disp = activity.getWindowManager().getDefaultDisplay();
 		DisplayMetrics dm = new DisplayMetrics();
@@ -470,5 +473,42 @@ public final class Utils {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static String formatDuration(long duration) {
+		if (duration == 0) {
+			return "0";
+		}
+		StringBuilder sb = new StringBuilder();
+		long hour = duration / HOUR_UNIT;
+		if (hour != 0) {
+			if (hour >= 10) {
+				sb.append(hour);
+			} else {
+				sb.append(0).append(hour);
+			}
+			sb.append(":");
+			duration = duration % HOUR_UNIT;
+		} else {
+			sb.append(0).append(0).append(":");
+		}
+		long minute = duration / MINUTE_UNIT;
+		if (minute != 0) {
+			if (minute >= 10) {
+				sb.append(minute);
+			} else {
+				sb.append(0).append(minute);
+			}
+			sb.append(":");
+			duration = duration % MINUTE_UNIT;
+		} else {
+			sb.append(0).append(0).append(":");
+		}
+		if (duration >= 10) {
+			sb.append(duration);
+		} else {
+			sb.append(0).append(duration);
+		}
+		return sb.toString();
 	}
 }

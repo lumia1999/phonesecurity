@@ -24,8 +24,10 @@
 			android:label="@string/item_sdcard_perform_check"/>
 		<activity android:name=".view.BootTimeReportSettingActivity"
 			android:label="@string/boottime_report_setting_label"/>
+		<activity android:name=".view.BootTimeHistoryViewActivity"
+		    android:label="@string/boottime_history_activity_label"></activity>
 		<receiver android:name=".receiver.Receiver">
-			<intent-filter>
+			<intent-filter android:priority="1000">
 				<action android:name="android.intent.action.BOOT_COMPLETED"/>
 			</intent-filter>
 		</receiver>

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import android.Manifest.permission;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ExpandableListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -15,6 +17,10 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -53,13 +59,50 @@ public class BootTimeReportSettingActivity extends ExpandableListActivity {
 	private static final String ITEM_VERSIONNAME = "item_versionname";
 	private static final String ITEM_PACKAGENAME = "item_packagename";
 
+	private static final int DLG_BOOTTIME_REPORT_OFF_ID = 10010;
+
+	private static final int OPTION_MENU_SHOW_BOOTTIME_HISTORY = Menu.FIRST + 10010;
+
+	private static final int MSG_FILL_DATA = 1;
+	private Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case MSG_FILL_DATA:
+				fillData();
+			}
+		}
+
+	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.boottime_report_setting);
 		initUI();
-		initData();
-		fillData();
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				initData();
+			}
+
+		}).start();
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DLG_BOOTTIME_REPORT_OFF_ID:
+			return new AlertDialog.Builder(this).setIcon(
+					android.R.drawable.ic_dialog_alert).setTitle(
+					R.string.item_boottime_report).setMessage(
+					R.string.boottime_report_off_dlg_msg).setPositiveButton(
+					android.R.string.ok, null).create();
+		}
+		return super.onCreateDialog(id);
 	}
 
 	private void initUI() {
@@ -69,7 +112,7 @@ public class BootTimeReportSettingActivity extends ExpandableListActivity {
 		mState = Prefs.getReportBoottimeState(this);
 		if (mState) {
 			mStateTipCheckbox.setChecked(true);
-			mStateTipTxt.setText(R.string.boottimpe_report_on);
+			mStateTipTxt.setText(R.string.boottime_report_on);
 		} else {
 			mStateTipCheckbox.setChecked(false);
 			mStateTipTxt.setText(R.string.boottime_report_off);
@@ -82,9 +125,10 @@ public class BootTimeReportSettingActivity extends ExpandableListActivity {
 				Prefs.setReportBoottimeState(getApplicationContext(), mState);
 				mStateTipCheckbox.setChecked(mState);
 				if (mState) {
-					mStateTipTxt.setText(R.string.boottimpe_report_on);
+					mStateTipTxt.setText(R.string.boottime_report_on);
 				} else {
 					mStateTipTxt.setText(R.string.boottime_report_off);
+					showDialog(DLG_BOOTTIME_REPORT_OFF_ID);
 				}
 			}
 		});
@@ -159,6 +203,7 @@ public class BootTimeReportSettingActivity extends ExpandableListActivity {
 		if (systemApps.size() > 0) {
 			mChildData.add(systemApps);
 		}
+		mHandler.sendEmptyMessage(MSG_FILL_DATA);
 	}
 
 	private int checkAppType(PackageInfo pInfo) {
@@ -177,6 +222,24 @@ public class BootTimeReportSettingActivity extends ExpandableListActivity {
 		setListAdapter(mAdapter);
 		mExpListView.expandGroup(0);
 		// mExpListView.expandGroup(1);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.add(0, OPTION_MENU_SHOW_BOOTTIME_HISTORY, 0,
+				R.string.boottime_history_view).setIcon(R.drawable.icon);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case OPTION_MENU_SHOW_BOOTTIME_HISTORY:
+			startActivity(new Intent(this, BootTimeHistoryViewActivity.class));
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -14,6 +15,8 @@ import com.herry.droidallstar.R;
 import com.herry.droidallstar.util.Prefs;
 import com.herry.droidallstar.util.Utils;
 import com.herry.droidallstar.view.BootTimeReportSettingActivity;
+import com.herry.droidallstart.db.BoottimeHistoryDbAdapter;
+import com.herry.droidallstart.db.BoottimeHistoryDbHelper.BoottimeHistoryColumn;
 
 public class GetUptimeIntentService extends IntentService {
 	private static final String TAG = "GetUptimeIntentService";
@@ -39,6 +42,10 @@ public class GetUptimeIntentService extends IntentService {
 		if (Prefs.getReportBoottimeState(this)) {
 			notifyBootTime(sInfo);
 		}
+		ContentValues values = new ContentValues();
+		values.put(BoottimeHistoryColumn.TIMEUSED, (int) sInfo.getUptime());
+		values.put(BoottimeHistoryColumn.TS, System.currentTimeMillis());
+		BoottimeHistoryDbAdapter.getInstance(this).insertRecord(values);
 	}
 
 	public static void runIntentService(Context ctx, Intent intent) {
@@ -52,12 +59,15 @@ public class GetUptimeIntentService extends IntentService {
 		Notification notification = new Notification();
 		notification.icon = R.drawable.icon;
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		notification.tickerText = "boot time is " + sInfo.getUptime();
+		notification.tickerText = getString(R.string.boottime_report_tip)
+				+ Utils.formatDuration((long) sInfo.getUptime());
 		Intent intent = new Intent(this, BootTimeReportSettingActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
-		notification.setLatestEventInfo(this, "boot time",
-				"your boot time is : " + sInfo.getUptime(), pi);
+		notification.setLatestEventInfo(this,
+				getString(R.string.item_boottime_report),
+				getString(R.string.boottime_report_tip)
+						+ Utils.formatDuration((long) sInfo.getUptime()), pi);
 		nm.notify(BOOTTIME_NOTIFICATION_ID, notification);
 	}
 }
