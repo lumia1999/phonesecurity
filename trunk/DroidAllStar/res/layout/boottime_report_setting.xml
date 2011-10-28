@@ -31,7 +31,7 @@
   			android:layout_width="fill_parent"
   			android:layout_height="wrap_content"
   			android:textAppearance="?android:attr/textAppearanceSmall"
-  			android:text="@string/boottimpe_report_on"/>
+  			android:text="@string/boottime_report_on"/>
 	</LinearLayout>
   </LinearLayout>
   	<RelativeLayout android:layout_width="fill_parent"
