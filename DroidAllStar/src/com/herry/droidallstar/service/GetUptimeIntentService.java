@@ -60,14 +60,15 @@ public class GetUptimeIntentService extends IntentService {
 		notification.icon = R.drawable.icon;
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		notification.tickerText = getString(R.string.boottime_report_tip)
-				+ Utils.formatDuration((long) sInfo.getUptime());
+				+ Utils.formatDuration(this, (long) sInfo.getUptime());
 		Intent intent = new Intent(this, BootTimeReportSettingActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
 		notification.setLatestEventInfo(this,
 				getString(R.string.item_boottime_report),
 				getString(R.string.boottime_report_tip)
-						+ Utils.formatDuration((long) sInfo.getUptime()), pi);
+						+ Utils.formatDuration(this, (long) sInfo.getUptime()),
+				pi);
 		nm.notify(BOOTTIME_NOTIFICATION_ID, notification);
 	}
 }
