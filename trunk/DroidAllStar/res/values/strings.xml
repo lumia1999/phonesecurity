@@ -136,4 +136,7 @@
 	<string name="boottime_report_tip">您本次开机花费时间：</string>
 	<string name="boottime_history_view">历史记录</string>
 	<string name="boottime_history_activity_label">查看开机历史记录</string>
+	<string name="time_second">秒</string>
+	<string name="time_minute">分</string>
+	<string name="boot_occur_ts">发生时间：</string>
 </resources>

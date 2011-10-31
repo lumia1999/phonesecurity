@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -475,40 +476,24 @@ public final class Utils {
 		}
 	}
 
-	public static String formatDuration(long duration) {
-		if (duration == 0) {
-			return "0";
-		}
+	public static String formatDuration(Context ctx, long duration) {
 		StringBuilder sb = new StringBuilder();
-		long hour = duration / HOUR_UNIT;
-		if (hour != 0) {
-			if (hour >= 10) {
-				sb.append(hour);
-			} else {
-				sb.append(0).append(hour);
+		if (duration >= 60) {
+			long minute = duration / 60;
+			long second = duration % 60;
+			sb.append(minute).append(ctx.getString(R.string.time_minute));
+			if (second != 0) {
+				sb.append(second).append(ctx.getString(R.string.time_second));
 			}
-			sb.append(":");
-			duration = duration % HOUR_UNIT;
 		} else {
-			sb.append(0).append(0).append(":");
-		}
-		long minute = duration / MINUTE_UNIT;
-		if (minute != 0) {
-			if (minute >= 10) {
-				sb.append(minute);
-			} else {
-				sb.append(0).append(minute);
-			}
-			sb.append(":");
-			duration = duration % MINUTE_UNIT;
-		} else {
-			sb.append(0).append(0).append(":");
-		}
-		if (duration >= 10) {
-			sb.append(duration);
-		} else {
-			sb.append(0).append(duration);
+			sb.append(duration).append(ctx.getString(R.string.time_second));
 		}
 		return sb.toString();
+	}
+
+	public static String formatTs(Context ctx, long ts) {
+		return DateUtils.formatDateTime(ctx, ts, DateUtils.FORMAT_SHOW_DATE
+				| DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR
+				| DateUtils.FORMAT_SHOW_TIME);
 	}
 }
