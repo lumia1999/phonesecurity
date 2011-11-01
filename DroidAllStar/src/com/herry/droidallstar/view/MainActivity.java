@@ -20,7 +20,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.herry.droidallstar.R;
-import com.herry.droidallstar.util.Utils;
 
 public class MainActivity extends ListActivity {
 	private static final String TAG = "MainActivity";
@@ -37,9 +36,7 @@ public class MainActivity extends ListActivity {
 		initUI();
 		initData();
 		fillData();
-		test("wifi.interface");
-		Utils.getDevTimeInfo();
-		listen();
+		// test("wifi.interface");
 	}
 
 	private void listen() {
@@ -74,6 +71,9 @@ public class MainActivity extends ListActivity {
 		} else if (TextUtils.equals(title,
 				getString(R.string.item_boottime_report))) {
 			startActivity(new Intent(this, BootTimeReportSettingActivity.class));
+		} else if (TextUtils.equals(title,
+				getString(R.string.item_traffic_stat))) {
+			startActivity(new Intent(this, TrafficStatActivity.class));
 		}
 	}
 
@@ -102,6 +102,10 @@ public class MainActivity extends ListActivity {
 		// boot time report
 		temp = new HashMap<String, String>();
 		temp.put(ITEM_TITLE, getString(R.string.item_boottime_report));
+		mDataList.add(temp);
+		// traffic stat
+		temp = new HashMap<String, String>();
+		temp.put(ITEM_TITLE, getString(R.string.item_traffic_stat));
 		mDataList.add(temp);
 	}
 

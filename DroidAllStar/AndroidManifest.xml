@@ -26,6 +26,8 @@
 			android:label="@string/boottime_report_setting_label"/>
 		<activity android:name=".view.BootTimeHistoryViewActivity"
 		    android:label="@string/boottime_history_activity_label"></activity>
+		<activity android:name=".view.TrafficStatActivity"
+		    android:label="@string/traffic_stat_label"></activity>
 		<receiver android:name=".receiver.Receiver">
 			<intent-filter android:priority="1000">
 				<action android:name="android.intent.action.BOOT_COMPLETED"/>
