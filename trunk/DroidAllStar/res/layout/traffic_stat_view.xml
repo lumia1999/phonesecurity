@@ -1,12 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical" >
-
-    <ImageView android:id="@+id/test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    
-
+    <View android:layout_width="fill_parent"
+		android:layout_height="5dip"/>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/traffic_net_tip"
+			android:textAppearance="?android:attr/textAppearanceMedium"/>
+		<TextView android:id="@+id/traffic_net_total"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:paddingLeft="5dip"/>
+	</LinearLayout>
+	<View android:layout_width="fill_parent"
+		android:layout_height="5dip"/>
+    <LinearLayout android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:gravity="center_vertical">
+    	<TextView android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/traffic_wifi_tip"
+    		android:textAppearance="?android:attr/textAppearanceMedium"/>
+    	<TextView android:id="@+id/traffic_wifi_total"
+    		android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:paddingLeft="5dip"/>
+    </LinearLayout>
+	<TextView android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:paddingTop="5dip"
+		android:paddingBottom="5dip"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:background="@drawable/bg_gray"
+		android:text="@string/traffic_single_app_rink"/>
+	<ExpandableListView android:id="@android:id/list"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:fastScrollEnabled="true"/>
 </LinearLayout>
