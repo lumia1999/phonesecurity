@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -23,6 +24,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +41,7 @@ public class SecuritySettingActivity extends PreferenceActivity {
 	private static final int DLG_NO_SIM = 1;
 	private static final int DLG_INCOMPLETE_SETTING = 2;
 	private static final int DLG_NEED_PWD_ID = 3;
+	private static final int DLG_SHOW_VERSION_NOTE_ID = 4;
 
 	private String mSettingRetult;
 
@@ -70,7 +73,7 @@ public class SecuritySettingActivity extends PreferenceActivity {
 		alarmPref.setOnPreferenceClickListener(prefLsn);
 
 		initSim();
-		showPwdDialog();
+		showVersionNote();
 		if (Const.mbTest) {
 			startActivity(new Intent(this, TestActivity.class));
 		}
@@ -111,6 +114,15 @@ public class SecuritySettingActivity extends PreferenceActivity {
 		long now = System.currentTimeMillis();
 		if (Math.abs(now - lastPwdActiveTS) > intervals[index]) {
 			showDialog(DLG_NEED_PWD_ID);
+		}
+	}
+
+	private void showVersionNote() {
+		boolean show = Prefs.showVersionNote(this);
+		if (show) {
+			showDialog(DLG_SHOW_VERSION_NOTE_ID);
+		} else {
+			showPwdDialog();
 		}
 	}
 
@@ -237,6 +249,28 @@ public class SecuritySettingActivity extends PreferenceActivity {
 				//
 			}
 			return dlg;
+		case DLG_SHOW_VERSION_NOTE_ID:
+			WebView webView = new WebView(this);
+			webView.loadUrl("file:///android_asset/version_note_10012.html");
+			return new AlertDialog.Builder(this).setIcon(
+					android.R.drawable.ic_dialog_alert).setTitle(
+					R.string.version_note_dlg_title).setView(webView)
+					.setPositiveButton(android.R.string.yes,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Prefs
+											.hideVersionNote(getApplicationContext());
+								}
+							}).setOnCancelListener(new OnCancelListener() {
+
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							Prefs.hideVersionNote(getApplicationContext());
+						}
+					}).create();
 		default:
 			return super.onCreateDialog(id);
 		}

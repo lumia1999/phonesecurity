@@ -100,4 +100,6 @@
 	<string name="pwd_retry_times_left_tip">当前剩余次数：</string>
 	<string name="input_pwd_tip">输入密码进入应用</string>
 	<string name="pwd_mismatch_toast">密码输入有误，请重新输入</string>
+	
+	<string name="version_note_dlg_title">新版本特性</string>
 </resources>

@@ -20,6 +20,8 @@ public class Prefs {
 	private static final String SHOW_PWD_INTERVAL = "show_pwd_interval";
 	private static final String LAST_ACTIVIE_TS = "last_active_ts";
 
+	private static final String VERSION_NOTE_10012 = "10012";
+
 	public static SharedPreferences get(Context ctx) {
 		return ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 	}
@@ -132,5 +134,17 @@ public class Prefs {
 	public static long getPwdLastShowTS(Context ctx) {
 		SharedPreferences pref = get(ctx);
 		return pref.getLong(LAST_ACTIVIE_TS, -1L);
+	}
+
+	public static boolean hideVersionNote(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putBoolean(VERSION_NOTE_10012, false);
+		return editor.commit();
+	}
+
+	public static boolean showVersionNote(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		return pref.getBoolean(VERSION_NOTE_10012, true);
 	}
 }
