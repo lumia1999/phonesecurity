@@ -22,7 +22,7 @@ public final class BoottimeHistoryDbHelper extends SQLiteOpenHelper {
 		return mInstance;
 	}
 
-	public BoottimeHistoryDbHelper(Context context) {
+	private BoottimeHistoryDbHelper(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
 	}
 
