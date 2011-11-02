@@ -140,4 +140,9 @@
 	<string name="time_second">秒</string>
 	<string name="time_minute">分</string>
 	<string name="boot_occur_ts">发生时间：</string>
+	
+	<!-- traffic stat -->
+	<string name="traffic_net_tip">手机网络总使用量：</string>
+	<string name="traffic_wifi_tip">WIFI网络总使用量：</string>
+	<string name="traffic_single_app_rink">应用流量消耗排行榜</string>
 </resources>

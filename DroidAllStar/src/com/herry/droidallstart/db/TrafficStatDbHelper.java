@@ -1,9 +1,10 @@
 package com.herry.droidallstart.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.net.TrafficStats;
 import android.provider.BaseColumns;
 
 public class TrafficStatDbHelper extends SQLiteOpenHelper {
@@ -12,6 +13,7 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 	private static final String DB_NAME = "traffic_stat.db";
 	public static final String TOTAL_STAT_TABLE_NAME = "t_total_stat";
 	public static final String SINGLE_STAT_TABLE_NAME = "t_single_app_stat";
+	private Context mCtx;
 
 	public interface NetType {
 		public static final int MOBILE = 0;
@@ -19,6 +21,7 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 	}
 
 	public interface SummaryType {
+		public static final int BASE = -1;
 		public static final int TOTAL = 0;
 		public static final int DAILY = 1;
 	}
@@ -39,11 +42,13 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 
 	private TrafficStatDbHelper(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
+		mCtx = context;
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		createTable(db);
+		initTable(db);
 	}
 
 	@Override
@@ -59,8 +64,8 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE " + TOTAL_STAT_TABLE_NAME + " ("
 				+ TotalStatColumn._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ TotalStatColumn.NET_TYPE + " INTEGER NOT NULL,"
-				+ TotalStatColumn.SUMMARY + " DOUBLE,"
-				+ TotalStatColumn.SUMMARY_TYPE + " DOUBLE,"
+				+ TotalStatColumn.SUMMARY + " LONG,"
+				+ TotalStatColumn.SUMMARY_TYPE + " INTEGER,"
 				+ TotalStatColumn.TS + " LONG " + ")");
 		db.execSQL("CREATE TABLE " + SINGLE_STAT_TABLE_NAME + " ("
 				+ SingleStatColumn._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -68,8 +73,8 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 				+ SingleStatColumn.pkgName + " TEXT NOT NULL,"
 				+ SingleStatColumn.LABELRES + " INTEGER,"
 				+ SingleStatColumn.ICON + " INTEGER,"
-				+ SingleStatColumn.RXBYTES + " DOUBLE,"
-				+ SingleStatColumn.TXBYTES + " DOUBLE,"
+				+ SingleStatColumn.RXBYTES + " LONG,"
+				+ SingleStatColumn.TXBYTES + " LONG,"
 				+ SingleStatColumn.UNINSTALLED + " INTEGER,"
 				+ SingleStatColumn.TS + " LONG " + ")");
 	}
@@ -90,5 +95,56 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 		public String TXBYTES = "tx_bytes";
 		public String UNINSTALLED = "uninstalled";
 		public String TS = "timestamp";
+	}
+
+	private void initTable(SQLiteDatabase db) {
+		// TODO
+		// 1.get wifi and mobile base stat
+		// 2,get single app's consume
+		long mobileRxBytes = TrafficStats.getMobileRxBytes();
+		long mobileTxBytes = TrafficStats.getMobileTxBytes();
+		long totalRxBytes = TrafficStats.getTotalRxBytes();
+		long totalTxBytes = TrafficStats.getTotalTxBytes();
+		long wifiRxBytes = totalRxBytes - mobileRxBytes;
+		long wifiTxBytes = totalTxBytes - mobileTxBytes;
+		ContentValues values = null;
+		// mobile base stat
+		values = new ContentValues();
+		values.put(TotalStatColumn.NET_TYPE, NetType.MOBILE);
+		values.put(TotalStatColumn.SUMMARY, mobileRxBytes + mobileTxBytes);
+		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.BASE);
+		values.put(TotalStatColumn.TS, System.currentTimeMillis());
+		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
+		// wifi base stat
+		values = new ContentValues();
+		values.put(TotalStatColumn.NET_TYPE, NetType.WIFI);
+		values.put(TotalStatColumn.SUMMARY, wifiRxBytes + wifiTxBytes);
+		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.BASE);
+		values.put(TotalStatColumn.TS, System.currentTimeMillis());
+		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
+		// mobile total init
+		values = new ContentValues();
+		values.put(TotalStatColumn.NET_TYPE, NetType.MOBILE);
+		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.TOTAL);
+		values.put(TotalStatColumn.TS, System.currentTimeMillis());
+		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
+		// mobile daily init
+		values = new ContentValues();
+		values.put(TotalStatColumn.NET_TYPE, NetType.MOBILE);
+		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.DAILY);
+		values.put(TotalStatColumn.TS, System.currentTimeMillis());
+		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
+		// wifi total init
+		values = new ContentValues();
+		values.put(TotalStatColumn.NET_TYPE, NetType.WIFI);
+		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.TOTAL);
+		values.put(TotalStatColumn.TS, System.currentTimeMillis());
+		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
+		// wifi daily init
+		values = new ContentValues();
+		values.put(TotalStatColumn.NET_TYPE, NetType.WIFI);
+		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.DAILY);
+		values.put(TotalStatColumn.TS, System.currentTimeMillis());
+		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
 	}
 }
