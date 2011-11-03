@@ -24,7 +24,7 @@ public final class Formatter {
 
 	public static String formatMemory(long size) {
 		if (size < 1024) {
-			return size + "bytes";
+			return size + "Bytes";
 		} else if (size < 1024 * 1024) {
 			return fix((size * 1.0) / 1024) + "KB";
 		} else if (size < 0.9 * 1024 * 1024 * 1024) {
@@ -32,6 +32,10 @@ public final class Formatter {
 		} else {
 			return fix((size * 1.0) / (1024 * 1024 * 1024)) + "GB";
 		}
+	}
+
+	public static String formatSize(long size) {
+		return formatMemory(size);
 	}
 
 	public static String formatSpeed(int totalSize, double time) {
