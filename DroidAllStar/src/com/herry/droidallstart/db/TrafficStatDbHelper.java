@@ -1,7 +1,11 @@
 package com.herry.droidallstart.db;
 
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.TrafficStats;
@@ -9,7 +13,7 @@ import android.provider.BaseColumns;
 
 public class TrafficStatDbHelper extends SQLiteOpenHelper {
 
-	private static final int DB_VERSION = 1;
+	private static final int DB_VERSION = 2;
 	private static final String DB_NAME = "traffic_stat.db";
 	public static final String TOTAL_STAT_TABLE_NAME = "t_total_stat";
 	public static final String SINGLE_STAT_TABLE_NAME = "t_single_app_stat";
@@ -98,9 +102,8 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 	}
 
 	private void initTable(SQLiteDatabase db) {
-		// TODO
 		// 1.get wifi and mobile base stat
-		// 2,get single app's consume
+		// 2,get single app's stat
 		long mobileRxBytes = TrafficStats.getMobileRxBytes();
 		long mobileTxBytes = TrafficStats.getMobileTxBytes();
 		long totalRxBytes = TrafficStats.getTotalRxBytes();
@@ -146,5 +149,40 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.DAILY);
 		values.put(TotalStatColumn.TS, System.currentTimeMillis());
 		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
+
+		// get single app's stat
+		initSingleTable(db);
+	}
+
+	private void initSingleTable(SQLiteDatabase db) {
+		PackageManager pm = mCtx.getPackageManager();
+		List<ApplicationInfo> appList = pm
+				.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES);
+		int size = appList.size();
+		int uid;
+		String pkgName;
+		int labelRes, icon;
+		long rxBytes, txBytes;
+		ApplicationInfo item;
+		ContentValues values;
+		for (int i = 0; i < size; i++) {
+			item = appList.get(i);
+			uid = item.uid;
+			pkgName = item.packageName;
+			labelRes = item.labelRes;
+			icon = item.icon;
+			rxBytes = TrafficStats.getUidRxBytes(uid);
+			txBytes = TrafficStats.getUidTxBytes(uid);
+			values = new ContentValues();
+			values.put(SingleStatColumn.UID, uid);
+			values.put(SingleStatColumn.pkgName, pkgName);
+			values.put(SingleStatColumn.LABELRES, labelRes);
+			values.put(SingleStatColumn.ICON, icon);
+			values.put(SingleStatColumn.RXBYTES, rxBytes);
+			values.put(SingleStatColumn.TXBYTES, txBytes);
+			values.put(SingleStatColumn.UNINSTALLED, Uninstalled.NO);
+			values.put(SingleStatColumn.TS, System.currentTimeMillis());
+			db.insert(SINGLE_STAT_TABLE_NAME, SingleStatColumn.pkgName, values);
+		}
 	}
 }

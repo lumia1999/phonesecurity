@@ -152,10 +152,10 @@ public class BootTimeReportSettingActivity extends ExpandableListActivity {
 		Map<String, String> systemGroup = new HashMap<String, String>();
 		userGroup.put(GROUP_TITLE,
 				getString(R.string.expandable_group_indicator_minus)
-						+ getString(R.string.boottime_affect_user_apps));
+						+ getString(R.string.user_apps));
 		systemGroup.put(GROUP_TITLE,
 				getString(R.string.expandable_group_indicator_plus)
-						+ getString(R.string.boottime_affect_sys_apps));
+						+ getString(R.string.sys_apps));
 		List<Map<String, Object>> userApps = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> systemApps = new ArrayList<Map<String, Object>>();
 		mPkgMgr = getPackageManager();
@@ -251,7 +251,7 @@ public class BootTimeReportSettingActivity extends ExpandableListActivity {
 			mGroupData.get(groupPosition).put(
 					GROUP_TITLE,
 					getString(R.string.expandable_group_indicator_plus)
-							+ getString(R.string.boottime_affect_sys_apps));
+							+ getString(R.string.sys_apps));
 			mAdapter.notifyDataSetChanged();
 		}
 	}
@@ -263,7 +263,7 @@ public class BootTimeReportSettingActivity extends ExpandableListActivity {
 			mGroupData.get(groupPosition).put(
 					GROUP_TITLE,
 					getString(R.string.expandable_group_indicator_minus)
-							+ getString(R.string.boottime_affect_sys_apps));
+							+ getString(R.string.sys_apps));
 			mAdapter.notifyDataSetChanged();
 		}
 	}

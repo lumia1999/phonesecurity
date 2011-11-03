@@ -12,7 +12,7 @@
 			android:layout_height="wrap_content"
 			android:text="@string/traffic_net_tip"
 			android:textAppearance="?android:attr/textAppearanceMedium"/>
-		<TextView android:id="@+id/traffic_net_total"
+		<TextView android:id="@+id/traffic_mobile_total"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceSmall"
@@ -33,13 +33,31 @@
 			android:textAppearance="?android:attr/textAppearanceSmall"
 			android:paddingLeft="5dip"/>
     </LinearLayout>
-	<TextView android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:paddingTop="5dip"
-		android:paddingBottom="5dip"
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:background="@drawable/bg_gray"
-		android:text="@string/traffic_single_app_rink"/>
+    
+    <RelativeLayout android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:paddingLeft="5dip"
+		android:gravity="center_vertical"
+		android:background="@drawable/bg_gray">        
+        <TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingLeft="2dip"
+			android:paddingTop="5dip"
+			android:paddingBottom="5dip"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:background="@drawable/bg_gray"
+			android:text="@string/traffic_single_app_rink"/>
+        <ProgressBar android:id="@android:id/progress"
+	  		android:layout_width="wrap_content"
+	  		android:layout_height="wrap_content"
+	  		style="?android:attr/progressBarStyleSmallTitle"
+	  		android:layout_alignParentRight="true"
+	  		android:paddingTop="5dip"
+	  		android:paddingBottom="5dip"
+	  		android:paddingRight="5dip"
+	  		android:gravity="center_vertical"/>
+    </RelativeLayout>
+
 	<ExpandableListView android:id="@android:id/list"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"

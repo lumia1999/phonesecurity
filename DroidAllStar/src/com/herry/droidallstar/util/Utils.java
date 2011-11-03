@@ -159,12 +159,17 @@ public final class Utils {
 		if (TextUtils.equals(sdcardState, Environment.MEDIA_MOUNTED)) {
 			StatFs sf = new StatFs(Environment.getExternalStorageDirectory()
 					.getAbsolutePath());
+			sf.restat(Environment.getExternalStorageDirectory()
+					.getAbsolutePath());
 			int totalBlks = sf.getBlockCount();
 			int blkSize = sf.getBlockSize();
 			int avaiBlks = sf.getAvailableBlocks();
 			StringBuilder sb = new StringBuilder();
-			sb.append(Formatter.formatMemory(totalBlks * blkSize)).append("/")
-					.append(Formatter.formatMemory(avaiBlks * blkSize));
+			// Log.d(TAG, "totalBlks : " + totalBlks + ",blkSize : " + blkSize
+			// + ",avaiBlks : " + avaiBlks);
+			sb.append(Formatter.formatMemory(totalBlks * (long) blkSize))
+					.append("/").append(
+							Formatter.formatMemory(avaiBlks * (long) blkSize));
 			return sb.toString();
 		} else {
 			return ctx.getString(R.string.memory_sdcard_value_none);
