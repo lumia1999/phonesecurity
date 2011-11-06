@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="@string/calllog_pref_title">
+  	<com.herry.databackup.preference.CalllogEditTextPreference 
+  		android:key="@string/key_calllog_backup"
+  		android:title="@string/calllog_backup_title"
+  		android:summary="@string/calllog_backup_summary"
+  		android:dialogTitle="@string/calllog_backup_dialog_title"
+  		android:dialogIcon="@android:drawable/ic_dialog_alert"/>
+  	<com.herry.databackup.preference.CalllogViewDialogPreference 
+  		android:key="@string/key_calllog_view"
+  		android:title="@string/calllog_view_title"
+  		android:summary="@string/calllog_view_summary"
+  		android:dialogIcon="@android:drawable/ic_dialog_info"/>
+  	<com.herry.databackup.preference.CalllogDelDialogPreference
+  		android:key="@string/key_calllog_delete"
+  		android:title="@string/calllog_delete_title"
+  		android:summary="@string/calllog_delete_summary"
+  		android:dialogIcon="@android:drawable/ic_dialog_alert"/>
+  </PreferenceCategory>
+  <PreferenceCategory android:title="@string/calllog_alarm_pref_title">
+  	<com.herry.databackup.preference.CalllogDialogCheckboxPreference 
+  		android:key="@string/key_calllog_alarm"
+  		android:title="@string/calllog_alarm_title"
+  		android:defaultValue="true"
+  		android:summaryOn="@string/calllog_alarm_summary_on"
+  		android:summaryOff="@string/calllog_alarm_summary_off"/>
+  	<EditTextPreference 
+  		android:key="@string/key_calllog_alarm_number"
+  		android:title="@string/calllog_alarm_number_title"
+  		android:summary="@string/calllog_alarm_number_summary"
+  		android:dialogTitle="@string/calllog_alarm_number_dialog_title"
+  		android:dialogIcon="@android:drawable/ic_dialog_info"
+  		android:inputType="number"
+  		android:defaultValue="100"
+  		android:persistent="true"
+  		android:hint="@string/calllog_noti_default_number"
+  		android:dependency="@string/key_calllog_alarm"/>
+  	<com.herry.databackup.preference.TestCalllogAlarmDialogPreference 
+  		android:key="@string/key_calllog_test_alarm"
+  		android:title="@string/calllog_test_alarm_title"
+  		android:summary="@string/calllog_test_alarm_summary"
+  		android:dialogIcon="@drawable/android:ic_dialog_alert"
+  		android:dialogMessage="@string/calllog_test_alarm_dialog_message"
+  		android:dependency="@string/key_calllog_alarm"
+  		android:negativeButtonText="@null"/>
+  </PreferenceCategory>
+</PreferenceScreen>
