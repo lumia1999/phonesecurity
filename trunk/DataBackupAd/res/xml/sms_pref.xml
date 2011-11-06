@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="@string/sms_pref_title">
+  	  <com.herry.databackup.preference.SmsEditTextPreference
+  			android:key="@string/key_sms_backup"
+  			android:title="@string/sms_backup_title"
+  			android:summary="@string/sms_backup_summary"
+  			android:dialogTitle="@string/sms_backup_dialog_title"
+  			android:dialogIcon="@android:drawable/ic_dialog_alert"/>
+	  <com.herry.databackup.preference.SmsViewDialogPreference 
+	  		android:key="@string/key_sms_view"
+	  		android:title="@string/sms_view_title"
+	  		android:summary="@string/sms_view_summary"
+	  		android:dialogIcon="@android:drawable/ic_dialog_info"/>
+	  <com.herry.databackup.preference.SmsDelDialogPreference
+	  		android:key="@string/key_sms_delete"
+	  		android:title="@string/sms_delete_title"
+	  		android:summary="@string/sms_delete_summary"
+	  		android:dialogIcon="@android:drawable/ic_dialog_alert"/>
+  </PreferenceCategory>
+  <PreferenceCategory android:title="@string/sms_alarm_pref_title">
+  		<com.herry.databackup.preference.SmsDialogCheckboxPreference
+  			android:key="@string/key_sms_alarm"
+  			android:title="@string/sms_alarm_title"
+  			android:defaultValue="true"
+  			android:summaryOn="@string/sms_alarm_summary_on"
+  			android:summaryOff="@string/sms_alarm_summary_off"/>
+  		<EditTextPreference 
+	  		android:key="@string/key_sms_alarm_number"
+	  		android:title="@string/sms_alarm_number_title"
+	  		android:summary="@string/sms_alarm_number_summary"
+	  		android:dialogTitle="@string/sms_alarm_number_dialog_title"
+	  		android:dialogIcon="@android:drawable/ic_dialog_info"
+	  		android:inputType="number"
+	  		android:defaultValue="300"
+	  		android:persistent="true"
+	  		android:hint="@string/sms_noti_default_number"
+	  		android:dependency="@string/key_sms_alarm"/>
+	  	<com.herry.databackup.preference.TestSmsAlarmDialogPreference
+	  		android:key="@string/key_sms_test_alarm"
+  			android:title="@string/sms_test_alarm_title"
+  			android:summary="@string/sms_test_alarm_summary"
+  			android:dialogIcon="@drawable/android:ic_dialog_alert"
+  			android:dialogMessage="@string/sms_test_alarm_dialog_message"
+  			android:dependency="@string/key_sms_alarm"
+  			android:negativeButtonText="@null"/>
+  </PreferenceCategory>
+</PreferenceScreen>
