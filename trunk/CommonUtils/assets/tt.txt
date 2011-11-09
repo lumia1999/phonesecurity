@@ -1,0 +1,7 @@
+﻿科技园： 22.539,113.962 （深圳南山区白石洲）
+
+http://maps.google.com/maps/api/geocode/json?latlng=22.539,113.962&sensor=false&language=zh-CN
+
+1.标题栏显示转圈
+
+http://android-developers.blogspot.com/2011/06/deep-dive-into-location.html

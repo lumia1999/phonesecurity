@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="hello">Hello World, AlarmTest!</string>
+	<string name="app_name">CommonUtils</string>
+	<!-- new version string def -->
+	<string name="download_new_ver_start">开始下载升级版本</string>
+	<string name="download_new_ver_success">升级版本下载完成，请安装</string>
+	<string name="download_new_ver_fail">升级版本下载失败</string>
+</resources>
