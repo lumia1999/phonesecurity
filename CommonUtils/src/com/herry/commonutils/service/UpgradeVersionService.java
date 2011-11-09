@@ -87,7 +87,7 @@ public class UpgradeVersionService extends Service implements
 		mDownloadUrl = newVer.getUrl();
 		mFileName = newVer.getVersion() + Const.APK_MASK;
 		FileHelper.createFile(FileHelper.NEW_VERSION_DIR, mFileName);
-		Prefs.initNewVerInfo(this, newVer.getVersion(),null);
+		Prefs.initNewVerInfo(this, newVer.getVersion(), null);
 	}
 
 	private void initNotification() {
@@ -156,7 +156,6 @@ public class UpgradeVersionService extends Service implements
 
 	@Override
 	public void onProgressUpdate(Long... value) {
-		// TODO Auto-generated method stub
 		long value0 = value[0];
 		long value1 = value[1];
 		if (value0 < value1) {

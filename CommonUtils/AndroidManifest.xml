@@ -19,6 +19,12 @@
 		</activity>
 		<activity android:name=".view.TestActivity2"></activity>
 		<service android:name=".service.UpgradeVersionService"/>
+		<service android:name=".service.NewVersionCheckService"></service>
+		<receiver android:name=".receiver.Receiver">
+		    <intent-filter>
+		        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+		    </intent-filter>
+		</receiver>
 		<receiver android:name=".widget.TestAppWidgetProvider">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -38,4 +44,5 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	<uses-permission android:name="android.permission.GET_TASKS"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 </manifest> 
