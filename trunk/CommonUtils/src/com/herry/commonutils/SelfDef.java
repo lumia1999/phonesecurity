@@ -47,6 +47,7 @@ public final class SelfDef {
 	 */
 	public static final class NotificationId {
 		public static final int DOWNLOAD_NEW_VER = 100000;
+		public static final int NEW_VER_DISCOVERED = 100001;
 	}
 
 	/**
