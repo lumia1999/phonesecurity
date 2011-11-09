@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:herry="http://schemas.android.com/apk/res/com.herry.commonutils"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical">
+  
+  <com.herry.commonutils.view.LinedEditText 
+  	android:id="@+id/custom_view"
+  	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+  	android:gravity="top"
+  	android:visibility="gone"/>
+  <com.herry.commonutils.view.CustomRadioButton 
+  	android:id="@+id/custom_radio_btn"
+  	android:layout_width="wrap_content"
+  	android:layout_height="wrap_content"
+  	herry:value="herry"
+  	android:text="text"/>
+</LinearLayout>

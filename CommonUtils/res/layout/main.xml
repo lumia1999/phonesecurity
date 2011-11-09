@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+	<Button android:id="@+id/get_loc"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginTop="10dip"
+		android:text="get loc"/>
+	<Button android:id="@+id/custom_layout"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginTop="10dip"
+		android:text="custom view"/>
+	<com.herry.commonutils.view.AlwaysMarqueeTextView 
+		android:id="@+id/always_marquee"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:focusable="true"
+		android:focusableInTouchMode="true"
+		android:singleLine="true"
+		android:ellipsize="marquee"/>
+	<Button android:id="@+id/test"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:text="Text"/>
+</LinearLayout>
