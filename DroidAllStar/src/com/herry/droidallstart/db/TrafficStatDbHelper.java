@@ -25,14 +25,8 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 	}
 
 	public interface SummaryType {
-		public static final int BASE = -1;
 		public static final int TOTAL = 0;
 		public static final int DAILY = 1;
-	}
-
-	public interface Uninstalled {
-		public static final int NO = 0;
-		public static final int YES = 1;
 	}
 
 	private static TrafficStatDbHelper mInstance = null;
@@ -75,12 +69,10 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 				+ SingleStatColumn._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ SingleStatColumn.UID + " INTEGER NOT NULL,"
 				+ SingleStatColumn.pkgName + " TEXT NOT NULL,"
-				+ SingleStatColumn.LABELRES + " INTEGER,"
-				+ SingleStatColumn.ICON + " INTEGER,"
 				+ SingleStatColumn.RXBYTES + " LONG,"
 				+ SingleStatColumn.TXBYTES + " LONG,"
-				+ SingleStatColumn.UNINSTALLED + " INTEGER,"
-				+ SingleStatColumn.TS + " LONG " + ")");
+				+ SingleStatColumn.TOTALBYTES + " LONG," + SingleStatColumn.TS
+				+ " LONG " + ")");
 	}
 
 	public interface TotalStatColumn extends BaseColumns {
@@ -93,11 +85,9 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 	public interface SingleStatColumn extends BaseColumns {
 		public String UID = "uid";
 		public String pkgName = "pkg_name";
-		public String LABELRES = "labelRes";
-		public String ICON = "icon";
 		public String RXBYTES = "rx_bytes";
 		public String TXBYTES = "tx_bytes";
-		public String UNINSTALLED = "uninstalled";
+		public String TOTALBYTES = "total_bytes";
 		public String TS = "timestamp";
 	}
 
@@ -111,23 +101,17 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 		long wifiRxBytes = totalRxBytes - mobileRxBytes;
 		long wifiTxBytes = totalTxBytes - mobileTxBytes;
 		ContentValues values = null;
-		// mobile base stat
+		// mobile total stat
 		values = new ContentValues();
 		values.put(TotalStatColumn.NET_TYPE, NetType.MOBILE);
 		values.put(TotalStatColumn.SUMMARY, mobileRxBytes + mobileTxBytes);
-		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.BASE);
+		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.TOTAL);
 		values.put(TotalStatColumn.TS, System.currentTimeMillis());
 		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
-		// wifi base stat
+		// wifi total stat
 		values = new ContentValues();
 		values.put(TotalStatColumn.NET_TYPE, NetType.WIFI);
 		values.put(TotalStatColumn.SUMMARY, wifiRxBytes + wifiTxBytes);
-		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.BASE);
-		values.put(TotalStatColumn.TS, System.currentTimeMillis());
-		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
-		// mobile total init
-		values = new ContentValues();
-		values.put(TotalStatColumn.NET_TYPE, NetType.MOBILE);
 		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.TOTAL);
 		values.put(TotalStatColumn.TS, System.currentTimeMillis());
 		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
@@ -135,12 +119,6 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 		values = new ContentValues();
 		values.put(TotalStatColumn.NET_TYPE, NetType.MOBILE);
 		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.DAILY);
-		values.put(TotalStatColumn.TS, System.currentTimeMillis());
-		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
-		// wifi total init
-		values = new ContentValues();
-		values.put(TotalStatColumn.NET_TYPE, NetType.WIFI);
-		values.put(TotalStatColumn.SUMMARY_TYPE, SummaryType.TOTAL);
 		values.put(TotalStatColumn.TS, System.currentTimeMillis());
 		db.insert(TOTAL_STAT_TABLE_NAME, TotalStatColumn.NET_TYPE, values);
 		// wifi daily init
@@ -156,31 +134,26 @@ public class TrafficStatDbHelper extends SQLiteOpenHelper {
 
 	private void initSingleTable(SQLiteDatabase db) {
 		PackageManager pm = mCtx.getPackageManager();
-		List<ApplicationInfo> appList = pm
-				.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES);
+		List<ApplicationInfo> appList = pm.getInstalledApplications(0);
 		int size = appList.size();
 		int uid;
 		String pkgName;
-		int labelRes, icon;
-		long rxBytes, txBytes;
+		long rxBytes, txBytes, totalBytes;
 		ApplicationInfo item;
 		ContentValues values;
 		for (int i = 0; i < size; i++) {
 			item = appList.get(i);
 			uid = item.uid;
 			pkgName = item.packageName;
-			labelRes = item.labelRes;
-			icon = item.icon;
 			rxBytes = TrafficStats.getUidRxBytes(uid);
 			txBytes = TrafficStats.getUidTxBytes(uid);
+			totalBytes = rxBytes + txBytes;
 			values = new ContentValues();
 			values.put(SingleStatColumn.UID, uid);
 			values.put(SingleStatColumn.pkgName, pkgName);
-			values.put(SingleStatColumn.LABELRES, labelRes);
-			values.put(SingleStatColumn.ICON, icon);
 			values.put(SingleStatColumn.RXBYTES, rxBytes);
 			values.put(SingleStatColumn.TXBYTES, txBytes);
-			values.put(SingleStatColumn.UNINSTALLED, Uninstalled.NO);
+			values.put(SingleStatColumn.TOTALBYTES, totalBytes);
 			values.put(SingleStatColumn.TS, System.currentTimeMillis());
 			db.insert(SINGLE_STAT_TABLE_NAME, SingleStatColumn.pkgName, values);
 		}
