@@ -11,24 +11,31 @@
     <application android:icon="@drawable/icon" android:label="@string/app_name"
         android:name=".App">
         <activity android:name=".view.MainActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name"
+                  android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".view.BasicInfoActivity"
-        	android:label="@string/item_basic_info"/>
+        	android:label="@string/item_basic_info"
+        	android:configChanges="orientation|keyboardHidden"/>
 		<activity android:name=".view.SystemFeatureActivity"
-			android:label="@string/system_feature_label"/>
+			android:label="@string/system_feature_label"
+			android:configChanges="orientation|keyboardHidden"/>
 		<activity android:name=".view.StorageSpeedCheckActivity"
-			android:label="@string/item_sdcard_perform_check"/>
+			android:label="@string/item_sdcard_perform_check"
+			android:configChanges="orientation|keyboardHidden"/>
 		<activity android:name=".view.BootTimeReportSettingActivity"
-			android:label="@string/boottime_report_setting_label"/>
+			android:label="@string/boottime_report_setting_label"
+			android:configChanges="orientation|keyboardHidden"/>
 		<activity android:name=".view.BootTimeHistoryViewActivity"
-		    android:label="@string/boottime_history_activity_label"></activity>
+		    android:label="@string/boottime_history_activity_label"
+		    android:configChanges="orientation|keyboardHidden"></activity>
 		<activity android:name=".view.TrafficStatActivity"
-		    android:label="@string/traffic_stat_label"></activity>
+		    android:label="@string/traffic_stat_label"
+		    android:configChanges="orientation|keyboardHidden"></activity>
 		<receiver android:name=".receiver.Receiver">
 			<intent-filter android:priority="1000">
 				<action android:name="android.intent.action.BOOT_COMPLETED"/>

@@ -145,4 +145,8 @@
 	<string name="traffic_net_tip">手机网络总使用量：</string>
 	<string name="traffic_wifi_tip">WIFI网络总使用量：</string>
 	<string name="traffic_single_app_rink">应用流量消耗排行榜</string>
+	<string name="traffic_stat_start_time">自应用安装使用开始统计</string>
+	<string name="total">总：</string>
+	<string name="up">上行：</string>
+	<string name="down">下行：</string>
 </resources>

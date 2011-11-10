@@ -1,5 +1,7 @@
 package com.herry.droidallstar.service;
 
+import com.herry.droidallstart.db.TrafficStatDbAdapter;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +20,7 @@ public class TrafficStatService extends Service {
 	private Thread mStatThread;
 
 	private static final long REFRESH_INTERVAL = 10 * 1000;// 10s
+
 	private static final int MSG_REFETCH_TRAFFIC = 1;
 
 	public static void startService(Context ctx) {
@@ -79,6 +82,7 @@ public class TrafficStatService extends Service {
 						break;
 					}
 					// TODO
+
 				}
 			}
 
@@ -86,6 +90,12 @@ public class TrafficStatService extends Service {
 		mStatThread.setName(TrafficStatService.class.getName());
 		mStatThread.setPriority(Thread.NORM_PRIORITY);
 		mStatThread.start();
+	}
+
+	private void totalStat() {
+		TrafficStatDbAdapter trafficStatDbAdapter = TrafficStatDbAdapter
+				.getInstance(this);
+		
 	}
 
 }
