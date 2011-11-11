@@ -226,8 +226,10 @@ public class RecentAddedActivity extends ListActivity {
 				break;
 			}
 		}
+		Log.d(TAG, "size : " + mDataList.size());
 		if (mDataList.size() < 1) {
 			mEmptyTipTxt.setVisibility(View.VISIBLE);
+			getListView().setVisibility(View.GONE);
 		} else {
 			mAdapter.notifyDataSetChanged();
 		}

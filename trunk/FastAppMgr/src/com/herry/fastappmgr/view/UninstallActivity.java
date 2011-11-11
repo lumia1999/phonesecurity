@@ -2,11 +2,12 @@ package com.herry.fastappmgr.view;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import net.youmi.android.AdManager;
 import net.youmi.android.AdView;
-import net.youmi.android.appoffers.AppOffersManager;
 
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
@@ -210,6 +211,7 @@ public class UninstallActivity extends ListActivity {
 		String pkgName;
 		String versionName;
 		String size;
+		long orgSize = 0;
 		try {
 			label = pm.getApplicationLabel(info.applicationInfo).toString();
 			drawable = pm.getApplicationIcon(info.applicationInfo);
@@ -219,7 +221,9 @@ public class UninstallActivity extends ListActivity {
 				Log.d(TAG, "versionName : " + versionName);
 			}
 			size = "0MB";// TEMP
-			return new Item(label, drawable, pkgName, versionName, size);
+			orgSize = 0;
+			return new Item(label, drawable, pkgName, versionName, size,
+					orgSize);
 		} catch (Exception e) {
 			return null;
 		}
@@ -231,14 +235,16 @@ public class UninstallActivity extends ListActivity {
 		private String pkgName;
 		private String versionName;
 		private String size;
+		private long orgSize;
 
 		public Item(String label, Drawable drawable, String pkgName,
-				String versionName, String size) {
+				String versionName, String size, long orgSize) {
 			this.label = label;
 			this.icon = drawable;
 			this.pkgName = pkgName;
 			this.versionName = versionName;
 			this.size = size;
+			this.orgSize = orgSize;
 		}
 	}
 
@@ -258,9 +264,12 @@ public class UninstallActivity extends ListActivity {
 			item = mDataList.get(i);
 			if (item.pkgName.equals(pkgName)) {
 				item.size = Utils.formatSize(size);
+				item.orgSize = size;
+				break;
 			}
 		}
 		if (mIndex == mTotalAppNum) {
+			Collections.sort(mDataList, new AppSort());
 			mHandler.sendEmptyMessage(MSG_FILL_DATA);
 		}
 	}
@@ -286,6 +295,21 @@ public class UninstallActivity extends ListActivity {
 			msg.what = MSG_REFRESH_PKG_SIZE;
 			msg.obj = pStats;
 			mHandler.sendMessage(msg);
+		}
+	}
+
+	private class AppSort implements Comparator<Item> {
+
+		@Override
+		public int compare(Item item1, Item item2) {
+			if (item1.orgSize > item2.orgSize) {
+				return -1;
+			} else if (item1.orgSize == item2.orgSize) {
+				return 0;
+			} else if (item1.orgSize < item2.orgSize) {
+				return 1;
+			}
+			return 0;
 		}
 	}
 
