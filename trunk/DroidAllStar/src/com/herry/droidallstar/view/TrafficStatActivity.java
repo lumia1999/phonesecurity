@@ -1,16 +1,16 @@
 package com.herry.droidallstar.view;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Dialog;
 import android.app.ExpandableListActivity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -160,6 +160,29 @@ public class TrafficStatActivity extends ExpandableListActivity {
 		}
 		if (systemApps.size() > 0) {
 			mChildData.add(systemApps);
+		}
+		if (mChildData != null && mChildData.size() > 0) {
+			for (int i = 0; i < mChildData.size(); i++) {
+				Collections.sort(mChildData.get(i), new AppSort());
+			}
+		}
+	}
+
+	private class AppSort implements Comparator<Map<String, Object>> {
+
+		@Override
+		public int compare(Map<String, Object> item1, Map<String, Object> item2) {
+			if ((Long) item1.get(ITEM_TOTALBYTES) > (Long) item2
+					.get(ITEM_TOTALBYTES)) {
+				return -1;
+			} else if ((Long) item1.get(ITEM_TOTALBYTES) == (Long) item2
+					.get(ITEM_TOTALBYTES)) {
+				return 0;
+			} else if ((Long) item1.get(ITEM_TOTALBYTES) < (Long) item2
+					.get(ITEM_TOTALBYTES)) {
+				return 1;
+			}
+			return 0;
 		}
 	}
 
