@@ -11,6 +11,7 @@
     android:paddingBottom="5dip"
     android:minHeight="40dip"
     android:gravity="center_vertical|center_horizontal"
+    android:textAppearance="?android:attr/textAppearanceSmall"
     android:visibility="gone"/>
 		  <TabHost android:id="@android:id/tabhost"
 		  	android:layout_width="fill_parent"

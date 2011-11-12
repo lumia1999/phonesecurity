@@ -1,22 +1,35 @@
 package com.herry.fastappmgr.view;
 
+import java.util.logging.ConsoleHandler;
+
 import net.youmi.android.appoffers.AppOffersManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.herry.fastappmgr.R;
+import com.herry.fastappmgr.RomInfo;
+import com.herry.fastappmgr.util.Constants;
 import com.herry.fastappmgr.util.Prefs;
 import com.herry.fastappmgr.util.Utils;
 
@@ -25,18 +38,80 @@ public class AppTabActivity extends TabActivity {
 	private static final int DLG_ABOUT_ID = 1;
 
 	private TextView mYoumiOfferTipTxt;
+	private RomInfo mRomInfo;
+
+	private static final int MSG_CHANGE_TIP = 1;
+	private static final int MSG_UPDATE_ROM_INFO = 2;
+	private Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case MSG_CHANGE_TIP:
+				Animation a = AnimationUtils.loadAnimation(
+						getApplicationContext(), R.anim.out_youmioffer_tip);
+				a.setAnimationListener(out);
+				mYoumiOfferTipTxt.startAnimation(a);
+				break;
+			case MSG_UPDATE_ROM_INFO:
+				Log.d(TAG, "MSG_UPDATE_ROM_INFO");
+				mRomInfo = Utils.getRomInfo();
+				mYoumiOfferTipTxt.setText(mRomInfo
+						.toString(getApplicationContext()));
+				break;
+			}
+		}
+
+	};
+
+	AnimationListener out = new AnimationListener() {
+
+		@Override
+		public void onAnimationStart(Animation animation) {
+
+		}
+
+		@Override
+		public void onAnimationRepeat(Animation animation) {
+
+		}
+
+		@Override
+		public void onAnimationEnd(Animation animation) {
+			Animation a = AnimationUtils.loadAnimation(getApplicationContext(),
+					R.anim.in_youmioffer_tip);
+			mYoumiOfferTipTxt.setText(mRomInfo
+					.toString(getApplicationContext()));
+			mYoumiOfferTipTxt.startAnimation(a);
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab);
+		registerReceiver();
 		initUI();
+	}
+
+	@Override
+	protected void onDestroy() {
+		unregisterReceiver();
+		super.onDestroy();
 	}
 
 	private void initUI() {
 		mYoumiOfferTipTxt = (TextView) findViewById(R.id.youmiofferTip);
+		mRomInfo = Utils.getRomInfo();
 		if (Prefs.showYoumiOffer(this) && !Utils.youmiofferPointsReach(this)) {
 			mYoumiOfferTipTxt.setText(R.string.youmioffertip);
+			mYoumiOfferTipTxt.setVisibility(View.VISIBLE);
+			Message msg = mHandler.obtainMessage();
+			msg.what = MSG_CHANGE_TIP;
+			mHandler.sendMessageDelayed(msg, 3000);
+		} else {
+			mYoumiOfferTipTxt.setText(mRomInfo.toString(this));
 			mYoumiOfferTipTxt.setVisibility(View.VISIBLE);
 		}
 		AppOffersManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f",
@@ -121,5 +196,26 @@ public class AppTabActivity extends TabActivity {
 			return getString(R.string.no_version_current);
 		}
 	}
+
+	private void registerReceiver() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Constants.ACTION_UPDATE_ROM);
+		registerReceiver(mUpdateRomInfoReceiver, filter);
+	}
+
+	private void unregisterReceiver() {
+		unregisterReceiver(mUpdateRomInfoReceiver);
+	}
+
+	private BroadcastReceiver mUpdateRomInfoReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (TextUtils.equals(action, Constants.ACTION_UPDATE_ROM)) {
+				mHandler.sendEmptyMessage(MSG_UPDATE_ROM_INFO);
+			}
+		}
+	};
 
 }

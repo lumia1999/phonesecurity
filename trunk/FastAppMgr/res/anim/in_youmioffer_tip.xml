@@ -4,16 +4,4 @@
 	android:toAlpha="1.0"
 	android:duration="1000">
 </alpha>
-<rotate  
-   android:interpolator="@android:anim/accelerate_decelerate_interpolator"    
-   android:fromDegrees="0"     
-   android:toDegrees="+180"    
-   android:duration="2000" />
-<translate android:fromXDelta="0"
-	android:fromYDelta="0"
-	android:toXDelta="400"
-	android:toYDelta="0"
-	android:duration="2000">	
-</translate>
-
 </set>

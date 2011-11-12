@@ -3,9 +3,12 @@ package com.herry.fastappmgr.util;
 import java.text.DecimalFormat;
 
 import net.youmi.android.appoffers.AppOffersManager;
-
 import android.content.Context;
+import android.os.Environment;
+import android.os.StatFs;
 import android.text.format.DateUtils;
+
+import com.herry.fastappmgr.RomInfo;
 
 public final class Utils {
 
@@ -55,7 +58,6 @@ public final class Utils {
 		}
 	}
 
-
 	public static boolean youmiofferPointsReach(Context ctx) {
 		int points = AppOffersManager.getPoints(ctx);
 		if (points >= MAX_OFFER_POINTS) {
@@ -63,5 +65,14 @@ public final class Utils {
 		} else {
 			return false;
 		}
+	}
+
+	public static RomInfo getRomInfo() {
+		StatFs sf = new StatFs(Environment.getDataDirectory().getAbsolutePath());
+		int totalBlks = sf.getBlockCount();
+		int blkSize = sf.getBlockSize();
+		int avaiBlks = sf.getAvailableBlocks();
+		return new RomInfo((long) totalBlks * blkSize, (long) avaiBlks
+				* blkSize);
 	}
 }

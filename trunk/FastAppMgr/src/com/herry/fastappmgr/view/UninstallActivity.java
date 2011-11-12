@@ -78,6 +78,18 @@ public class UninstallActivity extends ListActivity {
 					mDataList.remove(mDelPos);
 					mDelPos = -1;// reset
 					mAdapter.notifyDataSetChanged();
+				} else {
+					String pkgName = (String) msg.obj;
+					int size = mDataList.size();
+					Item item = null;
+					for (int i = 0; i < size; i++) {
+						item = mDataList.get(i);
+						if (TextUtils.equals(pkgName, item.pkgName)) {
+							mDataList.remove(i);
+							mAdapter.notifyDataSetChanged();
+							break;
+						}
+					}
 				}
 				break;
 			}
@@ -151,7 +163,16 @@ public class UninstallActivity extends ListActivity {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			if (TextUtils.equals(action, Intent.ACTION_PACKAGE_REMOVED)) {
-				mHandler.sendEmptyMessage(MSG_UPDATE_UI_UNINSTALL);
+				Uri data = intent.getData();
+				if (data != null) {
+					String pkgName = data.getSchemeSpecificPart();
+					if (pkgName != null) {
+						Message msg = mHandler.obtainMessage();
+						msg.obj = pkgName;
+						msg.what = MSG_UPDATE_UI_UNINSTALL;
+						mHandler.sendEmptyMessage(MSG_UPDATE_UI_UNINSTALL);
+					}
+				}
 			}
 		}
 	};

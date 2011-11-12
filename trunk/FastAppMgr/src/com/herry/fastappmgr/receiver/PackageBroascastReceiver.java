@@ -2,6 +2,7 @@ package com.herry.fastappmgr.receiver;
 
 import com.herry.fastappmgr.db.PackageAddedDbAdapter;
 import com.herry.fastappmgr.db.PackageAddedDbHelper.RecentAddedPkgColumn;
+import com.herry.fastappmgr.util.Constants;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -50,6 +51,9 @@ public class PackageBroascastReceiver extends BroadcastReceiver {
 						.getInstance(ctx);
 				adapter.deleteItem(pkgName);
 				adapter.releaseMemory();
+				if (!TextUtils.equals(pkgName, ctx.getPackageName())) {
+					ctx.sendBroadcast(new Intent(Constants.ACTION_UPDATE_ROM));
+				}
 			}
 		}
 	}
