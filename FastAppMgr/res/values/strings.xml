@@ -15,4 +15,6 @@
     <string name="youmioffertip">点击Menu，下载您中意的应用\n
 		积分达到200分，即可升级为无广告版本</string>
 	<string name="youmioffertip_noad">点击Menu，查看下载您中意的App</string>
+	<string name="rom_total_tip">ROM总容量：</string>
+	<string name="rom_left_tip">剩余容量：</string>
 </resources>
