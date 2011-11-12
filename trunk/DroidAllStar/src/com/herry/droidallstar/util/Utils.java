@@ -182,8 +182,8 @@ public final class Utils {
 		int blkSize = sf.getBlockSize();
 		int avaiBlks = sf.getAvailableBlocks();
 		StringBuilder sb = new StringBuilder();
-		sb.append(Formatter.formatMemory(totalBlks * blkSize)).append("/")
-				.append(Formatter.formatMemory(avaiBlks * blkSize));
+		sb.append(Formatter.formatMemory(totalBlks * (long) blkSize)).append(
+				"/").append(Formatter.formatMemory(avaiBlks * (long) blkSize));
 		return sb.toString();
 	}
 
