@@ -17,4 +17,7 @@
 	<string name="youmioffertip_noad">点击Menu，查看下载您中意的App</string>
 	<string name="rom_total_tip">ROM总容量：</string>
 	<string name="rom_left_tip">剩余容量：</string>
+	<string name="ram_total_tip">RAM总容量：</string>
+	<string name="ram_left_tip">剩余容量：</string>
+	<string name="ram_rom_intro_dlg_title">Ram、Rom简介</string>
 </resources>

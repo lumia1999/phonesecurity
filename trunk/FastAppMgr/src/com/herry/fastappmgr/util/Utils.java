@@ -1,14 +1,21 @@
 package com.herry.fastappmgr.util;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.DecimalFormat;
 
 import net.youmi.android.appoffers.AppOffersManager;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Environment;
 import android.os.StatFs;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 
-import com.herry.fastappmgr.RomInfo;
+import com.herry.fastappmgr.MemoryInfo;
 
 public final class Utils {
 
@@ -17,6 +24,8 @@ public final class Utils {
 	private static final int formatDateAllFlag = DateUtils.FORMAT_SHOW_DATE
 			| DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR
 			| DateUtils.FORMAT_SHOW_TIME;
+
+	private static final String RAM_INFO_PATH = "/proc/meminfo";
 
 	public static String formatAll(Context ctx, long date) {
 		return DateUtils.formatDateTime(ctx, date, formatDateAllFlag);
@@ -49,7 +58,7 @@ public final class Utils {
 		} else if (value < 1024 * 1024 * 1.0) {
 			// KB
 			return formatDecimal(value / (1024 * 1.0)) + "KB";
-		} else if (value < 1024 * 1024 * 1024 * 1.0) {
+		} else if (value < 0.9 * 1024 * 1024 * 1024 * 1.0) {
 			// MB
 			return formatDecimal(value / (1024 * 1024 * 1.0)) + "MB";
 		} else {
@@ -67,12 +76,39 @@ public final class Utils {
 		}
 	}
 
-	public static RomInfo getRomInfo() {
+	public static MemoryInfo getMemoryInfo(Context ctx) {
 		StatFs sf = new StatFs(Environment.getDataDirectory().getAbsolutePath());
 		int totalBlks = sf.getBlockCount();
 		int blkSize = sf.getBlockSize();
 		int avaiBlks = sf.getAvailableBlocks();
-		return new RomInfo((long) totalBlks * blkSize, (long) avaiBlks
-				* blkSize);
+		long ramTotal = -1L, ramLeft = -1L;
+		BufferedReader br = null;
+		try {
+			File f = new File(RAM_INFO_PATH);
+			br = new BufferedReader(new FileReader(f));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				break;
+			}
+			int idx = line.indexOf(":");
+			if (idx != -1) {
+				line = line.substring(idx + 1).trim();
+				String[] splits = line.split(" ");
+				if (TextUtils.equals(splits[1], "kB")) {
+					ramTotal = Long.valueOf(splits[0]) * 1024;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		ActivityManager am = (ActivityManager) ctx
+				.getSystemService(Context.ACTIVITY_SERVICE);
+		ActivityManager.MemoryInfo info = new ActivityManager.MemoryInfo();
+		am.getMemoryInfo(info);
+		ramLeft = info.availMem;
+		return new MemoryInfo((long) totalBlks * blkSize, (long) avaiBlks
+				* blkSize, ramTotal, ramLeft);
 	}
 }
