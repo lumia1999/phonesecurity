@@ -40,6 +40,7 @@ import android.telephony.NeighboringCellInfo;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -498,4 +499,39 @@ public class Utils {
 		nm.cancel(id);
 	}
 
+	public static TimeInfo getTimeInfo(Context ctx, long ts, int timeFormat) {
+		String hour = null, minute = null, ampm = null;
+		String temp = DateUtils.formatDateTime(ctx, ts,
+				DateUtils.FORMAT_SHOW_TIME | timeFormat);
+		int idx = -1;
+		boolean success = false;
+		switch (timeFormat) {
+		case DateUtils.FORMAT_12HOUR:
+			idx = temp.indexOf(" ");
+			if (idx != -1) {
+				ampm = temp.substring(0, idx);
+				temp = temp.substring(idx + 1);
+				idx = temp.indexOf(":");
+				if (idx != -1) {
+					hour = temp.substring(0, idx);
+					minute = temp.substring(idx + 1);
+					success = true;
+				}
+			}
+			break;
+		case DateUtils.FORMAT_24HOUR:
+			idx = temp.indexOf(":");
+			if (idx != -1) {
+				hour = temp.substring(0, idx);
+				minute = temp.substring(idx + 1);
+				success = true;
+			}
+			break;
+		}
+		if (success) {
+			return new TimeInfo(hour, minute, ampm, timeFormat);
+		} else {
+			return null;
+		}
+	}
 }

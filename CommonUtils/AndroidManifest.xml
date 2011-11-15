@@ -25,16 +25,20 @@
 		        <action android:name="android.intent.action.BOOT_COMPLETED"/>
 		    </intent-filter>
 		</receiver>
-		<receiver android:name=".widget.TestAppWidgetProvider">
-			<intent-filter>
-				<action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-			</intent-filter>
-			<meta-data android:name="android.appwidget.provider"
-				android:resource="@xml/test_widget_provider"/>
-		</receiver>
-		<service android:name=".widget.TestWidgetService"/>
 		<provider android:name=".provider.PlaceProvider"
 			android:authorities="com.herry.commonutils"/>
+		
+		<receiver android:name=".widget.DemoAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/demo_appwidget_info"/>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".service.WidgetService"></service>
 	</application>
 
 	<uses-permission android:name="android.permission.INTERNET" />
