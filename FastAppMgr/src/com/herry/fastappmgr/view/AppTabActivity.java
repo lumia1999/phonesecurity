@@ -1,7 +1,5 @@
 package com.herry.fastappmgr.view;
 
-import java.util.logging.ConsoleHandler;
-
 import net.youmi.android.appoffers.AppOffersManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,14 +19,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Animation.AnimationListener;
+import android.webkit.WebView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.herry.fastappmgr.R;
-import com.herry.fastappmgr.RomInfo;
+import com.herry.fastappmgr.MemoryInfo;
 import com.herry.fastappmgr.util.Constants;
 import com.herry.fastappmgr.util.Prefs;
 import com.herry.fastappmgr.util.Utils;
@@ -36,9 +36,11 @@ import com.herry.fastappmgr.util.Utils;
 public class AppTabActivity extends TabActivity {
 	private static final String TAG = "AppTabActivity";
 	private static final int DLG_ABOUT_ID = 1;
+	private static final int DLG_SHOW_RAM_ROM_INFO = 2;
 
 	private TextView mYoumiOfferTipTxt;
-	private RomInfo mRomInfo;
+	private MemoryInfo mRomInfo;
+	private boolean mTipClickable;
 
 	private static final int MSG_CHANGE_TIP = 1;
 	private static final int MSG_UPDATE_ROM_INFO = 2;
@@ -53,10 +55,11 @@ public class AppTabActivity extends TabActivity {
 						getApplicationContext(), R.anim.out_youmioffer_tip);
 				a.setAnimationListener(out);
 				mYoumiOfferTipTxt.startAnimation(a);
+				mTipClickable = true;
 				break;
 			case MSG_UPDATE_ROM_INFO:
 				Log.d(TAG, "MSG_UPDATE_ROM_INFO");
-				mRomInfo = Utils.getRomInfo();
+				mRomInfo = Utils.getMemoryInfo(getApplicationContext());
 				mYoumiOfferTipTxt.setText(mRomInfo
 						.toString(getApplicationContext()));
 				break;
@@ -102,8 +105,11 @@ public class AppTabActivity extends TabActivity {
 	}
 
 	private void initUI() {
+		AppOffersManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f",
+				false);
+		mTipClickable = false;
 		mYoumiOfferTipTxt = (TextView) findViewById(R.id.youmiofferTip);
-		mRomInfo = Utils.getRomInfo();
+		mRomInfo = Utils.getMemoryInfo(this);
 		if (Prefs.showYoumiOffer(this) && !Utils.youmiofferPointsReach(this)) {
 			mYoumiOfferTipTxt.setText(R.string.youmioffertip);
 			mYoumiOfferTipTxt.setVisibility(View.VISIBLE);
@@ -111,11 +117,20 @@ public class AppTabActivity extends TabActivity {
 			msg.what = MSG_CHANGE_TIP;
 			mHandler.sendMessageDelayed(msg, 3000);
 		} else {
+			mTipClickable = true;
 			mYoumiOfferTipTxt.setText(mRomInfo.toString(this));
 			mYoumiOfferTipTxt.setVisibility(View.VISIBLE);
 		}
-		AppOffersManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f",
-				false);
+		mYoumiOfferTipTxt.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "mTipClickable : " + mTipClickable);
+				if (mTipClickable) {
+					showDialog(DLG_SHOW_RAM_ROM_INFO);
+				}
+			}
+		});
 		Resources res = getResources();
 		TabHost tabHost = getTabHost();
 		TabHost.TabSpec spec;
@@ -178,6 +193,12 @@ public class AppTabActivity extends TabActivity {
 			versionInfo.setText(getAppVersion());
 			return new AlertDialog.Builder(this).setView(aboutView)
 					.setPositiveButton(android.R.string.ok, null).create();
+		case DLG_SHOW_RAM_ROM_INFO:
+			WebView webView = new WebView(this);
+			webView.loadUrl("file:///android_asset/ram_rom_intro.html");
+			return new AlertDialog.Builder(this).setIcon(
+					android.R.drawable.ic_dialog_alert).setTitle(
+					R.string.ram_rom_intro_dlg_title).setView(webView).create();
 		default:
 			return super.onCreateDialog(id);
 		}
