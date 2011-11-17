@@ -19,6 +19,8 @@ public class Prefs {
 	private static final String APP_NEW_VERSION_ALARM_STARTED = "new_version_alarm_started";
 	private static final String APP_NEW_VERSION_URL = "new_version_url";
 
+	private static final String APPPWIDGET_IDS = "appwidget_id";
+
 	// just for test
 	private static final String TEST_COUNT = "test_count";
 
@@ -204,5 +206,17 @@ public class Prefs {
 	public static String getNewVerUrl(Context ctx) {
 		SharedPreferences pref = get(ctx);
 		return pref.getString(APP_NEW_VERSION_URL, null);
+	}
+
+	public static boolean setAppWidgetIds(Context ctx, String ids) {
+		SharedPreferences pref = get(ctx);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putString(APPPWIDGET_IDS, ids);
+		return editor.commit();
+	}
+
+	public static String getAppWidgetIds(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		return pref.getString(APPPWIDGET_IDS, null);
 	}
 }
