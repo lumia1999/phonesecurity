@@ -1,5 +1,6 @@
 package com.herry.commonutils.widget;
 
+import com.herry.commonutils.Prefs;
 import com.herry.commonutils.service.WidgetService;
 
 import android.appwidget.AppWidgetManager;
@@ -17,9 +18,25 @@ public class DemoAppWidgetProvider extends AppWidgetProvider {
 			int[] appWidgetIds) {
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 		Log.d(TAG, "onUpdate");
-		for (int i = 0; i < appWidgetIds.length; i++) {
-			Log.d(TAG, "id : " + appWidgetIds[i]);
+		saveWidgetIds(context, appWidgetIds);
+		Intent i = new Intent(context, WidgetService.class);
+		i.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+		context.startService(i);
+	}
+
+	private void saveWidgetIds(Context ctx, int[] appWidgetIds) {
+		String prefIds = Prefs.getAppWidgetIds(ctx);
+		StringBuilder sb = new StringBuilder();
+		sb.append(prefIds);
+		if (prefIds == null) {
+			sb.append(",");
 		}
+		int length = appWidgetIds.length;
+		for (int i = 0; i < length - 1; i++) {
+			sb.append(appWidgetIds[i]).append(",");
+		}
+		sb.append(appWidgetIds[length - 1]);
+		Prefs.setAppWidgetIds(ctx, sb.toString());
 	}
 
 	@Override
@@ -28,12 +45,56 @@ public class DemoAppWidgetProvider extends AppWidgetProvider {
 		String action = intent.getAction();
 		Log.d(TAG, "action : " + action);
 		Intent i = new Intent(context, WidgetService.class);
-		if (TextUtils.equals(action, AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
-			i.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-			context.startService(i);
-		} else if (TextUtils.equals(action, Intent.ACTION_TIME_CHANGED)) {
-
+		if (TextUtils.equals(action, Intent.ACTION_TIME_CHANGED)) {
+			i.setAction(Intent.ACTION_TIME_CHANGED);
+			if (Prefs.getAppWidgetIds(context) != null) {
+				context.startService(i);
+			}
 		}
 	}
 
+	@Override
+	public void onDisabled(Context context) {
+		super.onDisabled(context);
+		Prefs.setAppWidgetIds(context, null);
+		Intent i = new Intent(context, WidgetService.class);
+		context.stopService(i);
+	}
+
+	@Override
+	public void onDeleted(Context context, int[] appWidgetIds) {
+		super.onDeleted(context, appWidgetIds);
+		changeWidgetIds(context, appWidgetIds);
+	}
+
+	private void changeWidgetIds(Context ctx, int[] appWidgetIds) {
+		String prefIds = Prefs.getAppWidgetIds(ctx);
+		if (prefIds == null) {
+			return;
+		}
+		int length = appWidgetIds.length;
+		String[] prefIdsArray = prefIds.split(",");
+		int deletedLen = appWidgetIds.length;
+		String id;
+		int idx;
+		for (int i = 0; i < deletedLen; i++) {
+			id = String.valueOf(appWidgetIds[i]);
+			for (int j = 0; j < length; j++) {
+				if (TextUtils.equals(id, prefIdsArray[j])) {
+					// remove it from preference
+					idx = prefIds.indexOf(id);
+					if (idx == -1) {
+						break;
+					}
+					if (idx == prefIds.length() - 1) {
+						prefIds = prefIds.replace("," + id, "");
+					} else {
+						prefIds = prefIds.replace(id + ",", "");
+					}
+					break;
+				}
+			}
+		}
+		Prefs.setAppWidgetIds(ctx, prefIds);
+	}
 }

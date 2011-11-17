@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -74,6 +75,9 @@ public class TestActivity extends Activity implements OnClickListener,
 		Log
 				.i(TAG, "params : " + params.getWindth() + "\t"
 						+ params.getHeight());
+		String timeFormat = Settings.System.getString(getContentResolver(),
+				Settings.System.TIME_12_24);
+		Log.d(TAG, "timeFormat : " + timeFormat);
 	}
 
 	@Override
