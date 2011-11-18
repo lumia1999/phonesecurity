@@ -39,6 +39,7 @@
             </intent-filter>
         </receiver>
         <service android:name=".service.WidgetService"></service>
+        <service android:name=".service.DumpWidgetService"></service>
 	</application>
 
 	<uses-permission android:name="android.permission.INTERNET" />
