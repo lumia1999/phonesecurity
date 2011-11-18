@@ -1,6 +1,7 @@
 package com.herry.commonutils.widget;
 
 import com.herry.commonutils.Prefs;
+import com.herry.commonutils.service.DumpWidgetService;
 import com.herry.commonutils.service.WidgetService;
 
 import android.appwidget.AppWidgetManager;
@@ -19,7 +20,7 @@ public class DemoAppWidgetProvider extends AppWidgetProvider {
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 		Log.d(TAG, "onUpdate");
 		saveWidgetIds(context, appWidgetIds);
-		Intent i = new Intent(context, WidgetService.class);
+		Intent i = new Intent(context, DumpWidgetService.class);
 		i.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 		context.startService(i);
 	}
