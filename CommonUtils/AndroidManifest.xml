@@ -38,7 +38,9 @@
                 <action android:name="android.intent.action.TIME_SET"/>
             </intent-filter>
         </receiver>
+        <!-- 
         <service android:name=".service.WidgetService"></service>
+         -->
         <service android:name=".service.DumpWidgetService"></service>
 	</application>
 

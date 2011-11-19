@@ -2,7 +2,6 @@ package com.herry.commonutils.widget;
 
 import com.herry.commonutils.Prefs;
 import com.herry.commonutils.service.DumpWidgetService;
-import com.herry.commonutils.service.WidgetService;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -45,7 +44,7 @@ public class DemoAppWidgetProvider extends AppWidgetProvider {
 		super.onReceive(context, intent);
 		String action = intent.getAction();
 		Log.d(TAG, "action : " + action);
-		Intent i = new Intent(context, WidgetService.class);
+		Intent i = new Intent(context, DumpWidgetService.class);
 		if (TextUtils.equals(action, Intent.ACTION_TIME_CHANGED)) {
 			i.setAction(Intent.ACTION_TIME_CHANGED);
 			if (Prefs.getAppWidgetIds(context) != null) {
@@ -58,7 +57,7 @@ public class DemoAppWidgetProvider extends AppWidgetProvider {
 	public void onDisabled(Context context) {
 		super.onDisabled(context);
 		Prefs.setAppWidgetIds(context, null);
-		Intent i = new Intent(context, WidgetService.class);
+		Intent i = new Intent(context, DumpWidgetService.class);
 		context.stopService(i);
 	}
 

@@ -6,4 +6,6 @@
 	<string name="download_new_ver_start">开始下载升级版本</string>
 	<string name="download_new_ver_success">升级版本下载完成，请安装</string>
 	<string name="download_new_ver_fail">升级版本下载失败</string>
+	
+	<string name="ticket_tip">您目前尚未处理的罚单数：</string>
 </resources>
