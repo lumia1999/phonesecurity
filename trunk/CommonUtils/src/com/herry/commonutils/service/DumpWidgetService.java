@@ -3,19 +3,20 @@ package com.herry.commonutils.service;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.herry.commonutils.Prefs;
 import com.herry.commonutils.R;
 import com.herry.commonutils.TimeInfo;
 import com.herry.commonutils.Utils;
+import com.herry.commonutils.view.TestActivity;
 import com.herry.commonutils.widget.DemoAppWidgetProvider;
 
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -23,27 +24,17 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
 
 public class DumpWidgetService extends Service {
-	private static final String TAG = "WidgetService";
+	private static final String TAG = "DumpWidgetService";
 	private TimeInfo mOldTimerInfo;
 	private TimeInfo mTimeInfo;
 	private Timer timer;
 	private boolean mAlive;
 	private String mTimeFormat;
-	private Uri mTimeUri;
-	private TimeFormatObserver mTimeFormatObserver;
 
 	public static final String ACTION_SELF_START = "com.herry.commonutils.ACTION_SELF_START";
-
-	public static void selfStart(Context ctx) {
-		Intent i = new Intent();
-		i.setClass(ctx, WidgetService.class);
-		i.setAction(ACTION_SELF_START);
-		ctx.startActivity(i);
-	}
 
 	private static final int MSG_UPDATE_TIME = 1;
 	private Handler mHandler = new Handler() {
@@ -53,7 +44,7 @@ public class DumpWidgetService extends Service {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case MSG_UPDATE_TIME:
-				updateWidget(TYPE_NORMAL);
+				updateWidget();
 				break;
 			}
 		}
@@ -69,6 +60,16 @@ public class DumpWidgetService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		Log.d(TAG, "onCreate");
+		if (Prefs.getAppWidgetIds(this) != null) {
+			startProtectAlarm();
+		}
+	}
+
+	private void startProtectAlarm() {
+		Intent i = new Intent(this, DumpWidgetService.class);
+		i.setAction(ACTION_SELF_START);
+		PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
+		Utils.startAlarm(this, pi, false, 10 * 1000);
 	}
 
 	@Override
@@ -77,6 +78,9 @@ public class DumpWidgetService extends Service {
 		Log.d(TAG, "onDestroy");
 		mAlive = false;
 		timer.cancel();
+		if (Prefs.getAppWidgetIds(this) != null) {
+			startProtectAlarm();
+		}
 	}
 
 	@Override
@@ -101,47 +105,34 @@ public class DumpWidgetService extends Service {
 		if (TextUtils.equals(action, AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
 			mTimeFormat = Settings.System.getString(getContentResolver(),
 					Settings.System.TIME_12_24);
-			mTimeUri = Settings.System.getUriFor(Settings.System.TIME_12_24);
 			initWidget();
-			// if (!mAlive) {
-			// mAlive = true;
-			// startTimeTimer();
-			// mTimeFormatObserver = new TimeFormatObserver(mHandler);
-			// getContentResolver().registerContentObserver(mTimeUri, true,
-			// mTimeFormatObserver);
-			// }
+			if (!mAlive) {
+				mAlive = true;
+				startTimeTimer();
+			}
 		} else if (TextUtils.equals(action, Intent.ACTION_TIME_CHANGED)) {
+			mTimeFormat = Settings.System.getString(getContentResolver(),
+					Settings.System.TIME_12_24);
 			if (mAlive) {
 				timer.cancel();
-				getContentResolver().unregisterContentObserver(
-						mTimeFormatObserver);
+				mHandler.removeMessages(MSG_UPDATE_TIME);
 			} else {
 				mAlive = true;
-				mTimeFormat = Settings.System.getString(getContentResolver(),
-						Settings.System.TIME_12_24);
-				mTimeUri = Settings.System
-						.getUriFor(Settings.System.TIME_12_24);
 			}
 			initWidget();
 			startTimeTimer();
-			mTimeFormatObserver = new TimeFormatObserver(mHandler);
-			getContentResolver().registerContentObserver(mTimeUri, true,
-					mTimeFormatObserver);
 		} else if (TextUtils.equals(action, ACTION_SELF_START)) {
+			mTimeFormat = Settings.System.getString(getContentResolver(),
+					Settings.System.TIME_12_24);
 			if (mAlive) {
 				// nothing
+				Log.d(TAG, "nothing");
 				super.onStart(intent, startId);
 				return;
 			}
-			mTimeFormat = Settings.System.getString(getContentResolver(),
-					Settings.System.TIME_12_24);
-			mTimeUri = Settings.System.getUriFor(Settings.System.TIME_12_24);
 			initWidget();
 			mAlive = true;
 			startTimeTimer();
-			mTimeFormatObserver = new TimeFormatObserver(mHandler);
-			getContentResolver().registerContentObserver(mTimeUri, true,
-					mTimeFormatObserver);
 		}
 		super.onStart(intent, startId);
 	}
@@ -155,43 +146,32 @@ public class DumpWidgetService extends Service {
 		} else {
 			type = DateUtils.FORMAT_12HOUR;
 		}
-		RemoteViews rv = new RemoteViews(getPackageName(),
-				R.layout.widget_layout);
 		mTimeInfo = Utils.getTimeInfo(this, System.currentTimeMillis(), type);
 		mOldTimerInfo = mTimeInfo;
 		if (mTimeInfo != null) {
+			RemoteViews rv = new RemoteViews(getPackageName(),
+					R.layout.widget_layout);
 			rv.setTextViewText(R.id.time, mTimeInfo.getHour() + " : "
 					+ mTimeInfo.getMinute());
+			// TODO get tickets number
+			int ticketsNum = 1;
+			if (ticketsNum > 0) {
+				rv.setTextColor(R.id.ticket_num, Color.rgb(0xff, 0xff, 0xff));
+			} else {
+				rv.setTextColor(R.id.ticket_num, Color.rgb(0xff, 0, 0));
+			}
+			rv.setTextViewText(R.id.ticket_num, String.valueOf(ticketsNum));
+			Intent i = new Intent(this, TestActivity.class);
+			PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+			rv.setOnClickPendingIntent(R.id.ticket_num, pi);
 			AppWidgetManager awMgr = AppWidgetManager.getInstance(this);
 			ComponentName cn = new ComponentName(this,
 					DemoAppWidgetProvider.class);
 			awMgr.updateAppWidget(cn, rv);
 		}
-
-		// if (mTimeInfo != null) {
-		// rv.setTextViewText(R.id.hour, mTimeInfo.getHour());
-		// rv.setTextViewText(R.id.minute, mTimeInfo.getMinute());
-		// if (mTimeInfo.getAmPm() != null) {
-		// rv.setTextViewText(R.id.ampm, mTimeInfo.getAmPm());
-		// rv.setViewVisibility(R.id.ampm, View.VISIBLE);
-		// } else {
-		// rv.setViewVisibility(R.id.ampm, View.GONE);
-		// }
-		// Intent i = new Intent(this, WidgetService.class);
-		// i.setAction(ACTION_SELF_START);
-		// PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
-		// rv.setOnClickPendingIntent(R.id.extra, pi);
-		// AppWidgetManager awMgr = AppWidgetManager.getInstance(this);
-		// ComponentName cn = new ComponentName(this,
-		// DemoAppWidgetProvider.class);
-		// awMgr.updateAppWidget(cn, rv);
-		// }
 	}
 
-	private static final int TYPE_NORMAL = 1;
-	private static final int TYPE_TIME_FORMAT_CHANGE = 2;
-
-	private void updateWidget(int updateType) {
+	private void updateWidget() {
 		int type = -1;
 		if (mTimeFormat == null) {
 			type = DateUtils.FORMAT_24HOUR;
@@ -203,24 +183,24 @@ public class DumpWidgetService extends Service {
 		mTimeInfo = Utils.getTimeInfo(this, System.currentTimeMillis(), type);
 		if (mTimeInfo != null) {
 			if (!TextUtils.equals(mTimeInfo.getMinute(), mOldTimerInfo
-					.getMinute())
-					|| updateType == TYPE_TIME_FORMAT_CHANGE) {
-				Log.d(TAG, "updateWidget,type : " + updateType);
+					.getMinute())) {
 				mOldTimerInfo = mTimeInfo;
 				RemoteViews rv = new RemoteViews(getPackageName(),
-						R.layout.demo_appwidget_layout);
-				rv.setTextViewText(R.id.hour, mTimeInfo.getHour());
-				rv.setTextViewText(R.id.minute, mTimeInfo.getMinute());
-				if (mTimeInfo.getAmPm() != null) {
-					rv.setTextViewText(R.id.ampm, mTimeInfo.getAmPm());
-					rv.setViewVisibility(R.id.ampm, View.VISIBLE);
+						R.layout.widget_layout);
+				rv.setTextViewText(R.id.time, mTimeInfo.getHour() + " : "
+						+ mTimeInfo.getMinute());
+				// TODO get tickets number
+				int ticketsNum = 1;
+				if (ticketsNum > 0) {
+					rv.setTextColor(R.id.ticket_num, Color
+							.rgb(0xff, 0xff, 0xff));
 				} else {
-					rv.setViewVisibility(R.id.ampm, View.GONE);
+					rv.setTextColor(R.id.ticket_num, Color.rgb(0xff, 0, 0));
 				}
-				Intent i = new Intent(this, WidgetService.class);
-				i.setAction(ACTION_SELF_START);
-				PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
-				rv.setOnClickPendingIntent(R.id.extra, pi);
+				rv.setTextViewText(R.id.ticket_num, String.valueOf(ticketsNum));
+				Intent i = new Intent(this, TestActivity.class);
+				PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+				rv.setOnClickPendingIntent(R.id.ticket_num, pi);
 				AppWidgetManager awMgr = AppWidgetManager.getInstance(this);
 				ComponentName cn = new ComponentName(this,
 						DemoAppWidgetProvider.class);
@@ -230,7 +210,7 @@ public class DumpWidgetService extends Service {
 	}
 
 	private void startTimeTimer() {
-		timer = new Timer(WidgetService.class.getName(), true);
+		timer = new Timer(DumpWidgetService.class.getName(), true);
 		timer.schedule(new TimeTimerTask(), 1000, 1000);
 	}
 
@@ -254,7 +234,7 @@ public class DumpWidgetService extends Service {
 			super.onChange(selfChange);
 			mTimeFormat = Settings.System.getString(getContentResolver(),
 					Settings.System.TIME_12_24);
-			updateWidget(TYPE_TIME_FORMAT_CHANGE);
+			updateWidget();
 		}
 
 	}
