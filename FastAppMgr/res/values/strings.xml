@@ -20,4 +20,10 @@
 	<string name="ram_total_tip">RAM总容量：</string>
 	<string name="ram_left_tip">剩余容量：</string>
 	<string name="ram_rom_intro_dlg_title">Ram、Rom简介</string>
+	
+	<!-- context menu string -->
+	<string name="cm_uninstall">快速卸载</string>
+	<string name="cm_launch">快速启动</string>
+	<string name="cm_detail_view">查看详情</string>
+	<string name="cm_install_shortcut">创建桌面快捷方式</string>
 </resources>

@@ -10,6 +10,7 @@ import net.youmi.android.AdManager;
 import net.youmi.android.AdView;
 
 import android.app.ListActivity;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,8 @@ import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,14 +30,18 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.util.Utils;
@@ -53,6 +60,14 @@ public class UninstallActivity extends ListActivity {
 	int mIndex = 0;
 
 	private int mDelPos = -1;
+
+	private static final int CM_UNINSTALL = 1;
+	private static final int CM_LAUNCH = 2;
+	private static final int CM_DETAIL_VIEW = 3;
+	private static final int CM_INSTALL_SHORTCUT = 4;
+
+	private static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
+	private static final String ACTION_INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
 
 	private static final int MSG_FILL_DATA = 1;
 	private static final int MSG_GET_PKG_SIZE = 2;
@@ -87,6 +102,7 @@ public class UninstallActivity extends ListActivity {
 						if (TextUtils.equals(pkgName, item.pkgName)) {
 							mDataList.remove(i);
 							mAdapter.notifyDataSetChanged();
+							mTotalAppNum--;
 							break;
 						}
 					}
@@ -140,10 +156,64 @@ public class UninstallActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		Uri pkgUri = Uri.parse("package:" + mDataList.get(position).pkgName);
-		Intent i = new Intent(Intent.ACTION_DELETE, pkgUri);
-		mDelPos = position;
-		startActivity(i);
+		// Uri pkgUri = Uri.parse("package:" + mDataList.get(position).pkgName);
+		// Intent i = new Intent(Intent.ACTION_DELETE, pkgUri);
+		// mDelPos = position;
+		// startActivity(i);
+		openContextMenu(v);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		Item temp = mDataList.get(info.position);
+		Uri pkgUri = Uri.parse("package:" + temp.pkgName);
+		Intent i = new Intent();
+		switch (item.getItemId()) {
+		case CM_UNINSTALL:
+			i.setAction(Intent.ACTION_DELETE).setData(pkgUri);
+			mDelPos = info.position;
+			startActivity(i);
+			return true;
+		case CM_LAUNCH:
+			startActivity(temp.launcherIntent);
+			return true;
+		case CM_DETAIL_VIEW:
+			i.setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
+					.setData(pkgUri);
+			try {
+				startActivity(i);
+			} catch (ActivityNotFoundException e) {
+				//
+			}
+			return true;
+		case CM_INSTALL_SHORTCUT:
+			i.setAction(ACTION_INSTALL_SHORTCUT);
+			i.putExtra(Intent.EXTRA_SHORTCUT_NAME, temp.label);
+			i.putExtra(EXTRA_SHORTCUT_DUPLICATE, false);
+			i.putExtra(Intent.EXTRA_SHORTCUT_INTENT, temp.launcherIntent);
+
+			i.putExtra(Intent.EXTRA_SHORTCUT_ICON, ((BitmapDrawable) temp.icon)
+					.getBitmap());
+			sendBroadcast(i);
+			break;
+		}
+		return super.onContextItemSelected(item);
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+		Item item = mDataList.get(info.position);
+		menu.setHeaderIcon(item.icon);
+		menu.setHeaderTitle(item.label);
+		menu.add(0, CM_UNINSTALL, 0, R.string.cm_uninstall);
+		menu.add(0, CM_LAUNCH, 0, R.string.cm_launch);
+		menu.add(0, CM_DETAIL_VIEW, 0, R.string.cm_detail_view);
+		menu.add(0, CM_INSTALL_SHORTCUT, 0, R.string.cm_install_shortcut);
 	}
 
 	private void registerReceiver() {
@@ -188,6 +258,7 @@ public class UninstallActivity extends ListActivity {
 		// ad
 		mAdView = (AdView) findViewById(R.id.adView);
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
+		registerForContextMenu(getListView());
 	}
 
 	private void initData() {
@@ -233,6 +304,7 @@ public class UninstallActivity extends ListActivity {
 		String versionName;
 		String size;
 		long orgSize = 0;
+		Intent launcherIntent;
 		try {
 			label = pm.getApplicationLabel(info.applicationInfo).toString();
 			drawable = pm.getApplicationIcon(info.applicationInfo);
@@ -243,8 +315,9 @@ public class UninstallActivity extends ListActivity {
 			}
 			size = "0MB";// TEMP
 			orgSize = 0;
+			launcherIntent = pm.getLaunchIntentForPackage(pkgName);
 			return new Item(label, drawable, pkgName, versionName, size,
-					orgSize);
+					orgSize, launcherIntent);
 		} catch (Exception e) {
 			return null;
 		}
@@ -257,15 +330,18 @@ public class UninstallActivity extends ListActivity {
 		private String versionName;
 		private String size;
 		private long orgSize;
+		private Intent launcherIntent;
 
 		public Item(String label, Drawable drawable, String pkgName,
-				String versionName, String size, long orgSize) {
+				String versionName, String size, long orgSize,
+				Intent launcherIntent) {
 			this.label = label;
 			this.icon = drawable;
 			this.pkgName = pkgName;
 			this.versionName = versionName;
 			this.size = size;
 			this.orgSize = orgSize;
+			this.launcherIntent = launcherIntent;
 		}
 	}
 
