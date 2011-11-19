@@ -8,7 +8,6 @@ import java.util.List;
 
 import net.youmi.android.AdManager;
 import net.youmi.android.AdView;
-
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -20,7 +19,8 @@ import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
-import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -41,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.herry.fastappmgr.R;
@@ -68,6 +69,7 @@ public class UninstallActivity extends ListActivity {
 
 	private static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 	private static final String ACTION_INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
+	private Bitmap bitmap;
 
 	private static final int MSG_FILL_DATA = 1;
 	private static final int MSG_GET_PKG_SIZE = 2;
@@ -156,11 +158,25 @@ public class UninstallActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		// Uri pkgUri = Uri.parse("package:" + mDataList.get(position).pkgName);
-		// Intent i = new Intent(Intent.ACTION_DELETE, pkgUri);
-		// mDelPos = position;
-		// startActivity(i);
 		openContextMenu(v);
+	}
+
+	private Bitmap createIconDrawable(Drawable drawable) {
+		if (bitmap != null && !bitmap.isRecycled()) {
+			bitmap = null;
+		}
+		bitmap = ((BitmapDrawable) drawable).getBitmap();
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		float newWidth = getResources().getDimension(
+				android.R.dimen.app_icon_size);
+		float newHeight = newWidth;
+		float scaleWidth = newWidth / width;
+		float scaleHeight = newHeight / height;
+		Matrix matrix = new Matrix();
+		matrix.postScale(scaleWidth, scaleHeight);
+		bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+		return bitmap;
 	}
 
 	@Override
@@ -189,14 +205,19 @@ public class UninstallActivity extends ListActivity {
 			}
 			return true;
 		case CM_INSTALL_SHORTCUT:
-			i.setAction(ACTION_INSTALL_SHORTCUT);
-			i.putExtra(Intent.EXTRA_SHORTCUT_NAME, temp.label);
-			i.putExtra(EXTRA_SHORTCUT_DUPLICATE, false);
-			i.putExtra(Intent.EXTRA_SHORTCUT_INTENT, temp.launcherIntent);
-
-			i.putExtra(Intent.EXTRA_SHORTCUT_ICON, ((BitmapDrawable) temp.icon)
-					.getBitmap());
-			sendBroadcast(i);
+			if (temp.launcherIntent != null) {
+				i.setAction(ACTION_INSTALL_SHORTCUT);
+				i.putExtra(Intent.EXTRA_SHORTCUT_NAME, temp.label);
+				i.putExtra(EXTRA_SHORTCUT_DUPLICATE, false);
+				i.putExtra(Intent.EXTRA_SHORTCUT_INTENT, temp.launcherIntent);
+				i.putExtra(Intent.EXTRA_SHORTCUT_ICON,
+						createIconDrawable(temp.icon));
+				sendBroadcast(i);
+			} else {
+				String toastTxt = getString(R.string.app_non_launcher_point_toast);
+				toastTxt = toastTxt.replace("(?)", "\"" + temp.label + "\"");
+				Toast.makeText(this, toastTxt, Toast.LENGTH_SHORT).show();
+			}
 			break;
 		}
 		return super.onContextItemSelected(item);
@@ -208,7 +229,7 @@ public class UninstallActivity extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		Item item = mDataList.get(info.position);
-		menu.setHeaderIcon(item.icon);
+		menu.setHeaderIcon(new BitmapDrawable(createIconDrawable(item.icon)));
 		menu.setHeaderTitle(item.label);
 		menu.add(0, CM_UNINSTALL, 0, R.string.cm_uninstall);
 		menu.add(0, CM_LAUNCH, 0, R.string.cm_launch);

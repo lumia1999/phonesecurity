@@ -13,6 +13,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,13 +23,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.db.PackageAddedDbAdapter;
@@ -43,6 +51,15 @@ public class RecentAddedActivity extends ListActivity {
 	private TextView mEmptyTipTxt;
 	private boolean mExit = false;
 	private RecentAddAdapter mAdapter;
+
+	private static final int CM_UNINSTALL = 1;
+	private static final int CM_LAUNCH = 2;
+	private static final int CM_DETAIL_VIEW = 3;
+	private static final int CM_INSTALL_SHORTCUT = 4;
+
+	private static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
+	private static final String ACTION_INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
+	private Bitmap bitmap;
 
 	private static final int MSG_NO_ITEM = 1;
 	private static final int MSG_FILL_DATA = 2;
@@ -102,15 +119,91 @@ public class RecentAddedActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		Item item = mDataList.get(position);
-		Intent i = new Intent();
-		i.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-		i.setData(Uri.parse("package:" + item.pkgName));
-		try {
-			startActivity(i);
-		} catch (ActivityNotFoundException e) {
-			//
+		// Item item = mDataList.get(position);
+		// Intent i = new Intent();
+		// i.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+		// i.setData(Uri.parse("package:" + item.pkgName));
+		// try {
+		// startActivity(i);
+		// } catch (ActivityNotFoundException e) {
+		// //
+		// }
+		openContextMenu(v);
+	}
+
+	private Bitmap createIconDrawable(Drawable drawable) {
+		if (bitmap != null && !bitmap.isRecycled()) {
+			bitmap = null;
 		}
+		bitmap = ((BitmapDrawable) drawable).getBitmap();
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		float newWidth = getResources().getDimension(
+				android.R.dimen.app_icon_size);
+		float newHeight = newWidth;
+		float scaleWidth = newWidth / width;
+		float scaleHeight = newHeight / height;
+		Matrix matrix = new Matrix();
+		matrix.postScale(scaleWidth, scaleHeight);
+		bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+		return bitmap;
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		Item temp = mDataList.get(info.position);
+		Uri pkgUri = Uri.parse("package:" + temp.pkgName);
+		Intent i = new Intent();
+		switch (item.getItemId()) {
+		case CM_UNINSTALL:
+			i.setAction(Intent.ACTION_DELETE).setData(pkgUri);
+			startActivity(i);
+			return true;
+		case CM_LAUNCH:
+			startActivity(temp.launcherIntent);
+			return true;
+		case CM_DETAIL_VIEW:
+			i.setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
+					.setData(pkgUri);
+			try {
+				startActivity(i);
+			} catch (ActivityNotFoundException e) {
+				//
+			}
+			return true;
+		case CM_INSTALL_SHORTCUT:
+			if (temp.launcherIntent != null) {
+				i.setAction(ACTION_INSTALL_SHORTCUT);
+				i.putExtra(Intent.EXTRA_SHORTCUT_NAME, temp.label);
+				i.putExtra(EXTRA_SHORTCUT_DUPLICATE, false);
+				i.putExtra(Intent.EXTRA_SHORTCUT_INTENT, temp.launcherIntent);
+				i.putExtra(Intent.EXTRA_SHORTCUT_ICON,
+						createIconDrawable(temp.icon));
+				sendBroadcast(i);
+			} else {
+				String toastTxt = getString(R.string.app_non_launcher_point_toast);
+				toastTxt = toastTxt.replace("(?)", "\"" + temp.label + "\"");
+				Toast.makeText(this, toastTxt, Toast.LENGTH_SHORT).show();
+			}
+			break;
+		}
+		return super.onContextItemSelected(item);
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+		Item item = mDataList.get(info.position);
+		menu.setHeaderIcon(new BitmapDrawable(createIconDrawable(item.icon)));
+		menu.setHeaderTitle(item.label);
+		menu.add(0, CM_UNINSTALL, 0, R.string.cm_uninstall);
+		menu.add(0, CM_LAUNCH, 0, R.string.cm_launch);
+		menu.add(0, CM_DETAIL_VIEW, 0, R.string.cm_detail_view);
+		menu.add(0, CM_INSTALL_SHORTCUT, 0, R.string.cm_install_shortcut);
 	}
 
 	private void initUI() {
@@ -118,6 +211,7 @@ public class RecentAddedActivity extends ListActivity {
 		mDbAdapter = PackageAddedDbAdapter.getInstance(this);
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
 		mEmptyTipTxt = (TextView) findViewById(R.id.empty);
+		registerForContextMenu(getListView());
 	}
 
 	private void initData() {
@@ -174,8 +268,11 @@ public class RecentAddedActivity extends ListActivity {
 					.toString();
 			drawable = mPackageMgr.getApplicationIcon(pi.applicationInfo);
 			versionName = pi.versionName;
+			Intent launcherIntent = mPackageMgr
+					.getLaunchIntentForPackage(pkgName);
 			ts = Utils.formatAll(this, timestamp);
-			return new Item(label, drawable, pkgName, versionName, ts);
+			return new Item(label, drawable, pkgName, versionName,
+					launcherIntent, ts);
 		} catch (NameNotFoundException e) {
 			return null;
 		}
@@ -246,14 +343,16 @@ public class RecentAddedActivity extends ListActivity {
 		private Drawable icon;
 		private String pkgName;
 		private String versionName;
+		private Intent launcherIntent;
 		private String timeStamp;
 
 		public Item(String label, Drawable drawable, String pkgName,
-				String versionName, String timeStamp) {
+				String versionName, Intent launcherIntent, String timeStamp) {
 			this.label = label;
 			this.icon = drawable;
 			this.pkgName = pkgName;
 			this.versionName = versionName;
+			this.launcherIntent = launcherIntent;
 			this.timeStamp = timeStamp;
 		}
 	}
