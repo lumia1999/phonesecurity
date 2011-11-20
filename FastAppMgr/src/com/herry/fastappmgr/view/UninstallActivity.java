@@ -62,10 +62,10 @@ public class UninstallActivity extends ListActivity {
 
 	private int mDelPos = -1;
 
-	private static final int CM_UNINSTALL = 1;
+	private static final int CM_UNINSTALL = 0;
+	private static final int CM_DETAIL_VIEW = 1;
 	private static final int CM_LAUNCH = 2;
-	private static final int CM_DETAIL_VIEW = 3;
-	private static final int CM_INSTALL_SHORTCUT = 4;
+	private static final int CM_INSTALL_SHORTCUT = 3;
 
 	private static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 	private static final String ACTION_INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
@@ -232,9 +232,13 @@ public class UninstallActivity extends ListActivity {
 		menu.setHeaderIcon(new BitmapDrawable(createIconDrawable(item.icon)));
 		menu.setHeaderTitle(item.label);
 		menu.add(0, CM_UNINSTALL, 0, R.string.cm_uninstall);
-		menu.add(0, CM_LAUNCH, 0, R.string.cm_launch);
 		menu.add(0, CM_DETAIL_VIEW, 0, R.string.cm_detail_view);
+		menu.add(0, CM_LAUNCH, 0, R.string.cm_launch);
 		menu.add(0, CM_INSTALL_SHORTCUT, 0, R.string.cm_install_shortcut);
+		if (item.launcherIntent == null) {
+			menu.getItem(CM_LAUNCH).setEnabled(false);
+			menu.getItem(CM_INSTALL_SHORTCUT).setEnabled(false);
+		}
 	}
 
 	private void registerReceiver() {
