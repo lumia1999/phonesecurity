@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="gray_1">#ff969696</color>
+    <color name="gray_2">#ffdcdcdc</color>
+    <color name="gray_3">#ff787878</color>
+    <color name="orange">#ffffb400</color>
+    <color name="list_view_bg_color">#00000000</color>
+    <color name="splash_notification_bg">#77ffffff</color>
+    <color name="splash_color">#77ffffff</color>
+    <color name="background_color">#fff0f0f0</color>
+    <color name="tab_text_color">#ffb4b4b4</color>
+    <color name="tab_font_black">#ff404040</color>
+    <color name="tab_text_gray">#ff808080</color>
+    <color name="tab_text_gray1">#ff787878</color>
+    <color name="tab_app_num">#ffffb400</color>
+    <color name="hot1">#ffff5000</color>
+    <color name="hot2">#ffff7800</color>
+    <color name="hot3">#ffff9600</color>
+    <color name="hot4">#ffffb400</color>
+    <color name="divider_gray">#ffdfdfdf</color>
+    <color name="vertical_splitter_color">#ffc8c8c8</color>
+    <color name="text_dark_gray">#ff505050</color>
+    <color name="info_font_light_orange">#ffffad00</color>
+    <color name="comment_time_font_color">#ff646464</color>
+    <color name="short_description_color">#ff333333</color>
+</resources>
