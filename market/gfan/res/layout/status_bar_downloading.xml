@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:baselineAligned="false"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView android:id="@id/iv_icon" android:layout_width="24.0dip" android:layout_height="24.0dip" android:layout_marginLeft="7.0dip" android:layout_marginTop="7.0dip" android:layout_marginRight="10.0dip" android:scaleType="fitCenter" />
+    <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="0.0dip" android:layout_weight="1.0">
+        <TextView android:textStyle="bold" android:textColor="@android:color/black" android:id="@id/tv_title" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/notif_downloading" android:singleLine="true" />
+        <ProgressBar android:id="@id/pb_progress" android:layout_width="fill_parent" android:layout_height="wrap_content" style="?android:attr/progressBarStyleHorizontal" />
+        <TextView android:textColor="@android:color/black" android:id="@id/tv_progress" android:layout_width="fill_parent" android:layout_height="wrap_content" android:singleLine="true" />
+    </LinearLayout>
+</LinearLayout>

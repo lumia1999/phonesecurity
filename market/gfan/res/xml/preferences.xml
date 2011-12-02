@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_cache_settings">
+        <CheckBoxPreference android:title="@string/pref_cache_settings_auto" android:key="auto_clear_cache" android:summary="@string/pref_cache_settings_auto_summary" />
+        <com.mappn.gfan.common.widget.ClientDialogPreference android:persistent="false" android:title="@string/pref_cache_settings_manual" android:key="manual_clear_cache" android:summary="@string/pref_cache_settings_manual_summary" android:dialogMessage="@string/pref_cache_settings_manual_dialog" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_search_settings">
+        <com.mappn.gfan.common.widget.ClientDialogPreference android:persistent="false" android:title="@string/pref_search_settings_title" android:key="manual_clear_search_history" android:summary="@string/pref_search_settings_summary" android:dialogMessage="@string/pref_search_settings_dialog" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_market_settings">
+        <CheckBoxPreference android:persistent="true" android:title="@string/pref_market_app_filter" android:key="no_app_filter" android:summary="@string/pref_market_app_filter_summary" />
+        <CheckBoxPreference android:title="@string/pref_market_app_update_notification" android:key="update_app_notification" android:summary="@string/pref_market_app_update_notification_summary" android:defaultValue="true" />
+        <CheckBoxPreference android:title="@string/pref_market_push_app" android:key="pref.recommend.app" android:summary="@string/pref_market_push_app_summary" android:defaultValue="true" />
+        <CheckBoxPreference android:title="@string/pref_market_app_not_download_image" android:key="not_download_image" android:summary="@string/pref_market_app_not_download_image_summary" android:defaultValue="false" />
+        <CheckBoxPreference android:title="@string/pref_market_app_delete_after_installation" android:key="delete_after_installation" android:summary="@string/pref_market_app_delete_after_installation_summary" android:defaultValue="true" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/ic_about">
+        <Preference android:persistent="false" android:title="@string/app_name" android:key="app_info" />
+        <Preference android:persistent="false" android:title="@string/qq_group" android:summary="@string/qq_group_id" />
+        <Preference android:persistent="false" android:title="@string/feedback_hint" android:key="feedback" />
+        <Preference android:persistent="false" android:title="@string/tele_hint" android:key="tele" />
+    </PreferenceCategory>
+</PreferenceScreen>

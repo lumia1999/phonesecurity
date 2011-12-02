@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView android:id="@id/iv_show" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true" />
+    <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@id/layout_done" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_alignParentBottom="true">
+        <LinearLayout android:gravity="center" android:orientation="vertical" android:background="#88000000" android:layout_width="fill_parent" android:layout_height="16.0dip">
+            <ImageView android:id="@id/indicator" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout android:gravity="center" android:orientation="vertical" android:background="@drawable/comment_bg" android:padding="5.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
+            <Button android:id="@id/btn_done" android:background="@drawable/btn_send_comment" android:layout_width="100.0dip" android:layout_height="wrap_content" android:text="@string/done" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

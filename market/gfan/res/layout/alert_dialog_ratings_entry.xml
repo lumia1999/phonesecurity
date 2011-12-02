@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:textSize="20.0px" android:textColor="#ffffffff" android:id="@id/tv_ratingCount" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" />
+    <RatingBar android:layout_gravity="center_vertical" android:id="@id/rb_click" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    <TextView android:textSize="20.0px" android:textColor="#ffffffff" android:gravity="center" android:id="@id/rating_level_hint" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+</LinearLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <include android:id="@id/top_bar" layout="@layout/top_bar" />
+    <include android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_below="@id/top_bar" android:layout_alignWithParentIfMissing="true" layout="@layout/common_list_view" />
+    <RelativeLayout android:id="@id/no_pay_log" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="80.0dip" android:layout_alignParentBottom="true" android:layout_centerInParent="true">
+        <ImageView android:id="@id/iv_no_pay" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10.0dip" android:src="@drawable/pay_no_log" android:layout_alignParentTop="true" />
+        <TextView android:id="@id/tv_no_pay" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="20.0dip" android:text="@string/account_no_pay_log" android:layout_below="@id/iv_no_pay" />
+    </RelativeLayout>
+</RelativeLayout>

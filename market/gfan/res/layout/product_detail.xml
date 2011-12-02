@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:scrollbarThumbVertical="@drawable/scrollbar" android:background="@color/background_color" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+        <include android:layout_width="wrap_content" android:layout_height="wrap_content" layout="@layout/product_description" />
+        <include android:layout_width="wrap_content" android:layout_height="wrap_content" layout="@layout/product_info" />
+        <com.mappn.gfan.common.widget.ScreenShotGallery android:id="@id/gallery" android:background="@drawable/gallery" android:layout_width="fill_parent" android:layout_height="266.0dip" android:spacing="6.5dip"
+          xmlns:android="http://schemas.android.com/apk/res/android" />
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:id="@id/security_settings_desc" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="13.0dip" android:layout_marginTop="12.0dip" android:layout_marginBottom="12.0dip" android:text="@string/permissions_desc" />
+        <LinearLayout android:orientation="vertical" android:id="@id/security_settings_list" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1.0" />
+    </LinearLayout>
+</ScrollView>
