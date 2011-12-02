@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout android:id="@id/rating_view" android:background="@drawable/list_item_bg_selector" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="wrap_content"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+        <TextView android:id="@id/tv_myrating" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="13.0dip" android:layout_marginTop="15.0dip" android:text="@string/lable_myrating" android:layout_alignParentLeft="true" android:layout_centerVertical="true" style="@style/info_font" />
+        <RatingBar android:id="@id/rb_myrating" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="8.0dip" android:layout_marginTop="15.0dip" android:numStars="5" android:stepSize="1.0" android:layout_toRightOf="@id/tv_myrating" android:layout_centerVertical="true" style="@style/RatingBarLarge" />
+        <TextView android:id="@id/tv_ranking" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_marginTop="15.0dip" android:layout_marginRight="13.0dip" android:layout_toRightOf="@id/rb_myrating" android:layout_centerVertical="true" style="@style/info_font" />
+    </RelativeLayout>
+    <RelativeLayout android:id="@id/info_view" android:background="@drawable/list_item_bg_selector" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="wrap_content"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+        <ImageView android:id="@id/iv_icon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="13.0dip" android:layout_marginTop="15.0dip" android:layout_marginRight="5.0dip" android:layout_alignParentLeft="true" android:layout_centerVertical="true" />
+        <ImageView android:id="@id/iv_indicator" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="15.0dip" android:layout_marginRight="13.0dip" android:src="@drawable/more_indicator" android:layout_alignParentRight="true" android:layout_centerVertical="true" />
+        <TextView android:id="@id/tv_info" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="15.0dip" android:layout_toLeftOf="@id/iv_indicator" android:layout_toRightOf="@id/iv_icon" android:layout_centerVertical="true" style="@style/info_font" />
+    </RelativeLayout>
+</FrameLayout>
