@@ -11,6 +11,13 @@
 	        android:layout_height="wrap_content"
 	        android:layout_alignParentBottom="true"
 	        android:background="@drawable/main_tab_bg">
+	        <!-- 
+	        <ImageView android:id="@+id/main_tab_anim"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:src="@drawable/tab_click_anim"
+	            android:scaleType="fitXY"/>
+	         -->
 	        <TabWidget android:id="@android:id/tabs"
 	            android:layout_width="fill_parent"
 	            android:layout_height="64dip"></TabWidget>
