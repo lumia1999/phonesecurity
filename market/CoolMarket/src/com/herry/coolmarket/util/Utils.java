@@ -1,5 +1,11 @@
 package com.herry.coolmarket.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
+
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -23,5 +29,30 @@ public class Utils {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Unzip a gzip InputStream.
+	 * 
+	 * @param in
+	 * @return
+	 * @throws IOException
+	 */
+	public static InputStream unZIP(InputStream in) throws IOException {
+		InputStream out = null;
+		GZIPInputStream gzin = new GZIPInputStream(in);
+		ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
+		byte[] buf = new byte[1024];
+
+		int nnumber;
+		while ((nnumber = gzin.read(buf, 0, buf.length)) != -1) {
+			bytestream.write(buf, 0, nnumber);
+		}
+
+		out = new ByteArrayInputStream(bytestream.toByteArray());
+		gzin.close();
+		bytestream.close();
+
+		return out;
 	}
 }
