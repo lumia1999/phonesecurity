@@ -1,20 +1,41 @@
 package com.herry.coolmarket.view;
 
-import com.herry.coolmarket.R;
-import com.herry.coolmarket.util.LoadingDrawable;
-import com.herry.coolmarket.util.Utils;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.ProgressBar;
+
+import com.herry.coolmarket.R;
+import com.herry.coolmarket.util.Constants;
+import com.herry.coolmarket.util.LoadingDrawable;
+import com.herry.coolmarket.util.Utils;
 
 public class CoolMarketActivity extends Activity {
 	private static final String TAG = "CoolMarketActivity";
 	ProgressBar mProgressBar;
 	AnimationDrawable mPbAnimDrawable;
+
+	private static final int MSG_CHECK_FINISH = 1;
+	private Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case MSG_CHECK_FINISH:
+				startActivity(new Intent(getApplicationContext(),
+						MainTabActivity.class).putExtra(
+						Constants.WELCOME_FINISH_EXTRA_TYPE, msg.arg1));
+				finish();
+				break;
+			}
+		}
+
+	};
 
 	/** Called when the activity is first created. */
 	@Override
@@ -28,11 +49,16 @@ public class CoolMarketActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Message msg = mHandler.obtainMessage();
+		msg.what = MSG_CHECK_FINISH;
 		if (!Utils.isNetworkActived(this)) {
 			// TODO
+			msg.arg1 = Constants.TYPE_NO_NETWORK;
+			mHandler.sendMessageDelayed(msg, 2000);
+			return;
 		}
-		startActivity(new Intent(this, MainTabActivity.class));
-		finish();
+		msg.arg1 = Constants.TYPE_OK;
+		mHandler.sendMessageDelayed(msg, 2000);
 	}
 
 	private void initUI() {
