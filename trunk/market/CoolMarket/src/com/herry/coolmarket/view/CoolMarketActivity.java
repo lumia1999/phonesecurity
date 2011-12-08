@@ -1,17 +1,21 @@
 package com.herry.coolmarket.view;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.herry.coolmarket.R;
 import com.herry.coolmarket.util.Constants;
 import com.herry.coolmarket.util.LoadingDrawable;
+import com.herry.coolmarket.util.Prefs;
 import com.herry.coolmarket.util.Utils;
 
 public class CoolMarketActivity extends Activity {
@@ -62,6 +66,16 @@ public class CoolMarketActivity extends Activity {
 	}
 
 	private void initUI() {
+		DisplayMetrics dm = Utils.getDevInfo(this);
+		StringBuilder sb = new StringBuilder();
+		sb.append(dm.widthPixels).append(dm.heightPixels);
+		Prefs.setScreenResolution(this, sb.toString());
+		Utils.createIconCacheDir(this);
+		if (Utils.isSdcardMounted(this)) {
+			Prefs.setCurCacheLoc(this, Constants.CACHE_LOC_SD);
+		} else {
+			Prefs.setCurCacheLoc(this, Constants.CACHE_LOC_RAM);
+		}
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
 		mPbAnimDrawable = new LoadingDrawable(this);
 		mProgressBar.setIndeterminateDrawable(mPbAnimDrawable);
