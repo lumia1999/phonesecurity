@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,7 +17,12 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.MeasureSpec;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 public class Utils {
 	public static String ICON_CACHE_DIR = "/.CoolMarket/cache/";
@@ -155,5 +159,27 @@ public class Utils {
 		bitmap = BitmapFactory.decodeFile(filePath, opt);
 		BitmapDrawable bd = new BitmapDrawable(bitmap);
 		return bd;
+	}
+
+	public static void setListViewHeightBaseOnChildren(ListView listView) {
+		ListAdapter adapter = listView.getAdapter();
+		if (adapter == null) {
+			return;
+		}
+		int totalHeight = 0;
+		int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(),
+				MeasureSpec.AT_MOST);
+		int count = adapter.getCount();
+		View listItem = null;
+		for (int i = 0; i < count; i++) {
+			listItem = adapter.getView(i, null, listView);
+			listItem.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
+			totalHeight += listItem.getMeasuredHeight();
+		}
+		ViewGroup.LayoutParams params = listView.getLayoutParams();
+		params.height = totalHeight
+				+ (listView.getDividerHeight() * (count - 1));
+		listView.setLayoutParams(params);
+		listView.requestLayout();
 	}
 }
