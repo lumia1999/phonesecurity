@@ -5,10 +5,14 @@
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingLeft="5dip" >
+    android:background="@drawable/list_item_bg_selector"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingLeft="5dip"
+    android:descendantFocusability="blocksDescendants" >
 	<ImageView android:id="@+id/home_item_icon"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
+	    android:layout_width="48dip"
+	    android:layout_height="48dip"
 	    android:scaleType="centerCrop"
 	    android:background="@drawable/ic_launcher"/>
 	<RelativeLayout android:layout_width="fill_parent"
@@ -18,12 +22,14 @@
 	        android:layout_height="wrap_content"
 	        android:orientation="vertical"
 	        android:layout_centerVertical="true"
-	        android:layout_toLeftOf="@+id/home_item_download_layout">
+	        android:layout_toLeftOf="@+id/devider">
 	        <TextView android:id="@+id/home_item_name"
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
-	            android:textAppearance="?android:attr/textAppearanceMedium"
+	            android:textAppearance="@style/app_text_style1"
 	            android:singleLine="true"
+	            android:ellipsize="marquee"
+	            android:focusable="true"
 	            android:paddingBottom="3dip"
 	            android:text="dfdfsdfdsfsdfddddddddddddddddddd"/>
 	        <RelativeLayout android:layout_width="fill_parent"
@@ -32,38 +38,40 @@
 	            <TextView android:id="@+id/home_item_desc"
 	                android:layout_width="fill_parent"
 	                android:layout_height="wrap_content"
-	                android:textAppearance="?android:attr/textAppearanceSmall"
+	                android:textAppearance="@style/app_text_style2"
 	                android:singleLine="true"
 	                android:layout_toLeftOf="@+id/home_item_size"
 	                android:text="descddddddddddddddddddddddddd"/>
 	            <TextView android:id="@+id/home_item_size"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:textAppearance="?android:attr/textAppearanceSmall"
+	                android:textAppearance="@style/app_text_style2"
 	                android:layout_alignParentRight="true"
 	                android:singleLine="true"
 	                android:paddingRight="3dip"
 	                android:text="1.20M"/>
 	        </RelativeLayout>
 	    </LinearLayout>
-	    <LinearLayout android:id="@+id/home_item_download_layout"
-	        android:layout_width="wrap_content"
+
+        <ImageView android:id="@+id/devider"
+            android:layout_width="0.8000001dip"
+            android:layout_height="48dip"
+            android:layout_centerInParent="true"
+            android:src="@color/gray_2"
+            android:layout_toLeftOf="@+id/home_item_download"/>
+        <TextView android:id="@+id/home_item_download"
+	        android:gravity="center_horizontal"		        
+	    	android:clickable="true"
+	    	android:focusable="true"
+	    	android:focusableInTouchMode="true"
+	   		android:background="@drawable/list_item_btn_bg_selector"
+	        android:paddingTop="3dip"
+	        android:textAppearance="@style/app_text_style3"
+	        android:layout_width="48dip"
 	        android:layout_height="wrap_content"
-	        android:orientation="vertical"
-	        android:gravity="center"
-	        android:paddingLeft="5dip"
-	        android:paddingRight="5dip"
-	        android:layout_alignParentRight="true">
-	        <ImageView android:id="@+id/home_item_download"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:scaleType="centerCrop"
-	            android:background="@drawable/down_btn_0"/>
-	        <TextView android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:textAppearance="?android:attr/textAppearanceSmall"
-	            android:text="@string/product_free"/>
-	    </LinearLayout>
+	        android:drawableTop="@drawable/down_btn_0"
+	        android:text="@string/free"
+	        android:layout_alignParentRight="true"/>
 	</RelativeLayout>
 
 </LinearLayout>

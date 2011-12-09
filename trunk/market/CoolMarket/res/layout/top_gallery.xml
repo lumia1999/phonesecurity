@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+	 	<com.herry.coolmarket.TopGallery
+		    android:id="@+id/home_recommend_gallery"		    
+			android:background="@drawable/list_item_bg_selector"
+		    android:clickable="true"
+		    android:focusable="true"
+		    android:paddingTop="5dip"
+		    android:paddingBottom="5dip"
+		    android:fadingEdge="none"
+		    android:layout_width="fill_parent"
+		    android:layout_height="93dip"
+		    android:spacing="5dip"/>
+    
+	 	<TextView android:id="@+id/home_recommend_gallery_tip"
+	 	    android:layout_width="fill_parent"
+	 	    android:layout_height="wrap_content"
+	 	    android:gravity="center"
+	 	    android:paddingTop="5dip"
+	 	    android:paddingBottom="5dip"
+	 	    android:textAppearance="@style/app_text_style3"
+	 	    android:text="@string/recommend_tip"/>
+</LinearLayout>

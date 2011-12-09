@@ -14,13 +14,17 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
@@ -28,6 +32,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.herry.coolmarket.HomeListItem;
 import com.herry.coolmarket.R;
@@ -38,7 +44,10 @@ import com.herry.coolmarket.util.Utils;
 public class HomeActivity extends ListActivity {
 	private static final String TAG = "HomeActivity";
 
+	private LayoutInflater mLayoutInflater;
+	private LinearLayout mHeaderView;
 	private TopGallery mRecommendGallery;
+	private TextView mGalleryTip;
 	private ListView mListView;
 	private int mListTotalNum;
 	private List<HomeListItem> mListData;
@@ -53,10 +62,26 @@ public class HomeActivity extends ListActivity {
 	}
 
 	private void initUI() {
-		mRecommendGallery = (TopGallery) findViewById(R.id.home_recommend_gallery);
+		mLayoutInflater = getLayoutInflater();
+		mHeaderView = (LinearLayout) mLayoutInflater.inflate(
+				R.layout.top_gallery, null);
+		mRecommendGallery = (TopGallery) mHeaderView
+				.findViewById(R.id.home_recommend_gallery);
+		mGalleryTip = (TextView) mHeaderView
+				.findViewById(R.id.home_recommend_gallery_tip);
 		mRecommendGallery.setAdapter(new GalleryAdapter());
 		mRecommendGallery.setSelection(100000);
+		mRecommendGallery.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Log.d(TAG, "onItemClick");
+			}
+
+		});
 		mListView = getListView();
+		mListView.addHeaderView(mHeaderView);
 	}
 
 	private void initListData() {
@@ -126,11 +151,11 @@ public class HomeActivity extends ListActivity {
 	private void checkCacheIcon(HomeListItem item) {
 		String curCachePath = Utils.getCurIconCachePath(this);
 		String iconUrl = item.getIconUrl();
-		Log.d(TAG, "curCachePath : " + curCachePath + ",iconUrl : " + iconUrl);
+		// Log.d(TAG, "curCachePath : " + curCachePath + ",iconUrl : " +
+		// iconUrl);
 		int idx = iconUrl.lastIndexOf("/");
 		if (idx != -1) {
 			File f = new File(curCachePath, iconUrl.substring(idx + 1));
-			Log.d(TAG, "f path : " + f.getAbsolutePath());
 			if (f.exists()) {
 				item.setIconCachePath(f.getAbsolutePath());
 			} else {
@@ -145,6 +170,7 @@ public class HomeActivity extends ListActivity {
 		// TODO
 		HomeListAdapter adapter = new HomeListAdapter(this);
 		mListView.setAdapter(adapter);
+		// Utils.setListViewHeightBaseOnChildren(mListView);
 	}
 
 	private class GalleryAdapter extends BaseAdapter {
@@ -166,25 +192,21 @@ public class HomeActivity extends ListActivity {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			ImageView i = new ImageView(getApplicationContext());
-			if (position < 0) {
-				position += mImageIds.length;
+			if (convertView == null) {
+				convertView = mLayoutInflater.inflate(
+						R.layout.home_gallery_item, null);
 			}
-			i.setImageResource(mImageIds[position % mImageIds.length]);
-			i.setScaleType(ImageView.ScaleType.FIT_XY);
-			i.setLayoutParams(new Gallery.LayoutParams(136, 88));
-
-			// The preferred Gallery item background
-			// i.setBackgroundResource(mGalleryItemBackground);
-
-			return i;
+			position = position % mImageIds.length;
+			convertView.setBackgroundResource(R.drawable.gallery_item_bg);
+			((ImageView) convertView).setImageResource(mImageIds[position]);
+			return convertView;
 		}
 
-		private Integer[] mImageIds = { R.drawable.gallery_photo_1,
-				R.drawable.gallery_photo_2, R.drawable.gallery_photo_3,
-				R.drawable.gallery_photo_4, R.drawable.gallery_photo_5,
-				R.drawable.gallery_photo_6, R.drawable.gallery_photo_7,
-				R.drawable.gallery_photo_8 };
+		private Integer[] mImageIds = { R.drawable.gallery1,
+				R.drawable.gallery2, R.drawable.banner_loading,
+				R.drawable.banner_loading, R.drawable.banner_loading,
+				R.drawable.banner_loading, R.drawable.banner_loading,
+				R.drawable.banner_loading };
 
 	}
 
@@ -214,6 +236,7 @@ public class HomeActivity extends ListActivity {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
+			Log.d(TAG, "getView");
 			HomeListViewHolder viewHolder;
 			if (convertView == null) {
 				convertView = mLayoutInflater.inflate(R.layout.home_item, null);
@@ -226,8 +249,8 @@ public class HomeActivity extends ListActivity {
 						.findViewById(R.id.home_item_desc);
 				viewHolder.size = (TextView) convertView
 						.findViewById(R.id.home_item_size);
-				viewHolder.download = (LinearLayout) convertView
-						.findViewById(R.id.home_item_download_layout);
+				viewHolder.download = (TextView) convertView
+						.findViewById(R.id.home_item_download);
 				convertView.setTag(viewHolder);
 			} else {
 				viewHolder = (HomeListViewHolder) convertView.getTag();
@@ -261,6 +284,6 @@ public class HomeActivity extends ListActivity {
 		private TextView name;
 		private TextView desc;
 		private TextView size;
-		private LinearLayout download;
+		private TextView download;
 	}
 }
