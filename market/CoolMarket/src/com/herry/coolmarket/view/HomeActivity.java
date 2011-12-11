@@ -35,13 +35,14 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+import com.herry.collmarket.pool.IDownloadIconCallback;
 import com.herry.coolmarket.HomeListItem;
 import com.herry.coolmarket.R;
 import com.herry.coolmarket.TopGallery;
 import com.herry.coolmarket.util.Constants;
 import com.herry.coolmarket.util.Utils;
 
-public class HomeActivity extends ListActivity {
+public class HomeActivity extends ListActivity implements IDownloadIconCallback {
 	private static final String TAG = "HomeActivity";
 
 	private LayoutInflater mLayoutInflater;
@@ -285,5 +286,11 @@ public class HomeActivity extends ListActivity {
 		private TextView desc;
 		private TextView size;
 		private TextView download;
+	}
+
+	@Override
+	public void onDownloadIconFinish(String iconUrl) {
+		// TODO
+		Log.d(TAG, "onDownloadIconFinish ,iconUrl : " + iconUrl);
 	}
 }
