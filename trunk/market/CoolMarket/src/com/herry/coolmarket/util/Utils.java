@@ -3,6 +3,8 @@ package com.herry.coolmarket.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
@@ -16,6 +18,7 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 public class Utils {
+	private static final String TAG = "CoolMarket.Utils";
 	public static String ICON_CACHE_DIR = "/.CoolMarket/cache/";
 
 	/**
@@ -181,5 +185,43 @@ public class Utils {
 				+ (listView.getDividerHeight() * (count - 1));
 		listView.setLayoutParams(params);
 		listView.requestLayout();
+	}
+
+	public static int saveIcon(Context ctx, String iconName, InputStream is) {
+		String dir = getCurIconCachePath(ctx);
+		String filePath = dir + iconName;
+		byte[] buf = new byte[1024];
+		int len = 0;
+		FileOutputStream fos = null;
+		boolean success = false;
+		try {
+			fos = new FileOutputStream(filePath);
+			while ((len = is.read(buf)) != -1) {
+				fos.write(buf, 0, len);
+			}
+			success = true;
+			return Constants.SAVE_ICON_SUCCESS;
+		} catch (FileNotFoundException e) {
+			Log.e(TAG, "FileNotFoundException", e);
+			return Constants.SAVE_ICON_FAILED;
+		} catch (IOException e) {
+			Log.e(TAG, "IOException", e);
+			return Constants.SAVE_ICON_FAILED;
+		} finally {
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					//
+				}
+			}
+			if (!success) {
+				File f = new File(filePath);
+				if (f.exists()) {
+					f.delete();
+				}
+			}
+		}
+
 	}
 }

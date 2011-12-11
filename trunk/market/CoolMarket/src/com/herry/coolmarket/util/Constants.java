@@ -12,4 +12,11 @@ public final class Constants {
 	public static final int CACHE_LOC_RAM = 2;
 
 	public static final String DEFAULT_SCREEN_RESOLUTION = "320480";
+
+	public static final int DOWNLOAD_ICON_SUCCESS = 1;
+	public static final int DOWNLOAD_ICON_FAILED = 2;
+
+	public static final int SAVE_ICON_SUCCESS = 1;
+	public static final int SAVE_ICON_FAILED = 2;
+
 }
