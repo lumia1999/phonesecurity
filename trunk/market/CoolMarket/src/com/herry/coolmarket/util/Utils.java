@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 import android.content.Context;
@@ -43,6 +44,22 @@ public class Utils {
 			return root.substring(0, root.length() - 2);
 		} else {
 			return root;
+		}
+	}
+
+	/**
+	 * currently, ONLY for debug usage
+	 * 
+	 * @param ctx
+	 */
+	public static void cleanIconCacheDir(Context ctx) {
+		String dir = getCurIconCachePath(ctx);
+		File f = new File(dir);
+		if (f.exists() && f.isDirectory()) {
+			File[] list = f.listFiles();
+			for (File file : list) {
+				file.delete();
+			}
 		}
 	}
 
@@ -187,14 +204,29 @@ public class Utils {
 		listView.requestLayout();
 	}
 
+	public static String getIconName(String iconUrl) {
+		int idx = iconUrl.lastIndexOf("/");
+		if (idx != -1) {
+			return iconUrl.substring(idx + 1);
+		} else {
+			return null;
+		}
+	}
+
 	public static int saveIcon(Context ctx, String iconName, InputStream is) {
 		String dir = getCurIconCachePath(ctx);
 		String filePath = dir + iconName;
+		File f = null;
 		byte[] buf = new byte[1024];
 		int len = 0;
 		FileOutputStream fos = null;
 		boolean success = false;
 		try {
+			f = new File(filePath);
+			if (f.exists()) {
+				f.delete();
+			}
+			f.createNewFile();
 			fos = new FileOutputStream(filePath);
 			while ((len = is.read(buf)) != -1) {
 				fos.write(buf, 0, len);
@@ -216,8 +248,7 @@ public class Utils {
 				}
 			}
 			if (!success) {
-				File f = new File(filePath);
-				if (f.exists()) {
+				if (f != null && f.exists()) {
 					f.delete();
 				}
 			}

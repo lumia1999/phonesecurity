@@ -1,7 +1,5 @@
 package com.herry.coolmarket.view;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -76,6 +74,7 @@ public class CoolMarketActivity extends Activity {
 		} else {
 			Prefs.setCurCacheLoc(this, Constants.CACHE_LOC_RAM);
 		}
+		Utils.cleanIconCacheDir(this);
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
 		mPbAnimDrawable = new LoadingDrawable(this);
 		mProgressBar.setIndeterminateDrawable(mPbAnimDrawable);

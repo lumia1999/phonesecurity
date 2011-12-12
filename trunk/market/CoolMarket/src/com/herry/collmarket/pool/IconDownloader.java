@@ -6,6 +6,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import android.util.Log;
+
 public class IconDownloader {
 	private static final String TAG = "IconDownloader";
 
@@ -41,6 +43,7 @@ public class IconDownloader {
 	}
 
 	public void addJob(DownloadIconJob job) {
+		Log.e(TAG, "addJob");
 		mExecutorPool.execute(job);
 	}
 
