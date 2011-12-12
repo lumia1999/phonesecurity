@@ -7,23 +7,29 @@ public final class HomeListItem {
 	public static final String NAME = "name";
 	public static final String DESC = "desc";
 	public static final String SIZE = "size";
+	public static final String PKGNAME = "pkgname";
+	public static final String DETAILURL = "detailurl";
 	private String mIconUrl;
 	private String mIconCachePath;
 	private String mName;
 	private String mDesc;
 	private String mSize;
+	private String mPkgName;
+	private String mDetailUrl;
 
 	public HomeListItem() {
 		//
 	}
 
 	public HomeListItem(String iconUrl, String iconCachePath, String name,
-			String desc, String size) {
+			String desc, String size, String pkgName, String detailUrl) {
 		this.mIconUrl = iconUrl;
 		this.mIconCachePath = iconCachePath;
 		this.mName = name;
 		this.mDesc = desc;
 		this.mSize = size;
+		this.mPkgName = pkgName;
+		this.mDetailUrl = detailUrl;
 	}
 
 	public String getIconUrl() {
@@ -66,6 +72,22 @@ public final class HomeListItem {
 		this.mSize = size;
 	}
 
+	public String getPkgName() {
+		return this.mPkgName;
+	}
+
+	public void setPkgName(String pkgName) {
+		this.mPkgName = pkgName;
+	}
+
+	public String getDetailUrl() {
+		return this.mDetailUrl;
+	}
+
+	public void setDetailUrl(String detailUrl) {
+		this.mDetailUrl = detailUrl;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -75,6 +97,8 @@ public final class HomeListItem {
 		sb.append(",\t").append(NAME).append(":").append(this.mName);
 		sb.append(",\t").append(DESC).append(":").append(this.mDesc);
 		sb.append(",\t").append(SIZE).append(":").append(this.mSize);
+		sb.append(",\t").append(PKGNAME).append(":").append(this.mPkgName);
+		sb.append(",\t").append(DETAILURL).append(":").append(this.mDetailUrl);
 		return sb.toString();
 	}
 }

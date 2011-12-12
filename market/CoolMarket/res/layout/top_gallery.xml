@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+	android:background="@drawable/list_item_bg_selector" >
 	 	<com.herry.coolmarket.TopGallery
 		    android:id="@+id/home_recommend_gallery"		    
-			android:background="@drawable/list_item_bg_selector"
 		    android:clickable="true"
 		    android:focusable="true"
 		    android:paddingTop="5dip"
@@ -19,7 +19,6 @@
 	 	    android:layout_width="fill_parent"
 	 	    android:layout_height="wrap_content"
 	 	    android:gravity="center"
-	 	    android:paddingTop="5dip"
 	 	    android:paddingBottom="5dip"
 	 	    android:textAppearance="@style/app_text_style3"
 	 	    android:text="@string/recommend_tip"/>
