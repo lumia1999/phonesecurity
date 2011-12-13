@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
@@ -14,6 +16,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +32,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -40,6 +44,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.herry.collmarket.pool.DownloadIconJob;
+import com.herry.collmarket.pool.IDownloadGalleryIconCallback;
 import com.herry.collmarket.pool.IDownloadIconCallback;
 import com.herry.collmarket.pool.IconDownloader;
 import com.herry.coolmarket.HomeGalleryItem;
@@ -68,7 +73,6 @@ public class HomeActivity extends ListActivity implements
 	private Animation mRecommendTipAnim;
 	private AnimationDrawable mAnimDrawable;
 	private ProgressBar mProgressBar;
-
 	// download icon
 	private static final int DEF_NUM = 15;
 	private int mStartPos = -1;
@@ -78,8 +82,18 @@ public class HomeActivity extends ListActivity implements
 	private DownloadIconJob mDownloadGalleryIconJob;
 	private ArrayList<String> mGalleryIconUrlList;
 
+	private Timer mBrowserTimer;
+	private int mGalleryItemPos;
+	private byte[] mGalleryPosLock = new byte[1];
+
+	// title
+	private TextView mTitle;
+	private ImageButton mSearchBtn;
+
 	private static final int MSG_FILL_DATA = 1;
 	private static final int MSG_REFRESH_ITEM_ICON = 2;
+	private static final int MSG_REFRESH_GALLERY_ICON = 3;
+	private static final int MSG_BROWSE_GALLERY_ITEM = 4;
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -91,6 +105,13 @@ public class HomeActivity extends ListActivity implements
 				break;
 			case MSG_REFRESH_ITEM_ICON:
 				updateListDataIcon(msg);
+				break;
+			case MSG_REFRESH_GALLERY_ICON:
+				updateGalleryDataIcon(msg);
+				break;
+			case MSG_BROWSE_GALLERY_ITEM:
+				// TODO
+				updateGalleryBrowse();
 				break;
 			}
 		}
@@ -105,7 +126,33 @@ public class HomeActivity extends ListActivity implements
 		startFetchDataThread();
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (mBrowserTimer != null) {
+			mBrowserTimer.cancel();
+			mBrowserTimer = null;
+		}
+	}
+
 	private void initUI() {
+		mTitle = (TextView) findViewById(R.id.global_title);
+		mSearchBtn = (ImageButton) findViewById(R.id.global_search_btn);
+		mTitle.setText(R.string.app_name);
+		mSearchBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO
+				Toast.makeText(getApplicationContext(), "jump to search page",
+						Toast.LENGTH_SHORT).show();
+			}
+		});
 		mLayoutInflater = getLayoutInflater();
 		mAnimDrawable = new LoadingDrawable(this);
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
@@ -129,6 +176,9 @@ public class HomeActivity extends ListActivity implements
 					anim.cancel();
 				}
 				mGalleryTip.startAnimation(mRecommendTipAnim);
+				synchronized (mGalleryPosLock) {
+					mGalleryItemPos = position;
+				}
 				position = position % mGalleryTotalNum;
 				mGalleryTip.setText(mGalleryData.get(position).getName());
 			}
@@ -143,6 +193,9 @@ public class HomeActivity extends ListActivity implements
 						// TODO
 						Log.d(TAG, "onItemSelected");
 						mGalleryTip.startAnimation(mRecommendTipAnim);
+						synchronized (mGalleryPosLock) {
+							mGalleryItemPos = position;
+						}
 						position = position % mGalleryTotalNum;
 						mGalleryTip.setText(mGalleryData.get(position)
 								.getName());
@@ -341,10 +394,34 @@ public class HomeActivity extends ListActivity implements
 	private void fillData() {
 		mGalleryAdapter = new GalleryAdapter();
 		mRecommendGallery.setAdapter(mGalleryAdapter);
-		mRecommendGallery.setSelection(100000);
+		mGalleryItemPos = Constants.GALLERY_BASE_POS + mGalleryData.size();
+		mRecommendGallery.setSelection(mGalleryItemPos);
 		mListAdapter = new HomeListAdapter(this);
 		mListView.setAdapter(mListAdapter);
 		mProgressBar.setVisibility(View.GONE);
+		collectGalleryIconForDownload();
+		if (mGalleryIconUrlList.size() > 0) {
+			mDownloadGalleryIconJob = new DownloadIconJob(this,
+					mDownloadgalleryIconCallback, mGalleryIconUrlList,
+					DownloadIconJob.TYPE_GALLERY_ICON);
+			IconDownloader.getInstance().addJob(mDownloadGalleryIconJob);
+		}
+		browseGalleryItem();
+	}
+
+	private void browseGalleryItem() {
+		mBrowserTimer = new Timer(HomeActivity.class.getName(), true);
+		mBrowserTimer.schedule(new BrowseGalleryTask(), 2000, 3000);
+	}
+
+	private class BrowseGalleryTask extends TimerTask {
+
+		@Override
+		public void run() {
+			//
+			mHandler.sendEmptyMessage(MSG_BROWSE_GALLERY_ITEM);
+		}
+
 	}
 
 	private class GalleryAdapter extends BaseAdapter {
@@ -459,6 +536,18 @@ public class HomeActivity extends ListActivity implements
 
 				}
 			});
+			convertView.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO
+					Toast.makeText(mCtx, "onItemClicked", Toast.LENGTH_SHORT)
+							.show();
+					Intent i = new Intent(mCtx, ProductDetailActivity.class);
+					startActivity(i);
+				}
+
+			});
 			return convertView;
 		}
 	}
@@ -473,7 +562,6 @@ public class HomeActivity extends ListActivity implements
 
 	@Override
 	public void onDownloadIconFinish(String iconUrl) {
-		// TODO
 		Message msg = mHandler.obtainMessage();
 		msg.what = MSG_REFRESH_ITEM_ICON;
 		msg.obj = iconUrl;
@@ -503,7 +591,7 @@ public class HomeActivity extends ListActivity implements
 				if (mIconUrlList.size() > 0) {
 					Log.d(TAG, "iconList size : " + mIconUrlList.size());
 					mDownloadIconJob = new DownloadIconJob(this, this,
-							mIconUrlList);
+							mIconUrlList, DownloadIconJob.TYPE_ITEM_ICON);
 					IconDownloader.getInstance().addJob(mDownloadIconJob);
 				}
 			}
@@ -513,7 +601,6 @@ public class HomeActivity extends ListActivity implements
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		// TODO
 		// Log.d(TAG, "onScrollStateChanged,scrollState : " + scrollState);
 		switch (scrollState) {
 		case OnScrollListener.SCROLL_STATE_IDLE:
@@ -521,7 +608,8 @@ public class HomeActivity extends ListActivity implements
 			collectIconForDownload();
 			if (mIconUrlList.size() > 0) {
 				Log.d(TAG, "iconList size : " + mIconUrlList.size());
-				mDownloadIconJob = new DownloadIconJob(this, this, mIconUrlList);
+				mDownloadIconJob = new DownloadIconJob(this, this,
+						mIconUrlList, DownloadIconJob.TYPE_ITEM_ICON);
 				IconDownloader.getInstance().addJob(mDownloadIconJob);
 			}
 			break;
@@ -535,7 +623,7 @@ public class HomeActivity extends ListActivity implements
 			mIconUrlList = new ArrayList<String>();
 		}
 		HomeListItem item = null;
-		Log.d(TAG, "mStartPos : " + mStartPos + ",mRefNum : " + mRefNum);
+		// Log.d(TAG, "mStartPos : " + mStartPos + ",mRefNum : " + mRefNum);
 		for (int i = mStartPos; i < mStartPos + mRefNum; i++) {
 			item = mListData.get(i);
 			if (item.getIconCachePath() == null) {
@@ -559,5 +647,56 @@ public class HomeActivity extends ListActivity implements
 			}
 		}
 		mListAdapter.notifyDataSetChanged();
+	}
+
+	private IDownloadGalleryIconCallback mDownloadgalleryIconCallback = new IDownloadGalleryIconCallback() {
+
+		@Override
+		public void onDownloadGalleryIconFinish(String iconUrl) {
+			// Log.d(TAG, "onDownloadGalleryIconFinish,iconUrl : " + iconUrl);
+			Message msg = mHandler.obtainMessage();
+			msg.what = MSG_REFRESH_GALLERY_ICON;
+			msg.obj = iconUrl;
+			msg.sendToTarget();
+		}
+	};
+
+	private void collectGalleryIconForDownload() {
+		if (mGalleryIconUrlList != null && !mGalleryIconUrlList.isEmpty()) {
+			mGalleryIconUrlList.clear();
+		} else {
+			mGalleryIconUrlList = new ArrayList<String>();
+		}
+		HomeGalleryItem item = null;
+		int size = mGalleryData.size();
+		for (int i = 0; i < size; i++) {
+			item = mGalleryData.get(i);
+			if (item.getIconCachePath() == null) {
+				mGalleryIconUrlList.add(item.getIconUril());
+			}
+		}
+	}
+
+	private void updateGalleryDataIcon(Message msg) {
+		String iconUrl = (String) msg.obj;
+		int size = mGalleryData.size();
+		HomeGalleryItem item = null;
+		for (int i = 0; i < size; i++) {
+			item = mGalleryData.get(i);
+			if (TextUtils.equals(item.getIconUril(), iconUrl)) {
+				String iconCachePath = Utils.getCurIconCachePath(this)
+						+ Utils.getIconName(iconUrl);
+				item.setIconCachePath(iconCachePath);
+				break;
+			}
+		}
+		mGalleryAdapter.notifyDataSetChanged();
+	}
+
+	private void updateGalleryBrowse() {
+		synchronized (mGalleryPosLock) {
+			mGalleryItemPos++;
+		}
+		mRecommendGallery.setSelection(mGalleryItemPos);
 	}
 }

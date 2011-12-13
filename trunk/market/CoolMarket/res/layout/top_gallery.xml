@@ -20,6 +20,5 @@
 	 	    android:layout_height="wrap_content"
 	 	    android:gravity="center"
 	 	    android:paddingBottom="5dip"
-	 	    android:textAppearance="@style/app_text_style3"
-	 	    android:text="@string/recommend_tip"/>
+	 	    android:textAppearance="@style/app_text_style3"/>
 </LinearLayout>

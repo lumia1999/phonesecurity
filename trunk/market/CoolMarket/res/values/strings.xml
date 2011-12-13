@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Cool Market</string>
+    <string name="app_name">酷乐市场</string>
     <string name="welcome_tip">正在加载</string>
     <string name="tab_menu_home">首页</string>
     <string name="tab_menu_category">分类</string>
     <string name="tab_menu_rank">排行</string>
     <string name="tab_menu_manage">管理</string>
     
-    <string name="recommend_tip">为您推荐</string>
     <string name="free">免费</string>
+    <string name="downloading">正在下载</string>
+    <string name="downloaded">下载完成</string>
 </resources>

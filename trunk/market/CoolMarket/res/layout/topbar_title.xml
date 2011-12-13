@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:focusableInTouchMode="true" 
+    android:background="@drawable/title_bar_bg">
+
+    <TextView android:id="@+id/global_title"
+        android:textAppearance="@style/topbar_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/global_search_btn"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:singleLine="true"
+      	android:paddingLeft="10dip"
+      	android:shadowColor="@color/black"
+        android:text="title"/>
+    <ImageButton android:id="@+id/global_search_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/topbar_btn_search"
+        android:background="@drawable/topbar_btn_bg"/>
+
+</RelativeLayout>

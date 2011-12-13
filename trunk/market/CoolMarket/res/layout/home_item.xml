@@ -60,10 +60,9 @@
             android:src="@color/gray_2"
             android:layout_toLeftOf="@+id/home_item_download"/>
         <TextView android:id="@+id/home_item_download"
-	        android:gravity="center_horizontal"		        
-	    	android:clickable="true"
-	    	android:focusable="true"
-	    	android:focusableInTouchMode="true"
+	        android:gravity="center_horizontal"
+	    	android:focusable="false"
+	    	android:clickable="false"
 	   		android:background="@drawable/list_item_btn_bg_selector"
 	        android:paddingTop="3dip"
 	        android:textAppearance="@style/app_text_style3"
