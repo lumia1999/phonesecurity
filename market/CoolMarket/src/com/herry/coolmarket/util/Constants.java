@@ -19,4 +19,6 @@ public final class Constants {
 	public static final int SAVE_ICON_SUCCESS = 1;
 	public static final int SAVE_ICON_FAILED = 2;
 
+	public static final int GALLERY_BASE_POS = 10000;
+
 }
