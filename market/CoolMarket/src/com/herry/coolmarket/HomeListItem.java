@@ -2,6 +2,7 @@ package com.herry.coolmarket;
 
 public final class HomeListItem {
 	public static final String ITEM = "item";
+	public static final String ID = "id";
 	public static final String ICONURL = "iconurl";
 	public static final String ICONCACHEPATH = "iconcachepath";
 	public static final String NAME = "name";
@@ -9,6 +10,8 @@ public final class HomeListItem {
 	public static final String SIZE = "size";
 	public static final String PKGNAME = "pkgname";
 	public static final String DETAILURL = "detailurl";
+
+	private String mId;
 	private String mIconUrl;
 	private String mIconCachePath;
 	private String mName;
@@ -21,8 +24,10 @@ public final class HomeListItem {
 		//
 	}
 
-	public HomeListItem(String iconUrl, String iconCachePath, String name,
-			String desc, String size, String pkgName, String detailUrl) {
+	public HomeListItem(String id, String iconUrl, String iconCachePath,
+			String name, String desc, String size, String pkgName,
+			String detailUrl) {
+		this.mId = id;
 		this.mIconUrl = iconUrl;
 		this.mIconCachePath = iconCachePath;
 		this.mName = name;
@@ -30,6 +35,14 @@ public final class HomeListItem {
 		this.mSize = size;
 		this.mPkgName = pkgName;
 		this.mDetailUrl = detailUrl;
+	}
+
+	public String getId() {
+		return this.mId;
+	}
+
+	public void setId(String id) {
+		this.mId = id;
 	}
 
 	public String getIconUrl() {

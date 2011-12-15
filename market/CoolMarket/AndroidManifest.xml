@@ -34,6 +34,13 @@
             android:configChanges="orientation|keyboardHidden"></activity>
         <activity android:name=".view.ProductDetailActivity"
             android:configChanges="orientation|keyboardHidden"></activity>
+        <activity android:name=".view.PreLoadingActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".view.ProductDetailTabActivity"
+            android:configChanges="orientation|keyboardHidden"></activity>
+        <activity android:name=".view.CommentActivity"
+            android:configChanges="orientation|keyboardHidden"></activity>
     </application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>

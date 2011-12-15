@@ -1,17 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
-	<include layout="@layout/product_detail_title"/>    
-	<com.herry.coolmarket.TopGallery 
-	    android:id="@+id/product_detail_gallery"
-    	android:clickable="true"
-	    android:focusable="true"
-	    android:paddingTop="5dip"
-	    android:paddingBottom="5dip"
-	    android:fadingEdge="none"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:spacing="5dip"/>
-</LinearLayout>
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/background_color"
+        android:padding="5dip" >
+
+        <LinearLayout
+            android:id="@+id/product_detail_main_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+            <include layout="@layout/product_detail_desc" />
+
+            <include layout="@layout/product_detail_info" />
+
+            <com.herry.coolmarket.TopGallery
+                android:id="@+id/product_detail_gallery"
+                android:layout_width="fill_parent"
+                android:layout_height="200dip"
+                android:background="@drawable/gallery"
+                android:clickable="true"
+                android:fadingEdge="none"
+                android:focusable="true"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip"
+                android:spacing="7dip"/>
+			<TextView android:id="@+id/product_detail_gallery_tip"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:gravity="center"
+			    android:paddingBottom="5dip"/>>
+            <include layout="@layout/product_detail_developer_info" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

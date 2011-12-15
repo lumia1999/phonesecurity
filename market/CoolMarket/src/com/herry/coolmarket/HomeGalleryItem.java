@@ -2,11 +2,13 @@ package com.herry.coolmarket;
 
 public final class HomeGalleryItem {
 	public static final String ITEM = "item";
+	public static final String ID = "id";
 	public static final String ICONURL = "iconurl";
 	public static final String ICONCACHEPATH = "iconcachepath";
 	public static final String NAME = "name";
 	public static final String DETAILURL = "detailurl";
 
+	private String mId;
 	private String mIconUrl;
 	private String mIconCachePath;
 	private String mName;
@@ -16,12 +18,21 @@ public final class HomeGalleryItem {
 		//
 	}
 
-	public HomeGalleryItem(String iconUrl, String iconCachePath, String name,
-			String detailUrl) {
+	public HomeGalleryItem(String id, String iconUrl, String iconCachePath,
+			String name, String detailUrl) {
+		this.mId = id;
 		this.mIconUrl = iconUrl;
 		this.mIconCachePath = iconCachePath;
 		this.mName = name;
 		this.mDetailUrl = detailUrl;
+	}
+
+	public String getId() {
+		return this.mId;
+	}
+
+	public void setId(String id) {
+		this.mId = id;
 	}
 
 	public String getIconUril() {
@@ -59,7 +70,8 @@ public final class HomeGalleryItem {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(ICONURL).append(":").append(this.mIconUrl);
+		sb.append(ID).append(":").append(this.mId);
+		sb.append(",\t").append(ICONURL).append(":").append(this.mIconUrl);
 		sb.append(",\t").append(ICONCACHEPATH).append(":").append(
 				this.mIconCachePath);
 		sb.append(",\t").append(NAME).append(":").append(this.mName);
