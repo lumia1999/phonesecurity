@@ -46,6 +46,7 @@ public class CoolMarketActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.welcome);
 		initUI();
+		Log.d(TAG, "" + System.currentTimeMillis());
 	}
 
 	@Override

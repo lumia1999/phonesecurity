@@ -61,7 +61,7 @@ public class HomeActivity extends ListActivity implements
 
 	private LayoutInflater mLayoutInflater;
 	private LinearLayout mHeaderView;
-	private GalleryAdapter mGalleryAdapter;
+	private HomeGalleryAdapter mGalleryAdapter;
 	private TopGallery mRecommendGallery;
 	private TextView mGalleryTip;
 	private HomeListAdapter mListAdapter;
@@ -248,12 +248,14 @@ public class HomeActivity extends ListActivity implements
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				if (eventType == XmlPullParser.START_TAG) {
 					tag = parser.getName();
-					Log.d(TAG, "tag : " + tag);
 					if (TextUtils.equals(tag, Constants.TOTAL_NUM)) {
 						parser.next();
 						mGalleryTotalNum = Integer.valueOf(parser.getText());
 					} else if (TextUtils.equals(tag, HomeGalleryItem.ITEM)) {
 						temp = new HomeGalleryItem();
+					} else if (TextUtils.equals(tag, HomeGalleryItem.ID)) {
+						parser.next();
+						temp.setId(parser.getText());
 					} else if (TextUtils.equals(tag, HomeGalleryItem.ICONURL)) {
 						parser.next();
 						temp.setIconUrl(parser.getText());
@@ -312,6 +314,9 @@ public class HomeActivity extends ListActivity implements
 						mListTotalNum = Integer.valueOf(parser.getText());
 					} else if (TextUtils.equals(tag, HomeListItem.ITEM)) {
 						temp = new HomeListItem();
+					} else if (TextUtils.equals(tag, HomeListItem.ID)) {
+						parser.next();
+						temp.setId(parser.getText());
 					} else if (TextUtils.equals(tag, HomeListItem.ICONURL)) {
 						parser.next();
 						temp.setIconUrl(parser.getText());
@@ -357,7 +362,7 @@ public class HomeActivity extends ListActivity implements
 		}
 	}
 
-	private void checkCacheIcon(HomeListItem item) {
+	private boolean checkCacheIcon(HomeListItem item) {
 		String curCachePath = Utils.getCurIconCachePath(this);
 		String iconUrl = item.getIconUrl();
 		// Log.d(TAG, "curCachePath : " + curCachePath + ",iconUrl : " +
@@ -367,11 +372,14 @@ public class HomeActivity extends ListActivity implements
 			File f = new File(curCachePath, iconUrl.substring(idx + 1));
 			if (f.exists()) {
 				item.setIconCachePath(f.getAbsolutePath());
+				return true;
 			} else {
 				item.setIconCachePath(null);
+				return false;
 			}
 		} else {
 			item.setIconCachePath(null);
+			return false;
 		}
 	}
 
@@ -392,7 +400,7 @@ public class HomeActivity extends ListActivity implements
 	}
 
 	private void fillData() {
-		mGalleryAdapter = new GalleryAdapter();
+		mGalleryAdapter = new HomeGalleryAdapter();
 		mRecommendGallery.setAdapter(mGalleryAdapter);
 		mGalleryItemPos = Constants.GALLERY_BASE_POS + mGalleryData.size();
 		mRecommendGallery.setSelection(mGalleryItemPos);
@@ -424,7 +432,7 @@ public class HomeActivity extends ListActivity implements
 
 	}
 
-	private class GalleryAdapter extends BaseAdapter {
+	private class HomeGalleryAdapter extends BaseAdapter {
 
 		@Override
 		public int getCount() {
@@ -516,8 +524,7 @@ public class HomeActivity extends ListActivity implements
 			} else {
 				viewHolder = (HomeListViewHolder) convertView.getTag();
 			}
-			//
-			HomeListItem item = mListData.get(position);
+			final HomeListItem item = mListData.get(position);
 			String iconCachePath = item.getIconCachePath();
 			if (iconCachePath == null) {
 				viewHolder.icon.setBackgroundResource(R.drawable.loading_icon);
@@ -532,7 +539,9 @@ public class HomeActivity extends ListActivity implements
 
 				@Override
 				public void onClick(View v) {
-					Toast.makeText(mCtx, "clicked", Toast.LENGTH_SHORT).show();
+					Toast
+							.makeText(mCtx, "download clicked",
+									Toast.LENGTH_SHORT).show();
 
 				}
 			});
@@ -541,14 +550,18 @@ public class HomeActivity extends ListActivity implements
 				@Override
 				public void onClick(View v) {
 					// TODO
-					Toast.makeText(mCtx, "onItemClicked", Toast.LENGTH_SHORT)
-							.show();
-					Intent i = new Intent(mCtx, ProductDetailActivity.class);
-					startActivity(i);
+					FetchAppDetailData(item);
 				}
 
 			});
 			return convertView;
+		}
+
+		private void FetchAppDetailData(HomeListItem item) {
+			mBrowserTimer.cancel();
+			Intent i = new Intent(mCtx, PreLoadingActivity.class);
+			i.putExtra(HomeListItem.ID, item.getId());
+			startActivity(i);
 		}
 	}
 
@@ -607,7 +620,7 @@ public class HomeActivity extends ListActivity implements
 			//				
 			collectIconForDownload();
 			if (mIconUrlList.size() > 0) {
-				Log.d(TAG, "iconList size : " + mIconUrlList.size());
+				// Log.d(TAG, "iconList size : " + mIconUrlList.size());
 				mDownloadIconJob = new DownloadIconJob(this, this,
 						mIconUrlList, DownloadIconJob.TYPE_ITEM_ICON);
 				IconDownloader.getInstance().addJob(mDownloadIconJob);
@@ -624,11 +637,19 @@ public class HomeActivity extends ListActivity implements
 		}
 		HomeListItem item = null;
 		// Log.d(TAG, "mStartPos : " + mStartPos + ",mRefNum : " + mRefNum);
+		boolean update = false;
 		for (int i = mStartPos; i < mStartPos + mRefNum; i++) {
 			item = mListData.get(i);
 			if (item.getIconCachePath() == null) {
+				if (checkCacheIcon(item)) {
+					update = true;
+					continue;
+				}
 				mIconUrlList.add(item.getIconUrl());
 			}
+		}
+		if (update) {
+			mListAdapter.notifyDataSetChanged();
 		}
 	}
 

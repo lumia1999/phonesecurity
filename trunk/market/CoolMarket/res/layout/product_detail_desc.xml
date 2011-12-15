@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="5dip" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:fadingEdge="horizontal"
+        android:fadingEdgeLength="5dip" >
+
+        <TextView
+            android:id="@+id/product_detail_desc1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="4"
+            android:textColor="@color/black"
+            android:textSize="16dip"
+            android:text="@string/desc_test" />
+        <TextView android:id="@+id/product_detail_desc2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16dip"
+            android:textColor="@color/black"
+            android:text="@string/desc_test"/>
+    </FrameLayout>
+	<RelativeLayout android:layout_width="fill_parent"
+	    android:layout_height="wrap_content">
+	    <ImageView android:id="@+id/product_detail_more_line"
+	        android:background="@drawable/more_line"
+	        android:visibility="visible"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginRight="5dip"
+	        android:layout_toLeftOf="@+id/product_detail_more_btn"
+	        android:layout_alignBaseline="@+id/product_detail_more_btn"/>
+	    <Button android:id="@+id/product_detail_more_btn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:layout_alignParentRight="true"
+	        android:background="@drawable/btn_more"
+	        android:paddingTop="5dip"
+	        android:paddingBottom="5dip"
+	        android:paddingLeft="8dip"
+	        android:paddingRight="8dip"
+	        android:text="@string/more_desc"/>
+	</RelativeLayout>
+</LinearLayout>

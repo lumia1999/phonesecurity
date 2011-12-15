@@ -42,7 +42,7 @@ public final class Prefs {
 		editor.commit();
 	}
 
-	// default resolution is 230*480
+	// default resolution is 320*480
 	public static String getScreenResolution(Context ctx) {
 		SharedPreferences pref = get(ctx);
 		return pref.getString(ITEM_SCREEN_RESOLUTION,

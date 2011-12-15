@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+	<string name="desc_test">这是一段测试文字，这是一段测试文字，
+	    这是一段测试文字，这是一段测试文字，这是一段测试文字，这是一段测试文字，
+	    这是一段测试文字，这是一段测试文字，这是一段测试文字,这是一段测试文字，
+	    这是一段测试文字，这是一段测试文字，这是一段测试文字，这是一段测试文字，下载量</string>
     <string name="app_name">酷乐市场</string>
     <string name="welcome_tip">正在加载</string>
     <string name="tab_menu_home">首页</string>
@@ -11,4 +14,22 @@
     <string name="free">免费</string>
     <string name="downloading">正在下载</string>
     <string name="downloaded">下载完成</string>
+    
+    <string name="pre_loading">正在加载</string>
+    
+    <string name="intro">简介</string>
+    <string name="comments">评论</string>
+    <string name="more_desc">更多</string>
+    <string name="restore">收起</string>
+   	<string name="downloaded_count_tip">下载量：</string>
+   	<string name="version_tip">版本：</string>
+   	<string name="size_tip">大小：</string>
+   	
+   	<string name="invalid_network">获取数据失败，请检查网络设置</string>
+   	
+   	<string name="rating_num_tip">个评论</string>
+   	
+    <string name="developer_info_tip">开发人员信息</string>
+    <string name="devloper_link_tip">联系方式</string>
+    <string name="devloper_corp_tip">公司名称</string>
 </resources>

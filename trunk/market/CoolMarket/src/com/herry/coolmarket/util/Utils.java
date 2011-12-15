@@ -7,12 +7,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -27,6 +27,8 @@ import android.view.WindowManager;
 import android.view.View.MeasureSpec;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import com.herry.coolmarket.R;
 
 public class Utils {
 	private static final String TAG = "CoolMarket.Utils";
@@ -254,5 +256,18 @@ public class Utils {
 			}
 		}
 
+	}
+
+	public static BitmapDrawable scaleBitmap(Context ctx, int resId) {
+		Bitmap bitmap = BitmapFactory.decodeResource(ctx.getResources(), resId);
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		int newWidth = 200, newHeight = 200;
+		float scaleWidth = (newWidth * 1.0f) / width;
+		float scaleHeiht = (newHeight * 1.0f) / height;
+		Matrix matrix = new Matrix();
+		matrix.postScale(scaleWidth, scaleHeiht);
+		bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+		return new BitmapDrawable(bitmap);
 	}
 }
