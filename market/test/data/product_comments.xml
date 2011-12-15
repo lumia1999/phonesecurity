@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<comments>
+	<item>
+		<userName><![CDATA[张三]]></userName>
+		<content><![CDATA[好软件，五毛到手！哈哈]]></content>
+		<timestamp>316174627765</timestamp>
+	</item>
+	<item>
+		<userName><![CDATA[李四]]></userName>
+		<content><![CDATA[真好玩，推荐！]]></content>
+		<timestamp>316174627765</timestamp>
+	</item>
+	<item>
+		<userName><![CDATA[王二]]></userName>
+		<content><![CDATA[什么垃圾软件，卸载！]]></content>
+		<timestamp>316174627765</timestamp>
+	</item>
+	<item>
+		<userName><![CDATA[麻子]]></userName>
+		<content><![CDATA[楼上的扯淡！]]></content>
+		<timestamp>316174627765</timestamp>
+	</item>
+	<item>
+		<userName><![CDATA[匿名用户]]></userName>
+		<content><![CDATA[还好吧，不是很差]]></content>
+		<timestamp>316174627765</timestamp>
+	</item>
+</comments>

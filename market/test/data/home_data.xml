@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<List>
+<totalNum>30</totalNum>
+<item>
+	<id>1</id>
+	<iconurl>/mnt/sdcard/test/icon/1.jpg</iconurl>
+	<name><![CDATA[安全管家]]></name>
+	<desc><![CDATA[应用>安全防护]]></desc>
+	<size>2.01M</size>
+	<pkgname>package1</pkgname>
+	<detailurl>detailurl1</detailurl>
+</item>
+<item>
+	<id>2</id>
+	<iconurl>/mnt/sdcard/test/icon/2.jpg</iconurl>
+	<name><![CDATA[玩乐宝典]]></name>
+	<desc><![CDATA[应用>事务管理]]></desc>
+	<size>3.54M</size>
+	<pkgname>package2</pkgname>
+	<detailurl>detailurl2</detailurl>
+</item>
+<item>
+	<id>3</id>
+	<iconurl>/mnt/sdcard/test/icon/3.jpg</iconurl>
+	<name><![CDATA[逛淘宝]]></name>
+	<desc><![CDATA[应用>生活娱乐]]></desc>
+	<size>1016K</size>
+	<pkgname>package3</pkgname>
+	<detailurl>detailurl3</detailurl>
+</item>
+<item>
+	<id>4</id>
+	<iconurl>/mnt/sdcard/test/icon/4.jpg</iconurl>
+	<name><![CDATA[新浪微博官方客户端]]></name>
+	<desc><![CDATA[应用>聊天社区]]></desc>
+	<size>4.02M</size>
+	<pkgname>package4</pkgname>
+	<detailurl>detailurl4</detailurl>
+</item>
+<item>
+	<id>5</id>
+	<iconurl>/mnt/sdcard/test/icon/5.jpg</iconurl>
+	<name><![CDATA[地球2037]]></name>
+	<desc><![CDATA[游戏>战略]]></desc>
+	<size>4.02M</size>
+	<pkgname>package5</pkgname>
+	<detailurl>detailurl5</detailurl>
+</item>
+<item>
+	<id>6</id>
+	<iconurl>/mnt/sdcard/test/icon/6.jpg</iconurl>
+	<name><![CDATA[折扣优惠券（麦当劳）]]></name>
+	<desc><![CDATA[应用>生活娱乐]]></desc>
+	<size>1.88M</size>
+	<pkgname>package6</pkgname>
+	<detailurl>detailurl6</detailurl>
+</item>
+<item>
+	<id>7</id>
+	<iconurl>/mnt/sdcard/test/icon/7.jpg</iconurl>
+	<name><![CDATA[天气预报]]></name>
+	<desc><![CDATA[应用>资讯新闻]]></desc>
+	<size>3.2M</size>
+	<pkgname>package7</pkgname>
+	<detailurl>detailurl7</detailurl>
+</item>
+<item>
+	<id>8</id>
+	<iconurl>/mnt/sdcard/test/icon/8.jpg</iconurl>
+	<name><![CDATA[泡泡游戏（豪华版）]]></name>
+	<desc><![CDATA[游戏>角色扮演]]></desc>
+	<size>1.71M</size>
+	<pkgname>package8</pkgname>
+	<detailurl>detailurl8</detailurl>
+</item>
+<item>
+	<id>9</id>
+	<iconurl>/mnt/sdcard/test/icon/9.jpg</iconurl>
+	<name><![CDATA[剑侠春秋]]></name>
+	<desc><![CDATA[游戏>动作]]></desc>
+	<size>2.25M</size>
+	<pkgname>package9</pkgname>
+	<detailurl>detailurl9</detailurl>
+</item>
+<item>
+	<id>10</id>
+	<iconurl>/mnt/sdcard/test/icon/10.jpg</iconurl>
+	<name><![CDATA[全国KTV优惠券]]></name>
+	<desc><![CDATA[应用>生活娱乐]]></desc>
+	<size>543K</size>
+	<pkgname>package10</pkgname>
+	<detailurl>detailurl10</detailurl>
+</item>
+<item>
+	<id>11</id>
+	<iconurl>/mnt/sdcard/test/icon/11.jpg</iconurl>
+	<name><![CDATA[团购大全]]></name>
+	<desc><![CDATA[应用>网络购物]]></desc>
+	<size>1.46M</size>
+	<pkgname>package11</pkgname>
+	<detailurl>detailurl11</detailurl>
+</item>
+<item>
+	<id>12</id>
+	<iconurl>/mnt/sdcard/test/icon/12.jpg</iconurl>
+	<name><![CDATA[安居客 二手房]]></name>
+	<desc><![CDATA[应用>生活娱乐]]></desc>
+	<size>3.59M</size>
+	<pkgname>package12</pkgname>
+	<detailurl>detailurl12</detailurl>
+</item>
+<item>
+	<id>13</id>
+	<iconurl>/mnt/sdcard/test/icon/13.jpg</iconurl>
+	<name><![CDATA[世界OLv2.0]]></name>
+	<desc><![CDATA[游戏>角色扮演]]></desc>
+	<size>2.25M</size>
+	<pkgname>package13</pkgname>
+	<detailurl>detailurl13</detailurl>
+</item>
+<item>
+	<id>14</id>
+	<iconurl>/mnt/sdcard/test/icon/14.jpg</iconurl>
+	<name><![CDATA[留声机-聆听我的爱恋]]></name>
+	<desc><![CDATA[应用>影音播放]]></desc>
+	<size>1.68M</size>
+	<pkgname>package14</pkgname>
+	<detailurl>detailurl14</detailurl>
+</item>
+<item>
+	<id>15</id>
+	<iconurl>/mnt/sdcard/test/icon/15.jpg</iconurl>
+	<name><![CDATA[上古||（欲望与征服）]]></name>
+	<desc><![CDATA[游戏>网游]]></desc>
+	<size>1.73M</size>
+	<pkgname>package15</pkgname>
+	<detailurl>detailurl15</detailurl>
+</item>
+<item>
+	<id>16</id>
+	<iconurl>/mnt/sdcard/test/icon/16.jpg</iconurl>
+	<name><![CDATA[凡人修仙传之七派六]]></name>
+	<desc><![CDATA[游戏>角色扮演]]></desc>
+	<size>1.29M</size>
+	<pkgname>package16</pkgname>
+	<detailurl>detailurl16</detailurl>
+</item>
+<item>
+	<id>17</id>
+	<iconurl>/mnt/sdcard/test/icon/17.jpg</iconurl>
+	<name><![CDATA[搜狐新闻]]></name>
+	<desc><![CDATA[应用>资讯新闻]]></desc>
+	<size>2.23M</size>
+	<pkgname>package17</pkgname>
+	<detailurl>detailurl17</detailurl>
+</item>
+<item>
+	<id>18</id>
+	<iconurl>/mnt/sdcard/test/icon/18.jpg</iconurl>
+	<name><![CDATA[挖财记账理财]]></name>
+	<desc><![CDATA[应用>金融理财]]></desc>
+	<size>2.09M</size>
+	<pkgname>package18</pkgname>
+	<detailurl>detailurl18</detailurl>
+</item>
+<item>
+	<id>19</id>
+	<iconurl>/mnt/sdcard/test/icon/19.jpg</iconurl>
+	<name><![CDATA[死亡空袭]]></name>
+	<desc><![CDATA[游戏>射击]]></desc>
+	<size>8M</size>
+	<pkgname>package19</pkgname>
+	<detailurl>detailurl19</detailurl>
+</item>
+<item>
+	<id>20</id>
+	<iconurl>/mnt/sdcard/test/icon/20.jpg</iconurl>
+	<name><![CDATA[无尽飞盘]]></name>
+	<desc><![CDATA[游戏>休闲]]></desc>
+	<size>40.88M</size>
+	<pkgname>package20</pkgname>
+	<detailurl>detailurl20</detailurl>
+</item>
+<item>
+	<id>21</id>
+	<iconurl>/mnt/sdcard/test/icon/21.jpg</iconurl>
+	<name><![CDATA[鳄鱼爱洗澡]]></name>
+	<desc><![CDATA[游戏>益智]]></desc>
+	<size>23.32M</size>
+	<pkgname>package21</pkgname>
+	<detailurl>detailurl21</detailurl>
+</item>
+<item>
+	<id>22</id>
+	<iconurl>/mnt/sdcard/test/icon/22.jpg</iconurl>
+	<name><![CDATA[360电池卫士]]></name>
+	<desc><![CDATA[应用>实用工具]]></desc>
+	<size>1.13M</size>
+	<pkgname>package22</pkgname>
+	<detailurl>detailurl22</detailurl>
+</item>
+<item>
+	<id>23</id>
+	<iconurl>/mnt/sdcard/test/icon/23.jpg</iconurl>
+	<name><![CDATA[彩球祖玛]]></name>
+	<desc><![CDATA[游戏>射击]]></desc>
+	<size>10.99M</size>
+	<pkgname>package23</pkgname>
+	<detailurl>detailurl23</detailurl>
+</item>
+<item>
+	<id>24</id>
+	<iconurl>/mnt/sdcard/test/icon/24.jpg</iconurl>
+	<name><![CDATA[素描相机]]></name>
+	<desc><![CDATA[应用>拍照摄影]]></desc>
+	<size>1.48M</size>
+	<pkgname>package24</pkgname>
+	<detailurl>detailurl24</detailurl>
+</item>
+<item>
+	<id>25</id>
+	<iconurl>/mnt/sdcard/test/icon/25.jpg</iconurl>
+	<name><![CDATA[GO主题-ABLACK]]></name>
+	<desc><![CDATA[应用>主题桌面]]></desc>
+	<size>389K</size>
+	<pkgname>package25</pkgname>
+	<detailurl>detailurl25</detailurl>
+</item>
+<item>
+	<id>26</id>
+	<iconurl>/mnt/sdcard/test/icon/26.jpg</iconurl>
+	<name><![CDATA[艾诺迪亚3 官方中文版]]></name>
+	<desc><![CDATA[游戏>角色扮演]]></desc>
+	<size>19.14M</size>
+	<pkgname>package26</pkgname>
+	<detailurl>detailurl26</detailurl>
+</item>
+<item>
+	<id>27</id>
+	<iconurl>/mnt/sdcard/test/icon/27.jpg</iconurl>
+	<name><![CDATA[百度新闻（官方）]]></name>
+	<desc><![CDATA[应用>资讯新闻]]></desc>
+	<size>1.78M</size>
+	<pkgname>package27</pkgname>
+	<detailurl>detailurl27</detailurl>
+</item>
+<item>
+	<id>28</id>
+	<iconurl>/mnt/sdcard/test/icon/28.jpg</iconurl>
+	<name><![CDATA[汽车品牌图鉴]]></name>
+	<desc><![CDATA[电子书>资料]]></desc>
+	<size>4.07M</size>
+	<pkgname>package28</pkgname>
+	<detailurl>detailurl28</detailurl>
+</item>
+<item>
+	<id>29</id>
+	<iconurl>/mnt/sdcard/test/icon/29.jpg</iconurl>
+	<name><![CDATA[高清LED手电筒]]></name>
+	<desc><![CDATA[应用>实用工具]]></desc>
+	<size>1.12M</size>
+	<pkgname>package29</pkgname>
+	<detailurl>detailurl29</detailurl>
+</item>
+<item>
+	<id>30</id>
+	<iconurl>/mnt/sdcard/test/icon/30.jpg</iconurl>
+	<name><![CDATA[豆娃连连看]]></name>
+	<desc><![CDATA[游戏>休闲]]></desc>
+	<size>3.32M</size>
+	<pkgname>package30</pkgname>
+	<detailurl>detailurl30</detailurl>
+</item>
+</List>
