@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<List>
+	<totalNum>5</totalNum>
+	<item>
+	<id>101</id>
+	<iconurl>/mnt/sdcard/test/icon/gallery1.jpg</iconurl>
+	<name><![CDATA[画廊1]]></name>
+	<detailurl><![CDATA[gallery1]]></detailurl>
+	</item>
+	<item>
+	<id>102</id>
+	<iconurl>/mnt/sdcard/test/icon/gallery2.png</iconurl>
+	<name><![CDATA[画廊2]]></name>
+	<detailurl><![CDATA[gallery2]]></detailurl>
+	</item>
+	<item>
+	<id>103</id>
+	<iconurl>/mnt/sdcard/test/icon/gallery3.png</iconurl>
+	<name><![CDATA[画廊3]]></name>
+	<detailurl><![CDATA[gallery3]]></detailurl>
+	</item>
+	<item>
+	<id>104</id>
+	<iconurl>/mnt/sdcard/test/icon/gallery4.jpg</iconurl>
+	<name><![CDATA[画廊4]]></name>
+	<detailurl><![CDATA[gallery4]]></detailurl>
+	</item>
+	<item>
+	<id>105</id>
+	<iconurl>/mnt/sdcard/test/icon/gallery5.jpg</iconurl>
+	<name><![CDATA[画廊5]]></name>
+	<detailurl><![CDATA[gallery5]]></detailurl>
+	</item>
+</List>
