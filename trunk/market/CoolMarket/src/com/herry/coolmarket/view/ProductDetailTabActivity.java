@@ -111,8 +111,8 @@ public class ProductDetailTabActivity extends TabActivity implements
 
 	private void constructCommentData() {
 		mContentIntent = new Intent(this, CommentActivity.class);
-		mContentIntent.putExtra(ProductDetailItem.COMMENTURL, mAppDetailItem
-				.getAppCommentUrl());
+		mContentIntent.putExtra(ProductDetailItem.class.getName(),
+				mAppDetailItem);
 	}
 
 	private void setIndicator(String spec, Intent contentIntent) {

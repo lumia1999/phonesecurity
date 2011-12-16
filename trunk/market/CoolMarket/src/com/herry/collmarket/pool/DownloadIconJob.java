@@ -12,8 +12,8 @@ public class DownloadIconJob implements Runnable {
 	public static final int TYPE_ITEM_ICON = 1;
 	public static final int TYPE_GALLERY_ICON = 2;
 
-	private static ArrayList<String> mOngoingIconList = new ArrayList<String>();
-	private static ArrayList<String> mOngoingGalleryList = new ArrayList<String>();
+	public static ArrayList<String> mOngoingIconList = new ArrayList<String>();
+	public static ArrayList<String> mOngoingGalleryList = new ArrayList<String>();
 	private ArrayList<String> mIconUrlList = null;
 	private int mJobId;
 	private boolean mResume = true;
@@ -66,14 +66,22 @@ public class DownloadIconJob implements Runnable {
 	}
 
 	private void downloadItemIcon() {
-		int size = mIconUrlList.size();
+		int size = this.mIconUrlList.size();
 		String iconUrl = null;
 		IconDownloadTask task = null;
 		for (int i = 0; i < size; i++) {
+			if (mOngoingIconList.contains(this.mIconUrlList.get(i))) {
+				this.mIconUrlList.remove(i);
+			}
+		}
+		size = this.mIconUrlList.size();
+		for (int i = 0; i < size; i++) {
+			Log.d(TAG, "current thread : " + Thread.currentThread().getName()
+					+ ",jobid : " + this.mJobId);
 			if (!mResume) {
 				break;
 			}
-			iconUrl = mIconUrlList.get(i);
+			iconUrl = this.mIconUrlList.get(i);
 			if (mOngoingIconList.contains(iconUrl)) {
 				Log.d(TAG, "icon is downloading,iconUrl : " + iconUrl);
 				continue;
@@ -89,14 +97,14 @@ public class DownloadIconJob implements Runnable {
 				}
 				break;
 			}
-			Log.d(TAG, "ret : " + ret);
+			// Log.d(TAG, "ret : " + ret);
 			if (ret == Constants.DOWNLOAD_ICON_SUCCESS) {
 				mIconCallback.onDownloadIconFinish(iconUrl);
 			} else {
 				Log.d(TAG, "download icon failed : " + iconUrl);
-				synchronized (mOngoingIconList) {
-					mOngoingIconList.remove(iconUrl);
-				}
+			}
+			synchronized (mOngoingIconList) {
+				mOngoingIconList.remove(iconUrl);
 			}
 		}
 	}

@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.zip.GZIPInputStream;
 
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -269,5 +271,12 @@ public class Utils {
 		matrix.postScale(scaleWidth, scaleHeiht);
 		bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
 		return new BitmapDrawable(bitmap);
+	}
+
+	private static final int DATE_FLAT = DateUtils.FORMAT_SHOW_DATE
+			| DateUtils.FORMAT_SHOW_TIME;
+
+	public static String formatDate(Context ctx, long ts) {
+		return DateUtils.formatDateTime(ctx, ts, DATE_FLAT);
 	}
 }

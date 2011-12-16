@@ -6,12 +6,14 @@ public final class HomeGalleryItem {
 	public static final String ICONURL = "iconurl";
 	public static final String ICONCACHEPATH = "iconcachepath";
 	public static final String NAME = "name";
+	public static final String PKGNAME = "pkgName";
 	public static final String DETAILURL = "detailurl";
 
 	private String mId;
 	private String mIconUrl;
 	private String mIconCachePath;
 	private String mName;
+	private String mPkgName;
 	private String mDetailUrl;
 
 	public HomeGalleryItem() {
@@ -19,11 +21,12 @@ public final class HomeGalleryItem {
 	}
 
 	public HomeGalleryItem(String id, String iconUrl, String iconCachePath,
-			String name, String detailUrl) {
+			String name, String pkgName, String detailUrl) {
 		this.mId = id;
 		this.mIconUrl = iconUrl;
 		this.mIconCachePath = iconCachePath;
 		this.mName = name;
+		this.mPkgName = pkgName;
 		this.mDetailUrl = detailUrl;
 	}
 
@@ -59,6 +62,14 @@ public final class HomeGalleryItem {
 		this.mName = name;
 	}
 
+	public String getPkgName() {
+		return this.mPkgName;
+	}
+
+	public void setPkgName(String pkgName) {
+		this.mPkgName = pkgName;
+	}
+
 	public String getDetailUrl() {
 		return this.mDetailUrl;
 	}
@@ -75,6 +86,7 @@ public final class HomeGalleryItem {
 		sb.append(",\t").append(ICONCACHEPATH).append(":").append(
 				this.mIconCachePath);
 		sb.append(",\t").append(NAME).append(":").append(this.mName);
+		sb.append(",\t").append(PKGNAME).append(":").append(this.mPkgName);
 		sb.append(",\t").append(DETAILURL).append(":").append(this.mDetailUrl);
 		return sb.toString();
 	}
