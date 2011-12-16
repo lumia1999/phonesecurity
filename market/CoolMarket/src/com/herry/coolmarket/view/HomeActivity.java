@@ -262,6 +262,9 @@ public class HomeActivity extends ListActivity implements
 					} else if (TextUtils.equals(tag, HomeGalleryItem.NAME)) {
 						parser.next();
 						temp.setName(parser.getText());
+					} else if (TextUtils.equals(tag, HomeGalleryItem.PKGNAME)) {
+						parser.next();
+						temp.setPkgName(parser.getText());
 					} else if (TextUtils.equals(tag, HomeGalleryItem.DETAILURL)) {
 						parser.next();
 						temp.setDetailUrl(parser.getText());
@@ -602,9 +605,9 @@ public class HomeActivity extends ListActivity implements
 			if (init) {
 				collectIconForDownload();
 				if (mIconUrlList.size() > 0) {
-					Log.d(TAG, "iconList size : " + mIconUrlList.size());
 					mDownloadIconJob = new DownloadIconJob(this, this,
 							mIconUrlList, DownloadIconJob.TYPE_ITEM_ICON);
+					Log.d(TAG, "job id : " + mDownloadIconJob.getId());
 					IconDownloader.getInstance().addJob(mDownloadIconJob);
 				}
 			}
@@ -623,6 +626,7 @@ public class HomeActivity extends ListActivity implements
 				// Log.d(TAG, "iconList size : " + mIconUrlList.size());
 				mDownloadIconJob = new DownloadIconJob(this, this,
 						mIconUrlList, DownloadIconJob.TYPE_ITEM_ICON);
+				Log.d(TAG, "job id : " + mDownloadIconJob.getId());
 				IconDownloader.getInstance().addJob(mDownloadIconJob);
 			}
 			break;

@@ -138,6 +138,10 @@ public class PreLoadingActivity extends Activity {
 						parser.next();
 						appTitle.putString(ProductDetailItem.NAME, parser
 								.getText());
+					} else if (TextUtils.equals(tag, ProductDetailItem.PKGNAME)) {
+						parser.next();
+						appTitle.putString(ProductDetailItem.PKGNAME, parser
+								.getText());
 					} else if (TextUtils.equals(tag,
 							ProductDetailItem.DOWNLOADEDCOUNT)) {
 						parser.next();

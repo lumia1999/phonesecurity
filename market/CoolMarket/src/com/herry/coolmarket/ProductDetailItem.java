@@ -12,6 +12,7 @@ public final class ProductDetailItem implements Parcelable {
 	public static final String ICONURL = "iconurl";
 	public static final String AUTHOR = "author";
 	public static final String NAME = "name";
+	public static final String PKGNAME = "pkgName";
 	public static final String APPDESC = "appDesc";
 	public static final String APPINFO = "appInfo";
 	public static final String DOWNLOADEDCOUNT = "downloadedCount";
