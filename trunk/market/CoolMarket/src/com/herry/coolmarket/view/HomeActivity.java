@@ -86,6 +86,8 @@ public class HomeActivity extends ListActivity implements
 	private int mGalleryItemPos;
 	private byte[] mGalleryPosLock = new byte[1];
 
+	private byte[] mListItemLock = new byte[1];
+
 	// title
 	private TextView mTitle;
 	private ImageButton mSearchBtn;
@@ -603,13 +605,7 @@ public class HomeActivity extends ListActivity implements
 				mRefNum = DEF_NUM;
 			}
 			if (init) {
-				collectIconForDownload();
-				if (mIconUrlList.size() > 0) {
-					mDownloadIconJob = new DownloadIconJob(this, this,
-							mIconUrlList, DownloadIconJob.TYPE_ITEM_ICON);
-					Log.d(TAG, "job id : " + mDownloadIconJob.getId());
-					IconDownloader.getInstance().addJob(mDownloadIconJob);
-				}
+				rushIconThread();
 			}
 		}
 
@@ -620,25 +616,13 @@ public class HomeActivity extends ListActivity implements
 		// Log.d(TAG, "onScrollStateChanged,scrollState : " + scrollState);
 		switch (scrollState) {
 		case OnScrollListener.SCROLL_STATE_IDLE:
-			//				
-			collectIconForDownload();
-			if (mIconUrlList.size() > 0) {
-				// Log.d(TAG, "iconList size : " + mIconUrlList.size());
-				mDownloadIconJob = new DownloadIconJob(this, this,
-						mIconUrlList, DownloadIconJob.TYPE_ITEM_ICON);
-				Log.d(TAG, "job id : " + mDownloadIconJob.getId());
-				IconDownloader.getInstance().addJob(mDownloadIconJob);
-			}
+			rushIconThread();
 			break;
 		}
 	}
 
 	private void collectIconForDownload() {
-		if (mIconUrlList != null && !mIconUrlList.isEmpty()) {
-			mIconUrlList.clear();
-		} else {
-			mIconUrlList = new ArrayList<String>();
-		}
+		mIconUrlList = new ArrayList<String>();
 		HomeListItem item = null;
 		// Log.d(TAG, "mStartPos : " + mStartPos + ",mRefNum : " + mRefNum);
 		boolean update = false;
@@ -654,6 +638,19 @@ public class HomeActivity extends ListActivity implements
 		}
 		if (update) {
 			mListAdapter.notifyDataSetChanged();
+		}
+	}
+
+	private void rushIconThread() {
+		synchronized (mListItemLock) {
+			collectIconForDownload();
+			if (mIconUrlList.size() > 0) {
+				Log.d(TAG, "mIconUrlList size : " + mIconUrlList.size());
+				mDownloadIconJob = new DownloadIconJob(this, this,
+						mIconUrlList, DownloadIconJob.TYPE_ITEM_ICON);
+				Log.d(TAG, "job id : " + mDownloadIconJob.getId());
+				IconDownloader.getInstance().addJob(mDownloadIconJob);
+			}
 		}
 	}
 
