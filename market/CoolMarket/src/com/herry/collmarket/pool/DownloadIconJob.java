@@ -70,12 +70,6 @@ public class DownloadIconJob implements Runnable {
 		String iconUrl = null;
 		IconDownloadTask task = null;
 		for (int i = 0; i < size; i++) {
-			if (mOngoingIconList.contains(this.mIconUrlList.get(i))) {
-				this.mIconUrlList.remove(i);
-			}
-		}
-		size = this.mIconUrlList.size();
-		for (int i = 0; i < size; i++) {
 			Log.d(TAG, "current thread : " + Thread.currentThread().getName()
 					+ ",jobid : " + this.mJobId);
 			if (!mResume) {
@@ -105,6 +99,11 @@ public class DownloadIconJob implements Runnable {
 			}
 			synchronized (mOngoingIconList) {
 				mOngoingIconList.remove(iconUrl);
+			}
+			try{
+				Thread.sleep(1000);
+			}catch(InterruptedException e){
+				e.printStackTrace();
 			}
 		}
 	}
