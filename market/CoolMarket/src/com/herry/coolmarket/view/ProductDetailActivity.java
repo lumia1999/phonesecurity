@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -31,6 +33,7 @@ import com.herry.coolmarket.ProductDetailItem;
 import com.herry.coolmarket.R;
 import com.herry.coolmarket.TopGallery;
 import com.herry.coolmarket.util.Constants;
+import com.herry.coolmarket.util.LoadingDrawable;
 import com.herry.coolmarket.util.Utils;
 
 public class ProductDetailActivity extends Activity {
@@ -55,6 +58,8 @@ public class ProductDetailActivity extends Activity {
 	private TextView mSizeTxt;
 
 	// snapshot
+	private ProgressBar mProgressBar;
+	private LoadingDrawable mAnimDrawable;
 	private TopGallery mGallery;
 	private String[] mSnapShots;
 	private List<Bundle> mGalleryData;
@@ -69,6 +74,9 @@ public class ProductDetailActivity extends Activity {
 
 	// data
 	private ProductDetailItem mAppDetailItem;
+
+	// gallery big photo
+	private boolean mGalleryClickable;
 
 	private Handler mHandler = new Handler() {
 
@@ -113,6 +121,9 @@ public class ProductDetailActivity extends Activity {
 		mRatingNumTxt = (TextView) findViewById(R.id.product_detail_ratenum);
 		mVersionTxt = (TextView) findViewById(R.id.product_detail_version);
 		mSizeTxt = (TextView) findViewById(R.id.product_detail_size);
+		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
+		mAnimDrawable = new LoadingDrawable(this);
+		mProgressBar.setIndeterminateDrawable(mAnimDrawable);
 		mGallery = (TopGallery) findViewById(R.id.product_detail_gallery);
 		mGalleryTipTxt = (TextView) findViewById(R.id.product_detail_gallery_tip);
 		mDevLinkTxt = (TextView) findViewById(R.id.product_detail_dev_link);
@@ -158,18 +169,22 @@ public class ProductDetailActivity extends Activity {
 		mGallery.setAdapter(mGalleryAdapter);
 		mGalleryItemPos = Constants.GALLERY_BASE_POS + mGalleryData.size();
 		mGallery.setSelection(mGalleryItemPos);
+		mGalleryClickable = false;
 		new DownloadShotsTask().execute();
 		mGallery.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				synchronized (mGalleryPosLock) {
-					mGalleryItemPos = position;
+				if (mGalleryClickable) {
+					synchronized (mGalleryPosLock) {
+						mGalleryItemPos = position;
+					}
+					position = position % mGalleryData.size();
+					mGalleryTipTxt.setText((position + 1) + "/"
+							+ mGalleryData.size());
+					onShowScrollShotGallery();
 				}
-				position = position % mGalleryData.size();
-				mGalleryTipTxt.setText((position + 1) + "/"
-						+ mGalleryData.size());
 			}
 
 		});
@@ -198,6 +213,15 @@ public class ProductDetailActivity extends Activity {
 		Bundle appAuthor = mAppDetailItem.getAppAuthor();
 		mDevLinkTxt.setText(appAuthor.getString(ProductDetailItem.DEVLINK));
 		mDevCorpTxt.setText(appAuthor.getString(ProductDetailItem.DEVCORP));
+	}
+
+	private void onShowScrollShotGallery() {
+		Intent i = new Intent(this, ProductDetailScreenshotActivity.class);
+		i.putParcelableArrayListExtra(ProductDetailItem.SNAPSHOT,
+				(ArrayList<? extends Parcelable>) mGalleryData);
+		i.putExtra(Constants.EXTRA_GALLERY_POS, mGalleryItemPos
+				% mGalleryData.size());
+		startActivity(i);
 	}
 
 	private void initGalleryData() {
@@ -332,6 +356,11 @@ public class ProductDetailActivity extends Activity {
 				} catch (FileNotFoundException e) {
 					Log.d(TAG, "FileNotFoundException,shotUrl : " + shotUrl, e);
 				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					//
+				}
 
 			}
 			if (fis != null) {
@@ -350,6 +379,14 @@ public class ProductDetailActivity extends Activity {
 			super.onProgressUpdate(values);
 			mGalleryAdapter.notifyDataSetChanged();
 		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			mGalleryClickable = true;
+			mProgressBar.setVisibility(View.GONE);
+		}
+
 	}
 
 }

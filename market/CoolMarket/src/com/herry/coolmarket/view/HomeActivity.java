@@ -74,7 +74,6 @@ public class HomeActivity extends ListActivity implements
 	private AnimationDrawable mAnimDrawable;
 	private ProgressBar mProgressBar;
 	// download icon
-	private static final int DEF_NUM = 15;
 	private int mStartPos = -1;
 	private int mRefNum;
 	private DownloadIconJob mDownloadIconJob;
@@ -599,10 +598,10 @@ public class HomeActivity extends ListActivity implements
 				init = true;
 			}
 			mStartPos = firstVisibleItem;
-			if (mStartPos + DEF_NUM >= totalItemCount) {
+			if (mStartPos + Constants.DEF_NUM >= totalItemCount) {
 				mRefNum = totalItemCount - mStartPos - 1;
 			} else {
-				mRefNum = DEF_NUM;
+				mRefNum = Constants.DEF_NUM;
 			}
 			if (init) {
 				rushIconThread();
@@ -645,10 +644,10 @@ public class HomeActivity extends ListActivity implements
 		synchronized (mListItemLock) {
 			collectIconForDownload();
 			if (mIconUrlList.size() > 0) {
-				Log.d(TAG, "mIconUrlList size : " + mIconUrlList.size());
+				// Log.d(TAG, "mIconUrlList size : " + mIconUrlList.size());
 				mDownloadIconJob = new DownloadIconJob(this, this,
 						mIconUrlList, DownloadIconJob.TYPE_ITEM_ICON);
-				Log.d(TAG, "job id : " + mDownloadIconJob.getId());
+				// Log.d(TAG, "job id : " + mDownloadIconJob.getId());
 				IconDownloader.getInstance().addJob(mDownloadIconJob);
 			}
 		}
