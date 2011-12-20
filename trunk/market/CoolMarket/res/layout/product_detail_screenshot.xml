@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/background_color" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <com.herry.coolmarket.ScreenShotGallery
+            android:id="@+id/product_detail_screenshot_gallery"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:spacing="5dip"
+            android:fadingEdge="none"
+            android:scrollbars="none" />
+
+        <LinearLayout
+            android:id="@+id/product_detail_screenshot_indicator"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dip"
+            android:gravity="center"
+            android:orientation="horizontal" />
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@android:id/progress"
+        style="?android:style/Widget.ProgressBar"
+        android:layout_width="54.0dip"
+        android:layout_height="12.0dip"
+        android:layout_gravity="center"
+        android:indeterminateOnly="true" />
+
+</FrameLayout>

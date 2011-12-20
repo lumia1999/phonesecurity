@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/background_color">
+    android:background="@color/background_color" >
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,22 +22,46 @@
 
             <include layout="@layout/product_detail_info" />
 
-            <com.herry.coolmarket.TopGallery
-                android:id="@+id/product_detail_gallery"
+            <FrameLayout
                 android:layout_width="fill_parent"
-                android:layout_height="200dip"
-                android:background="@drawable/gallery"
-                android:clickable="true"
-                android:fadingEdge="none"
-                android:focusable="true"
-                android:paddingBottom="5dip"
-                android:paddingTop="5dip"
-                android:spacing="7dip"/>
-			<TextView android:id="@+id/product_detail_gallery_tip"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-			    android:gravity="center"
-			    android:paddingBottom="5dip"/>>
+                android:layout_height="200dip" >
+
+                <com.herry.coolmarket.TopGallery
+                    android:id="@+id/product_detail_gallery"
+                    android:layout_width="fill_parent"
+                    android:layout_height="200dip"
+                    android:background="@drawable/gallery"
+                    android:clickable="true"
+                    android:fadingEdge="none"
+                    android:focusable="true"
+                    android:paddingBottom="5dip"
+                    android:paddingTop="5dip"
+                    android:spacing="7dip" />
+
+                <ProgressBar
+                    android:id="@android:id/progress"
+                    style="?android:style/Widget.ProgressBar"
+                    android:layout_width="54.0dip"
+                    android:layout_height="12.0dip"
+                    android:layout_gravity="center"
+                    android:indeterminateOnly="true" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/product_detail_gallery_tip"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="5dip" />
+
+
+>
+            
+
+            
+
+            
+
             <include layout="@layout/product_detail_developer_info" />
         </LinearLayout>
     </LinearLayout>
