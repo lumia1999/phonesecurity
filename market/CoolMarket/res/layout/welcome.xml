@@ -14,10 +14,6 @@
 	        android:layout_height="wrap_content"
 	        android:textAppearance="?android:attr/textAppearanceSmall"
 	        android:text="@string/welcome_tip"/>
-	     <ProgressBar  android:id="@android:id/progress"
-            android:layout_width="54.0dip"
-            android:layout_height="12.0dip"
-            android:indeterminateOnly="true"
-            style="?android:style/Widget.ProgressBar"/>
+		<include layout="@layout/loading"/>
 	</LinearLayout>
 </RelativeLayout>

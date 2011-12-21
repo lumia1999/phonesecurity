@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,14 +32,20 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AbsListView.OnScrollListener;
 
+import com.herry.collmarket.pool.DownloadIconJob;
+import com.herry.collmarket.pool.IDownloadIconCallback;
+import com.herry.collmarket.pool.IconDownloader;
 import com.herry.coolmarket.CategoryListItem;
+import com.herry.coolmarket.HomeListItem;
 import com.herry.coolmarket.R;
 import com.herry.coolmarket.util.Constants;
 import com.herry.coolmarket.util.LoadingDrawable;
 import com.herry.coolmarket.util.Utils;
 
-public class CategoryActivity extends Activity {
+public class CategoryActivity extends Activity implements OnScrollListener,
+		IDownloadIconCallback {
 	private static final String TAG = "CategoryActivity";
 
 	// title
@@ -56,8 +63,15 @@ public class CategoryActivity extends Activity {
 	private List<CategoryListItem> mListData;
 	private CategoryListAdapter mListAdapter;
 
+	private int mStartPos = -1;
+	private int mRefNum;
+	private ArrayList<String> mIconUrlList = null;
+	private byte[] mListItemLock = new byte[1];
+	private DownloadIconJob mDownloadIconJob;
+
 	private static final int MSG_FILL_DATA = 1;
 	private static final int MSG_NETWORK_ERROR = 2;
+	private static final int MSG_REFRESH_ITEM_ICON = 3;
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -66,6 +80,13 @@ public class CategoryActivity extends Activity {
 			switch (msg.what) {
 			case MSG_FILL_DATA:
 				fillData();
+				break;
+			case MSG_NETWORK_ERROR:
+				Toast.makeText(getApplicationContext(),
+						R.string.invalid_network, Toast.LENGTH_SHORT).show();
+				break;
+			case MSG_REFRESH_ITEM_ICON:
+				updateListDataIcon(msg);
 				break;
 			}
 		}
@@ -101,6 +122,7 @@ public class CategoryActivity extends Activity {
 		mListHeader = (LinearLayout) getLayoutInflater().inflate(
 				R.layout.category_header, null);
 		mListView.addHeaderView(mListHeader);
+		mListView.setOnScrollListener(this);
 	}
 
 	private void startFetchDataThread() {
@@ -246,7 +268,6 @@ public class CategoryActivity extends Activity {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO
 			CategoryListViewHolder viewHolder;
 			if (convertView == null) {
 				convertView = mLayoutInflater.inflate(R.layout.category_item,
@@ -292,5 +313,95 @@ public class CategoryActivity extends Activity {
 		private TextView name;
 		private TextView desc;
 		private TextView number;
+	}
+
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+		if (totalItemCount > 0) {
+			boolean init = false;
+			if (mStartPos == -1) {
+				init = true;
+			}
+			mStartPos = firstVisibleItem;
+			if (mStartPos + Constants.DEF_NUM >= totalItemCount) {
+				mRefNum = totalItemCount - mStartPos - 1;// header
+			} else {
+				mRefNum = Constants.DEF_NUM;
+			}
+			if (init) {
+				// start icon thread
+				rushIconThread();
+			}
+		}
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		switch (scrollState) {
+		case OnScrollListener.SCROLL_STATE_IDLE:
+			// start icon thread
+			rushIconThread();
+			break;
+		}
+	}
+
+	private void collectIconForDownload() {
+		mIconUrlList = new ArrayList<String>();
+		CategoryListItem item = null;
+		// Log.d(TAG, "mStartPos : " + mStartPos + ",mRefNum : " + mRefNum);
+		boolean update = false;
+		for (int i = mStartPos; i < mStartPos + mRefNum; i++) {
+			item = mListData.get(i);
+			if (item.getIconCachePath() == null) {
+				if (checkCacheIcon(item)) {
+					update = true;
+					continue;
+				}
+				mIconUrlList.add(item.getIconUrl());
+			}
+		}
+		if (update) {
+			mListAdapter.notifyDataSetChanged();
+		}
+	}
+
+	private void rushIconThread() {
+		synchronized (mListItemLock) {
+			collectIconForDownload();
+			if (mIconUrlList.size() > 0) {
+				// Log.d(TAG, "mIconUrlList size : " + mIconUrlList.size());
+				mDownloadIconJob = new DownloadIconJob(this, this,
+						mIconUrlList, DownloadIconJob.TYPE_ITEM_ICON);
+				// Log.d(TAG, "job id : " + mDownloadIconJob.getId());
+				IconDownloader.getInstance().addJob(mDownloadIconJob);
+			}
+		}
+	}
+
+	@Override
+	public void onDownloadIconFinish(String iconUrl) {
+		Log.d(TAG, "onDownloadIconFinish,iconUrl : " + iconUrl);
+		Message msg = mHandler.obtainMessage();
+		msg.what = MSG_REFRESH_ITEM_ICON;
+		msg.obj = iconUrl;
+		msg.sendToTarget();
+	}
+
+	private void updateListDataIcon(Message msg) {
+		String iconUrl = (String) msg.obj;
+		int size = mListData.size();
+		CategoryListItem item = null;
+		for (int i = 0; i < size; i++) {
+			item = mListData.get(i);
+			if (TextUtils.equals(item.getIconUrl(), iconUrl)) {
+
+				String iconCachePath = Utils.getCurIconCachePath(this)
+						+ Utils.getIconName(iconUrl);
+				item.setIconCachePath(iconCachePath);
+				break;
+			}
+		}
+		mListAdapter.notifyDataSetChanged();
 	}
 }
