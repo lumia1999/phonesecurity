@@ -16,10 +16,5 @@
         android:fadingEdge="none"
         android:divider="@null" />
 	</LinearLayout>
-    <ProgressBar  android:id="@android:id/progress"
-          android:layout_width="54.0dip"
-          android:layout_height="12.0dip"
-          android:indeterminateOnly="true"
-          android:layout_gravity="center"
-          style="?android:style/Widget.ProgressBar"/>
+	<include layout="@layout/loading" />"
 </FrameLayout>

@@ -38,13 +38,7 @@
                     android:paddingTop="5dip"
                     android:spacing="7dip" />
 
-                <ProgressBar
-                    android:id="@android:id/progress"
-                    style="?android:style/Widget.ProgressBar"
-                    android:layout_width="54.0dip"
-                    android:layout_height="12.0dip"
-                    android:layout_gravity="center"
-                    android:indeterminateOnly="true" />
+                <include layout="@layout/loading" />
             </FrameLayout>
 
             <TextView
@@ -53,14 +47,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="5dip" />
-
-
->
-            
-
-            
-
-            
 
             <include layout="@layout/product_detail_developer_info" />
         </LinearLayout>

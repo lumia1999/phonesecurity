@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/list_item_bg_selector"
@@ -8,58 +8,53 @@
     android:focusable="true"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal"
     android:paddingLeft="5dip" >
 
     <ImageView
         android:id="@+id/category_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:background="@drawable/ic_launcher"
-        android:scaleType="centerCrop" />
+        android:scaleType="fitXY" />
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/category_item_name"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/category_item_number"
+        android:layout_toRightOf="@+id/category_item_icon"
+        android:ellipsize="marquee"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip"
+        android:singleLine="true"
+        android:text="name"
+        android:textAppearance="@style/app_text_style1" />
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/category_item_number"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingLeft="5dip" >
+    <TextView
+        android:id="@+id/category_item_desc"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/category_item_name"
+        android:layout_toRightOf="@+id/category_item_icon"
+        android:layout_toLeftOf="@+id/category_item_number"
+        android:ellipsize="marquee"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip"
+        android:singleLine="true"
+        android:text="desc"
+        android:textAppearance="@style/app_text_style2" />
 
-            <TextView
-                android:id="@+id/category_item_name"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:singleLine="true"
-                android:text="name"
-                android:textAppearance="@style/app_text_style1" />
+    <TextView
+        android:id="@+id/category_item_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@+id/category_item_name"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:singleLine="true"
+        android:text="100"
+        android:textAppearance="@style/app_text_style2" />
 
-            <TextView
-                android:id="@+id/category_item_desc"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:singleLine="true"
-                android:text="desc"
-                android:textAppearance="@style/app_text_style2" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/category_item_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="5dip"
-            android:layout_marginLeft="5dip"
-            android:singleLine="true"
-            android:text="100"
-            android:textAppearance="@style/app_text_style2" />
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

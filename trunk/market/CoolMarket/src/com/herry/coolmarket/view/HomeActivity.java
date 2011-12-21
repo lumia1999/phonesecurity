@@ -599,7 +599,7 @@ public class HomeActivity extends ListActivity implements
 			}
 			mStartPos = firstVisibleItem;
 			if (mStartPos + Constants.DEF_NUM >= totalItemCount) {
-				mRefNum = totalItemCount - mStartPos - 1;
+				mRefNum = totalItemCount - mStartPos - 1;// header
 			} else {
 				mRefNum = Constants.DEF_NUM;
 			}
