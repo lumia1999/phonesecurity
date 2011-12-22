@@ -40,15 +40,29 @@ public class ProductDetailTabActivity extends TabActivity implements
 		Log.d(TAG, "onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.product_detail_tab);
-		getInitData();
+		getInitData(savedInstanceState);
 		initUI();
 		setupTabs();
 	}
 
-	private void getInitData() {
-		Intent i = getIntent();
-		mAppDetailItem = i
-				.getParcelableExtra(ProductDetailItem.class.getName());
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if (mAppDetailItem != null) {
+			outState.putParcelable(ProductDetailItem.class.getName(),
+					mAppDetailItem);
+		}
+	}
+
+	private void getInitData(Bundle savedInstanceState) {
+		if (savedInstanceState == null) {
+			Intent i = getIntent();
+			mAppDetailItem = i.getParcelableExtra(ProductDetailItem.class
+					.getName());
+		} else {
+			mAppDetailItem = savedInstanceState
+					.getParcelable(ProductDetailItem.class.getName());
+		}
 	}
 
 	private void initUI() {

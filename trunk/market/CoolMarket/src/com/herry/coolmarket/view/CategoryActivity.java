@@ -14,6 +14,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -55,6 +57,7 @@ public class CategoryActivity extends Activity implements OnScrollListener,
 	// loading
 	private ProgressBar mProgressBar;
 	private LoadingDrawable mAnimDrawable;
+	private TextView mRetryTxt;
 
 	// list
 	private ListView mListView;
@@ -84,6 +87,8 @@ public class CategoryActivity extends Activity implements OnScrollListener,
 			case MSG_NETWORK_ERROR:
 				Toast.makeText(getApplicationContext(),
 						R.string.invalid_network, Toast.LENGTH_SHORT).show();
+				mProgressBar.setVisibility(View.GONE);
+				mRetryTxt.setVisibility(View.VISIBLE);
 				break;
 			case MSG_REFRESH_ITEM_ICON:
 				updateListDataIcon(msg);
@@ -99,7 +104,7 @@ public class CategoryActivity extends Activity implements OnScrollListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.category);
 		initUI();
-		startFetchDataThread();
+		new FetchDataTast().execute();
 	}
 
 	private void initUI() {
@@ -118,6 +123,17 @@ public class CategoryActivity extends Activity implements OnScrollListener,
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
 		mAnimDrawable = new LoadingDrawable(this);
 		mProgressBar.setIndeterminateDrawable(mAnimDrawable);
+		mRetryTxt = (TextView) findViewById(R.id.retry);
+		mRetryTxt.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO
+				mRetryTxt.setVisibility(View.GONE);
+				mProgressBar.setVisibility(View.VISIBLE);
+				new FetchDataTast().execute();
+			}
+		});
 		mListView = (ListView) findViewById(android.R.id.list);
 		mListHeader = (LinearLayout) getLayoutInflater().inflate(
 				R.layout.category_header, null);
@@ -125,17 +141,31 @@ public class CategoryActivity extends Activity implements OnScrollListener,
 		mListView.setOnScrollListener(this);
 	}
 
-	private void startFetchDataThread() {
-		new Thread(new Runnable() {
+	private class FetchDataTast extends AsyncTask<Void, Void, Boolean> {
 
-			@Override
-			public void run() {
-				initListData();
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			Log.d(TAG, "doInBackground");
+			int ret = initListData();
+			if (ret == Constants.TYPE_OK) {
+				return true;
 			}
-		}).start();
+			return false;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if (result) {
+				mHandler.sendEmptyMessage(MSG_FILL_DATA);
+			} else {
+				notifyError();
+			}
+		}
+
 	}
 
-	private void initListData() {
+	private int initListData() {
 		if (mListData != null && !mListData.isEmpty()) {
 			mListData.clear();
 		} else {
@@ -188,16 +218,16 @@ public class CategoryActivity extends Activity implements OnScrollListener,
 				}
 				eventType = parser.next();
 			}// ?end while
-			mHandler.sendEmptyMessage(MSG_FILL_DATA);
+			return Constants.TYPE_OK;
 		} catch (FileNotFoundException e) {
 			Log.e(TAG, "FileNotFoundException", e);
-			notifyError();
+			return Constants.TYPE_NO_NETWORK;
 		} catch (XmlPullParserException e) {
 			Log.e(TAG, "XmlPullParserException", e);
-			notifyError();
+			return Constants.TYPE_NO_NETWORK;
 		} catch (IOException e) {
 			Log.e(TAG, "IOException", e);
-			notifyError();
+			return Constants.TYPE_NO_NETWORK;
 		} finally {
 			if (fis != null) {
 				try {
@@ -290,8 +320,14 @@ public class CategoryActivity extends Activity implements OnScrollListener,
 			if (iconCachePath == null) {
 				viewHolder.icon.setBackgroundResource(R.drawable.loading_icon);
 			} else {
-				viewHolder.icon.setBackgroundDrawable(Utils
-						.createBitmapFromFile(mCtx, iconCachePath));
+				BitmapDrawable bg = Utils.createBitmapFromFile(mCtx,
+						iconCachePath);
+				if (bg != null) {
+					viewHolder.icon.setBackgroundDrawable(bg);
+				} else {
+					viewHolder.icon
+							.setBackgroundResource(R.drawable.loading_icon);
+				}
 			}
 			viewHolder.name.setText(item.getName());
 			viewHolder.desc.setText(item.getDesc());

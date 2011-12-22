@@ -10,14 +10,23 @@
 
         <include layout="@layout/topbar_title" />
 
-        <ListView
-            android:id="@android:id/list"
+        <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="@color/background_color"
-            android:cacheColorHint="@color/list_view_bg_color"
-            android:divider="@null"
-            android:fadingEdge="none" />
+            android:layout_height="fill_parent" >
+
+            <ListView
+                android:id="@android:id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/background_color"
+                android:cacheColorHint="@color/list_view_bg_color"
+                android:divider="@null"
+                android:fadingEdge="none" />
+
+            <include layout="@layout/retry" />
+        </FrameLayout>
     </LinearLayout>
-	<include layout="@layout/loading"/>
+
+    <include layout="@layout/loading" />
+
 </merge>

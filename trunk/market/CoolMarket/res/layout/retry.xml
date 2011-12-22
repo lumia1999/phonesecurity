@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/retry"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:drawablePadding="1dip"
+    android:drawableTop="@drawable/btn_retry"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:paddingBottom="3dip"
+    android:paddingTop="3dip"
+    android:visibility="gone"
+    android:text="@string/invalid_network" />

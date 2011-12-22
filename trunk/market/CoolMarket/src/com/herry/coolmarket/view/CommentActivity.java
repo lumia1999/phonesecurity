@@ -3,7 +3,6 @@ package com.herry.coolmarket.view;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.ContentHandler;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
@@ -47,6 +47,7 @@ public class CommentActivity extends Activity implements OnScrollListener {
 
 	private ProgressBar mProgressBar;
 	private LoadingDrawable mAnimDrawable;
+	private TextView mRetryTxt;
 
 	private ListView mListView;
 	private CommentAdapter mAdapter;
@@ -77,7 +78,8 @@ public class CommentActivity extends Activity implements OnScrollListener {
 			case MSG_NETWORK_ERROR:
 				Toast.makeText(getApplicationContext(),
 						R.string.invalid_network, Toast.LENGTH_SHORT).show();
-
+				mRetryTxt.setVisibility(View.VISIBLE);
+				mProgressBar.setVisibility(View.GONE);
 				break;
 			case MSG_FETCH_DATA_SUCCESS:
 				fillData();
@@ -116,6 +118,17 @@ public class CommentActivity extends Activity implements OnScrollListener {
 		mIsLoading = false;
 		mIndex = 1;
 		mListData = new ArrayList<ProductCommentItem>();
+		mRetryTxt = (TextView) findViewById(R.id.retry);
+		mRetryTxt.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				mRetryTxt.setVisibility(View.GONE);
+				mProgressBar.setVisibility(View.VISIBLE);
+				mLoadingDataThread = new LoadingCommentDataThread(mIndex);
+				mLoadingDataThread.start();
+			}
+		});
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
 		mAnimDrawable = new LoadingDrawable(this);
 		mProgressBar.setIndeterminateDrawable(mAnimDrawable);

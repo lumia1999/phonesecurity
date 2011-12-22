@@ -2,8 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
-	<include layout="@layout/product_detail_title"/>
+    android:orientation="vertical" >
+
+    <include layout="@layout/product_detail_title" />
+
+    <include layout="@layout/tab" />
+    <!--
     <TabHost
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@android:id/tabhost"
@@ -27,6 +31,7 @@
                 android:layout_below="@android:id/tabs" >
             </FrameLayout>
         </RelativeLayout>
-    </TabHost>
+    </TabHost>
+    -->
 
 </LinearLayout>
