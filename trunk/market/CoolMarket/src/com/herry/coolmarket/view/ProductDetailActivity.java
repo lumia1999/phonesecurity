@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -79,6 +81,9 @@ public class ProductDetailActivity extends Activity {
 	// gallery big photo
 	private boolean mGalleryClickable;
 
+	private int mGalleryItemWidth;
+	private int mGalleryItemHeight;
+
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -97,6 +102,7 @@ public class ProductDetailActivity extends Activity {
 		setContentView(R.layout.product_detail);
 		getIntentData();
 		initUI();
+		initGalleryItem();
 		initData();
 	}
 
@@ -129,6 +135,12 @@ public class ProductDetailActivity extends Activity {
 		mGalleryTipTxt = (TextView) findViewById(R.id.product_detail_gallery_tip);
 		mDevLinkTxt = (TextView) findViewById(R.id.product_detail_dev_link);
 		mDevCorpTxt = (TextView) findViewById(R.id.product_detail_dev_corp);
+	}
+
+	private void initGalleryItem() {
+		DisplayMetrics dm = Utils.getDevInfo(this);
+		mGalleryItemWidth = (dm.widthPixels - 100) / 2;
+		mGalleryItemHeight = dm.heightPixels / 2;
 	}
 
 	private void initData() {
@@ -299,6 +311,8 @@ public class ProductDetailActivity extends Activity {
 			if (convertView == null) {
 				convertView = getLayoutInflater().inflate(
 						R.layout.product_detail_gallery_item, null);
+				convertView.setLayoutParams(new Gallery.LayoutParams(
+						mGalleryItemWidth, mGalleryItemHeight));
 				viewHolder = new AppDetailGalleryViewHolder();
 				viewHolder.icon = (ImageView) convertView;
 				convertView.setTag(viewHolder);
