@@ -18,6 +18,8 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -73,6 +75,7 @@ public class HomeActivity extends ListActivity implements
 	private Animation mRecommendTipAnim;
 	private AnimationDrawable mAnimDrawable;
 	private ProgressBar mProgressBar;
+	private TextView mRetryTxt;
 	// download icon
 	private int mStartPos = -1;
 	private int mRefNum;
@@ -82,6 +85,7 @@ public class HomeActivity extends ListActivity implements
 	private ArrayList<String> mGalleryIconUrlList;
 
 	private Timer mBrowserTimer;
+	private int mBrowserCount;
 	private int mGalleryItemPos;
 	private byte[] mGalleryPosLock = new byte[1];
 
@@ -91,16 +95,21 @@ public class HomeActivity extends ListActivity implements
 	private TextView mTitle;
 	private ImageButton mSearchBtn;
 
-	private static final int MSG_FILL_DATA = 1;
-	private static final int MSG_REFRESH_ITEM_ICON = 2;
-	private static final int MSG_REFRESH_GALLERY_ICON = 3;
-	private static final int MSG_BROWSE_GALLERY_ITEM = 4;
+	private static final int MSG_NETWORK_ERROR = 1;
+	private static final int MSG_FILL_DATA = 2;
+	private static final int MSG_REFRESH_ITEM_ICON = 3;
+	private static final int MSG_REFRESH_GALLERY_ICON = 4;
+	private static final int MSG_BROWSE_GALLERY_ITEM = 5;
 	private Handler mHandler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
+			case MSG_NETWORK_ERROR:
+				mRetryTxt.setVisibility(View.VISIBLE);
+				mProgressBar.setVisibility(View.GONE);
+				break;
 			case MSG_FILL_DATA:
 				fillData();
 				break;
@@ -124,7 +133,7 @@ public class HomeActivity extends ListActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 		initUI();
-		startFetchDataThread();
+		new FetchDataTask().execute();
 	}
 
 	@Override
@@ -200,6 +209,9 @@ public class HomeActivity extends ListActivity implements
 						position = position % mGalleryTotalNum;
 						mGalleryTip.setText(mGalleryData.get(position)
 								.getName());
+						if (mBrowserCount == mGalleryTotalNum) {
+							mBrowserTimer.cancel();
+						}
 					}
 
 					@Override
@@ -209,27 +221,52 @@ public class HomeActivity extends ListActivity implements
 					}
 
 				});
+		mRetryTxt = (TextView) findViewById(R.id.retry);
+		mRetryTxt.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				mRetryTxt.setVisibility(View.GONE);
+				mProgressBar.setVisibility(View.VISIBLE);
+				new FetchDataTask().execute();
+			}
+		});
 		mListView = getListView();
 		mListView.addHeaderView(mHeaderView);
 		mListView.setOnScrollListener(this);
 		DownloadIconJob.init();
 	}
 
-	private void startFetchDataThread() {
-		new Thread(new Runnable() {
+	private class FetchDataTask extends AsyncTask<Void, Void, Boolean> {
 
-			@Override
-			public void run() {
-				initGalleryData();
-				initListData();
-				mHandler.sendEmptyMessage(MSG_FILL_DATA);
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			Log.d(TAG, "doInBackground");
+			int ret = Constants.TYPE_NO_NETWORK;// init value
+			ret = initGalleryData();
+			if (ret == Constants.TYPE_NO_NETWORK) {
+				return false;
 			}
+			ret = initListData();
+			if (ret == Constants.TYPE_NO_NETWORK) {
+				return false;
+			}
+			return true;
+		}
 
-		}).start();
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if (result) {
+				mHandler.sendEmptyMessage(MSG_FILL_DATA);
+			} else {
+				mHandler.sendEmptyMessage(MSG_NETWORK_ERROR);
+			}
+		}
+
 	}
 
-	private void initGalleryData() {
-		// TODO
+	private int initGalleryData() {
 		if (mGalleryData != null && mGalleryData.size() > 0) {
 			mGalleryData.clear();
 		} else {
@@ -278,10 +315,12 @@ public class HomeActivity extends ListActivity implements
 					}
 				}
 				eventType = parser.next();
-			}
+			}// ?end while
+			return Constants.TYPE_OK;
 		} catch (Exception e) {
 			// TODO
 			Log.e(TAG, "Exception : " + e.getMessage(), e);
+			return Constants.TYPE_NO_NETWORK;
 		} finally {
 			if (fis != null) {
 				try {
@@ -293,7 +332,7 @@ public class HomeActivity extends ListActivity implements
 		}
 	}
 
-	private void initListData() {
+	private int initListData() {
 		if (mListData != null && mListData.size() > 0) {
 			mListData.clear();
 		} else {
@@ -348,13 +387,17 @@ public class HomeActivity extends ListActivity implements
 					}
 				}
 				eventType = parser.next();
-			}
+			}// ?end while
+			return Constants.TYPE_OK;
 		} catch (FileNotFoundException e) {
 			Log.e(TAG, "FileNotFoundException", e);
+			return Constants.TYPE_NO_NETWORK;
 		} catch (XmlPullParserException e) {
 			Log.e(TAG, "XmlPullParserException", e);
+			return Constants.TYPE_NO_NETWORK;
 		} catch (IOException e) {
 			Log.e(TAG, "IOException", e);
+			return Constants.TYPE_NO_NETWORK;
 		} finally {
 			if (fis != null) {
 				try {
@@ -422,6 +465,7 @@ public class HomeActivity extends ListActivity implements
 	}
 
 	private void browseGalleryItem() {
+		mBrowserCount = 0;
 		mBrowserTimer = new Timer(HomeActivity.class.getName(), true);
 		mBrowserTimer.schedule(new BrowseGalleryTask(), 2000, 3000);
 	}
@@ -431,6 +475,7 @@ public class HomeActivity extends ListActivity implements
 		@Override
 		public void run() {
 			//
+			mBrowserCount++;
 			mHandler.sendEmptyMessage(MSG_BROWSE_GALLERY_ITEM);
 		}
 
@@ -472,12 +517,16 @@ public class HomeActivity extends ListActivity implements
 			if (iconCachePath == null) {
 				viewHolder.icon.setImageResource(R.drawable.banner_loading);
 			} else {
-				viewHolder.icon.setImageDrawable(Utils.createBitmapFromFile(
-						getApplicationContext(), iconCachePath));
+				BitmapDrawable bg = Utils.createBitmapFromFile(
+						getApplicationContext(), iconCachePath);
+				if (bg != null) {
+					viewHolder.icon.setImageDrawable(bg);
+				} else {
+					viewHolder.icon.setImageResource(R.drawable.banner_loading);
+				}
 			}
 			return convertView;
 		}
-
 	}
 
 	private class HomeGalleryViewHolder {
@@ -533,8 +582,14 @@ public class HomeActivity extends ListActivity implements
 			if (iconCachePath == null) {
 				viewHolder.icon.setBackgroundResource(R.drawable.loading_icon);
 			} else {
-				viewHolder.icon.setBackgroundDrawable(Utils
-						.createBitmapFromFile(mCtx, iconCachePath));
+				BitmapDrawable bg = Utils.createBitmapFromFile(mCtx,
+						iconCachePath);
+				if (bg != null) {
+					viewHolder.icon.setBackgroundDrawable(bg);
+				} else {
+					viewHolder.icon
+							.setBackgroundResource(R.drawable.loading_icon);
+				}
 			}
 			viewHolder.name.setText(item.getName());
 			viewHolder.desc.setText(item.getDesc());

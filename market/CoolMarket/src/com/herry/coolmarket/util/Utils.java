@@ -182,8 +182,12 @@ public class Utils {
 		}
 		opt.inJustDecodeBounds = false;
 		bitmap = BitmapFactory.decodeFile(filePath, opt);
-		BitmapDrawable bd = new BitmapDrawable(bitmap);
-		return bd;
+		if (bitmap != null) {
+			BitmapDrawable bd = new BitmapDrawable(bitmap);
+			return bd;
+		} else {
+			return null;
+		}
 	}
 
 	public static void setListViewHeightBaseOnChildren(ListView listView) {

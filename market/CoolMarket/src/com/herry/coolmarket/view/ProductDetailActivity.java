@@ -9,6 +9,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -307,10 +308,16 @@ public class ProductDetailActivity extends Activity {
 			position = position % mGalleryData.size();
 			Bundle item = mGalleryData.get(position);
 			if (item.getString(SHOTCACHEPATH) != null) {
-				viewHolder.icon.setBackgroundDrawable(Utils
-						.createBitmapFromFile(getApplicationContext(), Utils
+				BitmapDrawable bg = Utils.createBitmapFromFile(
+						getApplicationContext(), Utils
 								.getCurIconCachePath(getApplicationContext())
-								+ item.getString(SHOTNAME)));
+								+ item.getString(SHOTNAME));
+				if (bg != null) {
+					viewHolder.icon.setBackgroundDrawable(bg);
+				} else {
+					viewHolder.icon
+							.setBackgroundResource(R.drawable.gallery_item_background);
+				}
 			} else {
 				viewHolder.icon
 						.setBackgroundResource(R.drawable.gallery_item_background);

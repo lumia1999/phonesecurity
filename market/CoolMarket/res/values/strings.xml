@@ -30,5 +30,12 @@
 
     <!-- title string -->
     <string name="category_title">应用分类</string>
-
+	<string name="rank_title">应用排行</string>
+	
+	    
+	<!-- rank tab string -->
+	<string name="rank_tab_vane">风向标</string>
+	<string name="rank_tab_app">应用</string>
+	<string name="rank_tab_game">游戏</string>
+	<string name="rank_tab_book">电子书</string>
 </resources>
