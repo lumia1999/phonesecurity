@@ -1,4 +1,4 @@
-package com.herry.collmarket.pool;
+package com.herry.coolmarket.pool;
 
 public interface IDownloadGalleryIconCallback {
 	public void onDownloadGalleryIconFinish(String iconUrl);
