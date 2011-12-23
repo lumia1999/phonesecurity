@@ -138,6 +138,16 @@ public class CommentActivity extends Activity implements OnScrollListener {
 		mFooterProgressBar = (ProgressBar) mFooter
 				.findViewById(android.R.id.progress);
 		mFooterTip = (TextView) mFooter.findViewById(R.id.list_footer_retry);
+		mFooterTip.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				mFooterTip.setVisibility(View.GONE);
+				mFooterProgressBar.setVisibility(View.VISIBLE);
+				mLoadingDataThread = new LoadingCommentDataThread(mIndex);
+				mLoadingDataThread.start();
+			}
+		});
 		mFooterProgressBar.setIndeterminateDrawable(mAnimDrawable);
 		mFooterTip.setVisibility(View.GONE);
 		mListView.addFooterView(mFooter);

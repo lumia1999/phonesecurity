@@ -139,8 +139,8 @@ public class ProductDetailActivity extends Activity {
 
 	private void initGalleryItem() {
 		DisplayMetrics dm = Utils.getDevInfo(this);
-		mGalleryItemWidth = (dm.widthPixels - 100) / 2;
-		mGalleryItemHeight = dm.heightPixels / 2;
+		mGalleryItemWidth = (int) (130 * dm.density);
+		mGalleryItemHeight = (int) (190 * dm.density);
 	}
 
 	private void initData() {
