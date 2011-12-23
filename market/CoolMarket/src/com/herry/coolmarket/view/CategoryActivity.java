@@ -66,6 +66,7 @@ public class CategoryActivity extends Activity implements OnScrollListener,
 	private List<CategoryListItem> mListData;
 	private CategoryListAdapter mListAdapter;
 
+	// download icon
 	private int mStartPos = -1;
 	private int mRefNum;
 	private ArrayList<String> mIconUrlList = null;
