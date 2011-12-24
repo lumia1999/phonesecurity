@@ -7,16 +7,17 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.zip.GZIPInputStream;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -29,8 +30,6 @@ import android.view.WindowManager;
 import android.view.View.MeasureSpec;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-
-import com.herry.coolmarket.R;
 
 public class Utils {
 	private static final String TAG = "CoolMarket.Utils";
@@ -282,5 +281,13 @@ public class Utils {
 
 	public static String formatDate(Context ctx, long ts) {
 		return DateUtils.formatDateTime(ctx, ts, DATE_FLAT);
+	}
+
+	public static void installApk(Context ctx, String apkPath) {
+		Intent i = new Intent();
+		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		i.setAction(Intent.ACTION_VIEW);
+		i.setDataAndType(Uri.parse("file://" + apkPath), Constants.APK_MIME);
+		ctx.startActivity(i);
 	}
 }
