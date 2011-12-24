@@ -24,4 +24,6 @@ public final class Constants {
 
 	public static final int DEF_NUM = 15;
 
+	public static final String APK_MIME = "application/vnd.android.package-archive";
+
 }
