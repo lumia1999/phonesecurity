@@ -46,21 +46,13 @@ public class CoolMarketActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.welcome);
 		initUI();
+		tmpFun();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Message msg = mHandler.obtainMessage();
-		msg.what = MSG_CHECK_FINISH;
-		if (!Utils.isNetworkActived(this)) {
-			// TODO
-			msg.arg1 = Constants.TYPE_NO_NETWORK;
-			mHandler.sendMessageDelayed(msg, 2000);
-			return;
-		}
-		msg.arg1 = Constants.TYPE_OK;
-		mHandler.sendMessageDelayed(msg, 2000);
+
 	}
 
 	private void initUI() {
@@ -74,7 +66,6 @@ public class CoolMarketActivity extends Activity {
 		} else {
 			Prefs.setCurCacheLoc(this, Constants.CACHE_LOC_RAM);
 		}
-		Utils.cleanIconCacheDir(this);
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
 		mPbAnimDrawable = new LoadingDrawable(this);
 		mProgressBar.setIndeterminateDrawable(mPbAnimDrawable);
@@ -95,6 +86,27 @@ public class CoolMarketActivity extends Activity {
 		// mPbAnimDrawable.stop();
 		// }
 		// }
+	}
+
+	private void tmpFun() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				Utils.cleanIconCacheDir(getApplicationContext());
+				Message msg = mHandler.obtainMessage();
+				msg.what = MSG_CHECK_FINISH;
+				if (!Utils.isNetworkActived(getApplicationContext())) {
+					// TODO
+					msg.arg1 = Constants.TYPE_NO_NETWORK;
+					mHandler.sendMessageDelayed(msg, 2000);
+					return;
+				}
+				msg.arg1 = Constants.TYPE_OK;
+				mHandler.sendMessageDelayed(msg, 2000);
+			}
+
+		}).start();
 	}
 
 }
