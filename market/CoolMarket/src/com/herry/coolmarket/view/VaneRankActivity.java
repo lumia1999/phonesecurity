@@ -246,6 +246,14 @@ public class VaneRankActivity extends Activity implements OnScrollListener,
 		} catch (IOException e) {
 			Log.e(TAG, "IOException", e);
 			return Constants.TYPE_NO_NETWORK;
+		} finally {
+			if (fis != null) {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					//
+				}
+			}
 		}
 	}
 
