@@ -161,6 +161,9 @@ public class HomeActivity extends ListActivity implements
 				// TODO
 				Toast.makeText(getApplicationContext(), "jump to search page",
 						Toast.LENGTH_SHORT).show();
+				Intent i = new Intent(getApplicationContext(),
+						SearchActivity.class);
+				startActivity(i);
 			}
 		});
 		mLayoutInflater = getLayoutInflater();

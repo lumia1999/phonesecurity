@@ -142,7 +142,6 @@ public class GameRankActivity extends Activity implements OnScrollListener,
 
 			@Override
 			public void onClick(View v) {
-				// TODO
 				mRetryTxt.setVisibility(View.GONE);
 				mProgressBar.setVisibility(View.VISIBLE);
 				mFetchDataTask = new FetchDataTask();

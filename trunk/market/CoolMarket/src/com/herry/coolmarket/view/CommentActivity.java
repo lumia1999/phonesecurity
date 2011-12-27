@@ -12,7 +12,10 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,12 +28,17 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.RatingBar.OnRatingBarChangeListener;
 
 import com.herry.coolmarket.ProductCommentItem;
 import com.herry.coolmarket.ProductDetailItem;
@@ -55,6 +63,12 @@ public class CommentActivity extends Activity implements OnScrollListener {
 	private List<ProductCommentItem> mLoadingData = null;
 	private int mListItemTotalNum = -1;
 
+	// header
+	private RelativeLayout mHeader;
+	private TextView mSelfCommentTipTxt;
+	private RatingBar mSelfCommentRatingBar;
+	private RatingLayout mRatingLayout;
+
 	// footer
 	private FrameLayout mFooter;
 	private ProgressBar mFooterProgressBar;
@@ -65,10 +79,16 @@ public class CommentActivity extends Activity implements OnScrollListener {
 	private int mIndex;
 	private LoadingCommentDataThread mLoadingDataThread;
 
+	// dialog id
+	private static final int DLG_COMMENT_INPUT_ID = 1;
+
+	private LayoutInflater mLayoutInflater;
+
 	private static final int MSG_NETWORK_ERROR = 1;
 	private static final int MSG_FETCH_DATA_SUCCESS = 2;
 	private static final int MSG_REFRESH_UI = 11;
 	private static final int MSG_REFRESH_UI_ERROR = 12;
+
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -133,8 +153,9 @@ public class CommentActivity extends Activity implements OnScrollListener {
 		mAnimDrawable = new LoadingDrawable(this);
 		mProgressBar.setIndeterminateDrawable(mAnimDrawable);
 		mListView = (ListView) findViewById(android.R.id.list);
-		LayoutInflater inflater = getLayoutInflater();
-		mFooter = (FrameLayout) inflater.inflate(R.layout.list_footer, null);
+		mLayoutInflater = getLayoutInflater();
+		mFooter = (FrameLayout) mLayoutInflater.inflate(R.layout.list_footer,
+				null);
 		mFooterProgressBar = (ProgressBar) mFooter
 				.findViewById(android.R.id.progress);
 		mFooterTip = (TextView) mFooter.findViewById(R.id.list_footer_retry);
@@ -151,7 +172,115 @@ public class CommentActivity extends Activity implements OnScrollListener {
 		mFooterProgressBar.setIndeterminateDrawable(mAnimDrawable);
 		mFooterTip.setVisibility(View.GONE);
 		mListView.addFooterView(mFooter);
+		mHeader = (RelativeLayout) mLayoutInflater.inflate(R.layout.my_comment,
+				null);
+		mSelfCommentTipTxt = (TextView) mHeader
+				.findViewById(R.id.my_comment_tip);
+		mSelfCommentRatingBar = (RatingBar) mHeader
+				.findViewById(R.id.my_comment_ratingbar);
+		mHeader.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				handleHeaderClick();
+			}
+		});
+		mListView.addHeaderView(mHeader);
 		mListView.setOnScrollListener(this);
+	}
+
+	private void handleHeaderClick() {
+		// TODO
+		mSelfCommentTipTxt.setText(R.string.self_rating_unrated);
+		CharSequence tip = mSelfCommentTipTxt.getText();
+		if (tip != null) {
+			Toast.makeText(this, "comment tip : " + tip, Toast.LENGTH_SHORT)
+					.show();
+			//
+			if (TextUtils.equals(tip, getString(R.string.self_rating_unrated))) {
+				showDialog(DLG_COMMENT_INPUT_ID);
+			} else if (TextUtils.equals(tip,
+					getString(R.string.self_rating_rated))) {
+				if (Utils.isCommentPermited()) {
+					// TODO
+					showDialog(DLG_COMMENT_INPUT_ID);
+				} else {
+					Toast.makeText(this, R.string.comment_protection_tip,
+							Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DLG_COMMENT_INPUT_ID:
+			View v = mLayoutInflater.inflate(R.layout.comment_input, null);
+			mRatingLayout = new RatingLayout();
+			mRatingLayout.ratingBar = (RatingBar) v
+					.findViewById(R.id.comment_ratingbar);
+			mRatingLayout.ratingBar
+					.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+
+						@Override
+						public void onRatingChanged(RatingBar ratingBar,
+								float rating, boolean fromUser) {
+							// TODO
+							Log.d(TAG, "rating : " + rating);
+							mRatingLayout.ratingBarTip.setText("rating : "
+									+ rating);
+						}
+					});
+			mRatingLayout.ratingBarTip = (TextView) v
+					.findViewById(R.id.comment_ratingbar_tip);
+			mRatingLayout.content = (EditText) v
+					.findViewById(R.id.comment_content);
+			AlertDialog dlg = new AlertDialog.Builder(this).setIcon(
+					android.R.drawable.star_big_off).setTitle(
+					R.string.comment_input_title).setView(v).create();
+			dlg.setButton(DialogInterface.BUTTON_POSITIVE,
+					getString(android.R.string.yes),
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+
+						}
+					});
+			dlg.setButton(DialogInterface.BUTTON_NEGATIVE,
+					getString(android.R.string.no),
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+
+						}
+					});
+			return dlg;
+		}
+		return super.onCreateDialog(id);
+	}
+
+	private class RatingLayout {
+		private RatingBar ratingBar;
+		private TextView ratingBarTip;
+		private EditText content;
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		super.onPrepareDialog(id, dialog);
+		switch (id) {
+		case DLG_COMMENT_INPUT_ID:
+			AlertDialog dlg = (AlertDialog) dialog;
+			Button posBtn = dlg.getButton(DialogInterface.BUTTON_POSITIVE);
+			Log.d(TAG, "posBtn : " + posBtn);
+			posBtn.setEnabled(false);
+			break;
+		}
 	}
 
 	private void initData(int idx) {
@@ -333,14 +462,15 @@ public class CommentActivity extends Activity implements OnScrollListener {
 		switch (scrollState) {
 		case OnScrollListener.SCROLL_STATE_IDLE:
 			int lastVisiblePos = view.getLastVisiblePosition();
-			// Log.d(TAG, "lastVisiblePos : " + lastVisiblePos
-			// + ",mListItemTotalNum : " + mListItemTotalNum);
-			if (lastVisiblePos == mListItemTotalNum) {
+			Log.d(TAG, "lastVisiblePos : " + lastVisiblePos
+					+ ",mListItemTotalNum : " + mListItemTotalNum
+					+ ",mListData size : " + mListData.size());
+			if (lastVisiblePos == mListItemTotalNum + 1) {
 				mListView.removeFooterView(mFooter);
 				return;
 			}
-			// count the footer item
-			if (lastVisiblePos == mListData.size() && !mIsLoading) {
+			// count the footer item,and header item
+			if (lastVisiblePos == (mListData.size() + 1) && !mIsLoading) {
 				onLoadNewData();
 			}
 			break;
