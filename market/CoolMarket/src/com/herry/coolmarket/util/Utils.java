@@ -166,19 +166,30 @@ public class Utils {
 		Bitmap bitmap = BitmapFactory.decodeFile(filePath, opt);
 		int picWidth = opt.outWidth;
 		int picHeight = opt.outHeight;
-		DisplayMetrics dm = getDevInfo(ctx);
-		int screenWidth = dm.widthPixels;
-		int screenHeight = dm.heightPixels;
-		opt.inSampleSize = 1;
-		if (picWidth > picHeight) {
-			if (picWidth > screenWidth) {
-				opt.inSampleSize = picWidth / screenWidth;
+		// DisplayMetrics dm = getDevInfo(ctx);
+		// int screenWidth = dm.widthPixels;
+		// int screenHeight = dm.heightPixels;
+		// opt.inSampleSize = 1;
+		// if (picWidth > picHeight) {
+		// if (picWidth > screenWidth) {
+		// opt.inSampleSize = picWidth / screenWidth;
+		// }
+		// } else {
+		// if (picHeight > screenHeight) {
+		// opt.inSampleSize = picHeight / screenHeight;
+		// }
+		// }
+		int requiredSize = 70;
+		int scale = 1;
+		while (true) {
+			if (picWidth / 2 < requiredSize || picHeight / 2 < requiredSize) {
+				break;
 			}
-		} else {
-			if (picHeight > screenHeight) {
-				opt.inSampleSize = picHeight / screenHeight;
-			}
+			picWidth /= 2;
+			picHeight /= 2;
+			scale *= 2;
 		}
+		opt.inSampleSize = scale;
 		opt.inJustDecodeBounds = false;
 		bitmap = BitmapFactory.decodeFile(filePath, opt);
 		if (bitmap != null) {
@@ -289,5 +300,10 @@ public class Utils {
 		i.setAction(Intent.ACTION_VIEW);
 		i.setDataAndType(Uri.parse("file://" + apkPath), Constants.APK_MIME);
 		ctx.startActivity(i);
+	}
+
+	public static boolean isCommentPermited() {
+		// TODO
+		return true;
 	}
 }

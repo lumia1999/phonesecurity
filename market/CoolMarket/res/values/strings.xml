@@ -27,6 +27,8 @@
     <string name="developer_info_tip">开发人员信息</string>
     <string name="devloper_link_tip">联系方式</string>
     <string name="devloper_corp_tip">公司名称</string>
+    
+    <string name="search_hint">请输入关键字</string>
 
     <!-- title string -->
     <string name="category_title">应用分类</string>
@@ -38,4 +40,12 @@
 	<string name="rank_tab_app">应用</string>
 	<string name="rank_tab_game">游戏</string>
 	<string name="rank_tab_book">电子书</string>
+	
+	<!-- self rating string -->
+	<string name="self_rating_not_installed">您尚未安装此软件</string>
+	<string name="self_rating_unrated">请您为此软件评分</string>
+	<string name="self_rating_rated">您的评分</string>
+	<string name="comment_protection_tip">您刚为此软件做出过评论，请休息一下</string>
+	<string name="comment_input_title">评分！</string>
+	<string name="comment_content_hint">请输入您的评论</string>
 </resources>

@@ -78,6 +78,10 @@
             android:configChanges="orientation|keyboardHidden"
             android:name=".view.EBookRankActivity" >
         </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.SearchActivity" >
+        </activity>
 
         <!-- content provider -->
         <provider

@@ -21,7 +21,7 @@ public class ApkItemDatabaseHelper extends SQLiteOpenHelper {
 	private static ApkItemDatabaseHelper mInstance = null;
 
 	private static final String DATABASE_NAME = "data_manager.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	private Context mCtx;
 
 	public ApkItemDatabaseHelper(Context ctx) {
@@ -53,7 +53,10 @@ public class ApkItemDatabaseHelper extends SQLiteOpenHelper {
 				+ ApkItem.DOWNLOADED_SIZE + " LONG DEFAULT 0,"
 				+ ApkItem.DOWNLOAD_FINISH + " INTEGER DEFAULT -1,"
 				+ ApkItem.UPGRADE_AVAIABLE + " INTEGER DEFAULT -1,"
-				+ ApkItem.INSTALL_TIMESTAMP + " LONG" + " )");
+				+ ApkItem.INSTALL_TIMESTAMP + " LONG," + ApkItem.USER_RATED
+				+ " INTEGER DEFAULT -1," + ApkItem.RATED_TXT
+				+ " TEXT NOT NULL," + ApkItem.RATED_RATING + " FLOAT,"
+				+ ApkItem.LAST_RATED_TIMESTAMP + " LONG" + " )");
 	}
 
 	/*

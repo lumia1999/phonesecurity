@@ -45,6 +45,26 @@ public class ApkItemDb {
 		 */
 		public static final String INSTALL_TIMESTAMP = "timestamp";
 
+		// self rating
+		/**
+		 * value is 1 and -1, 1 represents YES, -1 represents NO
+		 */
+		public static final String USER_RATED = "user_rated";
+		/**
+		 * the latest rate content
+		 */
+		public static final String RATED_TXT = "rated_txt";
+
+		/**
+		 * float value
+		 */
+		public static final String RATED_RATING = "rated_rating";
+
+		/**
+		 * used to prevent evil comments
+		 */
+		public static final String LAST_RATED_TIMESTAMP = "last_rated_timestamp";
+
 	}
 
 	public static final class ApkItem implements ApkItemColumn {
