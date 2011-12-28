@@ -3,6 +3,7 @@ package com.herry.coolmarket.provider;
 import com.herry.coolmarket.provider.ApkItemDb.ApkItem;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -40,10 +41,12 @@ public class ApkItemProvider extends ContentProvider {
 		int match = mUriMatcher.match(uri);
 		switch (match) {
 		case APK:
-			return "vnd.android.cursor.dir/com.herry.coolmarket/apkitem";
+			return ContentResolver.CURSOR_DIR_BASE_TYPE
+					+ "/com.herry.coolmarket/apkitem";
 
 		case APK_ITEM:
-			return "vnd.android.cursor.item/com.herry.coolmarket/apkitem";
+			return ContentResolver.CURSOR_ITEM_BASE_TYPE
+					+ "/com.herry.coolmarket/apkitem";
 
 		default:
 			throw new UnsupportedOperationException("getType");
