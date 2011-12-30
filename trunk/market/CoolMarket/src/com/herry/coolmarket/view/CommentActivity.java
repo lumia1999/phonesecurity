@@ -20,7 +20,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -230,12 +232,42 @@ public class CommentActivity extends Activity implements OnScrollListener {
 							Log.d(TAG, "rating : " + rating);
 							mRatingLayout.ratingBarTip.setText("rating : "
 									+ rating);
+							if (rating > 0
+									&& mRatingLayout.content.getText()
+											.toString().length() > 0) {
+								mRatingLayout.confirmBtn.setEnabled(true);
+							} else {
+								mRatingLayout.confirmBtn.setEnabled(false);
+							}
 						}
 					});
 			mRatingLayout.ratingBarTip = (TextView) v
 					.findViewById(R.id.comment_ratingbar_tip);
 			mRatingLayout.content = (EditText) v
 					.findViewById(R.id.comment_content);
+			mRatingLayout.content.addTextChangedListener(new TextWatcher() {
+
+				@Override
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
+					Log.d(TAG, "onTextChanged");
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
+					Log.d(TAG, "beforeTextChanged");
+				}
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					// Log.d(TAG, "afterTextChanged");
+					if (s != null && s.length() > 0
+							&& mRatingLayout.ratingBar.getRating() > 0) {
+						mRatingLayout.confirmBtn.setEnabled(true);
+					}
+				}
+			});
 			AlertDialog dlg = new AlertDialog.Builder(this).setIcon(
 					android.R.drawable.star_big_off).setTitle(
 					R.string.comment_input_title).setView(v).create();
@@ -268,6 +300,7 @@ public class CommentActivity extends Activity implements OnScrollListener {
 		private RatingBar ratingBar;
 		private TextView ratingBarTip;
 		private EditText content;
+		private Button confirmBtn;
 	}
 
 	@Override
@@ -276,9 +309,9 @@ public class CommentActivity extends Activity implements OnScrollListener {
 		switch (id) {
 		case DLG_COMMENT_INPUT_ID:
 			AlertDialog dlg = (AlertDialog) dialog;
-			Button posBtn = dlg.getButton(DialogInterface.BUTTON_POSITIVE);
-			Log.d(TAG, "posBtn : " + posBtn);
-			posBtn.setEnabled(false);
+			mRatingLayout.confirmBtn = dlg
+					.getButton(DialogInterface.BUTTON_POSITIVE);
+			mRatingLayout.confirmBtn.setEnabled(false);
 			break;
 		}
 	}
