@@ -14,6 +14,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,7 +38,6 @@ import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 
 import com.herry.coolmarket.CategoryListItem;
-import com.herry.coolmarket.HomeListItem;
 import com.herry.coolmarket.R;
 import com.herry.coolmarket.pool.DownloadIconJob;
 import com.herry.coolmarket.pool.IDownloadIconCallback;
@@ -117,8 +117,12 @@ public class CategoryActivity extends Activity implements OnScrollListener,
 			@Override
 			public void onClick(View v) {
 				// TODO
-				Toast.makeText(getApplicationContext(), "jump to search page",
-						Toast.LENGTH_SHORT).show();
+				// Toast.makeText(getApplicationContext(),
+				// "jump to search page",
+				// Toast.LENGTH_SHORT).show();
+				Intent i = new Intent(getApplicationContext(),
+						SearchActivity.class);
+				startActivity(i);
 			}
 		});
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);

@@ -5,8 +5,12 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -152,7 +156,7 @@ public class ProductDetailScreenshotActivity extends Activity {
 			ScreenShotViewHolder viewHolder;
 			if (convertView == null) {
 				ImageView iv = new ImageView(getApplicationContext());
-				iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+				// iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
 				iv.setLayoutParams(new Gallery.LayoutParams(
 						Gallery.LayoutParams.FILL_PARENT,
 						Gallery.LayoutParams.FILL_PARENT));
@@ -165,14 +169,12 @@ public class ProductDetailScreenshotActivity extends Activity {
 			}
 			Bundle item = mGalleryData.get(position);
 			if (item.getString(ProductDetailActivity.SHOTCACHEPATH) != null) {
-				viewHolder.icon
-						.setBackgroundDrawable(Utils
-								.createBitmapFromFile(
-										getApplicationContext(),
-										Utils
-												.getCurIconCachePath(getApplicationContext())
-												+ item
-														.getString(ProductDetailActivity.SHOTNAME)));
+				String path = Utils
+						.getCurIconCachePath(getApplicationContext())
+						+ item.getString(ProductDetailActivity.SHOTNAME);
+				// Log.e(TAG, "path : " + path);
+				viewHolder.icon.setBackgroundDrawable(Utils
+						.obtainOriginalPhoto(getApplicationContext(), path));
 			} else {
 				viewHolder.icon
 						.setBackgroundResource(R.drawable.gallery_item_background);

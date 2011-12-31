@@ -50,8 +50,12 @@ public class RankActivity extends TabActivity implements OnTabChangeListener {
 			@Override
 			public void onClick(View v) {
 				// TODO
-				Toast.makeText(getApplicationContext(), "jump to search page",
-						Toast.LENGTH_SHORT).show();
+				// Toast.makeText(getApplicationContext(),
+				// "jump to search page",
+				// Toast.LENGTH_SHORT).show();
+				Intent i = new Intent(getApplicationContext(),
+						SearchActivity.class);
+				startActivity(i);
 			}
 		});
 	}
