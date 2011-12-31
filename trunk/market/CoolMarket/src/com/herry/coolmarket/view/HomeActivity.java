@@ -159,8 +159,9 @@ public class HomeActivity extends ListActivity implements
 			@Override
 			public void onClick(View v) {
 				// TODO
-				Toast.makeText(getApplicationContext(), "jump to search page",
-						Toast.LENGTH_SHORT).show();
+				// Toast.makeText(getApplicationContext(),
+				// "jump to search page",
+				// Toast.LENGTH_SHORT).show();
 				Intent i = new Intent(getApplicationContext(),
 						SearchActivity.class);
 				startActivity(i);
@@ -194,6 +195,11 @@ public class HomeActivity extends ListActivity implements
 				}
 				position = position % mGalleryTotalNum;
 				mGalleryTip.setText(mGalleryData.get(position).getName());
+				Intent i = new Intent(getApplicationContext(),
+						PreLoadingActivity.class);
+				i.putExtra(HomeGalleryItem.ID, mGalleryData.get(position)
+						.getId());
+				startActivity(i);
 			}
 
 		});

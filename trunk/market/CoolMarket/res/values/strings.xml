@@ -48,4 +48,7 @@
 	<string name="comment_protection_tip">您刚为此软件做出过评论，请休息一下</string>
 	<string name="comment_input_title">评分！</string>
 	<string name="comment_content_hint">请输入您的评论</string>
+	<string name="post_comment_toast">正在上传您的评论</string>
+	<string name="post_comment_success_toast">上传评论成功</string>
+	<string name="post_comment_fail_toast">上传评论失败</string>
 </resources>

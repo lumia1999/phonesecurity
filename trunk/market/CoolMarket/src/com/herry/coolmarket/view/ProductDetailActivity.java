@@ -378,7 +378,7 @@ public class ProductDetailActivity extends Activity {
 					Log.d(TAG, "FileNotFoundException,shotUrl : " + shotUrl, e);
 				}
 				try {
-					Thread.sleep(3000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					//
 				}

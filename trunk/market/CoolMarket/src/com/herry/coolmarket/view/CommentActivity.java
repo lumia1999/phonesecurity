@@ -17,6 +17,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -64,6 +65,7 @@ public class CommentActivity extends Activity implements OnScrollListener {
 	private List<ProductCommentItem> mListData = null;
 	private List<ProductCommentItem> mLoadingData = null;
 	private int mListItemTotalNum = -1;
+	private int mItemTotalNum;
 
 	// header
 	private RelativeLayout mHeader;
@@ -196,8 +198,8 @@ public class CommentActivity extends Activity implements OnScrollListener {
 		mSelfCommentTipTxt.setText(R.string.self_rating_unrated);
 		CharSequence tip = mSelfCommentTipTxt.getText();
 		if (tip != null) {
-			Toast.makeText(this, "comment tip : " + tip, Toast.LENGTH_SHORT)
-					.show();
+			// Toast.makeText(this, "comment tip : " + tip, Toast.LENGTH_SHORT)
+			// .show();
 			//
 			if (TextUtils.equals(tip, getString(R.string.self_rating_unrated))) {
 				showDialog(DLG_COMMENT_INPUT_ID);
@@ -265,6 +267,8 @@ public class CommentActivity extends Activity implements OnScrollListener {
 					if (s != null && s.length() > 0
 							&& mRatingLayout.ratingBar.getRating() > 0) {
 						mRatingLayout.confirmBtn.setEnabled(true);
+					} else {
+						mRatingLayout.confirmBtn.setEnabled(false);
 					}
 				}
 			});
@@ -277,8 +281,10 @@ public class CommentActivity extends Activity implements OnScrollListener {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-
+							Toast.makeText(getApplicationContext(),
+									R.string.post_comment_toast,
+									Toast.LENGTH_LONG).show();
+							new PostCommentTask().execute();
 						}
 					});
 			dlg.setButton(DialogInterface.BUTTON_NEGATIVE,
@@ -287,8 +293,7 @@ public class CommentActivity extends Activity implements OnScrollListener {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-
+							// nothing
 						}
 					});
 			return dlg;
@@ -311,7 +316,12 @@ public class CommentActivity extends Activity implements OnScrollListener {
 			AlertDialog dlg = (AlertDialog) dialog;
 			mRatingLayout.confirmBtn = dlg
 					.getButton(DialogInterface.BUTTON_POSITIVE);
-			mRatingLayout.confirmBtn.setEnabled(false);
+			if (mRatingLayout.ratingBar.getRating() > 0
+					&& mRatingLayout.content.getText().toString().length() > 0) {
+				mRatingLayout.confirmBtn.setEnabled(true);
+			} else {
+				mRatingLayout.confirmBtn.setEnabled(false);
+			}
 			break;
 		}
 	}
@@ -341,6 +351,8 @@ public class CommentActivity extends Activity implements OnScrollListener {
 					if (TextUtils.equals(tag, Constants.TOTAL_NUM)) {
 						parser.next();
 						mListItemTotalNum = Integer.valueOf(parser.getText());
+						// header and footer
+						mItemTotalNum = mListItemTotalNum + 2;
 					} else if (TextUtils.equals(tag, ProductCommentItem.ITEM)) {
 						temp = new ProductCommentItem();
 					} else if (TextUtils.equals(tag,
@@ -491,19 +503,22 @@ public class CommentActivity extends Activity implements OnScrollListener {
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		// Log.d(TAG, "onScrollStateChanged");
+		Log.d(TAG, "onScrollStateChanged,scrollState : " + scrollState);
 		switch (scrollState) {
 		case OnScrollListener.SCROLL_STATE_IDLE:
+		case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
 			int lastVisiblePos = view.getLastVisiblePosition();
 			Log.d(TAG, "lastVisiblePos : " + lastVisiblePos
-					+ ",mListItemTotalNum : " + mListItemTotalNum
+					+ ",mItemTotalNum : " + mItemTotalNum
 					+ ",mListData size : " + mListData.size());
-			if (lastVisiblePos == mListItemTotalNum + 1) {
+			if (lastVisiblePos >= mItemTotalNum - 1) {
 				mListView.removeFooterView(mFooter);
+				mItemTotalNum--;
 				return;
 			}
 			// count the footer item,and header item
-			if (lastVisiblePos == (mListData.size() + 1) && !mIsLoading) {
+			if (lastVisiblePos >= (mListData.size() - 1)
+					&& lastVisiblePos <= mListData.size() + 1 && !mIsLoading) {
 				onLoadNewData();
 			}
 			break;
@@ -515,5 +530,45 @@ public class CommentActivity extends Activity implements OnScrollListener {
 		mIsLoading = true;
 		mLoadingDataThread = new LoadingCommentDataThread(mIndex);
 		mLoadingDataThread.start();
+	}
+
+	// post comment task
+	private class PostCommentTask extends AsyncTask<Void, Void, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			Log.d(TAG, "post comment");
+			// TODO get post comment url
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				//
+			}
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			Log.d(TAG, "post comment result : " + result);
+			updateUI(result);
+		}
+
+		private void updateUI(boolean result) {
+			// TODO
+			if (result) {
+				mSelfCommentTipTxt.setText(R.string.self_rating_rated);
+				mSelfCommentRatingBar.setRating(mRatingLayout.ratingBar
+						.getRating());
+				Toast
+						.makeText(getApplicationContext(),
+								R.string.post_comment_success_toast,
+								Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(getApplicationContext(),
+						R.string.post_comment_fail_toast, Toast.LENGTH_SHORT)
+						.show();
+			}
+		}
 	}
 }

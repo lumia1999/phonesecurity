@@ -14,6 +14,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 
+import com.herry.coolmarket.HomeListItem;
 import com.herry.coolmarket.R;
 import com.herry.coolmarket.RankListItem;
 import com.herry.coolmarket.pool.DownloadIconJob;
@@ -397,14 +399,20 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 
 				@Override
 				public void onClick(View v) {
-					// TODO
-					Toast.makeText(mCtx, item.getDetailUrl(),
-							Toast.LENGTH_SHORT).show();
+					// Toast.makeText(mCtx, item.getDetailUrl(),
+					// Toast.LENGTH_SHORT).show();
+					FetchAppDetailData(item);
 				}
 			});
 			return convertView;
 		}
 
+	}
+
+	private void FetchAppDetailData(RankListItem item) {
+		Intent i = new Intent(mCtx, PreLoadingActivity.class);
+		i.putExtra(HomeListItem.ID, item.getId());
+		startActivity(i);
 	}
 
 	private class AppRankViewHolder {

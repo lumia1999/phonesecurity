@@ -200,6 +200,17 @@ public class Utils {
 		}
 	}
 
+	public static BitmapDrawable obtainOriginalPhoto(Context ctx,
+			String filePath) {
+		BitmapFactory.Options opt = new BitmapFactory.Options();
+		Bitmap bitmap = BitmapFactory.decodeFile(filePath, opt);
+		if (bitmap != null) {
+			return new BitmapDrawable(bitmap);
+		} else {
+			return null;
+		}
+	}
+
 	public static void setListViewHeightBaseOnChildren(ListView listView) {
 		ListAdapter adapter = listView.getAdapter();
 		if (adapter == null) {
