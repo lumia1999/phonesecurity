@@ -4,7 +4,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="7" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -14,86 +14,86 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar" >
         <activity
-            android:name=".view.CoolMarketActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
+            android:name=".view.CoolMarketActivity"
             android:windowSoftInputMode="stateHidden|adjustPan" >
-            <intent-filter>
+            <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.MainTabActivity"
-            android:configChanges="orientation|keyboardHidden" >
-        </activity>
-        <activity
-            android:name=".view.HomeActivity"
-            android:configChanges="orientation|keyboardHidden" >
-        </activity>
-        <activity
-            android:name=".view.CategoryActivity"
-            android:configChanges="orientation|keyboardHidden" >
-        </activity>
-        <activity
-            android:name=".view.RankActivity"
-            android:configChanges="orientation|keyboardHidden" >
-        </activity>
-        <activity
-            android:name=".view.ManageActivity"
-            android:configChanges="orientation|keyboardHidden" >
-        </activity>
-        <activity
-            android:name=".view.ProductDetailActivity"
-            android:configChanges="orientation|keyboardHidden" >
-        </activity>
-        <activity
-            android:name=".view.PreLoadingActivity"
             android:configChanges="orientation|keyboardHidden"
+            android:name=".view.MainTabActivity" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.HomeActivity" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.CategoryActivity" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.RankActivity" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.ManageActivity" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.ProductDetailActivity" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.PreLoadingActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
         <activity
-            android:name=".view.ProductDetailTabActivity"
-            android:configChanges="orientation|keyboardHidden" >
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.ProductDetailTabActivity" >
         </activity>
         <activity
-            android:name=".view.CommentActivity"
-            android:configChanges="orientation|keyboardHidden" >
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.CommentActivity" >
         </activity>
         <activity
-            android:name=".view.ProductDetailScreenshotActivity"
-            android:configChanges="orientation|keyboardHidden" >
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.ProductDetailScreenshotActivity" >
         </activity>
         <activity
-            android:name=".view.VaneRankActivity"
-            android:configChanges="orientation|keyboardHidden" >
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.VaneRankActivity" >
         </activity>
         <activity
-            android:name=".view.AppRankActivity"
-            android:configChanges="orientation|keyboardHidden" >
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.AppRankActivity" >
         </activity>
         <activity
-            android:name=".view.GameRankActivity"
-            android:configChanges="orientation|keyboardHidden" >
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.GameRankActivity" >
         </activity>
         <activity
-            android:name=".view.EBookRankActivity"
-            android:configChanges="orientation|keyboardHidden" >
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.EBookRankActivity" >
         </activity>
         <activity
-            android:name=".view.SearchActivity"
-            android:configChanges="orientation|keyboardHidden" >
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.SearchActivity" >
         </activity>
 
         <!-- content provider -->
         <provider
-            android:name=".provider.ApkItemProvider"
-            android:authorities="com.herry.coolmarket" >
+            android:authorities="com.herry.coolmarket"
+            android:name=".provider.ApkItemProvider" >
         </provider>
         <!-- receiver -->
         <receiver android:name=".receiver.Receiver" >
-            <intent-filter>
+            <intent-filter >
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
