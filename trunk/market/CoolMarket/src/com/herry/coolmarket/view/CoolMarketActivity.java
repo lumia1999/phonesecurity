@@ -32,6 +32,7 @@ public class CoolMarketActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case MSG_CHECK_FINISH:
+				Log.e(TAG, "MSG_CHECK_FINISH");
 				startActivity(new Intent(getApplicationContext(),
 						MainTabActivity.class).putExtra(
 						Constants.WELCOME_FINISH_EXTRA_TYPE, msg.arg1));
@@ -50,7 +51,7 @@ public class CoolMarketActivity extends Activity {
 		setContentView(R.layout.welcome);
 		initUI();
 		tmpFun();
-		test();
+		// test();
 	}
 
 	private void test() {
@@ -104,7 +105,9 @@ public class CoolMarketActivity extends Activity {
 
 			@Override
 			public void run() {
+				Log.e(TAG, "cleanIconCacheDir start");
 				Utils.cleanIconCacheDir(getApplicationContext());
+				Log.e(TAG, "cleanIconCacheDir end");
 				Message msg = mHandler.obtainMessage();
 				msg.what = MSG_CHECK_FINISH;
 				if (!Utils.isNetworkActived(getApplicationContext())) {
