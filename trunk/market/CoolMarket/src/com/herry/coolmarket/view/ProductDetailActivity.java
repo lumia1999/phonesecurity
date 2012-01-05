@@ -173,7 +173,8 @@ public class ProductDetailActivity extends Activity {
 		mRatingNumTxt.setText(appInfo.getString(ProductDetailItem.RATINGCOUNT)
 				+ getString(R.string.rating_num_tip));
 		mVersionTxt.setText(appInfo.getString(ProductDetailItem.VERSION));
-		mSizeTxt.setText(appInfo.getString(ProductDetailItem.SIZE));
+		mSizeTxt.setText(Utils.formatAppSize(Integer.valueOf(appInfo
+				.getString(ProductDetailItem.SIZE))));
 		// gallery
 		mSnapShots = mAppDetailItem.getAppSnapShot();
 		mGalleryData = new ArrayList<Bundle>();

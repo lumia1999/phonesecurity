@@ -51,14 +51,14 @@ public class CoolMarketActivity extends Activity {
 		setContentView(R.layout.welcome);
 		initUI();
 		tmpFun();
-		// test();
+		test();
 	}
 
 	private void test() {
-		ComponentName cn = new ComponentName(this, Receiver.class);
-		PackageManager pm = getPackageManager();
-		pm.setComponentEnabledSetting(cn,
-				PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);
+		// ComponentName cn = new ComponentName(this, Receiver.class);
+		// PackageManager pm = getPackageManager();
+		// pm.setComponentEnabledSetting(cn,
+		// PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.zip.GZIPInputStream;
 
 import android.content.Context;
@@ -179,7 +180,9 @@ public class Utils {
 		// opt.inSampleSize = picHeight / screenHeight;
 		// }
 		// }
-		int requiredSize = 70;
+		// Log.e(TAG, "picWidth : " + picWidth + ",picHeight : " + picHeight);
+		DisplayMetrics dm = Utils.getDevInfo(ctx);
+		int requiredSize = (int) (48 * dm.density);
 		int scale = 1;
 		while (true) {
 			if (picWidth / 2 < requiredSize || picHeight / 2 < requiredSize) {
@@ -311,6 +314,30 @@ public class Utils {
 		i.setAction(Intent.ACTION_VIEW);
 		i.setDataAndType(Uri.parse("file://" + apkPath), Constants.APK_MIME);
 		ctx.startActivity(i);
+	}
+
+	/**
+	 * 
+	 * @param size
+	 *            unit is byte
+	 * @return
+	 */
+	private static DecimalFormat df = new DecimalFormat("0.00");
+	private static final String UNIT_BYTE = "Bytes";
+	private static final String UNIT_KB = "K";
+	private static final String UNIT_MB = "M";
+	private static final String UNIT_GB = "G";
+
+	public static String formatAppSize(int size) {
+		if (size < 1024) {
+			return df.format(size) + UNIT_BYTE;
+		} else if ((size * 1.0) < 0.8 * 1024 * 1024) {
+			return df.format(size / 1024) + UNIT_KB;
+		} else if ((size * 1.0) < 0.8 * 1024 * 1024 * 1025) {
+			return df.format((size * 1.0) / (1024 * 1024)) + UNIT_MB;
+		} else {
+			return df.format((size * 1.0) / (1024 * 1024 * 1024)) + UNIT_GB;
+		}
 	}
 
 	public static boolean isCommentPermited() {
