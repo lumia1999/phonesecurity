@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Gallery;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -84,6 +86,9 @@ public class HomeActivity extends ListActivity implements
 	private DownloadIconJob mDownloadGalleryIconJob;
 	private ArrayList<String> mGalleryIconUrlList;
 
+	private int mGalleryItemWidth;
+	private int mGalleryItemHeight;
+
 	private Timer mBrowserTimer;
 	private int mBrowserCount;
 	private int mGalleryItemPos;
@@ -133,6 +138,7 @@ public class HomeActivity extends ListActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 		initUI();
+		initGalleryItem();
 		new FetchDataTask().execute();
 	}
 
@@ -490,6 +496,12 @@ public class HomeActivity extends ListActivity implements
 
 	}
 
+	private void initGalleryItem() {
+		DisplayMetrics dm = Utils.getDevInfo(this);
+		mGalleryItemWidth = (int) (170 * dm.density);
+		mGalleryItemHeight = (int) (84 * dm.density);
+	}
+
 	private class HomeGalleryAdapter extends BaseAdapter {
 
 		@Override
@@ -513,6 +525,8 @@ public class HomeActivity extends ListActivity implements
 			if (convertView == null) {
 				convertView = mLayoutInflater.inflate(
 						R.layout.home_gallery_item, null);
+				convertView.setLayoutParams(new Gallery.LayoutParams(
+						mGalleryItemWidth, mGalleryItemHeight));
 				viewHolder = new HomeGalleryViewHolder();
 				viewHolder.icon = (ImageView) convertView;
 				convertView.setTag(viewHolder);
@@ -602,7 +616,8 @@ public class HomeActivity extends ListActivity implements
 			}
 			viewHolder.name.setText(item.getName());
 			viewHolder.desc.setText(item.getDesc());
-			viewHolder.size.setText(item.getSize());
+			viewHolder.size.setText(Utils.formatAppSize(Integer.valueOf(item
+					.getSize())));
 			viewHolder.download.setOnClickListener(new OnClickListener() {
 
 				@Override

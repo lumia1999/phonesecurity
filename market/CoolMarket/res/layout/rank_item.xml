@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/rank_item_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
         android:layout_alignParentLeft="true"
         android:layout_centerInParent="true"
         android:background="@drawable/ic_launcher"
