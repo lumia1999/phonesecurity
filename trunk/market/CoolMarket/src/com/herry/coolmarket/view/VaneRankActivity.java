@@ -170,7 +170,7 @@ public class VaneRankActivity extends Activity implements OnScrollListener,
 
 			}
 		});
-		mFooterProgressBar.setIndeterminateDrawable(mAnimDrawable);
+		mFooterProgressBar.setIndeterminateDrawable(new LoadingDrawable(this));
 		mFooterTip.setVisibility(View.GONE);
 		mListView.addFooterView(mFooter);
 	}
@@ -406,18 +406,18 @@ public class VaneRankActivity extends Activity implements OnScrollListener,
 		}
 	}
 
-	private void FetchAppDetailData(RankListItem item) {
-		Intent i = new Intent(mCtx, PreLoadingActivity.class);
-		i.putExtra(HomeListItem.ID, item.getId());
-		startActivity(i);
-	}
-
 	private class VaneRankViewHolder {
 		private ImageView icon;
 		private TextView name;
 		private TextView author;
 		private RatingBar ratingbar;
 		private TextView download;
+	}
+
+	private void FetchAppDetailData(RankListItem item) {
+		Intent i = new Intent(mCtx, PreLoadingActivity.class);
+		i.putExtra(HomeListItem.ID, item.getId());
+		startActivity(i);
 	}
 
 	@Override

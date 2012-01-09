@@ -85,7 +85,18 @@
             android:configChanges="orientation|keyboardHidden"
             android:name=".view.SearchActivity" >
         </activity>
-
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.SubCategoryTabActivity" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.SubCategoryHottestActivity" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.SubCategoryNewestActivity" >
+        </activity>
         <!-- content provider -->
         <provider
             android:authorities="com.herry.coolmarket"

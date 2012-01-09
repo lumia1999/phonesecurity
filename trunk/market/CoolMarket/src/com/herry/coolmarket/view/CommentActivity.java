@@ -173,7 +173,7 @@ public class CommentActivity extends Activity implements OnScrollListener {
 				mLoadingDataThread.start();
 			}
 		});
-		mFooterProgressBar.setIndeterminateDrawable(mAnimDrawable);
+		mFooterProgressBar.setIndeterminateDrawable(new LoadingDrawable(this));
 		mFooterTip.setVisibility(View.GONE);
 		mListView.addFooterView(mFooter);
 		mHeader = (RelativeLayout) mLayoutInflater.inflate(R.layout.my_comment,

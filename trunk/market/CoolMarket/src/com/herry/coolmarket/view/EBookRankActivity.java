@@ -171,7 +171,7 @@ public class EBookRankActivity extends Activity implements OnScrollListener,
 				mFetchDataTask.execute(mIndex);
 			}
 		});
-		mFooterProgressBar.setIndeterminateDrawable(mAnimDrawable);
+		mFooterProgressBar.setIndeterminateDrawable(new LoadingDrawable(this));
 		mFooterTip.setVisibility(View.GONE);
 		mListView.addFooterView(mFooter);
 	}
