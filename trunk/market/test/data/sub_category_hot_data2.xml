@@ -3,7 +3,7 @@
 	<totalNum>60</totalNum>
 	<item>
 		<id>16</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory16.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot16.jpg</iconurl>
 		<name><![CDATA[尖峰滑雪]]></name>
 		<author><![CDATA[安致爱好者]]></author>
 		<userRating>4.5</userRating>
@@ -12,7 +12,7 @@
 	</item>
 	<item>
 		<id>17</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory17.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot17.jpg</iconurl>
 		<name><![CDATA[正点闹钟]]></name>
 		<author><![CDATA[NO NAME]]></author>
 		<userRating>4.8</userRating>
@@ -21,7 +21,7 @@
 	</item>
 	<item>
 		<id>18</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory18.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot18.jpg</iconurl>
 		<name><![CDATA[活死人之夜]]></name>
 		<author><![CDATA[小富人]]></author>
 		<userRating>4.0</userRating>
@@ -30,7 +30,7 @@
 	</item>
 	<item>
 		<id>19</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory19.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot19.jpg</iconurl>
 		<name><![CDATA[GO主题]]></name>
 		<author><![CDATA[无名]]></author>
 		<userRating>4.9</userRating>
@@ -39,7 +39,7 @@
 	</item>
 	<item>
 		<id>20</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory20.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot20.jpg</iconurl>
 		<name><![CDATA[合金弹头]]></name>
 		<author><![CDATA[乐用]]></author>
 		<userRating>3.0</userRating>
@@ -48,7 +48,7 @@
 	</item>
 	<item>
 		<id>21</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory21.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot21.jpg</iconurl>
 		<name><![CDATA[电驴影视大全]]></name>
 		<author><![CDATA[VeryCD]]></author>
 		<userRating>4.0</userRating>
@@ -57,7 +57,7 @@
 	</item>
 	<item>
 		<id>22</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory22.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot22.jpg</iconurl>
 		<name><![CDATA[3D交通指挥]]></name>
 		<author><![CDATA[安致爱好者]]></author>
 		<userRating>5.0</userRating>
@@ -66,7 +66,7 @@
 	</item>
 	<item>
 		<id>23</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory23.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot23.jpg</iconurl>
 		<name><![CDATA[陌陌]]></name>
 		<author><![CDATA[北京陌陌科技有限责任公司]]></author>
 		<userRating>0.0</userRating>
@@ -75,7 +75,7 @@
 	</item>
 	<item>
 		<id>24</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory24.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot24.jpg</iconurl>
 		<name><![CDATA[酷我音乐2012]]></name>
 		<author><![CDATA[酷我科技]]></author>
 		<userRating>4.0</userRating>
@@ -84,7 +84,7 @@
 	</item>
 	<item>
 		<id>25</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory25.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot25.jpg</iconurl>
 		<name><![CDATA[会说话的圣诞老人]]></name>
 		<author><![CDATA[Outfit7]]></author>
 		<userRating>4.0</userRating>
@@ -93,7 +93,7 @@
 	</item>
 	<item>
 		<id>26</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory26.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot26.jpg</iconurl>
 		<name><![CDATA[华丽智能办公套装]]></name>
 		<author><![CDATA[安致爱好者]]></author>
 		<userRating>4.0</userRating>
@@ -102,7 +102,7 @@
 	</item>
 	<item>
 		<id>27</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory27.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot27.jpg</iconurl>
 		<name><![CDATA[实时视频交通]]></name>
 		<author><![CDATA[]]></author>
 		<userRating>4.5</userRating>
@@ -111,7 +111,7 @@
 	</item>
 	<item>
 		<id>28</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory28.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot28.jpg</iconurl>
 		<name><![CDATA[炫美圣诞动态壁纸]]></name>
 		<author><![CDATA[安致爱好者]]></author>
 		<userRating>4.0</userRating>
@@ -120,7 +120,7 @@
 	</item>
 	<item>
 		<id>29</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory29.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot29.jpg</iconurl>
 		<name><![CDATA[GO主题-开飞机的舒克]]></name>
 		<author><![CDATA[]]></author>
 		<userRating>0.0</userRating>
@@ -129,7 +129,7 @@
 	</item>
 	<item>
 		<id>30</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategory30.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/subCategoryHot30.jpg</iconurl>
 		<name><![CDATA[突突兔]]></name>
 		<author><![CDATA[北京寰讯天翔信息技术有限公司]]></author>
 		<userRating>4.0</userRating>
