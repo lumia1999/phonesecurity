@@ -343,6 +343,11 @@ public class CategoryActivity extends Activity implements OnScrollListener,
 				public void onClick(View v) {
 					// TODO fetch data
 					Log.d(TAG, "item url : " + item.getItemUrl());
+					Intent i = new Intent(getApplicationContext(),
+							SubCategoryTabActivity.class);
+					i.putExtra(CategoryListItem.ITEMURL, item.getItemUrl());
+					i.putExtra(CategoryListItem.NAME, item.getName());
+					startActivity(i);
 				}
 			});
 			return convertView;

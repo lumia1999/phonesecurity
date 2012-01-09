@@ -12,6 +12,16 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import com.herry.coolmarket.HomeListItem;
+import com.herry.coolmarket.R;
+import com.herry.coolmarket.RankListItem;
+import com.herry.coolmarket.pool.DownloadIconJob;
+import com.herry.coolmarket.pool.IDownloadIconCallback;
+import com.herry.coolmarket.pool.IconDownloader;
+import com.herry.coolmarket.util.Constants;
+import com.herry.coolmarket.util.LoadingDrawable;
+import com.herry.coolmarket.util.Utils;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,38 +47,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 
-import com.herry.coolmarket.HomeListItem;
-import com.herry.coolmarket.R;
-import com.herry.coolmarket.RankListItem;
-import com.herry.coolmarket.pool.DownloadIconJob;
-import com.herry.coolmarket.pool.IDownloadIconCallback;
-import com.herry.coolmarket.pool.IconDownloader;
-import com.herry.coolmarket.util.Constants;
-import com.herry.coolmarket.util.LoadingDrawable;
-import com.herry.coolmarket.util.Utils;
-
-public class AppRankActivity extends Activity implements OnScrollListener,
-		IDownloadIconCallback {
-	private static final String TAG = "AppRankActivity";
+public class SubCategoryNewestActivity extends Activity implements
+		OnScrollListener, IDownloadIconCallback {
+	private static final String TAG = "SubCategoryNewestActivity";
 
 	// loading
 	private ProgressBar mProgressBar;
 	private LoadingDrawable mAnimDrawable;
 	private TextView mRetryTxt;
 
+	private Context mCtx;
+	private LayoutInflater mLayoutInflater;
+
 	private int mListItemTotalNum = -1;
 	private List<RankListItem> mListData = null;
 	private List<RankListItem> mLoadingData = null;
 	private ListView mListView;
-	private AppRankListAdapter mListAdapter;
-
+	private SubCategoryNewListAdapter mListAdapter;
 	// loading data
 	private boolean mDownloadIconAfterLoading = false;
 	private boolean mIsLoading;
 	private int mIndex;
 	private FetchDataTask mFetchDataTask;
-	private LayoutInflater mLayoutInflater;
-	private Context mCtx;
 
 	// download icon
 	private int mStartPos = -1;
@@ -89,7 +89,6 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 	private static final int MSG_REFRESH_UI_ERROR = 12;
 
 	private static final int MSG_REFRESH_ITEM_ICON = 21;
-
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -144,7 +143,6 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 
 			@Override
 			public void onClick(View v) {
-				// TODO
 				mRetryTxt.setVisibility(View.GONE);
 				mProgressBar.setVisibility(View.VISIBLE);
 				mFetchDataTask = new FetchDataTask();
@@ -165,7 +163,6 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 
 			@Override
 			public void onClick(View v) {
-				// TODO
 				mFooterTip.setVisibility(View.GONE);
 				mFooterProgressBar.setVisibility(View.VISIBLE);
 				mFetchDataTask = new FetchDataTask();
@@ -189,7 +186,7 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 			factory.setNamespaceAware(true);
 			XmlPullParser parser = factory.newPullParser();
 			String filePath = Utils.getSdcardRootPathWithoutSlash()
-					+ "/test/data/app_rank" + index + ".xml";
+					+ "/test/data/sub_category_new_data" + index + ".xml";
 			// Log.e(TAG, "filePath : " + filePath);
 			fis = new FileInputStream(filePath);
 			parser.setInput(fis, HTTP.UTF_8);
@@ -301,7 +298,7 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 	}
 
 	private void fillData() {
-		mListAdapter = new AppRankListAdapter();
+		mListAdapter = new SubCategoryNewListAdapter();
 		mListView.setAdapter(mListAdapter);
 		mProgressBar.setVisibility(View.GONE);
 	}
@@ -311,8 +308,8 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 		@Override
 		protected Boolean doInBackground(Integer... params) {
 			int index = params[0];
-			Log.d(TAG, "doInBackground : " + index);
-			int ret = initData(index);
+			Log.d(TAG, "doInBackground,params[0] : " + index);
+			int ret = initData(mIndex);
 			if (ret == Constants.TYPE_NO_NETWORK) {
 				return false;
 			} else {
@@ -332,7 +329,7 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 
 	}
 
-	private class AppRankListAdapter extends BaseAdapter {
+	private class SubCategoryNewListAdapter extends BaseAdapter {
 
 		@Override
 		public int getCount() {
@@ -351,10 +348,10 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			AppRankViewHolder viewHolder;
+			SubCategoryNewViewHolder viewHolder;
 			if (convertView == null) {
 				convertView = mLayoutInflater.inflate(R.layout.rank_item, null);
-				viewHolder = new AppRankViewHolder();
+				viewHolder = new SubCategoryNewViewHolder();
 				viewHolder.icon = (ImageView) convertView
 						.findViewById(R.id.rank_item_icon);
 				viewHolder.name = (TextView) convertView
@@ -367,7 +364,7 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 						.findViewById(R.id.rank_item_download);
 				convertView.setTag(viewHolder);
 			} else {
-				viewHolder = (AppRankViewHolder) convertView.getTag();
+				viewHolder = (SubCategoryNewViewHolder) convertView.getTag();
 			}
 			final RankListItem item = mListData.get(position);
 			String iconCachePath = item.getIconCachePath();
@@ -409,13 +406,7 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 
 	}
 
-	private void FetchAppDetailData(RankListItem item) {
-		Intent i = new Intent(mCtx, PreLoadingActivity.class);
-		i.putExtra(HomeListItem.ID, item.getId());
-		startActivity(i);
-	}
-
-	private class AppRankViewHolder {
+	private class SubCategoryNewViewHolder {
 		private ImageView icon;
 		private TextView name;
 		private TextView author;
@@ -423,10 +414,19 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 		private TextView download;
 	}
 
+	private void FetchAppDetailData(RankListItem item) {
+		Intent i = new Intent(mCtx, PreLoadingActivity.class);
+		i.putExtra(HomeListItem.ID, item.getId());
+		startActivity(i);
+	}
+
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem,
 			int visibleItemCount, int totalItemCount) {
 		// TODO
+		// Log.d(TAG, "onScroll,firstVisibleItem : " + firstVisibleItem
+		// + ",visibleItemCount : " + visibleItemCount
+		// + ",totalItemCount : " + totalItemCount);
 		if (totalItemCount > 0) {
 			boolean init = false;
 			if (mStartPos == -1) {
