@@ -3,9 +3,12 @@ package com.herry.coolmarket.view;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -24,6 +27,9 @@ import android.widget.Toast;
 import com.herry.coolmarket.HomeListItem;
 import com.herry.coolmarket.ProductDetailItem;
 import com.herry.coolmarket.R;
+import com.herry.coolmarket.http.HttpRequestBox;
+import com.herry.coolmarket.http.ResponseData;
+import com.herry.coolmarket.util.Constants;
 import com.herry.coolmarket.util.LoadingDrawable;
 import com.herry.coolmarket.util.Utils;
 
@@ -86,13 +92,33 @@ public class PreLoadingActivity extends Activity {
 		if (mAppDetailItem != null) {
 			mAppDetailItem = null;
 		}
-		FileInputStream fis = null;
+		InputStream fis = null;
 		try {
+			if (Constants.mIsTestMode) {
+				fis = new FileInputStream(Utils.getSdcardRootPathWithoutSlash()
+						+ "/test/data/product_detail.xml");
+			} else {
+				ResponseData resData = HttpRequestBox
+						.getInstance(this)
+						.sendRequest(
+								new HttpGet(/* TODO confirm the request url */));
+				if (resData == null) {
+					Log.d(TAG, "response is null");
+					notifyError();
+					return;
+				}
+				int statusCode = resData.getResponseStatusCode();
+				if (statusCode != HttpStatus.SC_OK) {
+					Log.d(TAG, "response error with code : " + statusCode);
+					notifyError();
+					return;
+				}
+				fis = resData.getContent().getEntity().getContent();
+			}
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			factory.setNamespaceAware(true);
 			XmlPullParser parser = factory.newPullParser();
-			fis = new FileInputStream(Utils.getSdcardRootPathWithoutSlash()
-					+ "/test/data/product_detail.xml");
+
 			parser.setInput(fis, HTTP.UTF_8);
 			int eventType = parser.getEventType();
 			String tag = "";
