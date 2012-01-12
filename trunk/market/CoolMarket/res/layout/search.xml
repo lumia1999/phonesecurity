@@ -24,6 +24,8 @@
             android:id="@+id/search_suggest_layout"
             layout="@layout/search_suggest" />
 
+        <include layout="@layout/loading" />
+
         <include layout="@layout/retry" />
     </FrameLayout>
 

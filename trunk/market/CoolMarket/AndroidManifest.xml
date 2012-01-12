@@ -83,6 +83,7 @@
         </activity>
         <activity
             android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustPan"
             android:name=".view.SearchActivity" >
         </activity>
         <activity

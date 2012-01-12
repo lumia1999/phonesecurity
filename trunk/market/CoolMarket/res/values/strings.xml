@@ -51,6 +51,10 @@
     <string name="post_comment_fail_toast">上传评论失败</string>
 
     <!-- category string -->
-	<string name="sub_category_tab_hot">最热</string>
-	<string name="sub_category_tab_new">最新</string>
+    <string name="sub_category_tab_hot">最热</string>
+    <string name="sub_category_tab_new">最新</string>
+
+    <!-- search string -->
+    <string name="invalid_key_word_toast">请先输入关键字，或者试试推荐的关键字</string>
+
 </resources>
