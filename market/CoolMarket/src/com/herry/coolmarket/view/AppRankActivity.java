@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -40,6 +43,8 @@ import android.widget.AbsListView.OnScrollListener;
 import com.herry.coolmarket.HomeListItem;
 import com.herry.coolmarket.R;
 import com.herry.coolmarket.RankListItem;
+import com.herry.coolmarket.http.HttpRequestBox;
+import com.herry.coolmarket.http.ResponseData;
 import com.herry.coolmarket.pool.DownloadIconJob;
 import com.herry.coolmarket.pool.IDownloadIconCallback;
 import com.herry.coolmarket.pool.IconDownloader;
@@ -183,15 +188,34 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 		} else {
 			mLoadingData = new ArrayList<RankListItem>();
 		}
-		FileInputStream fis = null;
+		InputStream fis = null;
+
 		try {
+			if (Constants.mIsTestMode) {
+				String filePath = Utils.getSdcardRootPathWithoutSlash()
+						+ "/test/data/app_rank" + index + ".xml";
+				// Log.e(TAG, "filePath : " + filePath);
+				fis = new FileInputStream(filePath);
+			} else {
+				ResponseData resData = HttpRequestBox
+						.getInstance(this)
+						.sendRequest(
+								new HttpGet(/* TODO confirm the request url */));
+				if (resData == null) {
+					Log.d(TAG, "response is null");
+					return Constants.TYPE_NO_NETWORK;
+				}
+				int statusCode = resData.getResponseStatusCode();
+				if (statusCode != HttpStatus.SC_OK) {
+					Log.d(TAG, "response error with code : " + statusCode);
+					return Constants.TYPE_NO_NETWORK;
+				}
+				fis = resData.getContent().getEntity().getContent();
+			}
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			factory.setNamespaceAware(true);
 			XmlPullParser parser = factory.newPullParser();
-			String filePath = Utils.getSdcardRootPathWithoutSlash()
-					+ "/test/data/app_rank" + index + ".xml";
-			// Log.e(TAG, "filePath : " + filePath);
-			fis = new FileInputStream(filePath);
+
 			parser.setInput(fis, HTTP.UTF_8);
 			int eventType = parser.getEventType();
 			String tag = "";

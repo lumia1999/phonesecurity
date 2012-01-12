@@ -1,6 +1,7 @@
 package com.herry.coolmarket.util;
 
 public final class Constants {
+	public static final boolean mIsTestMode = true;
 	public static final String WELCOME_FINISH_EXTRA_TYPE = "type";
 	public static final int TYPE_UNDEFINED = -1;
 	public static final int TYPE_OK = 1;
@@ -28,5 +29,7 @@ public final class Constants {
 
 	public static final long COMMENT_INTERVAL = 5 * 60 * 1000;// 5 minutes
 	public static final long PROTECT_ALARM_NTERVAL = 1 * 60 * 1000;// 1 minute
+
+	public static final int SUGGEST_KEYS_COUNT = 13;
 
 }

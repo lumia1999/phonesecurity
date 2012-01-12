@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -35,6 +39,8 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import com.herry.coolmarket.ProductDetailItem;
 import com.herry.coolmarket.R;
 import com.herry.coolmarket.TopGallery;
+import com.herry.coolmarket.http.HttpRequestBox;
+import com.herry.coolmarket.http.ResponseData;
 import com.herry.coolmarket.util.Constants;
 import com.herry.coolmarket.util.LoadingDrawable;
 import com.herry.coolmarket.util.Utils;
@@ -352,7 +358,7 @@ public class ProductDetailActivity extends Activity {
 			Log.d(TAG, "doInBackground");
 			int size = mGalleryData.size();
 			String shotUrl;
-			FileInputStream fis = null;
+			InputStream fis = null;
 			Bundle data = null;
 			for (int i = 0; i < size; i++) {
 				data = mGalleryData.get(i);
@@ -363,7 +369,26 @@ public class ProductDetailActivity extends Activity {
 				shotUrl = data.getString(SHOTURL);
 				// TODO issue http request
 				try {
-					fis = new FileInputStream(shotUrl);
+					if (Constants.mIsTestMode) {
+						fis = new FileInputStream(shotUrl);
+					} else {
+						ResponseData resData = HttpRequestBox.getInstance(
+								getApplicationContext()).sendRequest(
+								new HttpGet(/*
+											 * TODO confirm the request url
+											 */));
+						if (resData == null) {
+							Log.d(TAG, "response is null");
+							continue;
+						}
+						int statusCode = resData.getResponseStatusCode();
+						if (statusCode != HttpStatus.SC_OK) {
+							Log.d(TAG, "response error with code : "
+									+ statusCode);
+							continue;
+						}
+						fis = resData.getContent().getEntity().getContent();
+					}
 					int ret = Utils.saveIcon(getApplicationContext(), data
 							.getString(SHOTNAME), fis);
 					if (ret == Constants.SAVE_ICON_SUCCESS) {
@@ -376,7 +401,17 @@ public class ProductDetailActivity extends Activity {
 						// nothing
 					}
 				} catch (FileNotFoundException e) {
-					Log.d(TAG, "FileNotFoundException,shotUrl : " + shotUrl, e);
+					Log.e(TAG, "FileNotFoundException,shotUrl : " + shotUrl, e);
+				} catch (IOException e) {
+					Log.e(TAG, "IOException,shotUrl : " + shotUrl, e);
+				} finally {
+					if (fis != null) {
+						try {
+							fis.close();
+						} catch (IOException e) {
+							//
+						}
+					}
 				}
 				try {
 					Thread.sleep(1000);
@@ -385,13 +420,7 @@ public class ProductDetailActivity extends Activity {
 				}
 
 			}
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					//
-				}
-			}
+
 			return null;
 		}
 

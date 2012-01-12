@@ -4,11 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -51,6 +54,8 @@ import com.herry.coolmarket.HomeGalleryItem;
 import com.herry.coolmarket.HomeListItem;
 import com.herry.coolmarket.R;
 import com.herry.coolmarket.TopGallery;
+import com.herry.coolmarket.http.HttpRequestBox;
+import com.herry.coolmarket.http.ResponseData;
 import com.herry.coolmarket.pool.DownloadIconJob;
 import com.herry.coolmarket.pool.IDownloadGalleryIconCallback;
 import com.herry.coolmarket.pool.IDownloadIconCallback;
@@ -287,13 +292,31 @@ public class HomeActivity extends ListActivity implements
 		} else {
 			mGalleryData = new ArrayList<HomeGalleryItem>();
 		}
-		FileInputStream fis = null;
+		InputStream fis = null;
 		try {
+			if (Constants.mIsTestMode) {
+				fis = new FileInputStream(Utils.getSdcardRootPathWithoutSlash()
+						+ "/test/data/gallery_data.xml");
+			} else {
+				ResponseData resData = HttpRequestBox
+						.getInstance(this)
+						.sendRequest(
+								new HttpGet(/* TODO confirm the request url */));
+				if (resData == null) {
+					Log.d(TAG, "response is null");
+					return Constants.TYPE_NO_NETWORK;
+				}
+				int statusCode = resData.getResponseStatusCode();
+				if (statusCode != HttpStatus.SC_OK) {
+					Log.d(TAG, "response error with code : " + statusCode);
+					return Constants.TYPE_NO_NETWORK;
+				}
+				fis = resData.getContent().getEntity().getContent();
+			}
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			factory.setNamespaceAware(true);
 			XmlPullParser parser = factory.newPullParser();
-			fis = new FileInputStream(Utils.getSdcardRootPathWithoutSlash()
-					+ "/test/data/gallery_data.xml");
+
 			parser.setInput(fis, HTTP.UTF_8);
 			int eventType = parser.getEventType();
 			String tag = "";

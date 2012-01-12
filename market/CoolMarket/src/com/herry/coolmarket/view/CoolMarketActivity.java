@@ -1,9 +1,7 @@
 package com.herry.coolmarket.view;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +11,6 @@ import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.herry.coolmarket.R;
-import com.herry.coolmarket.receiver.Receiver;
 import com.herry.coolmarket.util.Constants;
 import com.herry.coolmarket.util.LoadingDrawable;
 import com.herry.coolmarket.util.Prefs;
