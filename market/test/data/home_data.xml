@@ -9,6 +9,7 @@
 	<size>2107637</size>
 	<pkgname>package1</pkgname>
 	<detailurl>detailurl1</detailurl>
+	<downloadurl>downloadurl1</downloadurl>
 </item>
 <item>
 	<id>2</id>
@@ -18,6 +19,7 @@
 	<size>3711959</size>
 	<pkgname>package2</pkgname>
 	<detailurl>detailurl2</detailurl>
+	<downloadurl>downloadurl2</downloadurl>
 </item>
 <item>
 	<id>3</id>
@@ -27,6 +29,7 @@
 	<size>1040384</size>
 	<pkgname>package3</pkgname>
 	<detailurl>detailurl3</detailurl>
+	<downloadurl>downloadurl3</downloadurl>
 </item>
 <item>
 	<id>4</id>
@@ -36,6 +39,7 @@
 	<size>4215275</size>
 	<pkgname>package4</pkgname>
 	<detailurl>detailurl4</detailurl>
+	<downloadurl>downloadurl4</downloadurl>
 </item>
 <item>
 	<id>5</id>
@@ -45,6 +49,7 @@
 	<size>4215275</size>
 	<pkgname>package5</pkgname>
 	<detailurl>detailurl5</detailurl>
+	<downloadurl>downloadurl5</downloadurl>
 </item>
 <item>
 	<id>6</id>
@@ -54,6 +59,7 @@
 	<size>1971322</size>
 	<pkgname>package6</pkgname>
 	<detailurl>detailurl6</detailurl>
+	<downloadurl>downloadurl6</downloadurl>
 </item>
 <item>
 	<id>7</id>
@@ -63,6 +69,7 @@
 	<size>3355443</size>
 	<pkgname>package7</pkgname>
 	<detailurl>detailurl7</detailurl>
+	<downloadurl>downloadurl7</downloadurl>
 </item>
 <item>
 	<id>8</id>
@@ -72,6 +79,7 @@
 	<size>1793064</size>
 	<pkgname>package8</pkgname>
 	<detailurl>detailurl8</detailurl>
+	<downloadurl>downloadurl8</downloadurl>
 </item>
 <item>
 	<id>9</id>
@@ -81,6 +89,7 @@
 	<size>2359296</size>
 	<pkgname>package9</pkgname>
 	<detailurl>detailurl9</detailurl>
+	<downloadurl>downloadurl9</downloadurl>
 </item>
 <item>
 	<id>10</id>
@@ -90,6 +99,7 @@
 	<size>556032</size>
 	<pkgname>package10</pkgname>
 	<detailurl>detailurl10</detailurl>
+	<downloadurl>downloadurl10</downloadurl>
 </item>
 <item>
 	<id>11</id>
@@ -99,6 +109,7 @@
 	<size>1530920</size>
 	<pkgname>package11</pkgname>
 	<detailurl>detailurl11</detailurl>
+	<downloadurl>downloadurl11</downloadurl>
 </item>
 <item>
 	<id>12</id>
@@ -108,6 +119,7 @@
 	<size>3764387</size>
 	<pkgname>package12</pkgname>
 	<detailurl>detailurl12</detailurl>
+	<downloadurl>downloadurl2</downloadurl>
 </item>
 <item>
 	<id>13</id>
@@ -117,6 +129,7 @@
 	<size>2359296</size>
 	<pkgname>package13</pkgname>
 	<detailurl>detailurl13</detailurl>
+	<downloadurl>downloadurl13</downloadurl>
 </item>
 <item>
 	<id>14</id>
@@ -126,6 +139,7 @@
 	<size>1761607</size>
 	<pkgname>package14</pkgname>
 	<detailurl>detailurl14</detailurl>
+	<downloadurl>downloadurl4</downloadurl>
 </item>
 <item>
 	<id>15</id>
@@ -135,6 +149,7 @@
 	<size>1814036</size>
 	<pkgname>package15</pkgname>
 	<detailurl>detailurl15</detailurl>
+	<downloadurl>downloadurl5</downloadurl>
 </item>
 <item>
 	<id>16</id>
@@ -144,6 +159,7 @@
 	<size>1352663</size>
 	<pkgname>package16</pkgname>
 	<detailurl>detailurl16</detailurl>
+	<downloadurl>downloadurl6</downloadurl>
 </item>
 <item>
 	<id>17</id>
@@ -153,6 +169,7 @@
 	<size>2338324</size>
 	<pkgname>package17</pkgname>
 	<detailurl>detailurl17</detailurl>
+	<downloadurl>downloadurl7</downloadurl>
 </item>
 <item>
 	<id>18</id>
@@ -162,6 +179,7 @@
 	<size>2191523</size>
 	<pkgname>package18</pkgname>
 	<detailurl>detailurl18</detailurl>
+	<downloadurl>downloadurl18</downloadurl>
 </item>
 <item>
 	<id>19</id>
@@ -171,6 +189,7 @@
 	<size>8388608</size>
 	<pkgname>package19</pkgname>
 	<detailurl>detailurl19</detailurl>
+	<downloadurl>downloadurl19</downloadurl>
 </item>
 <item>
 	<id>20</id>
@@ -180,6 +199,7 @@
 	<size>42865786</size>
 	<pkgname>package20</pkgname>
 	<detailurl>detailurl20</detailurl>
+	<downloadurl>downloadurl20</downloadurl>
 </item>
 <item>
 	<id>21</id>
@@ -189,6 +209,7 @@
 	<size>24452792</size>
 	<pkgname>package21</pkgname>
 	<detailurl>detailurl21</detailurl>
+	<downloadurl>downloadurl21</downloadurl>
 </item>
 <item>
 	<id>22</id>
@@ -198,6 +219,7 @@
 	<size>1184890</size>
 	<pkgname>package22</pkgname>
 	<detailurl>detailurl22</detailurl>
+	<downloadurl>downloadurl22</downloadurl>
 </item>
 <item>
 	<id>23</id>
@@ -207,6 +229,7 @@
 	<size>11523850</size>
 	<pkgname>package23</pkgname>
 	<detailurl>detailurl23</detailurl>
+	<downloadurl>downloadurl23</downloadurl>
 </item>
 <item>
 	<id>24</id>
@@ -216,6 +239,7 @@
 	<size>1551892</size>
 	<pkgname>package24</pkgname>
 	<detailurl>detailurl24</detailurl>
+	<downloadurl>downloadurl24</downloadurl>
 </item>
 <item>
 	<id>25</id>
@@ -225,6 +249,7 @@
 	<size>398336</size>
 	<pkgname>package25</pkgname>
 	<detailurl>detailurl25</detailurl>
+	<downloadurl>downloadurl25</downloadurl>
 </item>
 <item>
 	<id>26</id>
@@ -234,6 +259,7 @@
 	<size>20069744</size>
 	<pkgname>package26</pkgname>
 	<detailurl>detailurl26</detailurl>
+	<downloadurl>downloadurl26</downloadurl>
 </item>
 <item>
 	<id>27</id>
@@ -243,6 +269,7 @@
 	<size>1866465</size>
 	<pkgname>package27</pkgname>
 	<detailurl>detailurl27</detailurl>
+	<downloadurl>downloadurl27</downloadurl>
 </item>
 <item>
 	<id>28</id>
@@ -252,6 +279,7 @@
 	<size>4267704</size>
 	<pkgname>package28</pkgname>
 	<detailurl>detailurl28</detailurl>
+	<downloadurl>downloadurl28</downloadurl>
 </item>
 <item>
 	<id>29</id>
@@ -261,6 +289,7 @@
 	<size>1174405</size>
 	<pkgname>package29</pkgname>
 	<detailurl>detailurl29</detailurl>
+	<downloadurl>downloadurl29</downloadurl>
 </item>
 <item>
 	<id>30</id>
@@ -270,5 +299,6 @@
 	<size>3481272</size>
 	<pkgname>package30</pkgname>
 	<detailurl>detailurl30</detailurl>
+	<downloadurl>downloadurl30</downloadurl>
 </item>
 </List>
