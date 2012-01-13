@@ -10,6 +10,7 @@ public final class RankListItem {
 	public static final String USERRATING = "userRating";
 	public static final String PKGNAME = "pkgname";
 	public static final String DETAILURL = "detailurl";
+	public static final String DOWNLOADURL = "downloadurl";
 
 	private String mId;
 	private String mIconUrl;
@@ -19,6 +20,7 @@ public final class RankListItem {
 	private String mUserRating;
 	private String mPkgName;
 	private String mDetailUrl;
+	private String mDownloadUrl;
 
 	public RankListItem() {
 		//
@@ -26,7 +28,7 @@ public final class RankListItem {
 
 	public RankListItem(String id, String iconUrl, String iconCachePath,
 			String name, String author, String userRating, String pkgName,
-			String detailUrl) {
+			String detailUrl, String downloadurl) {
 		this.mId = id;
 		this.mIconUrl = iconUrl;
 		this.mIconCachePath = iconCachePath;
@@ -35,6 +37,7 @@ public final class RankListItem {
 		this.mUserRating = userRating;
 		this.mPkgName = pkgName;
 		this.mDetailUrl = detailUrl;
+		this.mDownloadUrl = downloadurl;
 	}
 
 	public String getId() {
@@ -101,6 +104,14 @@ public final class RankListItem {
 		this.mDetailUrl = detailUrl;
 	}
 
+	public String getDownloadUrl() {
+		return this.mDownloadUrl;
+	}
+
+	public void setDownloadUrl(String downloadurl) {
+		this.mDownloadUrl = downloadurl;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -114,6 +125,8 @@ public final class RankListItem {
 				.append(this.mUserRating);
 		sb.append(",\t").append(PKGNAME).append(":").append(this.mPkgName);
 		sb.append(",\t").append(DETAILURL).append(":").append(this.mDetailUrl);
+		sb.append(",\t").append(DOWNLOADURL).append(":").append(
+				this.mDownloadUrl);
 		return sb.toString();
 	}
 }

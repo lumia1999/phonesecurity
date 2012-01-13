@@ -30,6 +30,7 @@ public final class Constants {
 	public static final long COMMENT_INTERVAL = 5 * 60 * 1000;// 5 minutes
 	public static final long PROTECT_ALARM_NTERVAL = 1 * 60 * 1000;// 1 minute
 
-	public static final int SUGGEST_KEYS_COUNT = 13;
+	public static final int SUGGEST_KEYS_COUNT_PORT = 13;
+	public static final int SUGGEST_KEYS_COUNT_LAND = 10;
 
 }

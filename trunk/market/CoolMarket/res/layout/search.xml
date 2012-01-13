@@ -20,9 +20,7 @@
             android:divider="@null"
             android:fadingEdge="none" />
 
-        <include
-            android:id="@+id/search_suggest_layout"
-            layout="@layout/search_suggest" />
+        <include layout="@layout/search_suggest" />
 
         <include layout="@layout/loading" />
 

@@ -56,5 +56,6 @@
 
     <!-- search string -->
     <string name="invalid_key_word_toast">请先输入关键字，或者试试推荐的关键字</string>
+    <string name="search_ongoing_toast">正在搜索中，请稍等</string>
 
 </resources>
