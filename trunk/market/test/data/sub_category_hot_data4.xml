@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rank>
+<sub_cate_hot>
 	<totalNum>60</totalNum>
 	<item>
 		<id>46</id>
@@ -136,4 +136,4 @@
 		<pkgname>packagename60</pkgname>
 		<detailurl>detailurl60</detailurl>
 	</item>
-</rank>
+</sub_cate_hot>

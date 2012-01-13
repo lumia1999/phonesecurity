@@ -1,139 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<sub_cate_hot>
+<search_result>
 	<totalNum>60</totalNum>
 	<item>
 		<id>31</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot31.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult31.jpg</iconurl>
 		<name><![CDATA[尖峰滑雪]]></name>
 		<author><![CDATA[安致爱好者]]></author>
 		<userRating>4.5</userRating>
 		<pkgname>packagename31</pkgname>
 		<detailurl>detailurl31</detailurl>
+		<downloadurl>downloadurl31</downloadurl>
 	</item>
 	<item>
 		<id>32</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot32.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult32.jpg</iconurl>
 		<name><![CDATA[正点闹钟]]></name>
 		<author><![CDATA[NO NAME]]></author>
 		<userRating>4.8</userRating>
 		<pkgname>packagename32</pkgname>
-		<detailurl>detailur32</detailurl>
+		<detailurl>detailurl32</detailurl>
+		<downloadurl>downloadurl32</downloadurl>
 	</item>
 	<item>
 		<id>33</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot33.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult33.jpg</iconurl>
 		<name><![CDATA[活死人之夜]]></name>
 		<author><![CDATA[小富人]]></author>
 		<userRating>4.0</userRating>
 		<pkgname>packagename33</pkgname>
 		<detailurl>detailurl33</detailurl>
+		<downloadurl>downloadurl33</downloadurl>
 	</item>
 	<item>
 		<id>34</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot34.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult34.jpg</iconurl>
 		<name><![CDATA[GO主题]]></name>
 		<author><![CDATA[无名]]></author>
 		<userRating>4.9</userRating>
 		<pkgname>packagename34</pkgname>
 		<detailurl>detailurl34</detailurl>
+		<downloadurl>downloadurl34</downloadurl>
 	</item>
 	<item>
 		<id>35</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot35.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult35.jpg</iconurl>
 		<name><![CDATA[合金弹头]]></name>
 		<author><![CDATA[乐用]]></author>
 		<userRating>3.0</userRating>
 		<pkgname>packagename35</pkgname>
 		<detailurl>detailurl35</detailurl>
+		<downloadurl>downloadurl35</downloadurl>
 	</item>
 	<item>
 		<id>36</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot36.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult36.jpg</iconurl>
 		<name><![CDATA[电驴影视大全]]></name>
 		<author><![CDATA[VeryCD]]></author>
 		<userRating>4.0</userRating>
 		<pkgname>packagename36</pkgname>
 		<detailurl>detailurl36</detailurl>
+		<downloadurl>downloadurl36</downloadurl>
 	</item>
 	<item>
 		<id>37</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot37.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult37.jpg</iconurl>
 		<name><![CDATA[3D交通指挥]]></name>
 		<author><![CDATA[安致爱好者]]></author>
 		<userRating>5.0</userRating>
 		<pkgname>packagename37</pkgname>
 		<detailurl>detailurl37</detailurl>
+		<downloadurl>downloadurl37</downloadurl>
 	</item>
 	<item>
 		<id>38</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot38.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult38.jpg</iconurl>
 		<name><![CDATA[陌陌]]></name>
 		<author><![CDATA[北京陌陌科技有限责任公司]]></author>
 		<userRating>0.0</userRating>
 		<pkgname>packagename38</pkgname>
 		<detailurl>detailurl38</detailurl>
+		<downloadurl>downloadurl38</downloadurl>
 	</item>
 	<item>
 		<id>39</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot39.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult39.jpg</iconurl>
 		<name><![CDATA[酷我音乐2012]]></name>
 		<author><![CDATA[酷我科技]]></author>
 		<userRating>4.0</userRating>
 		<pkgname>packagename39</pkgname>
 		<detailurl>detailurl39</detailurl>
+		<downloadurl>downloadurl39</downloadurl>
 	</item>
 	<item>
 		<id>40</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot40.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult40.jpg</iconurl>
 		<name><![CDATA[会说话的圣诞老人]]></name>
 		<author><![CDATA[Outfit7]]></author>
 		<userRating>4.0</userRating>
 		<pkgname>packagename40</pkgname>
 		<detailurl>detailurl40</detailurl>
+		<downloadurl>downloadurl40</downloadurl>
 	</item>
 	<item>
 		<id>41</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot41.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult41.jpg</iconurl>
 		<name><![CDATA[华丽智能办公套装]]></name>
 		<author><![CDATA[安致爱好者]]></author>
 		<userRating>4.0</userRating>
 		<pkgname>packagename41</pkgname>
 		<detailurl>detailurl41</detailurl>
+		<downloadurl>downloadurl41</downloadurl>
 	</item>
 	<item>
 		<id>42</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot42.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult42.jpg</iconurl>
 		<name><![CDATA[实时视频交通]]></name>
 		<author><![CDATA[]]></author>
 		<userRating>4.5</userRating>
 		<pkgname>packagename42</pkgname>
 		<detailurl>detailurl42</detailurl>
+		<downloadurl>downloadurl42</downloadurl>
 	</item>
 	<item>
 		<id>43</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot43.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult43.jpg</iconurl>
 		<name><![CDATA[炫美圣诞动态壁纸]]></name>
 		<author><![CDATA[安致爱好者]]></author>
 		<userRating>4.0</userRating>
 		<pkgname>packagename43</pkgname>
 		<detailurl>detailurl43</detailurl>
+		<downloadurl>downloadurl43</downloadurl>
 	</item>
 	<item>
 		<id>44</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot44.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult44.jpg</iconurl>
 		<name><![CDATA[GO主题-开飞机的舒克]]></name>
 		<author><![CDATA[]]></author>
 		<userRating>0.0</userRating>
 		<pkgname>packagename44</pkgname>
 		<detailurl>detailurl44</detailurl>
+		<downloadurl>downloadurl44</downloadurl>
 	</item>
 	<item>
 		<id>45</id>
-		<iconurl>/mnt/sdcard/test/icon/subCategoryHot45.jpg</iconurl>
+		<iconurl>/mnt/sdcard/test/icon/searchResult45.jpg</iconurl>
 		<name><![CDATA[突突兔]]></name>
 		<author><![CDATA[北京寰讯天翔信息技术有限公司]]></author>
 		<userRating>4.0</userRating>
 		<pkgname>packagename45</pkgname>
 		<detailurl>detailurl45</detailurl>
+		<downloadurl>downloadurl45</downloadurl>
 	</item>
-</sub_cate_hot>
+</search_result>
