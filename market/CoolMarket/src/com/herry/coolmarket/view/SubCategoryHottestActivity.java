@@ -245,6 +245,9 @@ public class SubCategoryHottestActivity extends Activity implements
 					} else if (TextUtils.equals(tag, RankListItem.DETAILURL)) {
 						parser.next();
 						temp.setDetailUrl(parser.getText());
+					} else if (TextUtils.equals(tag, RankListItem.DOWNLOADURL)) {
+						parser.next();
+						temp.setDownloadUrl(parser.getText());
 					}
 				} else if (eventType == XmlPullParser.END_TAG) {
 					tag = parser.getName();

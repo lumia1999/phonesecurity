@@ -10,6 +10,7 @@ public final class HomeListItem {
 	public static final String SIZE = "size";
 	public static final String PKGNAME = "pkgname";
 	public static final String DETAILURL = "detailurl";
+	public static final String DOWNLOADURL = "downloadurl";
 
 	private String mId;
 	private String mIconUrl;
@@ -19,6 +20,7 @@ public final class HomeListItem {
 	private String mSize;
 	private String mPkgName;
 	private String mDetailUrl;
+	private String mDownloadUrl;
 
 	public HomeListItem() {
 		//
@@ -26,7 +28,7 @@ public final class HomeListItem {
 
 	public HomeListItem(String id, String iconUrl, String iconCachePath,
 			String name, String desc, String size, String pkgName,
-			String detailUrl) {
+			String detailUrl, String downloadUrl) {
 		this.mId = id;
 		this.mIconUrl = iconUrl;
 		this.mIconCachePath = iconCachePath;
@@ -35,6 +37,7 @@ public final class HomeListItem {
 		this.mSize = size;
 		this.mPkgName = pkgName;
 		this.mDetailUrl = detailUrl;
+		this.mDownloadUrl = downloadUrl;
 	}
 
 	public String getId() {
@@ -101,6 +104,14 @@ public final class HomeListItem {
 		this.mDetailUrl = detailUrl;
 	}
 
+	public String getDownloadUrl() {
+		return this.mDownloadUrl;
+	}
+
+	public void setDownloadUrl(String downloadUrl) {
+		this.mDownloadUrl = downloadUrl;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -112,6 +123,8 @@ public final class HomeListItem {
 		sb.append(",\t").append(SIZE).append(":").append(this.mSize);
 		sb.append(",\t").append(PKGNAME).append(":").append(this.mPkgName);
 		sb.append(",\t").append(DETAILURL).append(":").append(this.mDetailUrl);
+		sb.append(",\t").append(DOWNLOADURL).append(":").append(
+				this.mDownloadUrl);
 		return sb.toString();
 	}
 }

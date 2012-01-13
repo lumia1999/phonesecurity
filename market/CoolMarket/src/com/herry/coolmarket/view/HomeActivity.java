@@ -416,6 +416,9 @@ public class HomeActivity extends ListActivity implements
 					} else if (TextUtils.equals(tag, HomeListItem.DETAILURL)) {
 						parser.next();
 						temp.setDetailUrl(parser.getText());
+					} else if (TextUtils.equals(tag, HomeListItem.DOWNLOADURL)) {
+						parser.next();
+						temp.setDownloadUrl(parser.getText());
 					}
 				} else if (eventType == XmlPullParser.END_TAG) {
 					tag = parser.getName();
