@@ -9,6 +9,7 @@
 		<userRating>4.5</userRating>
 		<pkgname>packagename1</pkgname>
 		<detailurl>detailurl1</detailurl>
+		<downloadurl>downloadurl1</downloadurl>
 	</item>
 	<item>
 		<id>2</id>
@@ -18,6 +19,7 @@
 		<userRating>4.8</userRating>
 		<pkgname>packagename2</pkgname>
 		<detailurl>detailurl2</detailurl>
+		<downloadurl>downloadurl2</downloadurl>
 	</item>
 	<item>
 		<id>3</id>
@@ -27,6 +29,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename3</pkgname>
 		<detailurl>detailurl3</detailurl>
+		<downloadurl>downloadurl3</downloadurl>
 	</item>
 	<item>
 		<id>4</id>
@@ -36,6 +39,7 @@
 		<userRating>4.9</userRating>
 		<pkgname>packagename4</pkgname>
 		<detailurl>detailurl4</detailurl>
+		<downloadurl>downloadurl4</downloadurl>
 	</item>
 	<item>
 		<id>5</id>
@@ -45,6 +49,7 @@
 		<userRating>3.0</userRating>
 		<pkgname>packagename5</pkgname>
 		<detailurl>detailurl5</detailurl>
+		<downloadurl>downloadurl5</downloadurl>
 	</item>
 	<item>
 		<id>6</id>
@@ -54,6 +59,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename6</pkgname>
 		<detailurl>detailurl6</detailurl>
+		<downloadurl>downloadurl6</downloadurl>
 	</item>
 	<item>
 		<id>7</id>
@@ -63,6 +69,7 @@
 		<userRating>5.0</userRating>
 		<pkgname>packagename7</pkgname>
 		<detailurl>detailurl7</detailurl>
+		<downloadurl>downloadurl7</downloadurl>
 	</item>
 	<item>
 		<id>8</id>
@@ -72,6 +79,7 @@
 		<userRating>0.0</userRating>
 		<pkgname>packagename8</pkgname>
 		<detailurl>detailurl8</detailurl>
+		<downloadurl>downloadurl8</downloadurl>
 	</item>
 	<item>
 		<id>9</id>
@@ -81,6 +89,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename9</pkgname>
 		<detailurl>detailurl9</detailurl>
+		<downloadurl>downloadurl9</downloadurl>
 	</item>
 	<item>
 		<id>10</id>
@@ -90,6 +99,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename10</pkgname>
 		<detailurl>detailurl10</detailurl>
+		<downloadurl>downloadurl10</downloadurl>
 	</item>
 	<item>
 		<id>11</id>
@@ -99,6 +109,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename11</pkgname>
 		<detailurl>detailurl11</detailurl>
+		<downloadurl>downloadurl11</downloadurl>
 	</item>
 	<item>
 		<id>12</id>
@@ -108,6 +119,7 @@
 		<userRating>4.5</userRating>
 		<pkgname>packagename12</pkgname>
 		<detailurl>detailurl12</detailurl>
+		<downloadurl>downloadurl12</downloadurl>
 	</item>
 	<item>
 		<id>13</id>
@@ -117,6 +129,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename13</pkgname>
 		<detailurl>detailurl13</detailurl>
+		<downloadurl>downloadurl13</downloadurl>
 	</item>
 	<item>
 		<id>14</id>
@@ -126,6 +139,7 @@
 		<userRating>0.0</userRating>
 		<pkgname>packagename14</pkgname>
 		<detailurl>detailurl14</detailurl>
+		<downloadurl>downloadurl14</downloadurl>
 	</item>
 	<item>
 		<id>15</id>
@@ -135,5 +149,6 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename15</pkgname>
 		<detailurl>detailurl15</detailurl>
+		<downloadurl>downloadurl15</downloadurl>
 	</item>
 </rank>
