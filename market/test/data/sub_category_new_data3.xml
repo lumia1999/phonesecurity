@@ -9,6 +9,7 @@
 		<userRating>4.5</userRating>
 		<pkgname>packagename31</pkgname>
 		<detailurl>detailurl31</detailurl>
+		<downloadurl>downloadurl31</downloadurl>
 	</item>
 	<item>
 		<id>32</id>
@@ -18,6 +19,7 @@
 		<userRating>4.8</userRating>
 		<pkgname>packagename32</pkgname>
 		<detailurl>detailurl32</detailurl>
+		<downloadurl>downloadurl32</downloadurl>
 	</item>
 	<item>
 		<id>33</id>
@@ -27,6 +29,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename33</pkgname>
 		<detailurl>detailurl33</detailurl>
+		<downloadurl>downloadurl33</downloadurl>
 	</item>
 	<item>
 		<id>34</id>
@@ -36,6 +39,7 @@
 		<userRating>4.9</userRating>
 		<pkgname>packagename34</pkgname>
 		<detailurl>detailurl34</detailurl>
+		<downloadurl>downloadurl34</downloadurl>
 	</item>
 	<item>
 		<id>35</id>
@@ -45,6 +49,7 @@
 		<userRating>3.0</userRating>
 		<pkgname>packagename35</pkgname>
 		<detailurl>detailurl35</detailurl>
+		<downloadurl>downloadurl35</downloadurl>
 	</item>
 	<item>
 		<id>36</id>
@@ -54,6 +59,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename36</pkgname>
 		<detailurl>detailurl36</detailurl>
+		<downloadurl>downloadurl36</downloadurl>
 	</item>
 	<item>
 		<id>37</id>
@@ -63,6 +69,7 @@
 		<userRating>5.0</userRating>
 		<pkgname>packagename37</pkgname>
 		<detailurl>detailurl37</detailurl>
+		<downloadurl>downloadurl37</downloadurl>
 	</item>
 	<item>
 		<id>38</id>
@@ -72,6 +79,7 @@
 		<userRating>0.0</userRating>
 		<pkgname>packagename38</pkgname>
 		<detailurl>detailurl38</detailurl>
+		<downloadurl>downloadurl38</downloadurl>
 	</item>
 	<item>
 		<id>39</id>
@@ -81,6 +89,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename39</pkgname>
 		<detailurl>detailurl39</detailurl>
+		<downloadurl>downloadurl39</downloadurl>
 	</item>
 	<item>
 		<id>40</id>
@@ -90,6 +99,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename40</pkgname>
 		<detailurl>detailurl40</detailurl>
+		<downloadurl>downloadurl40</downloadurl>
 	</item>
 	<item>
 		<id>41</id>
@@ -99,6 +109,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename41</pkgname>
 		<detailurl>detailurl41</detailurl>
+		<downloadurl>downloadurl41</downloadurl>
 	</item>
 	<item>
 		<id>42</id>
@@ -108,6 +119,7 @@
 		<userRating>4.5</userRating>
 		<pkgname>packagename42</pkgname>
 		<detailurl>detailurl42</detailurl>
+		<downloadurl>downloadurl42</downloadurl>
 	</item>
 	<item>
 		<id>43</id>
@@ -117,6 +129,7 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename43</pkgname>
 		<detailurl>detailurl43</detailurl>
+		<downloadurl>downloadurl43</downloadurl>
 	</item>
 	<item>
 		<id>44</id>
@@ -126,6 +139,7 @@
 		<userRating>0.0</userRating>
 		<pkgname>packagename44</pkgname>
 		<detailurl>detailurl44</detailurl>
+		<downloadurl>downloadurl44</downloadurl>
 	</item>
 	<item>
 		<id>45</id>
@@ -135,5 +149,6 @@
 		<userRating>4.0</userRating>
 		<pkgname>packagename45</pkgname>
 		<detailurl>detailurl45</detailurl>
+		<downloadurl>downloadurl45</downloadurl>
 	</item>
 </sub_cate_new>
