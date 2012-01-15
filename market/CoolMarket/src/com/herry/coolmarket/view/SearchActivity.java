@@ -1,31 +1,45 @@
 package com.herry.coolmarket.view;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -37,8 +51,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.herry.coolmarket.R;
+import com.herry.coolmarket.RankListItem;
+import com.herry.coolmarket.http.HttpRequestBox;
+import com.herry.coolmarket.http.ResponseData;
 import com.herry.coolmarket.util.Constants;
 import com.herry.coolmarket.util.LoadingDrawable;
+import com.herry.coolmarket.util.Utils;
 
 public class SearchActivity extends Activity {
 	private static final String TAG = "SearchActivity";
@@ -64,11 +82,76 @@ public class SearchActivity extends Activity {
 	private ProgressBar mProgressBar;
 	private LoadingDrawable mLoadingDrawable;
 
-	// search result
-	private ListView mListView;
-
 	// retry
 	private TextView mRetryTxt;
+
+	// search result
+	private ListView mListView;
+	private List<RankListItem> mListData = null;
+	private List<RankListItem> mLoadingData = null;
+	private int mListItemTotalNum = -1;
+	private SearchResultAdapter mListAdapter = null;
+
+	// loading data
+	private boolean mDownloadIconAfterLoading = false;
+	private boolean mIsLoading = false;
+	private int mIndex;
+	private FetchDataTask mFetchDataTask;
+	private LayoutInflater mLayoutInflater;
+	private Context mCtx;
+
+	// download icon
+	private int mStartPos = -1;
+	private int mRefNum;
+	private ArrayList<String> mIconUrlList = null;
+	private byte[] mListItemLock = new byte[1];
+	private DownloadIconTask mDownloadIconTask;
+
+	// footer
+	private FrameLayout mFooter;
+	private ProgressBar mFooterProgressBar;
+	private TextView mFooterTip;
+
+	private static final int MSG_NETWORK_ERROR = 1;
+	private static final int MSG_FETCH_DATA_SUCCESS = 2;
+
+	private static final int MSG_REFRESH_UI = 11;
+	private static final int MSG_REFRESH_UI_ERROR = 12;
+
+	private static final int MSG_REFRESH_ITEM_ICON = 21;
+
+	private Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case MSG_NETWORK_ERROR:
+				mRetryTxt.setVisibility(View.VISIBLE);
+				mProgressBar.setVisibility(View.GONE);
+				break;
+			case MSG_FETCH_DATA_SUCCESS:
+				fillListData();
+				break;
+			case MSG_REFRESH_ITEM_ICON:
+				updateListDataIcon(msg);
+				break;
+			case MSG_REFRESH_UI:
+				Log.e(TAG, "MSG_REFRESH_UI");
+				if (mListAdapter != null) {
+					mIsLoading = false;
+					mDownloadIconAfterLoading = true;
+					mListAdapter.notifyDataSetChanged();
+				}
+				break;
+			case MSG_REFRESH_UI_ERROR:
+				mFooterProgressBar.setVisibility(View.GONE);
+				mFooterTip.setVisibility(View.VISIBLE);
+				break;
+			}
+		}
+
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +164,8 @@ public class SearchActivity extends Activity {
 	}
 
 	private void initUI() {
+		mCtx = this;
+		mLayoutInflater = getLayoutInflater();
 		mKeysEdit = (EditText) findViewById(R.id.fact_search_keysedit);
 		mKeysEdit.addTextChangedListener(new TextWatcher() {
 
@@ -115,6 +200,18 @@ public class SearchActivity extends Activity {
 		mProgressBar.setVisibility(View.GONE);
 		mListView = (ListView) findViewById(android.R.id.list);
 		mListView.setVisibility(View.GONE);
+		mListData = new ArrayList<RankListItem>();
+		mIsLoading = false;
+		mIndex = 1;// init value
+		mFooter = (FrameLayout) mLayoutInflater.inflate(R.layout.list_footer,
+				null);
+		mFooterProgressBar = (ProgressBar) mFooter
+				.findViewById(android.R.id.progress);
+		mFooterTip = (TextView) mFooter.findViewById(R.id.list_footer_retry);
+		mFooterTip.setOnClickListener(onOtherClickListener);
+		mFooterProgressBar.setIndeterminateDrawable(new LoadingDrawable(this));
+		mFooterTip.setVisibility(View.GONE);
+		mListView.addFooterView(mFooter);
 		mRetryTxt = (TextView) findViewById(R.id.retry);
 		mRetryTxt.setVisibility(View.GONE);
 		mRetryTxt.setOnClickListener(onOtherClickListener);
@@ -280,10 +377,9 @@ public class SearchActivity extends Activity {
 				}
 				String key = mKeysEdit.getText().toString();
 				if (key == null || "".equals(key.trim())) {
-					Toast
-							.makeText(getApplicationContext(),
-									R.string.invalid_key_word_toast,
-									Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(),
+							R.string.invalid_key_word_toast, Toast.LENGTH_SHORT)
+							.show();
 					return;
 				}
 				onSearch(key);
@@ -291,6 +387,9 @@ public class SearchActivity extends Activity {
 				break;
 			case R.id.retry:
 				onRetry();
+				break;
+			case R.id.list_footer_retry:
+				// TODO
 				break;
 			}
 
@@ -413,7 +512,7 @@ public class SearchActivity extends Activity {
 				}
 				eventType = parser.next();
 			}// ?end while
-			// Log.d(TAG, "keys : " + mSuggestKeys);
+				// Log.d(TAG, "keys : " + mSuggestKeys);
 		} catch (NotFoundException e) {
 			Log.e(TAG, "NotFoundException", e);
 		} catch (XmlPullParserException e) {
@@ -459,11 +558,9 @@ public class SearchActivity extends Activity {
 	}
 
 	private void fillSuggest() {
-		Log.d(TAG, "orientation : " + mRes.getConfiguration().orientation);
+		// Log.d(TAG, "orientation : " + mRes.getConfiguration().orientation);
 		chooseKeys();
 		mSuggestLayout.setVisibility(View.VISIBLE);
-		// mSuggestLayout.setLayoutAnimation(mSuggestLayoutAnimController);
-		// mSuggestLayout.startLayoutAnimation();
 		int orientation = mRes.getConfiguration().orientation;
 		switch (orientation) {
 		case Configuration.ORIENTATION_PORTRAIT:
@@ -577,6 +674,8 @@ public class SearchActivity extends Activity {
 		// TODO
 		mProgressBar.setVisibility(View.VISIBLE);
 		mSuggestLayout.setVisibility(View.GONE);
+		mFetchDataTask = new FetchDataTask();
+		mFetchDataTask.execute(mIndex);
 	}
 
 	@Override
@@ -598,6 +697,263 @@ public class SearchActivity extends Activity {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+
+	private int initData(int index) {
+		if (mLoadingData != null && !mLoadingData.isEmpty()) {
+			mLoadingData.clear();
+		} else {
+			mLoadingData = new ArrayList<RankListItem>();
+		}
+		InputStream is = null;
+		try {
+			if (Constants.mIsTestMode) {
+				String filePath = Utils.getSdcardRootPathWithoutSlash()
+						+ "/test/data/search_result" + index + ".xml";
+				// Log.e(TAG, "filePath : " + filePath);
+				is = new FileInputStream(filePath);
+			} else {
+				ResponseData resData = HttpRequestBox
+						.getInstance(this)
+						.sendRequest(
+								new HttpGet(/* TODO confirm the request url */));
+				if (resData == null) {
+					Log.d(TAG, "response is null");
+					return Constants.TYPE_NO_NETWORK;
+				}
+				int statusCode = resData.getResponseStatusCode();
+				if (statusCode != HttpStatus.SC_OK) {
+					Log.d(TAG, "response error with code : " + statusCode);
+					return Constants.TYPE_NO_NETWORK;
+				}
+				is = resData.getContent().getEntity().getContent();
+			}
+			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+			factory.setNamespaceAware(true);
+			XmlPullParser parser = factory.newPullParser();
+			parser.setInput(is, HTTP.UTF_8);
+			int eventType = parser.getEventType();
+			String tag = "";
+			RankListItem temp = null;
+			while (eventType != XmlPullParser.END_DOCUMENT) {
+				if (eventType == XmlPullParser.START_TAG) {
+					tag = parser.getName();
+					// Log.e(TAG, "tag : " + tag);
+					if (TextUtils.equals(tag, Constants.TOTAL_NUM)) {
+						parser.next();
+						mListItemTotalNum = Integer.valueOf(parser.getText());
+					} else if (TextUtils.equals(tag, RankListItem.ITEM)) {
+						temp = new RankListItem();
+					} else if (TextUtils.equals(tag, RankListItem.ID)) {
+						parser.next();
+						temp.setId(parser.getText());
+					} else if (TextUtils.equals(tag, RankListItem.ICONURL)) {
+						parser.next();
+						temp.setIconUrl(parser.getText());
+					} else if (TextUtils.equals(tag, RankListItem.NAME)) {
+						parser.next();
+						temp.setName(parser.getText());
+					} else if (TextUtils.equals(tag, RankListItem.AUTHOR)) {
+						parser.next();
+						temp.setAuthor(parser.getText());
+					} else if (TextUtils.equals(tag, RankListItem.USERRATING)) {
+						parser.next();
+						temp.setUserRating(parser.getText());
+					} else if (TextUtils.equals(tag, RankListItem.PKGNAME)) {
+						parser.next();
+						temp.setPkgName(parser.getText());
+					} else if (TextUtils.equals(tag, RankListItem.DETAILURL)) {
+						parser.next();
+						temp.setDetailUrl(parser.getText());
+					} else if (TextUtils.equals(tag, RankListItem.DOWNLOADURL)) {
+						parser.next();
+						temp.setDownloadUrl(parser.getText());
+					}
+				} else if (eventType == XmlPullParser.END_TAG) {
+					tag = parser.getName();
+					if (TextUtils.equals(tag, RankListItem.ITEM)) {
+						checkCacheIcon(temp);
+						mLoadingData.add(temp);
+					}
+				}
+				eventType = parser.next();
+			}// ?end while
+			if (!mLoadingData.isEmpty()) {
+				mListData.addAll(mLoadingData);
+				return Constants.TYPE_OK;
+			} else {
+				return Constants.TYPE_NO_NETWORK;
+			}
+		} catch (FileNotFoundException e) {
+			Log.e(TAG, "FileNotFoundException", e);
+			return Constants.TYPE_NO_NETWORK;
+		} catch (IOException e) {
+			Log.e(TAG, "IOException", e);
+			return Constants.TYPE_NO_NETWORK;
+		} catch (XmlPullParserException e) {
+			Log.e(TAG, "XmlPullParserException", e);
+			return Constants.TYPE_NO_NETWORK;
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					//
+				}
+			}
+		}
+	}
+
+	private boolean checkCacheIcon(RankListItem item) {
+		String curCachePath = Utils.getCurIconCachePath(this);
+		String iconUrl = item.getIconUrl();
+		// Log.d(TAG, "curCachePath : " + curCachePath + ",iconUrl : " +
+		// iconUrl);
+		int idx = iconUrl.lastIndexOf("/");
+		if (idx != -1) {
+			File f = new File(curCachePath, iconUrl.substring(idx + 1));
+			if (f.exists()) {
+				item.setIconCachePath(f.getAbsolutePath());
+				return true;
+			} else {
+				item.setIconCachePath(null);
+				return false;
+			}
+		} else {
+			item.setIconCachePath(null);
+			return false;
+		}
+	}
+
+	private void notifySuccess(int idx) {
+		if (idx == 1) {// first time
+			mHandler.sendEmptyMessage(MSG_FETCH_DATA_SUCCESS);
+		} else {
+			mHandler.sendEmptyMessage(MSG_REFRESH_UI);
+		}
+	}
+
+	private void notifyError(int idx) {
+		Message msg = mHandler.obtainMessage();
+		if (idx == 1) {// first time
+			msg.what = MSG_NETWORK_ERROR;
+		} else {
+			msg.what = MSG_REFRESH_UI_ERROR;
+		}
+		mHandler.sendMessageDelayed(msg, 500);
+	}
+
+	private void fillListData() {
+		mListAdapter = new SearchResultAdapter();
+		mListView.setAdapter(mListAdapter);
+		mListView.setVisibility(View.VISIBLE);
+		mProgressBar.setVisibility(View.GONE);
+	}
+
+	private class FetchDataTask extends AsyncTask<Integer, Void, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(Integer... params) {
+			int index = params[0];
+			Log.d(TAG, "doInBackground : " + index);
+			int ret = initData(index);
+			if (ret == Constants.TYPE_NO_NETWORK) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if (result) {
+				notifySuccess(mIndex);
+			} else {
+				notifyError(mIndex);
+			}
+		}
+
+	}
+
+	// search result
+	private class SearchResultAdapter extends BaseAdapter {
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
+
+	private class DownloadIconTask extends AsyncTask<Void, Progress, Void> {
+		private boolean mResume;
+		private HttpRequestBox hb;
+
+		public DownloadIconTask() {
+			super();
+			mResume = true;
+			hb = HttpRequestBox.getInstance(mCtx);
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		protected void onCancelled() {
+			// TODO Auto-generated method stub
+			super.onCancelled();
+		}
+
+		@Override
+		protected void onProgressUpdate(Progress... values) {
+			// TODO Auto-generated method stub
+			super.onProgressUpdate(values);
+		}
+
+	}
+
+	private class Progress {
+		private int pos;
+		private String iconPath;
+	}
+
+	private void updateListDataIcon(Message msg) {
+		String iconUrl = (String) msg.obj;
+		int size = mListData.size();
+		RankListItem item = null;
+		for (int i = 0; i < size; i++) {
+			item = mListData.get(i);
+			if (TextUtils.equals(item.getIconUrl(), iconUrl)) {
+
+				String iconCachePath = Utils.getCurIconCachePath(this)
+						+ Utils.getIconName(iconUrl);
+				item.setIconCachePath(iconCachePath);
+				break;
+			}
+		}
+		mListAdapter.notifyDataSetChanged();
 	}
 
 }
