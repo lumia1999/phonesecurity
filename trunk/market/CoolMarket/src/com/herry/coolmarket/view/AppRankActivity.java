@@ -215,7 +215,6 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			factory.setNamespaceAware(true);
 			XmlPullParser parser = factory.newPullParser();
-
 			parser.setInput(fis, HTTP.UTF_8);
 			int eventType = parser.getEventType();
 			String tag = "";
