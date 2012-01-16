@@ -33,6 +33,7 @@ public class CoolMarketActivity extends Activity {
 				startActivity(new Intent(getApplicationContext(),
 						MainTabActivity.class).putExtra(
 						Constants.WELCOME_FINISH_EXTRA_TYPE, msg.arg1));
+				overridePendingTransition(R.anim.animation_left_in, 0);
 				finish();
 				break;
 			}
@@ -49,6 +50,13 @@ public class CoolMarketActivity extends Activity {
 		initUI();
 		tmpFun();
 		test();
+	}
+
+	@Override
+	public void overridePendingTransition(int enterAnim, int exitAnim) {
+		// enterAnim = R.anim.animation_left_in;
+		// exitAnim = R.anim.animation_left_out;
+		super.overridePendingTransition(enterAnim, exitAnim);
 	}
 
 	private void test() {
