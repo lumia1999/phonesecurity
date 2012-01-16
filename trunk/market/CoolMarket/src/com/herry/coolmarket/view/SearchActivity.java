@@ -18,9 +18,11 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,41 +39,51 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AbsListView.OnScrollListener;
 
+import com.herry.coolmarket.HomeListItem;
 import com.herry.coolmarket.R;
 import com.herry.coolmarket.RankListItem;
 import com.herry.coolmarket.http.HttpRequestBox;
 import com.herry.coolmarket.http.ResponseData;
+import com.herry.coolmarket.pool.DownloadIconJob;
+import com.herry.coolmarket.pool.IDownloadIconCallback;
+import com.herry.coolmarket.pool.IconDownloader;
 import com.herry.coolmarket.util.Constants;
 import com.herry.coolmarket.util.LoadingDrawable;
 import com.herry.coolmarket.util.Utils;
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends Activity implements OnScrollListener,
+		IDownloadIconCallback {
 	private static final String TAG = "SearchActivity";
 
 	// search top
 	private EditText mKeysEdit;
 	private Button mCleanBtn;
 	private ImageButton mSearchBtn;
+	private boolean mNewSearchTag;
 
 	// suggest
 	Resources mRes;
 	private FrameLayout mSuggestLayout;
 	private LinearLayout mSuggestLayoutPortrait;
 	private LinearLayout mSuggestLayoutLandscape;
-	private LayoutAnimationController mSuggestLayoutAnimController;
 	private SuggestWidget mSuggestWidget;
 	private String mSuggestKeys;
 	private String[] mPortraitCurrentUseKeys;
@@ -106,6 +118,7 @@ public class SearchActivity extends Activity {
 	private ArrayList<String> mIconUrlList = null;
 	private byte[] mListItemLock = new byte[1];
 	private DownloadIconTask mDownloadIconTask;
+	private DownloadIconJob mDownloadIconJob;
 
 	// footer
 	private FrameLayout mFooter;
@@ -193,6 +206,7 @@ public class SearchActivity extends Activity {
 		mCleanBtn = (Button) findViewById(R.id.fact_search_clean);
 		mCleanBtn.setOnClickListener(onOtherClickListener);
 		mSearchBtn = (ImageButton) findViewById(R.id.fact_search_btn);
+		mNewSearchTag = true;
 		mSearchBtn.setOnClickListener(onOtherClickListener);
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
 		mLoadingDrawable = new LoadingDrawable(this);
@@ -200,6 +214,7 @@ public class SearchActivity extends Activity {
 		mProgressBar.setVisibility(View.GONE);
 		mListView = (ListView) findViewById(android.R.id.list);
 		mListView.setVisibility(View.GONE);
+		mListView.setOnScrollListener(this);
 		mListData = new ArrayList<RankListItem>();
 		mIsLoading = false;
 		mIndex = 1;// init value
@@ -211,7 +226,7 @@ public class SearchActivity extends Activity {
 		mFooterTip.setOnClickListener(onOtherClickListener);
 		mFooterProgressBar.setIndeterminateDrawable(new LoadingDrawable(this));
 		mFooterTip.setVisibility(View.GONE);
-		mListView.addFooterView(mFooter);
+		// mListView.addFooterView(mFooter);
 		mRetryTxt = (TextView) findViewById(R.id.retry);
 		mRetryTxt.setVisibility(View.GONE);
 		mRetryTxt.setOnClickListener(onOtherClickListener);
@@ -221,8 +236,6 @@ public class SearchActivity extends Activity {
 		mSuggestLayoutLandscape = (LinearLayout) findViewById(R.id.search_suggest_landscape);
 		mSuggestLayoutPortrait.setVisibility(View.GONE);
 		mSuggestLayoutLandscape.setVisibility(View.GONE);
-		mSuggestLayoutAnimController = new LayoutAnimationController(
-				AnimationUtils.loadAnimation(this, R.anim.search_suggest_anim));
 		mSuggestWidget = new SuggestWidget();
 		mSuggestWidget.first = (TextView) findViewById(R.id.search_suggest_first);
 		mSuggestWidget.secondLeft = (TextView) findViewById(R.id.search_suggest_second_left);
@@ -377,13 +390,14 @@ public class SearchActivity extends Activity {
 				}
 				String key = mKeysEdit.getText().toString();
 				if (key == null || "".equals(key.trim())) {
-					Toast.makeText(getApplicationContext(),
-							R.string.invalid_key_word_toast, Toast.LENGTH_SHORT)
-							.show();
+					Toast
+							.makeText(getApplicationContext(),
+									R.string.invalid_key_word_toast,
+									Toast.LENGTH_SHORT).show();
 					return;
 				}
 				onSearch(key);
-
+				mNewSearchTag = false;
 				break;
 			case R.id.retry:
 				onRetry();
@@ -426,9 +440,35 @@ public class SearchActivity extends Activity {
 				return true;
 			}
 			if (ev.getAction() == MotionEvent.ACTION_UP
-					&& (Math.abs(xScrollDistance) > MIN_X_DISTANCE || Math
-							.abs(yScrollDistance) > MIN_Y_DISTANCE)) {
-				fillSuggest();
+			/*
+			 * && (Math.abs(xScrollDistance) > MIN_X_DISTANCE || Math
+			 * .abs(yScrollDistance) > MIN_Y_DISTANCE)
+			 */) {
+				float absX = Math.abs(xScrollDistance);
+				float absY = Math.abs(yScrollDistance);
+				if (absX > MIN_X_DISTANCE || absY > MIN_Y_DISTANCE) {
+					if (xScrollDistance > MIN_X_DISTANCE
+							&& absY < MIN_Y_DISTANCE) {
+						mDirection = Direct.RIGHT;
+					} else if (xScrollDistance < -MIN_X_DISTANCE
+							&& (absY < MIN_Y_DISTANCE)) {
+						mDirection = Direct.LEFT;
+					} else if (yScrollDistance > MIN_Y_DISTANCE
+							&& absX < MIN_X_DISTANCE) {
+						mDirection = Direct.DOWN;
+					} else if (yScrollDistance < -MIN_Y_DISTANCE
+							&& absX < MIN_X_DISTANCE) {
+						mDirection = Direct.UP;
+					} else {
+						if (absX >= absY) {
+							mDirection = Direct.LEFT;
+						} else {
+							mDirection = Direct.DOWN;
+						}
+					}
+					fillSuggest();
+				}
+
 			}
 		}
 		return super.dispatchTouchEvent(ev);
@@ -438,6 +478,11 @@ public class SearchActivity extends Activity {
 	static final float MIN_Y_DISTANCE = 120.0f;
 	private float xScrollDistance;
 	private float yScrollDistance;
+	private Direct mDirection = Direct.DOWN;// default value
+
+	private enum Direct {
+		LEFT, UP, RIGHT, DOWN
+	}
 
 	private class DefaultOnGestureListener extends SimpleOnGestureListener {
 
@@ -512,7 +557,7 @@ public class SearchActivity extends Activity {
 				}
 				eventType = parser.next();
 			}// ?end while
-				// Log.d(TAG, "keys : " + mSuggestKeys);
+			// Log.d(TAG, "keys : " + mSuggestKeys);
 		} catch (NotFoundException e) {
 			Log.e(TAG, "NotFoundException", e);
 		} catch (XmlPullParserException e) {
@@ -562,13 +607,28 @@ public class SearchActivity extends Activity {
 		chooseKeys();
 		mSuggestLayout.setVisibility(View.VISIBLE);
 		int orientation = mRes.getConfiguration().orientation;
+		Animation anim = null;
+		switch (mDirection) {
+		case LEFT:
+			anim = AnimationUtils.loadAnimation(this, R.anim.in_from_left);
+			break;
+		case UP:
+			anim = AnimationUtils.loadAnimation(this, R.anim.in_from_up);
+			break;
+		case RIGHT:
+			anim = AnimationUtils.loadAnimation(this, R.anim.in_from_right);
+			break;
+		case DOWN:
+			anim = AnimationUtils.loadAnimation(this, R.anim.in_from_down);
+			break;
+		default:
+			anim = AnimationUtils.loadAnimation(this, R.anim.in_from_down);
+			break;
+		}
 		switch (orientation) {
 		case Configuration.ORIENTATION_PORTRAIT:
 			mSuggestLayoutPortrait.setVisibility(View.VISIBLE);
 			mSuggestLayoutLandscape.setVisibility(View.GONE);
-			mSuggestLayoutPortrait
-					.setLayoutAnimation(mSuggestLayoutAnimController);
-			mSuggestLayoutPortrait.startLayoutAnimation();
 			mSuggestWidget.first.setText(mPortraitCurrentUseKeys[0]);
 			mSuggestWidget.secondLeft.setText(mPortraitCurrentUseKeys[1]);
 			mSuggestWidget.secondRight.setText(mPortraitCurrentUseKeys[2]);
@@ -582,12 +642,25 @@ public class SearchActivity extends Activity {
 			mSuggestWidget.sixthLeft.setText(mPortraitCurrentUseKeys[10]);
 			mSuggestWidget.sixthRight.setText(mPortraitCurrentUseKeys[11]);
 			mSuggestWidget.seventh.setText(mPortraitCurrentUseKeys[12]);
+			// Log.d(TAG, "mDirection : " + mDirection);
+			mSuggestWidget.first.startAnimation(anim);
+			mSuggestWidget.secondLeft.startAnimation(anim);
+			mSuggestWidget.secondRight.startAnimation(anim);
+			mSuggestWidget.thirdLeft.startAnimation(anim);
+			mSuggestWidget.thirdRight.startAnimation(anim);
+			mSuggestWidget.fourthLeft.startAnimation(anim);
+			mSuggestWidget.fourthMiddle.startAnimation(anim);
+			mSuggestWidget.fourthRight.startAnimation(anim);
+			mSuggestWidget.fifthLeft.startAnimation(anim);
+			mSuggestWidget.fifthRight.startAnimation(anim);
+			mSuggestWidget.sixthLeft.startAnimation(anim);
+			mSuggestWidget.sixthRight.startAnimation(anim);
+			mSuggestWidget.seventh.startAnimation(anim);
+
 			break;
 		case Configuration.ORIENTATION_LANDSCAPE:
 			mSuggestLayoutPortrait.setVisibility(View.GONE);
 			mSuggestLayoutLandscape.setVisibility(View.VISIBLE);
-			mSuggestLayoutLandscape
-					.setLayoutAnimation(mSuggestLayoutAnimController);
 			mSuggestLayoutLandscape.startLayoutAnimation();
 			mSuggestWidget.landFirstLeft.setText(mLandscapeCurrentUseKeys[0]);
 			mSuggestWidget.landFirstMiddle.setText(mLandscapeCurrentUseKeys[1]);
@@ -601,7 +674,16 @@ public class SearchActivity extends Activity {
 			mSuggestWidget.landThirdLeft.setText(mLandscapeCurrentUseKeys[7]);
 			mSuggestWidget.landThirdMiddle.setText(mLandscapeCurrentUseKeys[8]);
 			mSuggestWidget.landThirdRight.setText(mLandscapeCurrentUseKeys[9]);
-			break;
+			mSuggestWidget.landFirstLeft.startAnimation(anim);
+			mSuggestWidget.landFirstMiddle.startAnimation(anim);
+			mSuggestWidget.landFirstRight.startAnimation(anim);
+			mSuggestWidget.landSecondLeft.startAnimation(anim);
+			mSuggestWidget.landSecondLeftMiddle.startAnimation(anim);
+			mSuggestWidget.landSecondRightMiddle.startAnimation(anim);
+			mSuggestWidget.landSecondRight.startAnimation(anim);
+			mSuggestWidget.landThirdLeft.startAnimation(anim);
+			mSuggestWidget.landThirdMiddle.startAnimation(anim);
+			mSuggestWidget.landThirdRight.startAnimation(anim);
 		}
 
 	}
@@ -674,6 +756,13 @@ public class SearchActivity extends Activity {
 		// TODO
 		mProgressBar.setVisibility(View.VISIBLE);
 		mSuggestLayout.setVisibility(View.GONE);
+		if (mNewSearchTag) {
+			synchronized (mListItemLock) {
+				if (mListData != null && !mListData.isEmpty()) {
+					mListData.clear();
+				}
+			}
+		}
 		mFetchDataTask = new FetchDataTask();
 		mFetchDataTask.execute(mIndex);
 	}
@@ -683,6 +772,12 @@ public class SearchActivity extends Activity {
 		if (keyCode == KeyEvent.KEYCODE_BACK
 				&& mSuggestLayout.getVisibility() == View.GONE) {
 			// TODO cancel search operation,and show suggest page
+			mNewSearchTag = true;
+			mIndex = 1;
+			mStartPos = -1;
+			if (mDownloadIconJob != null) {
+				mDownloadIconJob.stop();
+			}
 			if (mProgressBar.getVisibility() == View.VISIBLE) {
 				mProgressBar.setVisibility(View.GONE);
 			}
@@ -844,6 +939,10 @@ public class SearchActivity extends Activity {
 	}
 
 	private void fillListData() {
+		if (mListItemTotalNum > Constants.DEF_NUM
+				&& mListView.getFooterViewsCount() < 1) {
+			mListView.addFooterView(mFooter);
+		}
 		mListAdapter = new SearchResultAdapter();
 		mListView.setAdapter(mListAdapter);
 		mListView.setVisibility(View.VISIBLE);
@@ -867,6 +966,7 @@ public class SearchActivity extends Activity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
+			Log.d(TAG, "result : " + result);
 			if (result) {
 				notifySuccess(mIndex);
 			} else {
@@ -881,27 +981,90 @@ public class SearchActivity extends Activity {
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
-			return 0;
+			return mListData.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return null;
+			return position;
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
+			return position;
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			return null;
+			SearchResultViewHolder viewHolder;
+			if (convertView == null) {
+				convertView = mLayoutInflater.inflate(R.layout.rank_item, null);
+				viewHolder = new SearchResultViewHolder();
+				viewHolder.icon = (ImageView) convertView
+						.findViewById(R.id.rank_item_icon);
+				viewHolder.name = (TextView) convertView
+						.findViewById(R.id.rank_item_name);
+				viewHolder.author = (TextView) convertView
+						.findViewById(R.id.rank_item_author);
+				viewHolder.ratingbar = (RatingBar) convertView
+						.findViewById(R.id.rank_item_ratingbar);
+				viewHolder.download = (TextView) convertView
+						.findViewById(R.id.rank_item_download);
+				convertView.setTag(viewHolder);
+			} else {
+				viewHolder = (SearchResultViewHolder) convertView.getTag();
+			}
+			final RankListItem item = mListData.get(position);
+			String iconCachePath = item.getIconCachePath();
+			if (iconCachePath == null) {
+				viewHolder.icon.setBackgroundResource(R.drawable.loading_icon);
+			} else {
+				BitmapDrawable bg = Utils.createBitmapFromFile(mCtx,
+						iconCachePath);
+				if (bg == null) {
+					viewHolder.icon
+							.setBackgroundResource(R.drawable.loading_icon);
+				} else {
+					viewHolder.icon.setBackgroundDrawable(bg);
+				}
+			}
+			viewHolder.name.setText(item.getName());
+			viewHolder.author.setText(item.getAuthor());
+			viewHolder.ratingbar.setRating(Float.valueOf(item.getUserRating()));
+			viewHolder.download.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO
+					Toast.makeText(mCtx, "click to download",
+							Toast.LENGTH_SHORT).show();
+				}
+			});
+			convertView.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// Toast.makeText(mCtx, item.getDetailUrl(),
+					// Toast.LENGTH_SHORT).show();
+					FetchAppDetailData(item);
+				}
+			});
+			return convertView;
 		}
+	}
+
+	private void FetchAppDetailData(RankListItem item) {
+		Intent i = new Intent(mCtx, PreLoadingActivity.class);
+		i.putExtra(HomeListItem.ID, item.getId());
+		startActivity(i);
+	}
+
+	private class SearchResultViewHolder {
+		private ImageView icon;
+		private TextView name;
+		private TextView author;
+		private RatingBar ratingbar;
+		private TextView download;
 	}
 
 	private class DownloadIconTask extends AsyncTask<Void, Progress, Void> {
@@ -937,6 +1100,103 @@ public class SearchActivity extends Activity {
 	private class Progress {
 		private int pos;
 		private String iconPath;
+	}
+
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+		// TODO
+		Log.e(TAG, "onScroll");
+		if (totalItemCount > 0) {
+			boolean init = false;
+			if (mStartPos == -1) {
+				init = true;
+			}
+			mStartPos = firstVisibleItem;
+			if (mStartPos + Constants.DEF_NUM >= totalItemCount) {
+				mRefNum = totalItemCount - mStartPos - 1;// footer
+			} else {
+				mRefNum = Constants.DEF_NUM;
+			}
+			if (init) {
+				rushIconThread();
+			}
+			if (mDownloadIconAfterLoading) {
+				mDownloadIconAfterLoading = !mDownloadIconAfterLoading;
+				rushIconThread();
+			}
+		}
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		// TODO
+		// Log.d(TAG, "onScrollStateChanged,scrollState : " + scrollState);
+		switch (scrollState) {
+		case OnScrollListener.SCROLL_STATE_IDLE:
+			// start icon thread
+			rushIconThread();
+			// fetch new data
+			int lastVisiblePos = view.getLastVisiblePosition();
+			if (lastVisiblePos == mListItemTotalNum) {
+				mListView.removeFooterView(mFooter);
+				return;
+			}
+			// count the footer item
+			if (lastVisiblePos == mListData.size() && !mIsLoading) {
+				onLoadNewData();
+			}
+			break;
+		}
+	}
+
+	private void onLoadNewData() {
+		mIndex++;
+		mIsLoading = true;
+		mFetchDataTask = new FetchDataTask();
+		mFetchDataTask.execute(mIndex);
+	}
+
+	private void collectIconForDownload() {
+		mIconUrlList = new ArrayList<String>();
+		RankListItem item = null;
+		// Log.d(TAG, "mStartPos : " + mStartPos + ",mRefNum : " + mRefNum);
+		boolean update = false;
+		for (int i = mStartPos; i < mStartPos + mRefNum; i++) {
+			item = mListData.get(i);
+			if (item.getIconCachePath() == null) {
+				if (checkCacheIcon(item)) {
+					update = true;
+					continue;
+				}
+				mIconUrlList.add(item.getIconUrl());
+			}
+		}
+		if (update) {
+			mListAdapter.notifyDataSetChanged();
+		}
+	}
+
+	private void rushIconThread() {
+		synchronized (mListItemLock) {
+			collectIconForDownload();
+			if (mIconUrlList.size() > 0) {
+				// Log.d(TAG, "mIconUrlList size : " + mIconUrlList.size());
+				mDownloadIconJob = new DownloadIconJob(this, this,
+						mIconUrlList, DownloadIconJob.TYPE_ITEM_ICON);
+				// Log.d(TAG, "job id : " + mDownloadIconJob.getId());
+				IconDownloader.getInstance().addJob(mDownloadIconJob);
+			}
+		}
+	}
+
+	@Override
+	public void onDownloadIconFinish(String iconUrl) {
+		Log.d(TAG, "onDownloadIconFinish,iconUrl : " + iconUrl);
+		Message msg = mHandler.obtainMessage();
+		msg.what = MSG_REFRESH_ITEM_ICON;
+		msg.obj = iconUrl;
+		msg.sendToTarget();
 	}
 
 	private void updateListDataIcon(Message msg) {

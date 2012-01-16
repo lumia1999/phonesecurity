@@ -100,9 +100,9 @@ public class DownloadIconJob implements Runnable {
 			synchronized (mOngoingIconList) {
 				mOngoingIconList.remove(iconUrl);
 			}
-			try{
+			try {
 				Thread.sleep(1000);
-			}catch(InterruptedException e){
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
@@ -134,7 +134,9 @@ public class DownloadIconJob implements Runnable {
 			}
 			Log.d(TAG, "ret : " + ret);
 			if (ret == Constants.DOWNLOAD_ICON_SUCCESS) {
-				mGalleryIconCallback.onDownloadGalleryIconFinish(iconUrl);
+				if (mResume) {
+					mGalleryIconCallback.onDownloadGalleryIconFinish(iconUrl);
+				}
 			} else {
 				Log.d(TAG, "download gallery icon failed : " + iconUrl);
 				synchronized (mOngoingGalleryList) {
