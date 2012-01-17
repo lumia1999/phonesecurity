@@ -41,7 +41,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -460,10 +459,18 @@ public class SearchActivity extends Activity implements OnScrollListener,
 							&& absX < MIN_X_DISTANCE) {
 						mDirection = Direct.UP;
 					} else {
-						if (absX >= absY) {
-							mDirection = Direct.LEFT;
+						if (xScrollDistance > MIN_X_DISTANCE
+								&& yScrollDistance < -MIN_Y_DISTANCE) {
+							mDirection = Direct.RIGHT_UP;
+						} else if (xScrollDistance < -MIN_X_DISTANCE
+								&& yScrollDistance < -MIN_Y_DISTANCE) {
+							mDirection = Direct.LEFT_UP;
 						} else {
-							mDirection = Direct.DOWN;
+							if (absX >= absY) {
+								mDirection = Direct.LEFT;
+							} else {
+								mDirection = Direct.DOWN;
+							}
 						}
 					}
 					fillSuggest();
@@ -481,7 +488,7 @@ public class SearchActivity extends Activity implements OnScrollListener,
 	private Direct mDirection = Direct.DOWN;// default value
 
 	private enum Direct {
-		LEFT, UP, RIGHT, DOWN
+		LEFT, UP, RIGHT, DOWN, LEFT_UP, RIGHT_UP
 	}
 
 	private class DefaultOnGestureListener extends SimpleOnGestureListener {
@@ -608,6 +615,7 @@ public class SearchActivity extends Activity implements OnScrollListener,
 		mSuggestLayout.setVisibility(View.VISIBLE);
 		int orientation = mRes.getConfiguration().orientation;
 		Animation anim = null;
+		Log.e(TAG, "mDirection : " + mDirection);
 		switch (mDirection) {
 		case LEFT:
 			anim = AnimationUtils.loadAnimation(this, R.anim.in_from_left);
@@ -620,6 +628,12 @@ public class SearchActivity extends Activity implements OnScrollListener,
 			break;
 		case DOWN:
 			anim = AnimationUtils.loadAnimation(this, R.anim.in_from_down);
+			break;
+		case LEFT_UP:
+			anim = AnimationUtils.loadAnimation(this, R.anim.in_from_left_up);
+			break;
+		case RIGHT_UP:
+			anim = AnimationUtils.loadAnimation(this, R.anim.in_from_right_up);
 			break;
 		default:
 			anim = AnimationUtils.loadAnimation(this, R.anim.in_from_down);
@@ -1106,7 +1120,7 @@ public class SearchActivity extends Activity implements OnScrollListener,
 	public void onScroll(AbsListView view, int firstVisibleItem,
 			int visibleItemCount, int totalItemCount) {
 		// TODO
-		Log.e(TAG, "onScroll");
+		// Log.e(TAG, "onScroll");
 		if (totalItemCount > 0) {
 			boolean init = false;
 			if (mStartPos == -1) {
