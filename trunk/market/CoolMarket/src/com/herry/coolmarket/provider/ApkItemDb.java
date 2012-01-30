@@ -16,6 +16,11 @@ public class ApkItemDb {
 		public static final String FROM_MARKET = "from_market";
 
 		/**
+		 * value is a url ,or null
+		 */
+		public static final String DETAIL_URL = "detail_url";
+
+		/**
 		 * if a new version arrive,delete old record
 		 */
 		public static final String VERSION = "apk_version";
