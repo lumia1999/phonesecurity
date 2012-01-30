@@ -785,25 +785,28 @@ public class SearchActivity extends Activity implements OnScrollListener,
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK
 				&& mSuggestLayout.getVisibility() == View.GONE) {
+			Log.e(TAG, "onKeyDown,back to Suggest layout");
 			// TODO cancel search operation,and show suggest page
-			mNewSearchTag = true;
-			mIndex = 1;
-			mStartPos = -1;
-			if (mDownloadIconJob != null) {
-				mDownloadIconJob.stop();
+			synchronized (mListItemLock) {
+				mNewSearchTag = true;
+				mIndex = 1;
+				mStartPos = -1;
+				if (mDownloadIconJob != null) {
+					mDownloadIconJob.stop();
+				}
+				if (mProgressBar.getVisibility() == View.VISIBLE) {
+					mProgressBar.setVisibility(View.GONE);
+				}
+				if (mListView.getVisibility() == View.VISIBLE) {
+					mListView.setVisibility(View.GONE);
+				}
+				if (mRetryTxt.getVisibility() == View.VISIBLE) {
+					mRetryTxt.setVisibility(View.GONE);
+				}
+				mSuggestLayout.setVisibility(View.VISIBLE);
+				fillSuggest();
+				return true;
 			}
-			if (mProgressBar.getVisibility() == View.VISIBLE) {
-				mProgressBar.setVisibility(View.GONE);
-			}
-			if (mListView.getVisibility() == View.VISIBLE) {
-				mListView.setVisibility(View.GONE);
-			}
-			if (mRetryTxt.getVisibility() == View.VISIBLE) {
-				mRetryTxt.setVisibility(View.GONE);
-			}
-			mSuggestLayout.setVisibility(View.VISIBLE);
-			fillSuggest();
-			return true;
 		}
 		return super.onKeyDown(keyCode, event);
 	}
@@ -1206,7 +1209,7 @@ public class SearchActivity extends Activity implements OnScrollListener,
 
 	@Override
 	public void onDownloadIconFinish(String iconUrl) {
-		Log.d(TAG, "onDownloadIconFinish,iconUrl : " + iconUrl);
+		// Log.d(TAG, "onDownloadIconFinish,iconUrl : " + iconUrl);
 		Message msg = mHandler.obtainMessage();
 		msg.what = MSG_REFRESH_ITEM_ICON;
 		msg.obj = iconUrl;

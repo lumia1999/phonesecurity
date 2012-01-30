@@ -21,7 +21,7 @@ public class ApkItemDatabaseHelper extends SQLiteOpenHelper {
 	private static ApkItemDatabaseHelper mInstance = null;
 
 	private static final String DATABASE_NAME = "data_manager.db";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	private Context mCtx;
 
 	public ApkItemDatabaseHelper(Context ctx) {
@@ -49,14 +49,14 @@ public class ApkItemDatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE " + ApkItemDb.TABLE_APK + " (" + ApkItem._ID
 				+ " INTEGER PRIMARY KEY," + ApkItem.PKGNAME + " TEXT NOT NULL,"
 				+ ApkItem.FROM_MARKET + " INTEGER DEFAULT -1,"
-				+ ApkItem.VERSION + " TEXT," + ApkItem.SIZE + " LONG,"
-				+ ApkItem.DOWNLOADED_SIZE + " LONG DEFAULT 0,"
-				+ ApkItem.DOWNLOAD_FINISH + " INTEGER DEFAULT -1,"
-				+ ApkItem.UPGRADE_AVAIABLE + " INTEGER DEFAULT -1,"
-				+ ApkItem.INSTALL_TIMESTAMP + " LONG," + ApkItem.USER_RATED
-				+ " INTEGER DEFAULT -1," + ApkItem.RATED_TXT
-				+ " TEXT NOT NULL," + ApkItem.RATED_RATING + " FLOAT,"
-				+ ApkItem.LAST_RATED_TIMESTAMP + " LONG" + " )");
+				+ ApkItem.DETAIL_URL + " TEXT DEFAULT NULL," + ApkItem.VERSION
+				+ " TEXT," + ApkItem.SIZE + " LONG," + ApkItem.DOWNLOADED_SIZE
+				+ " LONG DEFAULT 0," + ApkItem.DOWNLOAD_FINISH
+				+ " INTEGER DEFAULT -1," + ApkItem.UPGRADE_AVAIABLE
+				+ " INTEGER DEFAULT -1," + ApkItem.INSTALL_TIMESTAMP + " LONG,"
+				+ ApkItem.USER_RATED + " INTEGER DEFAULT -1,"
+				+ ApkItem.RATED_TXT + " TEXT NOT NULL," + ApkItem.RATED_RATING
+				+ " FLOAT," + ApkItem.LAST_RATED_TIMESTAMP + " LONG" + " )");
 	}
 
 	/*
