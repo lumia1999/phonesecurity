@@ -28,9 +28,13 @@ public final class Constants {
 	public static final String APK_MIME = "application/vnd.android.package-archive";
 
 	public static final long COMMENT_INTERVAL = 5 * 60 * 1000;// 5 minutes
-	public static final long PROTECT_ALARM_NTERVAL = 1 * 60 * 1000;// 1 minute
+	public static final long PROTECT_ALARM_INTERVAL = 1 * 60 * 1000;// 1 minute
+	public static final long DAILY_RECOMM_INTERVAL = 1 * 24 * 60 * 60 * 1000;// 1
+	// day
 
 	public static final int SUGGEST_KEYS_COUNT_PORT = 13;
 	public static final int SUGGEST_KEYS_COUNT_LAND = 10;
+
+	public static final int NOTI_DAILY_RECOMM = 100001;
 
 }

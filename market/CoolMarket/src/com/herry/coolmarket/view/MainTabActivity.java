@@ -19,6 +19,7 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
 import com.herry.coolmarket.R;
+import com.herry.coolmarket.service.CheckService;
 import com.herry.coolmarket.util.Constants;
 import com.herry.coolmarket.util.Utils;
 
@@ -78,6 +79,14 @@ public class MainTabActivity extends TabActivity implements OnTabChangeListener 
 				break;
 			}
 		}
+		// start service
+		startDailyRecomm();
+	}
+
+	private void startDailyRecomm() {
+		Intent i = new Intent(this, CheckService.class);
+		i.setAction(CheckService.DAILY_RECOMMEND_ACTION);
+		startService(i);
 	}
 
 	private void setupTabs() {
@@ -255,11 +264,5 @@ public class MainTabActivity extends TabActivity implements OnTabChangeListener 
 			mMenuItemIcon.setBackgroundResource(R.drawable.main_tab_app_select);
 			mMenuItemTip.setTextColor(Color.WHITE);
 		}
-
-		// DisplayMetrics dm = Utils.getDevInfo(this);
-		// TranslateAnimation anim = new TranslateAnimation(80.0f, 160.0f,
-		// dm.heightPixels - 64, dm.heightPixels - 64);
-		// anim.setDuration(500);
-		// mAnimView.startAnimation(anim);
 	}
 }
