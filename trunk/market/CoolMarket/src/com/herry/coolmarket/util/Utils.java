@@ -12,6 +12,9 @@ import java.util.zip.GZIPInputStream;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -343,5 +346,19 @@ public class Utils {
 	public static boolean isCommentPermited() {
 		// TODO
 		return true;
+	}
+
+	public static String getCurrentVersionName(Context ctx) {
+		try {
+			PackageManager pm = ctx.getPackageManager();
+			PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(),
+					PackageManager.GET_ACTIVITIES);
+			if (pi == null) {
+				return null;
+			}
+			return pi.versionName;
+		} catch (NameNotFoundException e) {
+			return null;
+		}
 	}
 }

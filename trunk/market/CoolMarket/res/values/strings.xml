@@ -60,4 +60,7 @@
 
     <!-- manage string -->
 	<string name="manage_title">应用管理</string>
+	
+	<!-- daily recommend string -->
+	<string name="daily_recomm_noti_tickertext">有您的推荐，请查看</string>
 </resources>

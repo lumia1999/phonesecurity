@@ -1,6 +1,9 @@
 package com.herry.coolmarket;
 
-public final class RankListItem {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public final class RankListItem implements Parcelable {
 	public static final String ITEM = "item";
 	public static final String ID = "id";
 	public static final String ICONURL = "iconurl";
@@ -129,4 +132,40 @@ public final class RankListItem {
 				this.mDownloadUrl);
 		return sb.toString();
 	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(mId);
+		dest.writeString(mIconUrl);
+		dest.writeString(mIconCachePath);
+		dest.writeString(mName);
+		dest.writeString(mAuthor);
+		dest.writeString(mUserRating);
+		dest.writeString(mPkgName);
+		dest.writeString(mDetailUrl);
+		dest.writeString(mDownloadUrl);
+	}
+
+	public static final Parcelable.Creator<RankListItem> CREATOR = new Parcelable.Creator<RankListItem>() {
+
+		@Override
+		public RankListItem createFromParcel(Parcel source) {
+			return new RankListItem(source.readString(), source.readString(),
+					source.readString(), source.readString(), source
+							.readString(), source.readString(), source
+							.readString(), source.readString(), source
+							.readString());
+		}
+
+		@Override
+		public RankListItem[] newArray(int size) {
+			return new RankListItem[size];
+		}
+
+	};
 }
