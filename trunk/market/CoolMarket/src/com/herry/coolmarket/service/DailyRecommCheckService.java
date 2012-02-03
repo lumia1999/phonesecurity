@@ -20,6 +20,7 @@ import com.herry.coolmarket.http.HttpRequestBox;
 import com.herry.coolmarket.http.ResponseData;
 import com.herry.coolmarket.util.Constants;
 import com.herry.coolmarket.util.Utils;
+import com.herry.coolmarket.view.DailyRecommActivity;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -186,7 +187,8 @@ public class DailyRecommCheckService extends IntentService {
 		notification.icon = R.drawable.ic_launcher;
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		notification.tickerText = getString(R.string.daily_recomm_noti_tickertext);
-		Intent i = new Intent();// TODO
+		Intent i = new Intent(this, DailyRecommActivity.class);
+		i.putParcelableArrayListExtra(DAILY_RECOMM_CHECK_TAG, mDailyRecommData);
 		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 		notification.setLatestEventInfo(this, getString(R.string.app_name),

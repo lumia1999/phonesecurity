@@ -35,11 +35,11 @@ public class CheckService extends Service {
 		Intent i = new Intent(this, Receiver.class);
 		i.setAction(Receiver.DAILY_RECOMM_CHECK_ACTION);
 		PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-		mAlarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, System
-				.currentTimeMillis()
-				+ Constants.DAILY_RECOMM_INTERVAL,
-				Constants.DAILY_RECOMM_INTERVAL, pi);
-		// mAlarmMgr.set(AlarmManager.RTC_WAKEUP, 60000, pi);
+		// mAlarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, System
+		// .currentTimeMillis()
+		// + Constants.DAILY_RECOMM_INTERVAL,
+		// Constants.DAILY_RECOMM_INTERVAL, pi);
+		mAlarmMgr.set(AlarmManager.RTC_WAKEUP, 60000, pi);
 	}
 
 	@Override
