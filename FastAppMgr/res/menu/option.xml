@@ -4,6 +4,9 @@
   	<item android:id="@+id/about"
   		android:icon="@drawable/menu_about"
   		android:title="@string/about_txt"></item>
+  	<item android:id="@+id/app_offer_point"
+  	    android:icon="@drawable/menu_app_offer_point"
+  	    android:title="@string/app_offer_point_query"/>
   	<item android:id="@+id/app_offer"
 		android:icon="@drawable/menu_app_offer"
 		android:title="@string/app_offer_txt"/>

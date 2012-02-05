@@ -1,6 +1,6 @@
 package com.herry.fastappmgr.view;
 
-import net.youmi.android.appoffers.AppOffersManager;
+import net.youmi.android.appoffers.YoumiOffersManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
@@ -106,8 +105,7 @@ public class AppTabActivity extends TabActivity {
 	}
 
 	private void initUI() {
-		AppOffersManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f",
-				false);
+		YoumiOffersManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f");
 		mTipClickable = false;
 		mYoumiOfferTipTxt = (TextView) findViewById(R.id.youmiofferTip);
 		mRomInfo = Utils.getMemoryInfo(this);
@@ -138,15 +136,17 @@ public class AppTabActivity extends TabActivity {
 		Intent intent;
 		// uninstall
 		intent = new Intent().setClass(this, UninstallActivity.class);
-		spec = tabHost.newTabSpec(getString(R.string.tab_uninstall))
+		spec = tabHost
+				.newTabSpec(getString(R.string.tab_uninstall))
 				.setIndicator(getString(R.string.tab_uninstall),
-						res.getDrawable(R.drawable.uninstall_icon)).setContent(
-						intent);
+						res.getDrawable(R.drawable.uninstall_icon))
+				.setContent(intent);
 		tabHost.addTab(spec);
 
 		// install
 		intent = new Intent().setClass(this, RecentAddedActivity.class);
-		spec = tabHost.newTabSpec(getString(R.string.tab_recet_install))
+		spec = tabHost
+				.newTabSpec(getString(R.string.tab_recet_install))
 				.setIndicator(getString(R.string.tab_recet_install),
 						res.getDrawable(R.drawable.recent_add_icon))
 				.setContent(intent);
@@ -177,8 +177,12 @@ public class AppTabActivity extends TabActivity {
 		case R.id.about:
 			showAbout();
 			return true;
+		case R.id.app_offer_point:
+			startActivity(new Intent(this, AppOfferPointDlgActivity.class));
+			return true;
 		case R.id.app_offer:
-			AppOffersManager.showAppOffers(this);
+			YoumiOffersManager.showOffers(this,
+					YoumiOffersManager.TYPE_REWARD_OFFERS);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -197,9 +201,10 @@ public class AppTabActivity extends TabActivity {
 		case DLG_SHOW_RAM_ROM_INFO:
 			WebView webView = new WebView(this);
 			webView.loadUrl("file:///android_asset/ram_rom_intro.html");
-			return new AlertDialog.Builder(this).setIcon(
-					android.R.drawable.ic_dialog_alert).setTitle(
-					R.string.ram_rom_intro_dlg_title).setView(webView).create();
+			return new AlertDialog.Builder(this)
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setTitle(R.string.ram_rom_intro_dlg_title)
+					.setView(webView).create();
 		default:
 			return super.onCreateDialog(id);
 		}
