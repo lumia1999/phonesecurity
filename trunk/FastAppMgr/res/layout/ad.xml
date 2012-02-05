@@ -9,5 +9,5 @@
     umadsdk:backgroundColor="#4076AA"
     umadsdk:backgroundTransparent="255"
     android:layout_alignParentBottom="true"
-    android:visibility="gone">	
+    android:visibility="invisible">	
  </net.youmi.android.AdView>
