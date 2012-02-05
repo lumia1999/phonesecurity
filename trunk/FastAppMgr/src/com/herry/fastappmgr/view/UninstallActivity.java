@@ -117,14 +117,12 @@ public class UninstallActivity extends ListActivity {
 
 	// ad
 	private AdView mAdView;
-	static {
-		AdManager.init("76bd55779f7589ff", "d5fb065a3d0a675f", 30, false);
-	}
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		AdManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f", 30, false);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		initUI();

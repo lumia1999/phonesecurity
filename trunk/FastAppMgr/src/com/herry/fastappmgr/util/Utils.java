@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
-import net.youmi.android.appoffers.AppOffersManager;
+import net.youmi.android.appoffers.YoumiPointsManager;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Environment;
@@ -19,7 +19,7 @@ import com.herry.fastappmgr.MemoryInfo;
 
 public final class Utils {
 
-	private static final int MAX_OFFER_POINTS = 200;
+	public static final int MAX_OFFER_POINTS = 200;
 
 	private static final int formatDateAllFlag = DateUtils.FORMAT_SHOW_DATE
 			| DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR
@@ -68,7 +68,7 @@ public final class Utils {
 	}
 
 	public static boolean youmiofferPointsReach(Context ctx) {
-		int points = AppOffersManager.getPoints(ctx);
+		int points = YoumiPointsManager.queryPoints(ctx);
 		if (points >= MAX_OFFER_POINTS) {
 			return true;
 		} else {
