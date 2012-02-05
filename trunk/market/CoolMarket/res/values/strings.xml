@@ -59,11 +59,15 @@
     <string name="search_ongoing_toast">正在搜索中，请稍等</string>
 
     <!-- manage string -->
-	<string name="manage_title">应用管理</string>
-	<string name="all_apps_tab">所有应用</string>
-	<string name="market_apps_tab">酷乐应用</string>
-	
-	<!-- daily recommend string -->
-	<string name="daily_recomm_noti_tickertext">有您的推荐，请查看</string>
-	<string name="daily_recomm_title">每日推荐</string>
+    <string name="manage_title">应用管理</string>
+    <string name="all_apps_tab">所有应用</string>
+    <string name="market_apps_tab">酷乐应用</string>
+    <string name="getting_app_size">正在计算大小</string>
+    <string name="app_total_num_tip">当前总应用个数：</string>
+    <string name="app_version_tip">版本：</string>
+
+    <!-- daily recommend string -->
+    <string name="daily_recomm_noti_tickertext">有您的推荐，请查看</string>
+    <string name="daily_recomm_title">每日推荐</string>
+
 </resources>
