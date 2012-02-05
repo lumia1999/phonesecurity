@@ -1,5 +1,6 @@
 package com.herry.fastappmgr.view;
 
+import net.youmi.android.AdManager;
 import net.youmi.android.appoffers.YoumiOffersManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -96,6 +97,7 @@ public class AppTabActivity extends TabActivity {
 		setContentView(R.layout.tab);
 		registerReceiver();
 		initUI();
+		AdManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f", 30, false);
 	}
 
 	@Override

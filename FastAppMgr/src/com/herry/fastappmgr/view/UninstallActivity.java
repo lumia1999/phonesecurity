@@ -122,7 +122,6 @@ public class UninstallActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		AdManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f", 30, false);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		initUI();
@@ -271,7 +270,11 @@ public class UninstallActivity extends ListActivity {
 	};
 
 	private void fillData() {
-		mAdView.setVisibility(View.VISIBLE);
+		if (!Utils.youmiofferPointsReach(this)) {
+			mAdView.setVisibility(View.VISIBLE);
+		} else {
+			mAdView.setVisibility(View.GONE);
+		}
 		mProgressBar.setVisibility(View.GONE);
 		mAdapter = new AppAdapter();
 		setListAdapter(mAdapter);

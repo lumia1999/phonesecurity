@@ -3,6 +3,9 @@ package com.herry.fastappmgr.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.youmi.android.AdManager;
+import net.youmi.android.AdView;
+
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -61,6 +64,7 @@ public class RecentAddedActivity extends ListActivity {
 	private static final String ACTION_INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
 	private Bitmap bitmap;
 
+	private AdView mAdView;
 	private static final int MSG_NO_ITEM = 1;
 	private static final int MSG_FILL_DATA = 2;
 	private static final int MSG_UPDATE_UI_UNINSTALL = 3;
@@ -108,6 +112,7 @@ public class RecentAddedActivity extends ListActivity {
 
 			}).start();
 		}
+		mAdView.refreshAd();
 	}
 
 	@Override
@@ -211,6 +216,7 @@ public class RecentAddedActivity extends ListActivity {
 	}
 
 	private void initUI() {
+		mAdView = (AdView) findViewById(R.id.adView);
 		mPackageMgr = getPackageManager();
 		mDbAdapter = PackageAddedDbAdapter.getInstance(this);
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
@@ -331,12 +337,18 @@ public class RecentAddedActivity extends ListActivity {
 		if (mDataList.size() < 1) {
 			mEmptyTipTxt.setVisibility(View.VISIBLE);
 			getListView().setVisibility(View.GONE);
+			mAdView.setVisibility(View.GONE);
 		} else {
 			mAdapter.notifyDataSetChanged();
 		}
 	}
 
 	private void fillData() {
+		if (!Utils.youmiofferPointsReach(this)) {
+			mAdView.setVisibility(View.VISIBLE);
+		} else {
+			mAdView.setVisibility(View.GONE);
+		}
 		mProgressBar.setVisibility(View.GONE);
 		mAdapter = new RecentAddAdapter();
 		setListAdapter(mAdapter);
