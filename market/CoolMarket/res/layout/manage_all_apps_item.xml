@@ -18,14 +18,19 @@
         android:clickable="false"
         android:scaleType="fitCenter" />
 
-    <TextView
+    <com.herry.coolmarket.view.AlwaysMarqueeTextView
         android:id="@+id/all_apps_item_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dip"
         android:layout_marginTop="10dip"
         android:layout_toRightOf="@+id/all_apps_item_icon"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:singleLine="true"
         android:text="name"
+        android:layout_marginRight="5dip"
         android:textAppearance="@style/app_text_style1" />
 
     <TextView
