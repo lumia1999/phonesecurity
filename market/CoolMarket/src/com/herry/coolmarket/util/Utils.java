@@ -8,7 +8,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
+
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,9 +38,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.MeasureSpec;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -343,11 +352,6 @@ public class Utils {
 		}
 	}
 
-	public static boolean isCommentPermited() {
-		// TODO
-		return true;
-	}
-
 	public static String getCurrentVersionName(Context ctx) {
 		try {
 			PackageManager pm = ctx.getPackageManager();
@@ -360,5 +364,93 @@ public class Utils {
 		} catch (NameNotFoundException e) {
 			return null;
 		}
+	}
+
+	public static String genPinyin(String src) {
+		Set<String> orgSet = getPinyin(src);
+		if (orgSet != null) {
+			StringBuilder sb = new StringBuilder();
+			for (String s : orgSet) {
+				sb.append(s);
+			}
+			return sb.toString().toLowerCase();
+		} else {
+			return null;
+		}
+	}
+
+	private static Set<String> getPinyin(String src) {
+		if (src != null && !"".equals(src.trim())) {
+			char[] srcChar;
+			srcChar = src.toCharArray();
+			HanyuPinyinOutputFormat hanyupinyinOutputFormat = new HanyuPinyinOutputFormat();
+			hanyupinyinOutputFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+			hanyupinyinOutputFormat
+					.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+			hanyupinyinOutputFormat.setVCharType(HanyuPinyinVCharType.WITH_V);
+			int length = src.length();
+			String[][] temp = new String[length][];
+			char c = ' ';
+			String expr = "[\\u4E00-\\u9FA5]+";
+			for (int i = 0; i < length; i++) {
+				c = srcChar[i];
+				if (String.valueOf(c).matches(expr)) {
+					try {
+						temp[i] = PinyinHelper.toHanyuPinyinStringArray(
+								srcChar[i], hanyupinyinOutputFormat);
+					} catch (BadHanyuPinyinOutputFormatCombination e) {
+						return null;
+					}
+				} else if (((int) c >= 65 && (int) c <= 90)
+						|| ((int) c >= 97 && (int) c <= 122)) {
+					temp[i] = new String[] { String.valueOf(srcChar[i]) };
+				} else {
+					temp[i] = new String[] { String.valueOf(srcChar[i]) };
+				}
+			}
+			String[] pinyinArray = exchange(temp);
+			Set<String> pinyinSet = new HashSet<String>();
+			for (int i = 0; i < pinyinArray.length; i++) {
+				pinyinSet.add(pinyinArray[i]);
+			}
+			return pinyinSet;
+		} else {
+			return null;
+		}
+	}
+
+	private static String[] exchange(String[][] strArray) {
+		String[][] temp = doExchange(strArray);
+		return temp[0];
+	}
+
+	private static String[][] doExchange(String[][] strArray) {
+		int length = strArray.length;
+		if (length >= 2) {
+			int len1 = strArray[0].length;
+			int len2 = strArray[1].length;
+			int newLen = len1 * len2;
+			String[] temp = new String[newLen];
+			int index = 0;
+			for (int i = 0; i < len1; i++) {
+				for (int j = 0; j < len2; j++) {
+					temp[index] = strArray[0][i] + strArray[1][j];
+					index++;
+				}
+			}
+			String[][] newArray = new String[length - 1][];
+			for (int i = 2; i < length; i++) {
+				newArray[i - 1] = strArray[i];
+			}
+			newArray[0] = temp;
+			return doExchange(newArray);
+		} else {
+			return strArray;
+		}
+	}
+
+	public static boolean isCommentPermited() {
+		// TODO
+		return true;
 	}
 }

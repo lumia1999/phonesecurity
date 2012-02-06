@@ -58,6 +58,7 @@ public class ManageAllAppsActivity extends Activity {
 	private Method getPackageSizeInfoMethod = null;
 	private PkgSizeObserver mPkgSizeObserver = null;
 	private int mGetSizeCount = 0;
+	private boolean mFillDataFinish = false;
 
 	private PackageManager mPkgMgr;
 
@@ -94,7 +95,7 @@ public class ManageAllAppsActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		// Log.d(TAG, "onCreate,pinyin : " + Utils.genPinyin("hello,world"));
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.manage_all_apps);
 		initUI();
@@ -105,30 +106,34 @@ public class ManageAllAppsActivity extends Activity {
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DLG_SORT_SELECTION_ID:
-			return new AlertDialog.Builder(ManageActivity.mCtx).setIcon(
-					android.R.drawable.ic_dialog_alert).setTitle(
-					R.string.select_sort_app_title).setSingleChoiceItems(
-					R.array.app_sort_type, 0,
-					new DialogInterface.OnClickListener() {
+			return new AlertDialog.Builder(ManageActivity.mCtx)
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setTitle(R.string.select_sort_app_title)
+					.setSingleChoiceItems(R.array.app_sort_type, 0,
+							new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO
-							if (mSortDlgCheckedItemPosition != which) {
-								String[] values = getResources()
-										.getStringArray(R.array.app_sort_type);
-								Log.d(TAG, "sort it with : " + values[which]);
-								if (which == 0) {
-									Collections.sort(mDataList, mSortBySize);
-									mAdapter.notifyDataSetChanged();
-								} else if (which == 1) {
-									Collections.sort(mDataList, mSortByName);
-									mAdapter.notifyDataSetChanged();
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									if (mSortDlgCheckedItemPosition != which) {
+										String[] values = getResources()
+												.getStringArray(
+														R.array.app_sort_type);
+										Log.d(TAG, "sort it with : "
+												+ values[which]);
+										if (which == 0) {
+											Collections.sort(mDataList,
+													mSortBySize);
+											mAdapter.notifyDataSetChanged();
+										} else if (which == 1) {
+											Collections.sort(mDataList,
+													mSortByName);
+											mAdapter.notifyDataSetChanged();
+										}
+									}
+									dialog.dismiss();
 								}
-							}
-							dialog.dismiss();
-						}
-					}).create();
+							}).create();
 		}
 		return super.onCreateDialog(id);
 	}
@@ -183,7 +188,6 @@ public class ManageAllAppsActivity extends Activity {
 	}
 
 	private void getAllApps() {
-		// TODO
 		if (mDataList != null && !mDataList.isEmpty()) {
 			mDataList.clear();
 		} else {
@@ -208,6 +212,10 @@ public class ManageAllAppsActivity extends Activity {
 			}
 		}
 		mAppTotalNum = mDataList.size();
+		if (!mFillDataFinish) {
+			mFillDataFinish = !mFillDataFinish;
+			mHandler.sendEmptyMessage(MSG_FILL_DATA);
+		}
 		Log.d(TAG, "mAppTotalNum : " + mAppTotalNum);
 	}
 
@@ -228,13 +236,16 @@ public class ManageAllAppsActivity extends Activity {
 		@Override
 		public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
 				throws RemoteException {
-			//
-			Log.d(TAG, "pStats : " + pStats.toString());
+			// Log.d(TAG, "pStats : " + pStats.toString());
 			synchronized (mDataFillLock) {
 				updateAppItemSize(pStats);
 				mGetSizeCount++;
+				Log.d(TAG, "mGetSizeCount : " + mGetSizeCount);
 				if (mAppTotalNum != -1 && mGetSizeCount == mAppTotalNum) {
-					mHandler.sendEmptyMessage(MSG_FILL_DATA);
+					if (!mFillDataFinish) {
+						mFillDataFinish = !mFillDataFinish;
+						mHandler.sendEmptyMessage(MSG_FILL_DATA);
+					}
 				}
 			}
 		}
@@ -262,6 +273,7 @@ public class ManageAllAppsActivity extends Activity {
 
 	private AppItem makeUseOfPackageInfo(PackageInfo pInfo) {
 		String label;
+		String pinyinLabel;
 		Drawable drawable;
 		String pkgName;
 		String versionName;
@@ -271,14 +283,16 @@ public class ManageAllAppsActivity extends Activity {
 		try {
 			label = mPkgMgr.getApplicationLabel(pInfo.applicationInfo)
 					.toString();
+			pinyinLabel = Utils.genPinyin(label);
 			drawable = mPkgMgr.getApplicationIcon(pInfo.applicationInfo);
 			pkgName = pInfo.packageName;
 			versionName = pInfo.versionName;
 			size = null;// TEMP
 			orgSize = 0;
 			launcherIntent = mPkgMgr.getLaunchIntentForPackage(pkgName);
-			return new AppItem(label, drawable, pkgName, versionName, size,
-					orgSize, launcherIntent);
+
+			return new AppItem(label, pinyinLabel, drawable, pkgName,
+					versionName, size, orgSize, launcherIntent);
 		} catch (Exception e) {
 			return null;
 		}
@@ -322,10 +336,8 @@ public class ManageAllAppsActivity extends Activity {
 				} else if (item1.orgSize < item2.orgSize) {
 					return 1;
 				}
-				return 0;
 			case SORT_BY_NAME:
-
-				return 0;
+				return item1.pinyinLabel.compareTo(item2.pinyinLabel);
 			default:
 				return 0;
 			}
@@ -351,7 +363,6 @@ public class ManageAllAppsActivity extends Activity {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO
 			AllAppsViewHolder viewHolder;
 			if (convertView == null) {
 				convertView = mLayoutInflater.inflate(
@@ -403,6 +414,7 @@ public class ManageAllAppsActivity extends Activity {
 
 	private class AppItem {
 		private String label;
+		private String pinyinLabel;
 		private Drawable icon;
 		private String pkgName;
 		private String versionName;
@@ -410,10 +422,11 @@ public class ManageAllAppsActivity extends Activity {
 		private long orgSize;
 		private Intent launcherIntent;
 
-		public AppItem(String label, Drawable icon, String pkgName,
-				String versionName, String size, long orgSize,
+		public AppItem(String label, String pinyinLabel, Drawable icon,
+				String pkgName, String versionName, String size, long orgSize,
 				Intent launcherIntent) {
 			this.label = label;
+			this.pinyinLabel = pinyinLabel;
 			this.icon = icon;
 			this.pkgName = pkgName;
 			this.versionName = versionName;
