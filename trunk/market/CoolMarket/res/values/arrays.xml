@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="app_sort_type">
+        <item>按大小</item>
+        <item>按名称</item>
+    </string-array>
+
+</resources>

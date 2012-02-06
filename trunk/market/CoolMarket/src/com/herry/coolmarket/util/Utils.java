@@ -331,7 +331,7 @@ public class Utils {
 	private static final String UNIT_MB = "M";
 	private static final String UNIT_GB = "G";
 
-	public static String formatAppSize(int size) {
+	public static String formatAppSize(long size) {
 		if (size < 1024) {
 			return df.format(size) + UNIT_BYTE;
 		} else if ((size * 1.0) < 0.8 * 1024 * 1024) {
