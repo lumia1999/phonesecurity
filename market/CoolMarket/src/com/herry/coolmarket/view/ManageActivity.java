@@ -1,6 +1,7 @@
 package com.herry.coolmarket.view;
 
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ public class ManageActivity extends TabActivity implements OnTabChangeListener {
 
 	private LayoutInflater mLayoutInflater;
 
+	public static Context mCtx;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,6 +40,7 @@ public class ManageActivity extends TabActivity implements OnTabChangeListener {
 	}
 
 	private void initUI() {
+		mCtx = this;
 		mTitle = (TextView) findViewById(R.id.global_title);
 		mSearchBtn = (ImageButton) findViewById(R.id.global_search_btn);
 		mTitle.setText(R.string.manage_title);

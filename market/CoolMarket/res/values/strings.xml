@@ -65,6 +65,11 @@
     <string name="getting_app_size">正在计算大小</string>
     <string name="app_total_num_tip">当前总应用个数：</string>
     <string name="app_version_tip">版本：</string>
+    <string name="select_sort_app_title">应用排序</string>
+    <!-- context menu string -->
+    <string name="cm_uninstall">快速卸载</string>
+    <string name="cm_launch">快速启动</string>
+    <string name="cm_detail_view">查看详情</string>
 
     <!-- daily recommend string -->
     <string name="daily_recomm_noti_tickertext">有您的推荐，请查看</string>
