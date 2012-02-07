@@ -9,21 +9,32 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +45,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.herry.coolmarket.R;
 import com.herry.coolmarket.util.LoadingDrawable;
@@ -49,11 +59,15 @@ public class ManageAllAppsActivity extends Activity {
 	private ProgressBar mProgressBar;
 	private AnimationDrawable mAnimDrawable;
 	private ListView mListView;
+	private int mListClickedPosition = -1;
+	private ItemOpAdapter mOpAdapter;
+	private Bitmap bitmap;
 
 	private List<AppItem> mDataList = null;
 	private int mAppTotalNum = -1;
 	private AllAppsAdapter mAdapter;
 	private byte[] mDataFillLock = new byte[1];
+	private AppItem mNewItem;
 	// get package size
 	private Method getPackageSizeInfoMethod = null;
 	private PkgSizeObserver mPkgSizeObserver = null;
@@ -66,18 +80,19 @@ public class ManageAllAppsActivity extends Activity {
 	private TextView mTotalNumTxt;
 	private int mSortDlgCheckedItemPosition;
 
-	private static final int CM_UNINSTALL = 0;
-	private static final int CM_DETAIL_VIEW = 1;
-	private static final int CM_LAUNCH = 2;
-
 	// dialog id
 	private static final int DLG_SORT_SELECTION_ID = 1;
+	private static final int DLG_SHOW_OP_ID = 2;
 
 	// sort members
 	private AppSort mSortBySize = new AppSort(AppSort.SORT_BY_SIZE);
 	private AppSort mSortByName = new AppSort(AppSort.SORT_BY_NAME);
+	private AppSort mCurrentSortType = mSortBySize;
 
 	private static final int MSG_FILL_DATA = 1;
+	private static final int MSG_PACKAGE_ADDED = 2;
+	private static final int MSG_PACKAGE_REMOVED = 3;
+	private static final int MSG_UPDATE_UI = 4;
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -85,53 +100,135 @@ public class ManageAllAppsActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case MSG_FILL_DATA:
-				Collections.sort(mDataList, mSortBySize);
+				Collections.sort(mDataList, mCurrentSortType);
 				fillData();
+				break;
+			case MSG_PACKAGE_ADDED:
+				onPackageAdded(msg);
+				break;
+			case MSG_PACKAGE_REMOVED:
+				onPackageRemoved(msg);
+				break;
+			case MSG_UPDATE_UI:
+				updateAppUI(msg);
 				break;
 			}
 		}
 
 	};
 
+	private void onPackageAdded(Message msg) {
+		String pkgName = (String) msg.obj;
+		AppItem item = null;
+		PackageInfo pInfo = null;
+		try {
+			pInfo = mPkgMgr.getPackageInfo(pkgName, 0);
+			ApplicationInfo aInfo = pInfo.applicationInfo;
+			if (isSysApp(aInfo.flags)) {
+				return;
+			}
+			checkAppOnSdcard(aInfo.flags, pInfo);
+			item = makeUseOfPackageInfo(pInfo);
+			if (item != null) {
+				mNewItem = item;
+				getPackageSize(pkgName);
+			}
+		} catch (NameNotFoundException e) {
+			//
+		}
+
+	}
+
+	private void updateAppUI(Message msg) {
+		Log.e(TAG, "updateUI.............");
+		synchronized (mDataFillLock) {
+			mDataList.add(mNewItem);
+			mNewItem = null;
+			mAppTotalNum++;
+			mTotalNumTxt.setText(getString(R.string.app_total_num_tip)
+					+ mAppTotalNum);
+			Collections.sort(mDataList, mCurrentSortType);
+			mAdapter.notifyDataSetChanged();
+		}
+	}
+
+	private void onPackageRemoved(Message msg) {
+		synchronized (mDataFillLock) {
+			String pkgName = (String) msg.obj;
+			AppItem item = null;
+			for (int i = 0; i < mAppTotalNum; i++) {
+				item = mDataList.get(i);
+				if (TextUtils.equals(pkgName, item.pkgName)) {
+					mDataList.remove(i);
+					mAppTotalNum--;
+					mTotalNumTxt.setText(getString(R.string.app_total_num_tip)
+							+ mAppTotalNum);
+					mAdapter.notifyDataSetChanged();
+					break;
+				}
+			}
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// Log.d(TAG, "onCreate,pinyin : " + Utils.genPinyin("hello,world"));
+		Log.d(TAG, "onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.manage_all_apps);
+		registerReceiver();
 		initUI();
 		new getAllAppsTask().execute();
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.d(TAG, "onDestroy");
+		unregisterReceiver();
+		super.onDestroy();
 	}
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DLG_SORT_SELECTION_ID:
-			return new AlertDialog.Builder(ManageActivity.mCtx)
-					.setIcon(android.R.drawable.ic_dialog_alert)
-					.setTitle(R.string.select_sort_app_title)
-					.setSingleChoiceItems(R.array.app_sort_type, 0,
-							new DialogInterface.OnClickListener() {
+			return new AlertDialog.Builder(ManageActivity.mCtx).setIcon(
+					android.R.drawable.ic_dialog_alert).setTitle(
+					R.string.select_sort_app_title).setSingleChoiceItems(
+					R.array.app_sort_type, 0,
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							if (mSortDlgCheckedItemPosition != which) {
+								String[] values = getResources()
+										.getStringArray(R.array.app_sort_type);
+								// Log.d(TAG, "sort it with : " +
+								// values[which]);
+								if (which == 0) {
+									mCurrentSortType = mSortBySize;
+									Collections.sort(mDataList,
+											mCurrentSortType);
+									mAdapter.notifyDataSetChanged();
+								} else if (which == 1) {
+									mCurrentSortType = mSortByName;
+									Collections.sort(mDataList,
+											mCurrentSortType);
+									mAdapter.notifyDataSetChanged();
+								}
+							}
+							dialog.dismiss();
+						}
+					}).create();
+		case DLG_SHOW_OP_ID:
+			AppItem item = mDataList.get(mListClickedPosition);
+			return new AlertDialog.Builder(ManageActivity.mCtx).setIcon(
+					createIconDrawable(item.icon)).setTitle(item.label)
+					.setAdapter(mOpAdapter, null).setOnCancelListener(
+							new OnCancelListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									if (mSortDlgCheckedItemPosition != which) {
-										String[] values = getResources()
-												.getStringArray(
-														R.array.app_sort_type);
-										Log.d(TAG, "sort it with : "
-												+ values[which]);
-										if (which == 0) {
-											Collections.sort(mDataList,
-													mSortBySize);
-											mAdapter.notifyDataSetChanged();
-										} else if (which == 1) {
-											Collections.sort(mDataList,
-													mSortByName);
-											mAdapter.notifyDataSetChanged();
-										}
-									}
-									dialog.dismiss();
+								public void onCancel(DialogInterface dialog) {
+									removeDialog(DLG_SHOW_OP_ID);
 								}
 							}).create();
 		}
@@ -144,8 +241,18 @@ public class ManageAllAppsActivity extends Activity {
 		case DLG_SORT_SELECTION_ID:
 			ListView lv = ((AlertDialog) dialog).getListView();
 			mSortDlgCheckedItemPosition = lv.getCheckedItemPosition();
-			Log.d(TAG, "mSortDlgCheckedItemPosition : "
-					+ mSortDlgCheckedItemPosition);
+			// Log.d(TAG, "mSortDlgCheckedItemPosition : "
+			// + mSortDlgCheckedItemPosition);
+			break;
+		case DLG_SHOW_OP_ID:
+			// ListView opLv = ((AlertDialog) dialog).getListView();
+			// AppItem item = mDataList.get(mListClickedPosition);
+			// View child = opLv.getChildAt(0);
+			// Log.d(TAG, "child : " + child);
+			// if (item.launcherIntent == null) {
+			// child.setEnabled(false);
+			// child.setClickable(false);
+			// }
 			break;
 		}
 		super.onPrepareDialog(id, dialog);
@@ -168,6 +275,8 @@ public class ManageAllAppsActivity extends Activity {
 		});
 		mTotalNumTxt = (TextView) header;
 		mListView.addHeaderView(header);
+		String[] opData = getResources().getStringArray(R.array.app_op);
+		mOpAdapter = new ItemOpAdapter(this, opData);
 		mPkgMgr = getPackageManager();
 		try {
 			getPackageSizeInfoMethod = mPkgMgr.getClass().getMethod(
@@ -203,6 +312,7 @@ public class ManageAllAppsActivity extends Activity {
 			if (isSysApp(flags)) {
 				continue;
 			}
+			checkAppOnSdcard(flags, pInfo);
 			item = makeUseOfPackageInfo(pInfo);
 			if (item != null) {
 				synchronized (mDataFillLock) {
@@ -216,7 +326,7 @@ public class ManageAllAppsActivity extends Activity {
 			mFillDataFinish = !mFillDataFinish;
 			mHandler.sendEmptyMessage(MSG_FILL_DATA);
 		}
-		Log.d(TAG, "mAppTotalNum : " + mAppTotalNum);
+		// Log.d(TAG, "mAppTotalNum : " + mAppTotalNum);
 	}
 
 	private void getPackageSize(String pkgName) {
@@ -236,16 +346,25 @@ public class ManageAllAppsActivity extends Activity {
 		@Override
 		public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
 				throws RemoteException {
-			// Log.d(TAG, "pStats : " + pStats.toString());
+			Log.d(TAG, "pStats : " + pStats.toString());
 			synchronized (mDataFillLock) {
 				updateAppItemSize(pStats);
 				mGetSizeCount++;
-				Log.d(TAG, "mGetSizeCount : " + mGetSizeCount);
+				// Log.d(TAG, "mGetSizeCount : " + mGetSizeCount);
 				if (mAppTotalNum != -1 && mGetSizeCount == mAppTotalNum) {
 					if (!mFillDataFinish) {
 						mFillDataFinish = !mFillDataFinish;
 						mHandler.sendEmptyMessage(MSG_FILL_DATA);
 					}
+				}
+				if (mNewItem != null) {
+					long size = pStats.codeSize + pStats.dataSize
+							+ pStats.cacheSize;
+					mNewItem.orgSize = size;
+					mNewItem.size = Utils.formatAppSize(size);
+					Message msg = mHandler.obtainMessage();
+					msg.what = MSG_UPDATE_UI;
+					mHandler.sendMessage(msg);
 				}
 			}
 		}
@@ -271,6 +390,19 @@ public class ManageAllAppsActivity extends Activity {
 		}
 	}
 
+	private void checkAppOnSdcard(int flags, PackageInfo pInfo) {
+		if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.ECLAIR_MR1) {
+			if ((flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) > 0) {
+				ApplicationInfo aInfo = pInfo.applicationInfo;
+				Log.d(TAG, "dataDir : " + aInfo.dataDir + ",publicSourceDir : "
+						+ aInfo.publicSourceDir + ",sourceDir : "
+						+ aInfo.sourceDir);
+				// TODO check application info that installed on sdcard
+			} else {
+			}
+		}
+	}
+
 	private AppItem makeUseOfPackageInfo(PackageInfo pInfo) {
 		String label;
 		String pinyinLabel;
@@ -287,6 +419,9 @@ public class ManageAllAppsActivity extends Activity {
 			drawable = mPkgMgr.getApplicationIcon(pInfo.applicationInfo);
 			pkgName = pInfo.packageName;
 			versionName = pInfo.versionName;
+			if (versionName == null) {
+				versionName = getString(R.string.version_not_found);
+			}
 			size = null;// TEMP
 			orgSize = 0;
 			launcherIntent = mPkgMgr.getLaunchIntentForPackage(pkgName);
@@ -396,9 +531,8 @@ public class ManageAllAppsActivity extends Activity {
 
 				@Override
 				public void onClick(View v) {
-					// TODO
-					Toast.makeText(mCtx, "ddd : " + pos, Toast.LENGTH_SHORT)
-							.show();
+					mListClickedPosition = pos;
+					showDialog(DLG_SHOW_OP_ID);
 				}
 			});
 			return convertView;
@@ -435,5 +569,178 @@ public class ManageAllAppsActivity extends Activity {
 			this.launcherIntent = launcherIntent;
 		}
 	}
+
+	private BitmapDrawable createIconDrawable(Drawable drawable) {
+		if (bitmap != null && !bitmap.isRecycled()) {
+			bitmap = null;
+		}
+		bitmap = ((BitmapDrawable) drawable).getBitmap();
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		float newWidth = getResources().getDimension(
+				android.R.dimen.app_icon_size);
+		float newHeight = newWidth;
+		float scaleWidth = newWidth / width;
+		float scaleHeight = newHeight / height;
+		Matrix matrix = new Matrix();
+		matrix.postScale(scaleWidth, scaleHeight);
+		bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+		return new BitmapDrawable(bitmap);
+	}
+
+	private class ItemOpAdapter extends BaseAdapter {
+
+		private Context mCtx;
+		private String[] mData;
+
+		public ItemOpAdapter(Context context, String[] objects) {
+			mCtx = context;
+			mData = objects;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if (convertView == null) {
+				convertView = getLayoutInflater().inflate(
+						R.layout.select_dialog_item, null);
+			}
+			TextView text1 = (TextView) convertView;
+			text1.setText(mData[position]);
+			int defaultTextColr = text1.getCurrentTextColor();
+			AppItem item = mDataList.get(mListClickedPosition);
+			Intent launcherIntent = item.launcherIntent;
+			// Log.d(TAG, "mListClickedPosition : " + mListClickedPosition
+			// + ",launcherIntent : " + launcherIntent);
+			if (launcherIntent == null && position == 0) {
+				convertView.setClickable(false);
+				convertView.setEnabled(false);
+				text1.setTextColor(Color.GRAY);
+			} else {
+				convertView.setClickable(true);
+				convertView.setEnabled(true);
+				text1.setTextColor(defaultTextColr);
+			}
+			final int pos = position;
+			convertView.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					if (v.isClickable()) {
+						// Log.d(TAG, "txt : " + mData[pos]);
+						dismissDialog(DLG_SHOW_OP_ID);
+						responseUserClick(pos);
+					}
+
+				}
+			});
+			return convertView;
+		}
+
+		@Override
+		public int getCount() {
+			return mData.length;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		private void responseUserClick(int position) {
+			switch (position) {
+			case 0:
+				launchApp();
+				break;
+			case 1:
+				uninstallApp();
+				break;
+			case 2:
+				viewAppDetail();
+				break;
+			default:
+				// nothing
+				break;
+			}
+		}
+	}
+
+	private void launchApp() {
+		AppItem item = mDataList.get(mListClickedPosition);
+		try {
+			startActivity(item.launcherIntent);
+		} catch (ActivityNotFoundException e) {
+			//
+		}
+	}
+
+	private void uninstallApp() {
+		AppItem item = mDataList.get(mListClickedPosition);
+		Intent i = new Intent();
+		Uri pkgUri = Uri.parse("package:" + item.pkgName);
+		i.setAction(Intent.ACTION_DELETE).setData(pkgUri);
+		try {
+			startActivity(i);
+		} catch (ActivityNotFoundException e) {
+			//
+		}
+	}
+
+	private void viewAppDetail() {
+		AppItem item = mDataList.get(mListClickedPosition);
+		Intent i = new Intent();
+		Uri pkgUri = Uri.parse("package:" + item.pkgName);
+		i.setAction("android.settings.APPLICATION_DETAILS_SETTINGS").setData(
+				pkgUri).addCategory(Intent.CATEGORY_DEFAULT);
+		try {
+			startActivity(i);
+		} catch (ActivityNotFoundException e) {
+			//
+		}
+	}
+
+	private void registerReceiver() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+		filter.addDataScheme("package");
+		registerReceiver(mPkgAddRemoveReceiver, filter);
+	}
+
+	private void unregisterReceiver() {
+		unregisterReceiver(mPkgAddRemoveReceiver);
+	}
+
+	private BroadcastReceiver mPkgAddRemoveReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			Uri data = intent.getData();
+			String pkgName = null;
+			if (data != null) {
+				pkgName = data.getSchemeSpecificPart();
+			}
+			if (TextUtils.equals(action, Intent.ACTION_PACKAGE_ADDED)) {
+				if (pkgName != null) {
+					Message msg = mHandler.obtainMessage();
+					msg.obj = pkgName;
+					msg.what = MSG_PACKAGE_ADDED;
+					mHandler.sendMessage(msg);
+				}
+			} else if (TextUtils.equals(action, Intent.ACTION_PACKAGE_REMOVED)) {
+				if (pkgName != null) {
+					Message msg = mHandler.obtainMessage();
+					msg.obj = pkgName;
+					msg.what = MSG_PACKAGE_REMOVED;
+					mHandler.sendMessage(msg);
+				}
+			}
+		}
+	};
 
 }
