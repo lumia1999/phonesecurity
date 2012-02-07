@@ -5,5 +5,9 @@
         <item>按大小</item>
         <item>按名称</item>
     </string-array>
-
+	<string-array name="app_op">
+	    <item>快速启动</item>
+	    <item>快速卸载</item>
+	    <item>查看详情</item>
+	</string-array>
 </resources>

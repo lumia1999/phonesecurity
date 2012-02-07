@@ -66,6 +66,7 @@
     <string name="app_total_num_tip">当前总应用个数：</string>
     <string name="app_version_tip">版本：</string>
     <string name="select_sort_app_title">应用排序</string>
+    <string name="version_not_found">无版本</string>
     <!-- context menu string -->
     <string name="cm_uninstall">快速卸载</string>
     <string name="cm_launch">快速启动</string>

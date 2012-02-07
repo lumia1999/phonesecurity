@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
+import com.herry.coolmarket.R;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -28,6 +30,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -358,11 +361,11 @@ public class Utils {
 			PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(),
 					PackageManager.GET_ACTIVITIES);
 			if (pi == null) {
-				return null;
+				return ctx.getString(R.string.version_not_found);
 			}
 			return pi.versionName;
 		} catch (NameNotFoundException e) {
-			return null;
+			return ctx.getString(R.string.version_not_found);
 		}
 	}
 
