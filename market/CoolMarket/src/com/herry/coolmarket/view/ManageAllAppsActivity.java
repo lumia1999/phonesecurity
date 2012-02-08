@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import javax.net.ssl.ManagerFactoryParameters;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -180,15 +177,21 @@ public class ManageAllAppsActivity extends Activity {
 
 	private void resortApp(Message msg) {
 		int pos = msg.arg1;
+		AppSort tempSort = null;
 		if (pos == 0) {
-			mCurrentSortType = mSortBySize;
-			Collections.sort(mDataList, mCurrentSortType);
-			mAdapter.notifyDataSetChanged();
+			tempSort = mSortBySize;
 		} else if (pos == 1) {
-			mCurrentSortType = mSortByName;
+			tempSort = mSortByName;
+		}
+		if (!tempSort.equals(mCurrentSortType)) {
+			Log.e(TAG, "no the same");
+			mCurrentSortType = tempSort;
 			Collections.sort(mDataList, mCurrentSortType);
 			mAdapter.notifyDataSetChanged();
+		} else {
+			Log.e(TAG, "the same order");
 		}
+
 	}
 
 	@Override
@@ -217,46 +220,48 @@ public class ManageAllAppsActivity extends Activity {
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DLG_SORT_SELECTION_ID:
-			return new AlertDialog.Builder(ManageActivity.mCtx).setIcon(
-					android.R.drawable.ic_dialog_alert).setTitle(
-					R.string.select_sort_app_title).setSingleChoiceItems(
-					R.array.app_sort_type, 0,
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							if (mSortDlgCheckedItemPosition != which) {
-								String[] values = getResources()
-										.getStringArray(R.array.app_sort_type);
-								// Log.d(TAG, "sort it with : " +
-								// values[which]);
-								if (which == 0) {
-									mCurrentSortType = mSortBySize;
-									Collections.sort(mDataList,
-											mCurrentSortType);
-									mAdapter.notifyDataSetChanged();
-								} else if (which == 1) {
-									mCurrentSortType = mSortByName;
-									Collections.sort(mDataList,
-											mCurrentSortType);
-									mAdapter.notifyDataSetChanged();
-								}
-							}
-							dialog.dismiss();
-						}
-					}).create();
-		case DLG_SHOW_OP_ID:
-			AppItem item = mDataList.get(mListClickedPosition);
-			return new AlertDialog.Builder(ManageActivity.mCtx).setIcon(
-					createIconDrawable(item.icon)).setTitle(item.label)
-					.setAdapter(mOpAdapter, null).setOnCancelListener(
-							new OnCancelListener() {
+			return new AlertDialog.Builder(ManageActivity.mCtx)
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setTitle(R.string.select_sort_app_title)
+					.setSingleChoiceItems(R.array.app_sort_type, 0,
+							new DialogInterface.OnClickListener() {
 
 								@Override
-								public void onCancel(DialogInterface dialog) {
-									removeDialog(DLG_SHOW_OP_ID);
+								public void onClick(DialogInterface dialog,
+										int which) {
+									if (mSortDlgCheckedItemPosition != which) {
+										String[] values = getResources()
+												.getStringArray(
+														R.array.app_sort_type);
+										// Log.d(TAG, "sort it with : " +
+										// values[which]);
+										if (which == 0) {
+											mCurrentSortType = mSortBySize;
+											Collections.sort(mDataList,
+													mCurrentSortType);
+											mAdapter.notifyDataSetChanged();
+										} else if (which == 1) {
+											mCurrentSortType = mSortByName;
+											Collections.sort(mDataList,
+													mCurrentSortType);
+											mAdapter.notifyDataSetChanged();
+										}
+									}
+									dialog.dismiss();
 								}
 							}).create();
+		case DLG_SHOW_OP_ID:
+			AppItem item = mDataList.get(mListClickedPosition);
+			return new AlertDialog.Builder(ManageActivity.mCtx)
+					.setIcon(createIconDrawable(item.icon))
+					.setTitle(item.label).setAdapter(mOpAdapter, null)
+					.setOnCancelListener(new OnCancelListener() {
+
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							removeDialog(DLG_SHOW_OP_ID);
+						}
+					}).create();
 		}
 		return super.onCreateDialog(id);
 	}
@@ -375,7 +380,7 @@ public class ManageAllAppsActivity extends Activity {
 		@Override
 		public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
 				throws RemoteException {
-			Log.d(TAG, "pStats : " + pStats.toString());
+			// Log.d(TAG, "pStats : " + pStats.toString());
 			synchronized (mDataFillLock) {
 				updateAppItemSize(pStats);
 				mGetSizeCount++;
@@ -723,8 +728,8 @@ public class ManageAllAppsActivity extends Activity {
 		AppItem item = mDataList.get(mListClickedPosition);
 		Intent i = new Intent();
 		Uri pkgUri = Uri.parse("package:" + item.pkgName);
-		i.setAction("android.settings.APPLICATION_DETAILS_SETTINGS").setData(
-				pkgUri).addCategory(Intent.CATEGORY_DEFAULT);
+		i.setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
+				.setData(pkgUri).addCategory(Intent.CATEGORY_DEFAULT);
 		try {
 			startActivity(i);
 		} catch (ActivityNotFoundException e) {
@@ -737,7 +742,7 @@ public class ManageAllAppsActivity extends Activity {
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
 		filter.addAction(Constants.ACTION_APP_SORT);
-		// filter.addDataScheme("package");
+		filter.addDataScheme("package");
 		registerReceiver(mReceiver, filter);
 	}
 
@@ -751,6 +756,7 @@ public class ManageAllAppsActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			Uri data = intent.getData();
+			// Log.e(TAG, "data : " + data.toString());
 			String pkgName = null;
 			if (data != null) {
 				pkgName = data.getSchemeSpecificPart();
