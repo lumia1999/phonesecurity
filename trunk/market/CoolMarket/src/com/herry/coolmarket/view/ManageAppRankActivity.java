@@ -62,7 +62,9 @@ public class ManageAppRankActivity extends Activity {
 				// TODO
 				Intent i = new Intent(Constants.ACTION_APP_SORT);
 				i.putExtra(Constants.EXTRA_SORT_TYPE_POS, position);
-				// i.setData(Uri.parse("package"));
+				Uri.Builder uriBuilder = new Uri.Builder();
+				uriBuilder.scheme("package");
+				i.setData(uriBuilder.build());
 				sendBroadcast(i);
 				finish();
 			}
