@@ -37,4 +37,15 @@ public final class Constants {
 
 	public static final int NOTI_DAILY_RECOMM = 100001;
 
+	// activity request code def
+	public static final int REQ_CODE_APP_EXIT = 1;
+
+	// activity extra params
+	public static final String ACTION_APP_SORT = "com.herry.coolmarket.ACTION_APP_SORT";
+	public static final String EXTRA_APP_SORT_TYPE = "sort_type";
+	public static final int SORT_TYPE_SIZE = 0;
+	public static final int SORT_TYPE_NAME = 1;
+
+	public static final String EXTRA_SORT_TYPE_POS = "sort_type_pos";
+
 }

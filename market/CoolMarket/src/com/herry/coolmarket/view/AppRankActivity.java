@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,6 +137,11 @@ public class AppRankActivity extends Activity implements OnScrollListener,
 		initUI();
 		mFetchDataTask = new FetchDataTask();
 		mFetchDataTask.execute(mIndex);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		return false;
 	}
 
 	private void initUI() {

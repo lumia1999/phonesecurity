@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="app_name_white_font">
         <item name="android:textSize">@dimen/font_size_l</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
     <style name="splash_text">
         <item name="android:textSize">@dimen/font_size_s</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
     <style name="app_description_font">
         <item name="android:textSize">@dimen/font_size_s</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/vertical_splitter_color</item>
     </style>
+
     <style name="first_login_number">
         <item name="android:textSize">17.0sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
     <style name="progressbar_horizontal">
         <item name="android:maxHeight">10.5dip</item>
         <item name="android:indeterminateOnly">false</item>
@@ -27,42 +32,55 @@
         <item name="android:progressDrawable">@drawable/progress_horizontal</item>
         <item name="android:minHeight">10.5dip</item>
     </style>
+
     <style name="Theme.CustomDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
     </style>
+
+    <style name="Theme.MyDialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowBackground">@null</item>
+    </style>
+
     <style name="RatingBar" parent="@android:style/Widget.RatingBar">
-       <item name="android:maxHeight">14.0dip</item>
+        <item name="android:maxHeight">14.0dip</item>
         <item name="android:progressDrawable">@drawable/rating_star</item>
         <item name="android:minHeight">9.3dip</item>
         <item name="android:numStars">5</item>
     </style>
+
     <style name="toast_text">
         <item name="android:textSize">@dimen/font_size_s</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
     <style name="topbar_title">
         <item name="android:textSize">21.5sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
     <style name="hot_font">
         <item name="android:textSize">20.0sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
     <style name="app_title">
         <item name="android:layout_marginTop">12.0dip</item>
         <item name="android:layout_alignParentTop">true</item>
     </style>
+
     <style name="app_category">
         <item name="android:paddingTop">9.399994dip</item>
         <item name="android:paddingBottom">12.0dip</item>
     </style>
+
     <style name="app_price">
         <item name="android:gravity">center</item>
         <item name="android:layout_marginTop">2.5999756dip</item>
         <item name="android:layout_marginBottom">2.5999756dip</item>
         <item name="android:layout_alignParentRight">true</item>
     </style>
+
     <style name="app_logo">
         <item name="android:layout_width">48.0dip</item>
         <item name="android:layout_height">48.0dip</item>
@@ -70,6 +88,7 @@
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_alignParentTop">true</item>
     </style>
+
     <style name="app_download">
         <item name="android:layout_width">32.0dip</item>
         <item name="android:layout_height">32.0dip</item>
@@ -79,6 +98,7 @@
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerHorizontal">true</item>
     </style>
+
     <style name="app_devider">
         <item name="android:layout_width">0.8000001dip</item>
         <item name="android:layout_height">56.0dip</item>
@@ -87,86 +107,106 @@
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerVertical">true</item>
     </style>
+
     <style name="manager_apk_icon">
         <item name="android:layout_marginLeft">10.0dip</item>
         <item name="android:layout_marginTop">10.0dip</item>
         <item name="android:layout_marginBottom">10.0dip</item>
     </style>
+
     <style name="app_text_style1">
         <item name="android:textSize">18.599976sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="app_text_style2">
         <item name="android:textSize">16.0sp</item>
         <item name="android:textColor">@color/gray_1</item>
     </style>
+
     <style name="app_text_style3">
         <item name="android:textSize">13.5sp</item>
         <item name="android:textColor">@color/gray_1</item>
     </style>
+
     <style name="app_new_version_text_style">
         <item name="android:textSize">13.5sp</item>
         <item name="android:textColor">@color/orange</item>
     </style>
+
     <style name="app_text_style4">
         <item name="android:textSize">16.0sp</item>
         <item name="android:textColor">@drawable/tab_text_selector</item>
     </style>
+
     <style name="search_tab_text">
         <item name="android:textSize">16.0sp</item>
         <item name="android:textColor">@drawable/search_tab_text_selector</item>
     </style>
+
     <style name="app_text_style5">
         <item name="android:textSize">13.5sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
     <style name="app_text_stlye6">
         <item name="android:textSize">10.599976sp</item>
         <item name="android:textColor">@color/tab_app_num</item>
     </style>
+
     <style name="app_text_style7">
         <item name="android:textSize">16.0sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="app_text_stlye8">
         <item name="android:textSize">18.599976sp</item>
         <item name="android:textColor">@color/gray_1</item>
     </style>
+
     <style name="app_text_style9">
         <item name="android:textSize">20.0sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="app_text_style10">
         <item name="android:textSize">16.0sp</item>
         <item name="android:textColor">@color/gray_1</item>
     </style>
+
     <style name="app_text_style11">
         <item name="android:textSize">14.0sp</item>
         <item name="android:textColor">@color/gray_1</item>
     </style>
+
     <style name="app_text_style12">
         <item name="android:textSize">13.799988sp</item>
         <item name="android:textColor">@color/short_description_color</item>
     </style>
+
     <style name="app_text_style13">
         <item name="android:textSize">18.599976sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
     <style name="comment_author_font">
         <item name="android:textSize">@dimen/font_size_s</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/hot3</item>
     </style>
+
     <style name="comment_font">
         <item name="android:textSize">@dimen/font_size_m</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="info_font">
         <item name="android:textSize">@dimen/font_size_m</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="RatingBarLarge" parent="@android:style/Widget.RatingBar">
         <item name="android:maxWidth">140.0dip</item>
         <item name="android:maxHeight">27.0dip</item>
@@ -174,35 +214,43 @@
         <item name="android:minWidth">140.0dip</item>
         <item name="android:minHeight">27.0dip</item>
     </style>
+
     <style name="personal_account_icon">
         <item name="android:layout_marginLeft">10.0dip</item>
         <item name="android:layout_marginTop">10.0dip</item>
         <item name="android:layout_marginBottom">10.0dip</item>
     </style>
+
     <style name="personal_account_name">
         <item name="android:layout_marginTop">12.0dip</item>
     </style>
+
     <style name="personal_account_desc">
         <item name="android:layout_marginTop">12.0dip</item>
         <item name="android:layout_marginBottom">12.0dip</item>
     </style>
+
     <style name="list_font_s_normal">
         <item name="android:textSize">@dimen/font_size_s</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/gray_1</item>
     </style>
+
     <style name="list_font_m_normal">
         <item name="android:textSize">@dimen/font_size_m</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/gray_1</item>
     </style>
+
     <style name="list_font_l_normal">
         <item name="android:textSize">@dimen/font_size_l</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="comment_time_font">
         <item name="android:textSize">@dimen/font_size_s</item>
         <item name="android:textColor">@color/comment_time_font_color</item>
     </style>
+
 </resources>

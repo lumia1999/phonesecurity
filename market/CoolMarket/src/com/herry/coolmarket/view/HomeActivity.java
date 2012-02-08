@@ -29,6 +29,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -150,6 +151,11 @@ public class HomeActivity extends ListActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		return false;
 	}
 
 	@Override

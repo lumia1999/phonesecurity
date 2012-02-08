@@ -112,6 +112,18 @@
             android:configChanges="orientation|keyboardHidden"
             android:name=".view.ManageMarketAppsActivity" >
         </activity>
+        <!-- dialog activity -->
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.AppExitActivity"
+            android:theme="@style/Theme.MyDialog" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.ManageAppRankActivity"
+            android:theme="@style/Theme.MyDialog" >
+        </activity>
+
         <!-- content provider -->
         <provider
             android:authorities="com.herry.coolmarket"

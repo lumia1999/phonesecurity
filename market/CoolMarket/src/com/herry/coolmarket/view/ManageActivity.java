@@ -4,6 +4,7 @@ import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -37,6 +38,11 @@ public class ManageActivity extends TabActivity implements OnTabChangeListener {
 		setContentView(R.layout.manage_tab);
 		initUI();
 		setupTabs();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		return false;
 	}
 
 	private void initUI() {

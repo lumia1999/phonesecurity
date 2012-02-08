@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,6 +112,11 @@ public class CategoryActivity extends Activity implements OnScrollListener,
 		setContentView(R.layout.category);
 		initUI();
 		new FetchDataTast().execute();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		return false;
 	}
 
 	private void initUI() {

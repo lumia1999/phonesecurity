@@ -41,6 +41,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -123,6 +124,7 @@ public class SearchActivity extends Activity implements OnScrollListener,
 	private FrameLayout mFooter;
 	private ProgressBar mFooterProgressBar;
 	private TextView mFooterTip;
+	private InputMethodManager imm;
 
 	private static final int MSG_NETWORK_ERROR = 1;
 	private static final int MSG_FETCH_DATA_SUCCESS = 2;
@@ -178,6 +180,7 @@ public class SearchActivity extends Activity implements OnScrollListener,
 	private void initUI() {
 		mCtx = this;
 		mLayoutInflater = getLayoutInflater();
+		imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		mKeysEdit = (EditText) findViewById(R.id.fact_search_keysedit);
 		mKeysEdit.addTextChangedListener(new TextWatcher() {
 
@@ -293,6 +296,7 @@ public class SearchActivity extends Activity implements OnScrollListener,
 		@Override
 		public void onClick(View v) {
 			// Log.d(TAG, "onClick");
+			imm.hideSoftInputFromWindow(mKeysEdit.getWindowToken(), 0);
 			String txt = null;
 			switch (v.getId()) {
 			case R.id.search_suggest_first:
@@ -381,6 +385,7 @@ public class SearchActivity extends Activity implements OnScrollListener,
 				mKeysEdit.setText("");
 				break;
 			case R.id.fact_search_btn:
+				imm.hideSoftInputFromWindow(mKeysEdit.getWindowToken(), 0);
 				if (mProgressBar.getVisibility() == View.VISIBLE) {
 					Toast.makeText(getApplicationContext(),
 							R.string.search_ongoing_toast, Toast.LENGTH_SHORT)
