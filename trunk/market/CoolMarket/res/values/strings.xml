@@ -28,6 +28,8 @@
     <string name="devloper_link_tip">联系方式</string>
     <string name="devloper_corp_tip">公司名称</string>
     <string name="search_hint">请输入关键字</string>
+    <string name="exit_title">退出</string>
+    <string name="exit_msg">确定要退出酷乐市场吗？</string>
 
     <!-- title string -->
     <string name="category_title">应用分类</string>

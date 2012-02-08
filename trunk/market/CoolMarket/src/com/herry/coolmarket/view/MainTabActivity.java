@@ -1,6 +1,10 @@
 package com.herry.coolmarket.view;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -8,6 +12,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
@@ -41,6 +46,8 @@ public class MainTabActivity extends TabActivity implements OnTabChangeListener 
 	private static final int IDX_CATE_TAB = 1;
 	private static final int IDX_RANK_TAB = 2;
 	private static final int IDX_MGR_TAB = 3;
+
+	private static final int DLG_EXIT_ID = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +88,70 @@ public class MainTabActivity extends TabActivity implements OnTabChangeListener 
 		}
 		// start service
 		startDailyRecomm();
+	}
+
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		// Log.d(TAG, "event : " + event.toString());
+
+		// if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
+		// && event.getRepeatCount() == 0) {
+		// if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) {
+		// showDialog(DLG_EXIT_ID);
+		// return true;
+		// }
+		// }
+		return super.dispatchKeyEvent(event);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// Log.e(TAG, "onKeyDown");
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// showDialog(DLG_EXIT_ID);
+			startActivityForResult(new Intent(this, AppExitActivity.class),
+					Constants.REQ_CODE_APP_EXIT);
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case Constants.REQ_CODE_APP_EXIT:
+			if (resultCode == Activity.RESULT_OK) {
+				finish();
+			} else {
+				// nothing
+			}
+			break;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DLG_EXIT_ID:
+			// AlertDialog dlg = new AlertDialog.Builder(this).setIcon(
+			// android.R.drawable.ic_dialog_alert).setTitle("title")
+			// .setMessage("message").setPositiveButton(
+			// android.R.string.yes,
+			// new DialogInterface.OnClickListener() {
+			//
+			// @Override
+			// public void onClick(DialogInterface dialog,
+			// int which) {
+			// finish();
+			// }
+			// }).setNegativeButton(android.R.string.no, null)
+			// .create();
+			CustomAlertDialog dlg = new CustomAlertDialog(this);
+			View v = getLayoutInflater().inflate(R.layout.exit_dlg_view, null);
+			dlg.setView(v, 0, 0, 0, 0);
+			return dlg;
+		}
+		return super.onCreateDialog(id);
 	}
 
 	private void startDailyRecomm() {
@@ -131,7 +202,6 @@ public class MainTabActivity extends TabActivity implements OnTabChangeListener 
 
 	@Override
 	public void onTabChanged(String tabId) {
-		// TODO
 		Log.d(TAG, "onTabChanged,tabId : " + tabId);
 		if (TextUtils.equals(tabId, getString(R.string.tab_menu_home))) {
 			mHomeMenu.setBackgroundResource(R.drawable.tab_click_anim);

@@ -3,14 +3,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <ListView
-        android:id="@android:id/list"
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/background_color"
-        android:cacheColorHint="@color/list_view_bg_color"
-        android:divider="@null"
-        android:fadingEdge="none" />
+        android:background="@color/background_color" >
+
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:cacheColorHint="@color/list_view_bg_color"
+            android:divider="@null"
+            android:fadingEdge="none"
+            android:fastScrollEnabled="true" />
+    </RelativeLayout>
 
     <include layout="@layout/loading" />
 

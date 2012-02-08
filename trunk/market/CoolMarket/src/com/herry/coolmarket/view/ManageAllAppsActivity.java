@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.net.ssl.ManagerFactoryParameters;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,6 +38,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +50,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.herry.coolmarket.R;
+import com.herry.coolmarket.util.Constants;
 import com.herry.coolmarket.util.LoadingDrawable;
 import com.herry.coolmarket.util.Utils;
 
@@ -93,6 +97,7 @@ public class ManageAllAppsActivity extends Activity {
 	private static final int MSG_PACKAGE_ADDED = 2;
 	private static final int MSG_PACKAGE_REMOVED = 3;
 	private static final int MSG_UPDATE_UI = 4;
+	private static final int MSG_RESORT_APP = 5;
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -111,6 +116,9 @@ public class ManageAllAppsActivity extends Activity {
 				break;
 			case MSG_UPDATE_UI:
 				updateAppUI(msg);
+				break;
+			case MSG_RESORT_APP:
+				resortApp(msg);
 				break;
 			}
 		}
@@ -170,6 +178,19 @@ public class ManageAllAppsActivity extends Activity {
 		}
 	}
 
+	private void resortApp(Message msg) {
+		int pos = msg.arg1;
+		if (pos == 0) {
+			mCurrentSortType = mSortBySize;
+			Collections.sort(mDataList, mCurrentSortType);
+			mAdapter.notifyDataSetChanged();
+		} else if (pos == 1) {
+			mCurrentSortType = mSortByName;
+			Collections.sort(mDataList, mCurrentSortType);
+			mAdapter.notifyDataSetChanged();
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate");
@@ -178,6 +199,11 @@ public class ManageAllAppsActivity extends Activity {
 		registerReceiver();
 		initUI();
 		new getAllAppsTask().execute();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		return false;
 	}
 
 	@Override
@@ -245,14 +271,6 @@ public class ManageAllAppsActivity extends Activity {
 			// + mSortDlgCheckedItemPosition);
 			break;
 		case DLG_SHOW_OP_ID:
-			// ListView opLv = ((AlertDialog) dialog).getListView();
-			// AppItem item = mDataList.get(mListClickedPosition);
-			// View child = opLv.getChildAt(0);
-			// Log.d(TAG, "child : " + child);
-			// if (item.launcherIntent == null) {
-			// child.setEnabled(false);
-			// child.setClickable(false);
-			// }
 			break;
 		}
 		super.onPrepareDialog(id, dialog);
@@ -270,7 +288,8 @@ public class ManageAllAppsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				showDialog(DLG_SORT_SELECTION_ID);
+				// showDialog(DLG_SORT_SELECTION_ID);
+				showsortAppDialog();
 			}
 		});
 		mTotalNumTxt = (TextView) header;
@@ -286,6 +305,16 @@ public class ManageAllAppsActivity extends Activity {
 			getPackageSizeInfoMethod = null;
 		}
 		mPkgSizeObserver = new PkgSizeObserver();
+	}
+
+	private void showsortAppDialog() {
+		Intent i = new Intent(mCtx, ManageAppRankActivity.class);
+		if (mCurrentSortType == mSortBySize) {
+			i.putExtra(Constants.EXTRA_APP_SORT_TYPE, Constants.SORT_TYPE_SIZE);
+		} else {
+			i.putExtra(Constants.EXTRA_APP_SORT_TYPE, Constants.SORT_TYPE_NAME);
+		}
+		startActivity(i);
 	}
 
 	private void fillData() {
@@ -707,15 +736,16 @@ public class ManageAllAppsActivity extends Activity {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-		filter.addDataScheme("package");
-		registerReceiver(mPkgAddRemoveReceiver, filter);
+		filter.addAction(Constants.ACTION_APP_SORT);
+		// filter.addDataScheme("package");
+		registerReceiver(mReceiver, filter);
 	}
 
 	private void unregisterReceiver() {
-		unregisterReceiver(mPkgAddRemoveReceiver);
+		unregisterReceiver(mReceiver);
 	}
 
-	private BroadcastReceiver mPkgAddRemoveReceiver = new BroadcastReceiver() {
+	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -737,6 +767,15 @@ public class ManageAllAppsActivity extends Activity {
 					Message msg = mHandler.obtainMessage();
 					msg.obj = pkgName;
 					msg.what = MSG_PACKAGE_REMOVED;
+					mHandler.sendMessage(msg);
+				}
+			} else if (TextUtils.equals(action, Constants.ACTION_APP_SORT)) {
+				//
+				int pos = intent.getIntExtra(Constants.EXTRA_SORT_TYPE_POS, -1);
+				if (pos != -1) {
+					Message msg = mHandler.obtainMessage();
+					msg.arg1 = pos;
+					msg.what = MSG_RESORT_APP;
 					mHandler.sendMessage(msg);
 				}
 			}
