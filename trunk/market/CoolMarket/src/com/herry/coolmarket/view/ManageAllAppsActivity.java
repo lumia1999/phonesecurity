@@ -261,10 +261,12 @@ public class ManageAllAppsActivity extends Activity {
 		int size = pkgList.size();
 		AppItem item = null;
 		PackageInfo pInfo = null;
+		String myPkgName = getPackageName();
 		for (int i = 0; i < size; i++) {
 			pInfo = pkgList.get(i);
 			int flags = pInfo.applicationInfo.flags;
-			if (isSysApp(flags)) {
+			if (isSysApp(flags)
+					|| TextUtils.equals(myPkgName, pInfo.packageName)) {
 				continue;
 			}
 			checkAppOnSdcard(flags, pInfo);
