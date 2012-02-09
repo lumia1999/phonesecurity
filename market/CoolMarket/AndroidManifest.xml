@@ -123,7 +123,11 @@
             android:name=".view.ManageAppRankActivity"
             android:theme="@style/Theme.MyDialog" >
         </activity>
-
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.ManageAppHandleActivity"
+            android:theme="@style/Theme.MyDialog" >
+        </activity>
         <!-- content provider -->
         <provider
             android:authorities="com.herry.coolmarket"
