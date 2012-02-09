@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.ProgressBar;
 
 import com.herry.coolmarket.R;
@@ -18,6 +19,7 @@ import com.herry.coolmarket.util.Utils;
 
 public class CoolMarketActivity extends Activity {
 	private static final String TAG = "CoolMarketActivity";
+
 	ProgressBar mProgressBar;
 	AnimationDrawable mPbAnimDrawable;
 
@@ -30,12 +32,14 @@ public class CoolMarketActivity extends Activity {
 			switch (msg.what) {
 			case MSG_CHECK_FINISH:
 				Log.e(TAG, "MSG_CHECK_FINISH");
-				startActivity(new Intent(getApplicationContext(),
-						MainTabActivity.class).putExtra(
-						Constants.WELCOME_FINISH_EXTRA_TYPE, msg.arg1));
-				overridePendingTransition(R.anim.animation_left_in,
-						R.anim.animation_right_out);
-				finish();
+				if (!isFinishing()) {
+					startActivity(new Intent(getApplicationContext(),
+							MainTabActivity.class).putExtra(
+							Constants.WELCOME_FINISH_EXTRA_TYPE, msg.arg1));
+					overridePendingTransition(R.anim.animation_left_in,
+							R.anim.animation_right_out);
+					finish();
+				}
 				break;
 			}
 		}
@@ -51,6 +55,11 @@ public class CoolMarketActivity extends Activity {
 		initUI();
 		tmpFun();
 		test();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
