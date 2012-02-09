@@ -6,26 +6,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -61,8 +53,6 @@ public class ManageAllAppsActivity extends Activity {
 	private AnimationDrawable mAnimDrawable;
 	private ListView mListView;
 	private int mListClickedPosition = -1;
-	private ItemOpAdapter mOpAdapter;
-	private Bitmap bitmap;
 
 	private List<AppItem> mDataList = null;
 	private int mAppTotalNum = -1;
@@ -73,17 +63,11 @@ public class ManageAllAppsActivity extends Activity {
 	private Method getPackageSizeInfoMethod = null;
 	private PkgSizeObserver mPkgSizeObserver = null;
 	private int mGetSizeCount = 0;
-	private boolean mFillDataFinish = false;
 
 	private PackageManager mPkgMgr;
 
 	// header
 	private TextView mTotalNumTxt;
-	private int mSortDlgCheckedItemPosition;
-
-	// dialog id
-	private static final int DLG_SORT_SELECTION_ID = 1;
-	private static final int DLG_SHOW_OP_ID = 2;
 
 	// sort members
 	private AppSort mSortBySize = new AppSort(AppSort.SORT_BY_SIZE);
@@ -95,6 +79,7 @@ public class ManageAllAppsActivity extends Activity {
 	private static final int MSG_PACKAGE_REMOVED = 3;
 	private static final int MSG_UPDATE_UI = 4;
 	private static final int MSG_RESORT_APP = 5;
+	private static final int MSG_APP_HANDLE = 6;
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -116,6 +101,9 @@ public class ManageAllAppsActivity extends Activity {
 				break;
 			case MSG_RESORT_APP:
 				resortApp(msg);
+				break;
+			case MSG_APP_HANDLE:
+				handleApp(msg);
 				break;
 			}
 		}
@@ -145,7 +133,7 @@ public class ManageAllAppsActivity extends Activity {
 	}
 
 	private void updateAppUI(Message msg) {
-		Log.e(TAG, "updateUI.............");
+		// Log.e(TAG, "updateUI.............");
 		synchronized (mDataFillLock) {
 			mDataList.add(mNewItem);
 			mNewItem = null;
@@ -184,12 +172,12 @@ public class ManageAllAppsActivity extends Activity {
 			tempSort = mSortByName;
 		}
 		if (!tempSort.equals(mCurrentSortType)) {
-			Log.e(TAG, "no the same");
+			// Log.e(TAG, "no the same");
 			mCurrentSortType = tempSort;
 			Collections.sort(mDataList, mCurrentSortType);
 			mAdapter.notifyDataSetChanged();
 		} else {
-			Log.e(TAG, "the same order");
+			// Log.e(TAG, "the same order");
 		}
 
 	}
@@ -216,71 +204,6 @@ public class ManageAllAppsActivity extends Activity {
 		super.onDestroy();
 	}
 
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case DLG_SORT_SELECTION_ID:
-			return new AlertDialog.Builder(ManageActivity.mCtx)
-					.setIcon(android.R.drawable.ic_dialog_alert)
-					.setTitle(R.string.select_sort_app_title)
-					.setSingleChoiceItems(R.array.app_sort_type, 0,
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									if (mSortDlgCheckedItemPosition != which) {
-										String[] values = getResources()
-												.getStringArray(
-														R.array.app_sort_type);
-										// Log.d(TAG, "sort it with : " +
-										// values[which]);
-										if (which == 0) {
-											mCurrentSortType = mSortBySize;
-											Collections.sort(mDataList,
-													mCurrentSortType);
-											mAdapter.notifyDataSetChanged();
-										} else if (which == 1) {
-											mCurrentSortType = mSortByName;
-											Collections.sort(mDataList,
-													mCurrentSortType);
-											mAdapter.notifyDataSetChanged();
-										}
-									}
-									dialog.dismiss();
-								}
-							}).create();
-		case DLG_SHOW_OP_ID:
-			AppItem item = mDataList.get(mListClickedPosition);
-			return new AlertDialog.Builder(ManageActivity.mCtx)
-					.setIcon(createIconDrawable(item.icon))
-					.setTitle(item.label).setAdapter(mOpAdapter, null)
-					.setOnCancelListener(new OnCancelListener() {
-
-						@Override
-						public void onCancel(DialogInterface dialog) {
-							removeDialog(DLG_SHOW_OP_ID);
-						}
-					}).create();
-		}
-		return super.onCreateDialog(id);
-	}
-
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		switch (id) {
-		case DLG_SORT_SELECTION_ID:
-			ListView lv = ((AlertDialog) dialog).getListView();
-			mSortDlgCheckedItemPosition = lv.getCheckedItemPosition();
-			// Log.d(TAG, "mSortDlgCheckedItemPosition : "
-			// + mSortDlgCheckedItemPosition);
-			break;
-		case DLG_SHOW_OP_ID:
-			break;
-		}
-		super.onPrepareDialog(id, dialog);
-	}
-
 	private void initUI() {
 		mCtx = this;
 		mLayoutInflater = getLayoutInflater();
@@ -293,14 +216,11 @@ public class ManageAllAppsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// showDialog(DLG_SORT_SELECTION_ID);
 				showsortAppDialog();
 			}
 		});
 		mTotalNumTxt = (TextView) header;
 		mListView.addHeaderView(header);
-		String[] opData = getResources().getStringArray(R.array.app_op);
-		mOpAdapter = new ItemOpAdapter(this, opData);
 		mPkgMgr = getPackageManager();
 		try {
 			getPackageSizeInfoMethod = mPkgMgr.getClass().getMethod(
@@ -314,6 +234,7 @@ public class ManageAllAppsActivity extends Activity {
 
 	private void showsortAppDialog() {
 		Intent i = new Intent(mCtx, ManageAppRankActivity.class);
+
 		if (mCurrentSortType == mSortBySize) {
 			i.putExtra(Constants.EXTRA_APP_SORT_TYPE, Constants.SORT_TYPE_SIZE);
 		} else {
@@ -356,10 +277,6 @@ public class ManageAllAppsActivity extends Activity {
 			}
 		}
 		mAppTotalNum = mDataList.size();
-		if (!mFillDataFinish) {
-			mFillDataFinish = !mFillDataFinish;
-			mHandler.sendEmptyMessage(MSG_FILL_DATA);
-		}
 		// Log.d(TAG, "mAppTotalNum : " + mAppTotalNum);
 	}
 
@@ -386,10 +303,7 @@ public class ManageAllAppsActivity extends Activity {
 				mGetSizeCount++;
 				// Log.d(TAG, "mGetSizeCount : " + mGetSizeCount);
 				if (mAppTotalNum != -1 && mGetSizeCount == mAppTotalNum) {
-					if (!mFillDataFinish) {
-						mFillDataFinish = !mFillDataFinish;
-						mHandler.sendEmptyMessage(MSG_FILL_DATA);
-					}
+					mHandler.sendEmptyMessage(MSG_FILL_DATA);
 				}
 				if (mNewItem != null) {
 					long size = pStats.codeSize + pStats.dataSize
@@ -566,7 +480,7 @@ public class ManageAllAppsActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					mListClickedPosition = pos;
-					showDialog(DLG_SHOW_OP_ID);
+					showHandleAppDialog();
 				}
 			});
 			return convertView;
@@ -578,6 +492,13 @@ public class ManageAllAppsActivity extends Activity {
 		private TextView name;
 		private TextView version;
 		private TextView size;
+	}
+
+	private void showHandleAppDialog() {
+		Intent i = new Intent(mCtx, ManageAppHandleActivity.class);
+		i.putExtra(Constants.EXTRA_APP_PKGNAME, mDataList
+				.get(mListClickedPosition).pkgName);
+		startActivity(i);
 	}
 
 	private class AppItem {
@@ -604,102 +525,20 @@ public class ManageAllAppsActivity extends Activity {
 		}
 	}
 
-	private BitmapDrawable createIconDrawable(Drawable drawable) {
-		if (bitmap != null && !bitmap.isRecycled()) {
-			bitmap = null;
-		}
-		bitmap = ((BitmapDrawable) drawable).getBitmap();
-		int width = bitmap.getWidth();
-		int height = bitmap.getHeight();
-		float newWidth = getResources().getDimension(
-				android.R.dimen.app_icon_size);
-		float newHeight = newWidth;
-		float scaleWidth = newWidth / width;
-		float scaleHeight = newHeight / height;
-		Matrix matrix = new Matrix();
-		matrix.postScale(scaleWidth, scaleHeight);
-		bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-		return new BitmapDrawable(bitmap);
-	}
-
-	private class ItemOpAdapter extends BaseAdapter {
-
-		private Context mCtx;
-		private String[] mData;
-
-		public ItemOpAdapter(Context context, String[] objects) {
-			mCtx = context;
-			mData = objects;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			if (convertView == null) {
-				convertView = getLayoutInflater().inflate(
-						R.layout.select_dialog_item, null);
-			}
-			TextView text1 = (TextView) convertView;
-			text1.setText(mData[position]);
-			int defaultTextColr = text1.getCurrentTextColor();
-			AppItem item = mDataList.get(mListClickedPosition);
-			Intent launcherIntent = item.launcherIntent;
-			// Log.d(TAG, "mListClickedPosition : " + mListClickedPosition
-			// + ",launcherIntent : " + launcherIntent);
-			if (launcherIntent == null && position == 0) {
-				convertView.setClickable(false);
-				convertView.setEnabled(false);
-				text1.setTextColor(Color.GRAY);
-			} else {
-				convertView.setClickable(true);
-				convertView.setEnabled(true);
-				text1.setTextColor(defaultTextColr);
-			}
-			final int pos = position;
-			convertView.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					if (v.isClickable()) {
-						// Log.d(TAG, "txt : " + mData[pos]);
-						dismissDialog(DLG_SHOW_OP_ID);
-						responseUserClick(pos);
-					}
-
-				}
-			});
-			return convertView;
-		}
-
-		@Override
-		public int getCount() {
-			return mData.length;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return position;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		private void responseUserClick(int position) {
-			switch (position) {
-			case 0:
-				launchApp();
-				break;
-			case 1:
-				uninstallApp();
-				break;
-			case 2:
-				viewAppDetail();
-				break;
-			default:
-				// nothing
-				break;
-			}
+	private void handleApp(Message msg) {
+		switch (msg.arg1) {
+		case 0:
+			launchApp();
+			break;
+		case 1:
+			uninstallApp();
+			break;
+		case 2:
+			viewAppDetail();
+			break;
+		default:
+			// nothing
+			break;
 		}
 	}
 
@@ -728,8 +567,8 @@ public class ManageAllAppsActivity extends Activity {
 		AppItem item = mDataList.get(mListClickedPosition);
 		Intent i = new Intent();
 		Uri pkgUri = Uri.parse("package:" + item.pkgName);
-		i.setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
-				.setData(pkgUri).addCategory(Intent.CATEGORY_DEFAULT);
+		i.setAction("android.settings.APPLICATION_DETAILS_SETTINGS").setData(
+				pkgUri).addCategory(Intent.CATEGORY_DEFAULT);
 		try {
 			startActivity(i);
 		} catch (ActivityNotFoundException e) {
@@ -742,6 +581,7 @@ public class ManageAllAppsActivity extends Activity {
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
 		filter.addAction(Constants.ACTION_APP_SORT);
+		filter.addAction(Constants.ACTION_APP_HANDLE);
 		filter.addDataScheme("package");
 		registerReceiver(mReceiver, filter);
 	}
@@ -782,6 +622,15 @@ public class ManageAllAppsActivity extends Activity {
 					Message msg = mHandler.obtainMessage();
 					msg.arg1 = pos;
 					msg.what = MSG_RESORT_APP;
+					mHandler.sendMessage(msg);
+				}
+			} else if (TextUtils.equals(action, Constants.ACTION_APP_HANDLE)) {
+				int pos = intent
+						.getIntExtra(Constants.EXTRA_APP_HANDLE_POS, -1);
+				if (pos != -1) {
+					Message msg = mHandler.obtainMessage();
+					msg.arg1 = pos;
+					msg.what = MSG_APP_HANDLE;
 					mHandler.sendMessage(msg);
 				}
 			}

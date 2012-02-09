@@ -30,6 +30,7 @@ public class ManageAppRankActivity extends Activity {
 
 	// default selected position
 	private int mDefSelectedPos;
+	private Uri mDataScheme;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class ManageAppRankActivity extends Activity {
 
 	private void initUI() {
 		mCtx = this;
+		mDataScheme = new Uri.Builder().scheme("package").build();
 		mTitle = (TextView) findViewById(R.id.mgr_app_rank_title);
 		mListView = (ListView) findViewById(android.R.id.list);
 		mData = getResources().getStringArray(R.array.app_sort_type);
@@ -59,13 +61,12 @@ public class ManageAppRankActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// TODO
-				Intent i = new Intent(Constants.ACTION_APP_SORT);
-				i.putExtra(Constants.EXTRA_SORT_TYPE_POS, position);
-				Uri.Builder uriBuilder = new Uri.Builder();
-				uriBuilder.scheme("package");
-				i.setData(uriBuilder.build());
-				sendBroadcast(i);
+				if (position != mDefSelectedPos) {
+					Intent i = new Intent(Constants.ACTION_APP_SORT);
+					i.putExtra(Constants.EXTRA_SORT_TYPE_POS, position);
+					i.setData(mDataScheme);
+					sendBroadcast(i);
+				}
 				finish();
 			}
 		});
@@ -92,20 +93,10 @@ public class ManageAppRankActivity extends Activity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
 				convertView = getLayoutInflater().inflate(
-						android.R.layout.simple_list_item_single_choice, null);
+						R.layout.simple_list_item_single_choice, null);
 			}
 			CheckedTextView tv = (CheckedTextView) convertView;
-			tv.setTextAppearance(mCtx, R.style.app_text_style1);
-			convertView.setBackgroundResource(R.drawable.list_item_bg_selector);
 			tv.setText(mData[position]);
-			// convertView.setOnClickListener(new OnClickListener() {
-			//
-			// @Override
-			// public void onClick(View v) {
-			// // TODO
-			// Log.e(TAG, "onClick");
-			// }
-			// });
 			return convertView;
 		}
 	}

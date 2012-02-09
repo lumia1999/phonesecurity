@@ -40,12 +40,16 @@ public final class Constants {
 	// activity request code def
 	public static final int REQ_CODE_APP_EXIT = 1;
 
-	// activity extra params
+	// sort application order action and extra params
 	public static final String ACTION_APP_SORT = "com.herry.coolmarket.ACTION_APP_SORT";
 	public static final String EXTRA_APP_SORT_TYPE = "sort_type";
 	public static final int SORT_TYPE_SIZE = 0;
 	public static final int SORT_TYPE_NAME = 1;
-
 	public static final String EXTRA_SORT_TYPE_POS = "sort_type_pos";
+
+	// application handle action and extra params
+	public static final String ACTION_APP_HANDLE = "com.herry.coolmarket.ACTION_APP_HANDLE";
+	public static final String EXTRA_APP_HANDLE_POS = "handle_pos";
+	public static final String EXTRA_APP_PKGNAME = "app_pkgname";
 
 }
