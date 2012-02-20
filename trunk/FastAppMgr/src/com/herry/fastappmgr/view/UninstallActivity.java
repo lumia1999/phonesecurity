@@ -6,12 +6,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import net.youmi.android.AdManager;
 import net.youmi.android.AdView;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
@@ -31,13 +33,16 @@ import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -53,8 +58,11 @@ public class UninstallActivity extends ListActivity {
 	private PackageManager mPkgMgr;
 	private PkgSizeObserver mPkgSizeOberver;
 
+	private View mHeader;
 	private List<Item> mDataList = null;
 	private AppAdapter mAdapter;
+	private ListView mListView;
+	private LayoutInflater mLayoutInflater;
 	private boolean mExit = false;
 	private ProgressBar mProgressBar;
 	int mTotalAppNum = 0;
@@ -70,6 +78,18 @@ public class UninstallActivity extends ListActivity {
 	private static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 	private static final String ACTION_INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
 	private Bitmap bitmap;
+
+	private String mVersionTipString;
+	private String mNoVersionString;
+	private String mTotalAppNumberString;
+
+	private static final int DLG_SHOW_SORT_ID = 1;
+
+	// sort members
+	private AppSort mSortBySize = new AppSort(AppSort.SORT_BY_SIZE);
+	private AppSort mSortByName = new AppSort(AppSort.SORT_BY_NAME);
+	private AppSort mCurrentSortType = mSortBySize;
+	private int mSortCheckedPosition;
 
 	private static final int MSG_FILL_DATA = 1;
 	private static final int MSG_GET_PKG_SIZE = 2;
@@ -94,6 +114,9 @@ public class UninstallActivity extends ListActivity {
 				if (mDelPos != -1) {
 					mDataList.remove(mDelPos);
 					mDelPos = -1;// reset
+					mTotalAppNum--;
+					((TextView) mHeader).setText(mTotalAppNumberString
+							+ mTotalAppNum);
 					mAdapter.notifyDataSetChanged();
 				} else {
 					String pkgName = (String) msg.obj;
@@ -105,6 +128,8 @@ public class UninstallActivity extends ListActivity {
 							mDataList.remove(i);
 							mAdapter.notifyDataSetChanged();
 							mTotalAppNum--;
+							((TextView) mHeader).setText(mTotalAppNumberString
+									+ mTotalAppNum);
 							break;
 						}
 					}
@@ -180,13 +205,14 @@ public class UninstallActivity extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
-		Item temp = mDataList.get(info.position);
+		Item temp = mDataList.get(info.position - 1);
 		Uri pkgUri = Uri.parse("package:" + temp.pkgName);
 		Intent i = new Intent();
 		switch (item.getItemId()) {
 		case CM_UNINSTALL:
 			i.setAction(Intent.ACTION_DELETE).setData(pkgUri);
-			mDelPos = info.position;
+			mDelPos = info.position - 1;
+			Log.e(TAG, "mDelPos : " + mDelPos);
 			startActivity(i);
 			return true;
 		case CM_LAUNCH:
@@ -225,7 +251,7 @@ public class UninstallActivity extends ListActivity {
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-		Item item = mDataList.get(info.position);
+		Item item = mDataList.get(info.position - 1);// minus added header
 		menu.setHeaderIcon(new BitmapDrawable(createIconDrawable(item.icon)));
 		menu.setHeaderTitle(item.label);
 		menu.add(0, CM_UNINSTALL, 0, R.string.cm_uninstall);
@@ -235,6 +261,57 @@ public class UninstallActivity extends ListActivity {
 		if (item.launcherIntent == null) {
 			menu.getItem(CM_LAUNCH).setEnabled(false);
 			menu.getItem(CM_INSTALL_SHORTCUT).setEnabled(false);
+		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DLG_SHOW_SORT_ID:
+			return new AlertDialog.Builder(this).setIcon(
+					android.R.drawable.ic_dialog_alert).setTitle(
+					R.string.sort_app_title).setSingleChoiceItems(
+					R.array.app_sort_type, 0,
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// Log.e(TAG, "mSortCheckedPosition : "
+							// + mSortCheckedPosition + ",which : "
+							// + which);
+							if (mSortCheckedPosition != which) {
+								switch (which) {
+								case 0:
+									mCurrentSortType = mSortBySize;
+									break;
+								case 1:
+									mCurrentSortType = mSortByName;
+									break;
+								default:
+									break;
+								}
+								Collections.sort(mDataList, mCurrentSortType);
+								if (mAdapter != null) {
+									mAdapter.notifyDataSetChanged();
+								}
+							}
+							dialog.dismiss();
+						}
+					}).create();
+
+		}
+		return super.onCreateDialog(id);
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		super.onPrepareDialog(id, dialog);
+		switch (id) {
+		case DLG_SHOW_SORT_ID:
+			ListView lv = ((AlertDialog) dialog).getListView();
+			mSortCheckedPosition = lv.getCheckedItemPosition();
+			// Log.e(TAG, "mSortCheckedPosition : " + mSortCheckedPosition);
+			break;
 		}
 	}
 
@@ -276,6 +353,7 @@ public class UninstallActivity extends ListActivity {
 			mAdView.setVisibility(View.GONE);
 		}
 		mProgressBar.setVisibility(View.GONE);
+		((TextView) mHeader).setText(mTotalAppNumberString + mTotalAppNum);
 		mAdapter = new AppAdapter();
 		setListAdapter(mAdapter);
 	}
@@ -284,7 +362,21 @@ public class UninstallActivity extends ListActivity {
 		// ad
 		mAdView = (AdView) findViewById(R.id.adView);
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
-		registerForContextMenu(getListView());
+		mVersionTipString = getString(R.string.version_tip);
+		mNoVersionString = getString(R.string.no_version);
+		mTotalAppNumberString = getString(R.string.total_app_number_tip);
+		mListView = getListView();
+		mLayoutInflater = getLayoutInflater();
+		mHeader = mLayoutInflater.inflate(R.layout.app_num_tip, null);
+		mHeader.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				showDialog(DLG_SHOW_SORT_ID);
+			}
+		});
+		mListView.addHeaderView(mHeader);
+		registerForContextMenu(mListView);
 	}
 
 	private void initData() {
@@ -325,6 +417,7 @@ public class UninstallActivity extends ListActivity {
 
 	private Item makeUseOfPackageInfo(PackageManager pm, PackageInfo info) {
 		String label;
+		String pinyinLabel;
 		Drawable drawable;
 		String pkgName;
 		String versionName;
@@ -333,17 +426,23 @@ public class UninstallActivity extends ListActivity {
 		Intent launcherIntent;
 		try {
 			label = pm.getApplicationLabel(info.applicationInfo).toString();
+			pinyinLabel = Utils.genPinyin(label);
 			drawable = pm.getApplicationIcon(info.applicationInfo);
 			pkgName = info.packageName;
 			versionName = info.versionName;
+			if (versionName == null) {
+				versionName = mNoVersionString;
+			} else {
+				versionName = mVersionTipString + versionName;
+			}
 			if (label.equals("SD Card Speed Test")) {
 				Log.d(TAG, "versionName : " + versionName);
 			}
 			size = "0MB";// TEMP
 			orgSize = 0;
 			launcherIntent = pm.getLaunchIntentForPackage(pkgName);
-			return new Item(label, drawable, pkgName, versionName, size,
-					orgSize, launcherIntent);
+			return new Item(label, pinyinLabel, drawable, pkgName, versionName,
+					size, orgSize, launcherIntent);
 		} catch (Exception e) {
 			return null;
 		}
@@ -351,6 +450,7 @@ public class UninstallActivity extends ListActivity {
 
 	private class Item {
 		private String label;
+		private String pinyinLabel;
 		private Drawable icon;
 		private String pkgName;
 		private String versionName;
@@ -358,10 +458,11 @@ public class UninstallActivity extends ListActivity {
 		private long orgSize;
 		private Intent launcherIntent;
 
-		public Item(String label, Drawable drawable, String pkgName,
-				String versionName, String size, long orgSize,
+		public Item(String label, String pinyinLabel, Drawable drawable,
+				String pkgName, String versionName, String size, long orgSize,
 				Intent launcherIntent) {
 			this.label = label;
+			this.pinyinLabel = pinyinLabel;
 			this.icon = drawable;
 			this.pkgName = pkgName;
 			this.versionName = versionName;
@@ -392,7 +493,7 @@ public class UninstallActivity extends ListActivity {
 			}
 		}
 		if (mIndex == mTotalAppNum) {
-			Collections.sort(mDataList, new AppSort());
+			Collections.sort(mDataList, mCurrentSortType);
 			mHandler.sendEmptyMessage(MSG_FILL_DATA);
 		}
 	}
@@ -423,16 +524,31 @@ public class UninstallActivity extends ListActivity {
 
 	private class AppSort implements Comparator<Item> {
 
+		private static final int SORT_BY_SIZE = 0;
+		private static final int SORT_BY_NAME = 1;
+
+		private int mSortBy;
+
+		public AppSort(int sortBy) {
+			this.mSortBy = sortBy;
+		}
+
 		@Override
 		public int compare(Item item1, Item item2) {
-			if (item1.orgSize > item2.orgSize) {
-				return -1;
-			} else if (item1.orgSize == item2.orgSize) {
+			switch (mSortBy) {
+			case SORT_BY_SIZE:
+				if (item1.orgSize > item2.orgSize) {
+					return -1;
+				} else if (item1.orgSize == item2.orgSize) {
+					return 0;
+				} else if (item1.orgSize < item2.orgSize) {
+					return 1;
+				}
+			case SORT_BY_NAME:
+				return item1.pinyinLabel.compareTo(item2.pinyinLabel);
+			default:
 				return 0;
-			} else if (item1.orgSize < item2.orgSize) {
-				return 1;
 			}
-			return 0;
 		}
 	}
 
@@ -455,23 +571,37 @@ public class UninstallActivity extends ListActivity {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
+			AllAppViewHolder viewHolder;
 			if (convertView == null) {
-				convertView = getLayoutInflater().inflate(R.layout.main_item,
-						null);
+				convertView = mLayoutInflater.inflate(R.layout.main_item, null);
+				viewHolder = new AllAppViewHolder();
+				viewHolder.icon = (ImageView) convertView
+						.findViewById(R.id.icon);
+				viewHolder.label = (TextView) convertView
+						.findViewById(R.id.label);
+				viewHolder.version = (TextView) convertView
+						.findViewById(R.id.version_name);
+				viewHolder.size = (TextView) convertView
+						.findViewById(R.id.size);
+				convertView.setTag(viewHolder);
+			} else {
+				viewHolder = (AllAppViewHolder) convertView.getTag();
 			}
+
 			Item item = mDataList.get(position);
-			ImageView iconImage = (ImageView) convertView
-					.findViewById(R.id.icon);
-			TextView labelTxt = (TextView) convertView.findViewById(R.id.label);
-			TextView versionNameTxt = (TextView) convertView
-					.findViewById(R.id.version_name);
-			TextView sizeTxt = (TextView) convertView.findViewById(R.id.size);
-			iconImage.setBackgroundDrawable(item.icon);
-			labelTxt.setText(item.label);
-			versionNameTxt.setText(item.versionName);
-			sizeTxt.setText(item.size);
+			viewHolder.icon.setBackgroundDrawable(item.icon);
+			viewHolder.label.setText(item.label);
+			viewHolder.version.setText(item.versionName);
+			viewHolder.size.setText(item.size);
 			return convertView;
 		}
+	}
+
+	private class AllAppViewHolder {
+		private ImageView icon;
+		private TextView label;
+		private TextView version;
+		private TextView size;
 	}
 
 }

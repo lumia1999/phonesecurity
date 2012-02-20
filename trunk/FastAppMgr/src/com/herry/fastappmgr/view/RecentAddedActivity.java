@@ -392,20 +392,33 @@ public class RecentAddedActivity extends ListActivity {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
+			RecentAppViewHolder viewHolder;
 			if (convertView == null) {
 				convertView = getLayoutInflater().inflate(
 						R.layout.recent_added_packages_item, null);
+				viewHolder = new RecentAppViewHolder();
+				viewHolder.icon = (ImageView) convertView
+						.findViewById(R.id.icon);
+				viewHolder.name = (TextView) convertView
+						.findViewById(R.id.name);
+				viewHolder.timestamp = (TextView) convertView
+						.findViewById(R.id.ts);
+				convertView.setTag(viewHolder);
+
+			} else {
+				viewHolder = (RecentAppViewHolder) convertView.getTag();
 			}
 			Item item = mDataList.get(position);
-			ImageView iconImage = (ImageView) convertView
-					.findViewById(R.id.icon);
-			TextView nameTxt = (TextView) convertView.findViewById(R.id.name);
-			TextView tsTxt = (TextView) convertView.findViewById(R.id.ts);
-			iconImage.setBackgroundDrawable(item.icon);
-			nameTxt.setText(item.label);
-			tsTxt.setText(item.timeStamp);
+			viewHolder.icon.setBackgroundDrawable(item.icon);
+			viewHolder.name.setText(item.label);
+			viewHolder.timestamp.setText(item.timeStamp);
 			return convertView;
 		}
+	}
 
+	private class RecentAppViewHolder {
+		private ImageView icon;
+		private TextView name;
+		private TextView timestamp;
 	}
 }
