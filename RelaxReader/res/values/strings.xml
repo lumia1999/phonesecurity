@@ -3,5 +3,12 @@
 
     <string name="hello">Hello World, RelaxReaderActivity!</string>
     <string name="app_name">我型我阅</string>
-
+	
+    <!-- main item -->
+    <string name="item_qiushibaike">糗事全集</string>
+    <string name="item_hotjoke">热门笑话</string>
+    <string name="item_newestjoke">最新笑话</string>
+    <string name="item_coldjoke">冷笑话</string>
+    <string name="item_horriblejoke">恐怖笑话</string>
+    <string name="item_dailyjoke">日常笑话</string>    
 </resources>

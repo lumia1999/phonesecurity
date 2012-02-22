@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="orange">#ffffb400</color>
+    <color name="grey">#a0a0a0</color>
+    <color name="background_color">#fff0f0f0</color>
+    <color name="list_view_bg_color">#00000000</color>
+
+</resources>
