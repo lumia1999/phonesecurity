@@ -6,9 +6,12 @@
 	
     <!-- main item -->
     <string name="item_qiushibaike">糗事全集</string>
+    <string name="item_adult">成人笑话</string>
     <string name="item_hotjoke">热门笑话</string>
     <string name="item_newestjoke">最新笑话</string>
-    <string name="item_coldjoke">冷笑话</string>
-    <string name="item_horriblejoke">恐怖笑话</string>
-    <string name="item_dailyjoke">日常笑话</string>    
+    <string name="item_coldjoke">超冷笑话</string>
+    <string name="item_horriblejoke">恐怖笑话</string>  
+    
+    <!-- header tip -->
+    <string name="global_tip">Wow...开启欢乐干线...</string>
 </resources>
