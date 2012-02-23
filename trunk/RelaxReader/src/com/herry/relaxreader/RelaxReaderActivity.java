@@ -10,12 +10,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
-public class RelaxReaderActivity extends Activity {
+public class RelaxReaderActivity extends Activity implements
+		OnItemClickListener {
 	private static final String TAG = "RelaxReaderActivity";
 	private ListView mListView;
 	private List<Map<String, Integer>> mDataList = null;
@@ -34,9 +38,21 @@ public class RelaxReaderActivity extends Activity {
 		fillData();
 	}
 
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO
+		Toast.makeText(this, "position : " + position, Toast.LENGTH_SHORT)
+				.show();
+	}
+
 	private void initUI() {
 		mListView = (ListView) findViewById(android.R.id.list);
+		mListView.setOnItemClickListener(this);
 		mLayoutInflater = getLayoutInflater();
+		View header = mLayoutInflater.inflate(R.layout.list_view_header, null);
+		mListView.addHeaderView(header);
+		header.setOnClickListener(null);
 	}
 
 	private void initData() {
@@ -48,33 +64,33 @@ public class RelaxReaderActivity extends Activity {
 		Map<String, Integer> temp = null;
 		// qiushibaike
 		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.ic_launcher);
+		temp.put(ITEM_ICON, R.drawable.item_qiushibaike);
 		temp.put(ITEM_TITLE, R.string.item_qiushibaike);
+		mDataList.add(temp);
+		// adult
+		temp = new HashMap<String, Integer>();
+		temp.put(ITEM_ICON, R.drawable.item_adult);
+		temp.put(ITEM_TITLE, R.string.item_adult);
 		mDataList.add(temp);
 		// hot
 		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.ic_launcher);
+		temp.put(ITEM_ICON, R.drawable.item_hot);
 		temp.put(ITEM_TITLE, R.string.item_hotjoke);
 		mDataList.add(temp);
 		// newest
 		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.ic_launcher);
+		temp.put(ITEM_ICON, R.drawable.item_new);
 		temp.put(ITEM_TITLE, R.string.item_newestjoke);
 		mDataList.add(temp);
 		// cold
 		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.ic_launcher);
+		temp.put(ITEM_ICON, R.drawable.item_cold);
 		temp.put(ITEM_TITLE, R.string.item_coldjoke);
 		mDataList.add(temp);
 		// horrible
 		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.ic_launcher);
+		temp.put(ITEM_ICON, R.drawable.item_horrible);
 		temp.put(ITEM_TITLE, R.string.item_horriblejoke);
-		mDataList.add(temp);
-		// daily
-		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.ic_launcher);
-		temp.put(ITEM_TITLE, R.string.item_dailyjoke);
 		mDataList.add(temp);
 	}
 
@@ -126,4 +142,5 @@ public class RelaxReaderActivity extends Activity {
 		private ImageView icon;
 		private TextView title;
 	}
+
 }
