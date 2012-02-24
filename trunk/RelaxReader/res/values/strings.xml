@@ -10,8 +10,11 @@
     <string name="item_hotjoke">热门笑话</string>
     <string name="item_newestjoke">最新笑话</string>
     <string name="item_coldjoke">超冷笑话</string>
-    <string name="item_horriblejoke">恐怖笑话</string>  
+    <string name="item_horriblejoke">恐怖笑话</string>
+    
+    <!-- dialog string -->
+    <string name="unzip_dlg_msg">初始化中，请稍后。。。</string>
     
     <!-- header tip -->
-    <string name="global_tip">Wow...开启欢乐干线...</string>
+    <string name="global_tip">我型我阅\nWow...开启欢乐干线...</string>
 </resources>
