@@ -10,11 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.youmi.android.AdManager;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -34,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.herry.relaxreader.util.Constants;
 import com.herry.relaxreader.util.FileHelper;
 import com.herry.relaxreader.util.Prefs;
 import com.herry.relaxreader.util.Utils;
@@ -43,9 +47,10 @@ public class RelaxReaderActivity extends Activity implements
 		OnItemClickListener {
 	private static final String TAG = "RelaxReaderActivity";
 	private ListView mListView;
-	private List<Map<String, Integer>> mDataList = null;
+	private List<Item> mDataList = null;
 	private static final String ITEM_ICON = "icon";
 	private static final String ITEM_TITLE = "title";
+	private static final String ITEM_DEST_NAME = "dest_name";
 	private MainListAdapter mAdapter;
 	private LayoutInflater mLayoutInflater;
 	private Context mCtx;
@@ -57,6 +62,7 @@ public class RelaxReaderActivity extends Activity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		AdManager.init(this, "0025ccd4baca1bb2", "6f8360d97e84aa86", 30, true);
 		initUI();
 		initData();
 		fillData();
@@ -72,9 +78,14 @@ public class RelaxReaderActivity extends Activity implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		// TODO
-		Toast.makeText(this, "position : " + position, Toast.LENGTH_SHORT)
-				.show();
+		Item item = mDataList.get(position - 1);
+		// Toast.makeText(this, "dest name : " + item.mDestName,
+		// Toast.LENGTH_SHORT).show();
+		Intent i = new Intent(this, PageViewActivity.class);
+		i.putExtra(Constants.EXTRA_ITEM_NAME, item.mDestName);
+		startActivity(i);
+		overridePendingTransition(R.anim.animation_right_in,
+				R.anim.animation_left_out);
 	}
 
 	@Override
@@ -114,38 +125,32 @@ public class RelaxReaderActivity extends Activity implements
 		if (mDataList != null && !mDataList.isEmpty()) {
 			mDataList.clear();
 		} else {
-			mDataList = new ArrayList<Map<String, Integer>>();
+			mDataList = new ArrayList<Item>();
 		}
-		Map<String, Integer> temp = null;
+		Item temp = null;
 		// qiushibaike
-		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.item_qiushibaike);
-		temp.put(ITEM_TITLE, R.string.item_qiushibaike);
+		temp = new Item(R.drawable.item_qiushibaike, R.string.item_qiushibaike,
+				FileHelper.DEST_QIUSHIBAIKE);
 		mDataList.add(temp);
 		// adult
-		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.item_adult);
-		temp.put(ITEM_TITLE, R.string.item_adult);
+		temp = new Item(R.drawable.item_adult, R.string.item_adult,
+				FileHelper.DEST_ADULT);
 		mDataList.add(temp);
 		// hot
-		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.item_hot);
-		temp.put(ITEM_TITLE, R.string.item_hotjoke);
+		temp = new Item(R.drawable.item_hot, R.string.item_hotjoke,
+				FileHelper.DEST_HOT);
 		mDataList.add(temp);
 		// newest
-		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.item_new);
-		temp.put(ITEM_TITLE, R.string.item_newestjoke);
+		temp = new Item(R.drawable.item_new, R.string.item_newestjoke,
+				FileHelper.DEST_NEWEST);
 		mDataList.add(temp);
 		// cold
-		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.item_cold);
-		temp.put(ITEM_TITLE, R.string.item_coldjoke);
+		temp = new Item(R.drawable.item_cold, R.string.item_coldjoke,
+				FileHelper.DEST_COLD);
 		mDataList.add(temp);
 		// horrible
-		temp = new HashMap<String, Integer>();
-		temp.put(ITEM_ICON, R.drawable.item_horrible);
-		temp.put(ITEM_TITLE, R.string.item_horriblejoke);
+		temp = new Item(R.drawable.item_horrible, R.string.item_horriblejoke,
+				FileHelper.DEST_HORRIBLE);
 		mDataList.add(temp);
 	}
 
@@ -172,7 +177,6 @@ public class RelaxReaderActivity extends Activity implements
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			// TODO
 			// 1.copy zip file to a temp directory
 			// 2.upzip it
 			boolean success = FileHelper.mkDir();
@@ -259,10 +263,9 @@ public class RelaxReaderActivity extends Activity implements
 			} else {
 				viewHolder = (ViewHolder) convertView.getTag();
 			}
-			Map<String, Integer> item = mDataList.get(position);
-			viewHolder.icon
-					.setBackgroundResource((Integer) item.get(ITEM_ICON));
-			viewHolder.title.setText(getString(item.get(ITEM_TITLE)));
+			Item item = mDataList.get(position);
+			viewHolder.icon.setBackgroundResource(item.mIconId);
+			viewHolder.title.setText(getString(item.mTitleId));
 			return convertView;
 		}
 	}
@@ -270,6 +273,18 @@ public class RelaxReaderActivity extends Activity implements
 	private class ViewHolder {
 		private ImageView icon;
 		private TextView title;
+	}
+
+	private class Item {
+		private int mIconId;
+		private int mTitleId;
+		private String mDestName;
+
+		public Item(int iconId, int titleId, String destName) {
+			this.mIconId = iconId;
+			this.mTitleId = titleId;
+			this.mDestName = destName;
+		}
 	}
 
 }
