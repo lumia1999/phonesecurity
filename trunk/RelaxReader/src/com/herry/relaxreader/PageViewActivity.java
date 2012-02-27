@@ -49,6 +49,9 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	private GestureDetector mGestDetector;
 	private ScreenParams mScreenParams;
 
+	private Animation mPrevAnim;
+	private Animation mNextAnim;
+
 	// data
 	// itemList用于表示总共有多少个文件
 	// DataList用于存储每一个文件中的数据
@@ -82,6 +85,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void initUI() {
 		mLayoutInflater = getLayoutInflater();
+		mPrevAnim = AnimationUtils.loadAnimation(this, R.anim.animation_prev);
+		mNextAnim = AnimationUtils.loadAnimation(this, R.anim.animation_next);
 		mTitles = new Title();
 		mTitles.mTitle = (TextView) findViewById(R.id.title);
 		mTitles.mCurrentMonth = (TextView) findViewById(R.id.current_month);
@@ -99,7 +104,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		mGestDetector = new GestureDetector(this, new DefaultGestureListener());
 		mScreenParams = new ScreenParams();
 		initScreenParams();
-		new LoadDataTask().execute();
+		new LoadDataTask().execute(true);
 	}
 
 	private void initScreenParams() {
@@ -148,14 +153,44 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			}
 			break;
 		case R.id.prev_month:
-			Log.d(TAG, "prev month");
+			// Log.d(TAG, "prev month");
+			onPrevMonth();
 			break;
 		case R.id.share:
-			Log.d(TAG, "share");
+			// Log.d(TAG, "share");
+			onShare();
 			break;
 		case R.id.next_month:
-			Log.d(TAG, "next month");
+			// Log.d(TAG, "next month");
+			onNextMonth();
 			break;
+		}
+	}
+
+	private void onPrevMonth() {
+		if (mItemIndex > 0) {
+			mItemIndex--;
+			new LoadDataTask().execute(false);
+		} else {
+			Log.d(TAG, "it is the first month");
+		}
+	}
+
+	private void onShare() {
+		Intent i = new Intent(Intent.ACTION_SEND);
+		i.setType("text/plain");
+		i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_msg_title));
+		i.putExtra(Intent.EXTRA_TEXT, mDataList.get(position));
+		startActivity(Intent.createChooser(i,
+				getString(R.string.share_dlg_title)));
+	}
+
+	private void onNextMonth() {
+		if (mItemIndex < mItemList.size() - 1) {
+			mItemIndex++;
+			new LoadDataTask().execute(false);
+		} else {
+			Log.d(TAG, "it is the last month");
 		}
 	}
 
@@ -182,8 +217,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 				float y = ev.getY();
 				int opLayoutHeight = mOpLayout.getHeight();
 				int adHeight = mAdView.getHeight();
-				Log.e(TAG, "y : " + y + ",opLayoutHeight : " + opLayoutHeight
-						+ ",adHeight : " + adHeight);
+				// Log.e(TAG, "y : " + y + ",opLayoutHeight : " + opLayoutHeight
+				// + ",adHeight : " + adHeight);
 				if (y < (mScreenParams.mHeight - opLayoutHeight - adHeight)) {
 					handleUserTouch(ev);
 				}
@@ -197,13 +232,13 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		int mid = 80;
 		int half = (mScreenParams.mWidth - mid) / 2;
 		if (x <= half) {
-			Log.e(TAG, "left");
+			// Log.e(TAG, "left");
 			onPrev();
 		} else if (x >= half + mid) {
-			Log.e(TAG, "right");
+			// Log.e(TAG, "right");
 			onNext();
 		} else {
-			Log.e(TAG, "middle");
+			// Log.e(TAG, "middle");
 		}
 
 	}
@@ -211,11 +246,9 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	private void onPrev() {
 		// TODO
 		if (position > 0) {
-			Animation a = AnimationUtils.loadAnimation(this,
-					R.anim.animation_prev);
 			position--;
 			mContentTxt.setText(mDataList.get(position));
-			mContentTxt.startAnimation(a);
+			mContentTxt.startAnimation(mPrevAnim);
 			updateTitle();
 		} else {
 			Log.e(TAG, "it is the first item");
@@ -225,11 +258,9 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	private void onNext() {
 		// TODO
 		if (position < mDataList.size() - 1) {
-			Animation a = AnimationUtils.loadAnimation(this,
-					R.anim.animation_next);
 			position++;
 			mContentTxt.setText(mDataList.get(position));
-			mContentTxt.startAnimation(a);
+			mContentTxt.startAnimation(mNextAnim);
 			updateTitle();
 		} else {
 			Log.e(TAG, "it is the last item");
@@ -271,7 +302,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
+	private class LoadDataTask extends AsyncTask<Boolean, Void, Boolean> {
 
 		private String obtainItemChName(String fName) {
 			String ret = null;
@@ -286,46 +317,50 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		}
 
 		@Override
-		protected Boolean doInBackground(Void... params) {
-			if (mItemList != null && !mItemList.isEmpty()) {
-				mItemList.clear();
-			} else {
-				mItemList = new ArrayList<DataItem>();
+		protected Boolean doInBackground(Boolean... params) {
+			boolean init = params[0];
+			if (init) {
+				if (mItemList != null && !mItemList.isEmpty()) {
+					mItemList.clear();
+				} else {
+					mItemList = new ArrayList<DataItem>();
+				}
+				// first load all file information
+				File dir = new File(FileHelper.getSubDestPath(mDestName));
+				File[] allFiles = dir.listFiles();
+				if (allFiles == null) {
+					return false;
+				}
+				int length = allFiles.length;
+				if (length == 0) {
+					return false;
+				}
+				for (File f : allFiles) {
+					String fName = f.getName();
+					mItemList.add(new DataItem(fName, f.getAbsolutePath(),
+							obtainItemChName(fName)));
+				}
+				Collections.sort(mItemList, new DataItemCompare());
+				mItemIndex = 0;
 			}
+			// for (int i = 0; i < mItemList.size(); i++) {
+			// Log.e(TAG, "short name : " + mItemList.get(i).mShortName);
+			// }
 			if (mDataList != null && !mDataList.isEmpty()) {
 				mDataList.clear();
 			} else {
 				mDataList = new ArrayList<String>();
 			}
-			// first load all file information
-			File dir = new File(FileHelper.getSubDestPath(mDestName));
-			File[] allFiles = dir.listFiles();
-			if (allFiles == null) {
-				return false;
-			}
-			int length = allFiles.length;
-			if (length == 0) {
-				return false;
-			}
-			for (File f : allFiles) {
-				String fName = f.getName();
-				mItemList.add(new DataItem(fName, f.getAbsolutePath(),
-						obtainItemChName(fName)));
-			}
-			Collections.sort(mItemList, new DataItemCompare());
-			// for (int i = 0; i < mItemList.size(); i++) {
-			// Log.e(TAG, "short name : " + mItemList.get(i).mShortName);
-			// }
 			BufferedReader br = null;
 			try {
 				// Log.e(TAG, "absoluteName : " +
 				// mItemList.get(0).mAbsoluteName);
-				File curFile = new File(mItemList.get(0).mAbsoluteName);
+				File curFile = new File(mItemList.get(mItemIndex).mAbsoluteName);
 				br = new BufferedReader(new FileReader(curFile));
 				String line = null;
 				StringBuilder sb = null;
 				while ((line = br.readLine()) != null) {
-					Log.e(TAG, "line" + line);
+					// Log.e(TAG, "line" + line);
 					if (line.contains("#")) {
 						if (sb != null) {
 							mDataList.add(sb.toString());
@@ -335,7 +370,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 						sb.append(line);
 					}
 				}
-				mItemIndex = 0;
+				position = 0;
 				mTotalDataNum = mDataList.size();
 			} catch (FileNotFoundException e) {
 				Log.e(TAG, "FileNotFoundException", e);
