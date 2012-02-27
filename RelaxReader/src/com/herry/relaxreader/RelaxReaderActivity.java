@@ -83,6 +83,7 @@ public class RelaxReaderActivity extends Activity implements
 		// Toast.LENGTH_SHORT).show();
 		Intent i = new Intent(this, PageViewActivity.class);
 		i.putExtra(Constants.EXTRA_ITEM_NAME, item.mDestName);
+		i.putExtra(Constants.EXTRA_ITEM_CHNAME, item.mTitleId);
 		startActivity(i);
 		overridePendingTransition(R.anim.animation_right_in,
 				R.anim.animation_left_out);

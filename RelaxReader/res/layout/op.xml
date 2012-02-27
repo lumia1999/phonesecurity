@@ -4,11 +4,13 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
+    android:layout_alignParentBottom="true"
     android:background="@color/grey"
     android:paddingBottom="4dip"
     android:paddingLeft="7dip"
     android:paddingRight="7dip"
-    android:paddingTop="7dip" >
+    android:paddingTop="7dip"
+    android:visibility="visible" >
 
     <Button
         android:id="@+id/prev_month"
