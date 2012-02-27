@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/adView" >
@@ -11,39 +11,29 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_above="@+id/op"
             android:background="@drawable/txt_view_bg"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/progress_tip"
+            <include layout="@layout/title" />
+
+            <View
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:singleLine="true"
-                android:text="ddd"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@android:color/black" />
-            <View android:layout_width="fill_parent"
                 android:layout_height="1dip"
-                android:background="@color/grey"/>
+                android:background="@color/grey" />
 
             <ScrollView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:fillViewport="false"
                 android:fadeScrollbars="false"
-                android:scrollbars="none" >
+                android:fillViewport="false" >
 
-                <TextSwitcher
-                    android:id="@+id/text_switcher"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" >
-                </TextSwitcher>
+                <include layout="@layout/content" />
             </ScrollView>
         </LinearLayout>
 
         <include layout="@layout/op" />
-    </FrameLayout>
+    </RelativeLayout>
 
     <include layout="@layout/ad" />
 
