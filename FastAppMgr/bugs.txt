@@ -1,0 +1,11 @@
+1(Ð¶ÔØÈí¼þµÄÊ±ºò).
+02-27 21:41:43.621: E/AndroidRuntime(23364): java.lang.NullPointerException
+02-27 21:41:43.621: E/AndroidRuntime(23364): 	at com.herry.fastappmgr.view.UninstallActivity$1.handleMessage(UninstallActivity.java:123)
+02-27 21:41:43.621: E/AndroidRuntime(23364): 	at android.os.Handler.dispatchMessage(Handler.java:99)
+02-27 21:41:43.621: E/AndroidRuntime(23364): 	at android.os.Looper.loop(Looper.java:130)
+02-27 21:41:43.621: E/AndroidRuntime(23364): 	at android.app.ActivityThread.main(ActivityThread.java:3683)
+02-27 21:41:43.621: E/AndroidRuntime(23364): 	at java.lang.reflect.Method.invokeNative(Native Method)
+02-27 21:41:43.621: E/AndroidRuntime(23364): 	at java.lang.reflect.Method.invoke(Method.java:507)
+02-27 21:41:43.621: E/AndroidRuntime(23364): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:839)
+02-27 21:41:43.621: E/AndroidRuntime(23364): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:597)
+02-27 21:41:43.621: E/AndroidRuntime(23364): 	at dalvik.system.NativeStart.main(Native Method)
