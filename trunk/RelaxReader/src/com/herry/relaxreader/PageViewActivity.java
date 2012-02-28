@@ -12,10 +12,13 @@ import java.util.Comparator;
 import net.youmi.android.AdView;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -27,9 +30,10 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.herry.relaxreader.util.Constants;
@@ -44,8 +48,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	private TextView mContentTxt;
 	private LinearLayout mOpLayout;
 	private Option mOptions;
+	private ScrollView mScrollView;
 
-	private LayoutInflater mLayoutInflater;
 	private GestureDetector mGestDetector;
 	private ScreenParams mScreenParams;
 
@@ -61,8 +65,13 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	private int mItemIndex = -1;
 	private int mTotalDataNum = 0;
 
+	// activity life time flag
+	private boolean mIsAlive;
+
 	// ad
 	private AdView mAdView;
+
+	private static final int DLG_LOADING_DATA_ID = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +92,35 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		initScreenParams();
 	}
 
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DLG_LOADING_DATA_ID:
+			ProgressDialog pDlg = new ProgressDialog(this);
+			pDlg.setMessage(getString(R.string.loading_data_dlg_msg));
+			return pDlg;
+		}
+		return super.onCreateDialog(id);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+	}
+
+	@Override
+	public void finish() {
+		super.finish();
+		mIsAlive = false;
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
 	private void initUI() {
-		mLayoutInflater = getLayoutInflater();
+		mIsAlive = true;
 		mPrevAnim = AnimationUtils.loadAnimation(this, R.anim.animation_prev);
 		mNextAnim = AnimationUtils.loadAnimation(this, R.anim.animation_next);
 		mTitles = new Title();
@@ -100,10 +136,12 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		mOptions.mPrevMonth.setOnClickListener(this);
 		mOptions.mShare.setOnClickListener(this);
 		mOptions.mNextMonth.setOnClickListener(this);
+		mScrollView = (ScrollView) findViewById(R.id.scroll_view);
 		mAdView = (AdView) findViewById(R.id.adView);
 		mGestDetector = new GestureDetector(this, new DefaultGestureListener());
 		mScreenParams = new ScreenParams();
 		initScreenParams();
+		showDialog(DLG_LOADING_DATA_ID);
 		new LoadDataTask().execute(true);
 	}
 
@@ -138,20 +176,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		// TODO
 		switch (v.getId()) {
-		case R.id.content:
-			int visible = mOpLayout.getVisibility();
-			if (visible == View.VISIBLE) {
-				mOpLayout.setVisibility(View.GONE);
-				mOpLayout.setAnimation(AnimationUtils.loadAnimation(this,
-						R.anim.out_from_up));
-			} else {
-				mOpLayout.setVisibility(View.VISIBLE);
-				mOpLayout.setAnimation(AnimationUtils.loadAnimation(this,
-						R.anim.in_from_down));
-			}
-			break;
 		case R.id.prev_month:
 			// Log.d(TAG, "prev month");
 			onPrevMonth();
@@ -169,6 +194,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onPrevMonth() {
 		if (mItemIndex > 0) {
+			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex--;
 			new LoadDataTask().execute(false);
 		} else {
@@ -187,6 +213,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onNextMonth() {
 		if (mItemIndex < mItemList.size() - 1) {
+			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex++;
 			new LoadDataTask().execute(false);
 		} else {
@@ -196,8 +223,6 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO
-		Log.d(TAG, "onKeyDown");
 		return super.onKeyDown(keyCode, event);
 	}
 
@@ -212,18 +237,22 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		mGestDetector.onTouchEvent(ev);
-		if (ev.getAction() == MotionEvent.ACTION_UP) {
-			if (xScrollDistance == 0 && yScrollDistance == 0) {
-				float y = ev.getY();
-				int opLayoutHeight = mOpLayout.getHeight();
-				int adHeight = mAdView.getHeight();
-				// Log.e(TAG, "y : " + y + ",opLayoutHeight : " + opLayoutHeight
-				// + ",adHeight : " + adHeight);
-				if (y < (mScreenParams.mHeight - opLayoutHeight - adHeight)) {
-					handleUserTouch(ev);
-				}
-			}
-		}
+		// if (ev.getAction() == MotionEvent.ACTION_UP) {
+		// Log.e(TAG, "xScrollDistance : " + xScrollDistance
+		// + ",yScrollDistance : " + yScrollDistance);
+		// if (xScrollDistance == 0 && yScrollDistance == 0) {
+		// float y = ev.getY();
+		// int opLayoutHeight = mOpLayout.getHeight();
+		// int adHeight = mAdView.getHeight();
+		// // Log.e(TAG, "y : " + y + ",opLayoutHeight : " +
+		// // opLayoutHeight
+		// // + ",adHeight : " + adHeight);
+		// if (y < (mScreenParams.mHeight - opLayoutHeight - adHeight)) {
+		// handleUserTouch(ev);
+		// }
+		//
+		// }
+		// }
 		return super.dispatchTouchEvent(ev);
 	}
 
@@ -233,21 +262,21 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		int half = (mScreenParams.mWidth - mid) / 2;
 		if (x <= half) {
 			// Log.e(TAG, "left");
-			onPrev();
+			onPrevJoke();
 		} else if (x >= half + mid) {
 			// Log.e(TAG, "right");
-			onNext();
+			onNextJoke();
 		} else {
 			// Log.e(TAG, "middle");
 		}
 
 	}
 
-	private void onPrev() {
-		// TODO
+	private void onPrevJoke() {
 		if (position > 0) {
 			position--;
 			mContentTxt.setText(mDataList.get(position));
+			mPrevAnim.setAnimationListener(mAnimListener);
 			mContentTxt.startAnimation(mPrevAnim);
 			updateTitle();
 		} else {
@@ -255,11 +284,11 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private void onNext() {
-		// TODO
+	private void onNextJoke() {
 		if (position < mDataList.size() - 1) {
 			position++;
 			mContentTxt.setText(mDataList.get(position));
+			mNextAnim.setAnimationListener(mAnimListener);
 			mContentTxt.startAnimation(mNextAnim);
 			updateTitle();
 		} else {
@@ -268,14 +297,39 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	}
 
+	private AnimationListener mAnimListener = new AnimationListener() {
+
+		@Override
+		public void onAnimationStart(Animation animation) {
+
+		}
+
+		@Override
+		public void onAnimationRepeat(Animation animation) {
+
+		}
+
+		@Override
+		public void onAnimationEnd(Animation animation) {
+			mScrollView.smoothScrollTo(mContentTxt.getLeft(), mContentTxt
+					.getTop()
+					- mContentTxt.getPaddingTop());
+		}
+	};
+
 	private float xScrollDistance;
 	private float yScrollDistance;
+	private boolean mLongPress = false;
+	private long mFlingTimestamp = -1L;
+	private static final long MIN_TIME_INTERVAL = 900;
 
 	private class DefaultGestureListener extends SimpleOnGestureListener {
 		@Override
 		public boolean onDown(MotionEvent e) {
+			// Log.e(TAG, "onDown");
 			xScrollDistance = 0;
 			yScrollDistance = 0;
+			mLongPress = false;
 			return super.onDown(e);
 		}
 
@@ -286,9 +340,66 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			// .e(TAG, "distanceX : " + distanceX + ",distanceY : "
 			// + distanceY);
 
-			xScrollDistance = distanceX;
-			yScrollDistance = distanceY;
+			// xScrollDistance = distanceX;
+			// yScrollDistance = distanceY;
 			return super.onScroll(e1, e2, distanceX, distanceY);
+		}
+
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+				float velocityY) {
+			// Log.e(TAG, "onFling");
+			mFlingTimestamp = System.currentTimeMillis();
+			return super.onFling(e1, e2, velocityX, velocityY);
+		}
+
+		@Override
+		public boolean onDoubleTap(MotionEvent e) {
+			// Log.e(TAG, "onDoubleTap");
+			return super.onDoubleTap(e);
+		}
+
+		@Override
+		public boolean onDoubleTapEvent(MotionEvent e) {
+			// Log.e(TAG, "onDoubleTapEvent");
+			return super.onDoubleTapEvent(e);
+		}
+
+		@Override
+		public void onLongPress(MotionEvent e) {
+			// Log.e(TAG, "onLongPress");
+			mLongPress = true;
+			super.onLongPress(e);
+		}
+
+		@Override
+		public void onShowPress(MotionEvent e) {
+			// Log.e(TAG, "onShowPress");
+			super.onShowPress(e);
+		}
+
+		@Override
+		public boolean onSingleTapConfirmed(MotionEvent e) {
+			// Log.e(TAG, "onSingleTapConfirmed");
+			long now = System.currentTimeMillis();
+			if (now - mFlingTimestamp > MIN_TIME_INTERVAL && !mLongPress) {
+				float y = e.getY();
+				int opLayoutHeight = mOpLayout.getHeight();
+				int adHeight = mAdView.getHeight();
+				// Log.e(TAG, "y : " + y + ",opLayoutHeight : " +
+				// opLayoutHeight
+				// + ",adHeight : " + adHeight);
+				if (y < (mScreenParams.mHeight - opLayoutHeight - adHeight)) {
+					handleUserTouch(e);
+				}
+			}
+			return super.onSingleTapConfirmed(e);
+		}
+
+		@Override
+		public boolean onSingleTapUp(MotionEvent e) {
+			// Log.e(TAG, "onSingleTapUp");
+			return super.onSingleTapUp(e);
 		}
 
 	}
@@ -361,7 +472,10 @@ public class PageViewActivity extends Activity implements OnClickListener {
 				StringBuilder sb = null;
 				while ((line = br.readLine()) != null) {
 					// Log.e(TAG, "line" + line);
-					if (line.contains("#")) {
+					if (TextUtils.equals(line, "#END")) {
+						break;
+					}
+					if (line.startsWith("#")) {
 						if (sb != null) {
 							mDataList.add(sb.toString());
 						}
@@ -392,14 +506,19 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			if (result) {
-				mContentTxt.setText(mDataList.get(position));
-				updateTitle();
+			if (mIsAlive) {
+				if (result) {
+					mContentTxt.setText(mDataList.get(position));
+					mScrollView
+							.smoothScrollTo(mContentTxt.getLeft(), mContentTxt
+									.getTop()
+									- mContentTxt.getPaddingLeft());
+					updateTitle();
+				}
+				dismissDialog(DLG_LOADING_DATA_ID);
 			}
 		}
-
 	}
 
 	private class DataItem {

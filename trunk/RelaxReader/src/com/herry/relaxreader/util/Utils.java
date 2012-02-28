@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Environment;
+import android.os.StatFs;
+import android.text.TextUtils;
 
 public class Utils {
 
@@ -15,6 +18,25 @@ public class Utils {
 			return pInfo.versionName;
 		} catch (NameNotFoundException e) {
 			return null;
+		}
+	}
+
+	private static final long MIN_SPACE_LEFT = 20 * 1024 * 1024;
+
+	public static boolean isSdcardExist() {
+		String state = Environment.getExternalStorageState();
+		if (TextUtils.equals(state, Environment.MEDIA_MOUNTED)) {
+			StatFs sf = new StatFs(Environment.getExternalStorageDirectory()
+					.getAbsolutePath());
+			int avaiBlks = sf.getAvailableBlocks();
+			int blkSize = sf.getBlockSize();
+			long totalAvai = (long) avaiBlks * blkSize;
+			if (totalAvai < MIN_SPACE_LEFT) {
+				return false;
+			}
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

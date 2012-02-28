@@ -22,7 +22,7 @@
                 android:layout_height="1dip"
                 android:background="@color/grey" />
 
-            <ScrollView
+            <ScrollView android:id="@+id/scroll_view"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:fadeScrollbars="false"
