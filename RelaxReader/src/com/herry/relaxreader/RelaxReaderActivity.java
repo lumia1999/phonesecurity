@@ -11,13 +11,16 @@ import java.util.List;
 import java.util.Map;
 
 import net.youmi.android.AdManager;
+import net.youmi.android.appoffers.YoumiOffersManager;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -55,7 +58,8 @@ public class RelaxReaderActivity extends Activity implements
 	private LayoutInflater mLayoutInflater;
 	private Context mCtx;
 
-	private static final int DLG_UNZIP_IFNEEDED_ID = 1;
+	private static final int DLG_NO_SDCARD_EXIST_ID = 1;
+	private static final int DLG_UNZIP_IFNEEDED_ID = 2;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -63,6 +67,7 @@ public class RelaxReaderActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		AdManager.init(this, "0025ccd4baca1bb2", "6f8360d97e84aa86", 30, true);
+		YoumiOffersManager.init(this, "0025ccd4baca1bb2", "6f8360d97e84aa86");
 		initUI();
 		initData();
 		fillData();
@@ -92,6 +97,31 @@ public class RelaxReaderActivity extends Activity implements
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
+		case DLG_NO_SDCARD_EXIST_ID:
+			return new AlertDialog.Builder(this).setIcon(
+					android.R.drawable.ic_dialog_alert).setTitle(
+					R.string.no_sdcard_dlg_title).setMessage(
+					R.string.no_sdcard_dlg_msg).setPositiveButton(
+					android.R.string.ok, new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					}).setNegativeButton(android.R.string.no,
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					}).setOnCancelListener(new OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					finish();
+				}
+			}).create();
 		case DLG_UNZIP_IFNEEDED_ID:
 			ProgressDialog pDialog = new ProgressDialog(this);
 			pDialog.setMessage(getString(R.string.unzip_dlg_msg));
@@ -161,6 +191,10 @@ public class RelaxReaderActivity extends Activity implements
 	}
 
 	private void unzipIfNeeded() {
+		if (!Utils.isSdcardExist()) {
+			showDialog(DLG_NO_SDCARD_EXIST_ID);
+			return;
+		}
 		String prefVersion = Prefs.getCurrentVersion(this);
 		if (prefVersion == null) {
 			showDialog(DLG_UNZIP_IFNEEDED_ID);
