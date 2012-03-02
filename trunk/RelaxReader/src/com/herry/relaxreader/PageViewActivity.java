@@ -12,8 +12,8 @@ import java.util.Comparator;
 import net.youmi.android.AdView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import com.herry.relaxreader.util.Constants;
 import com.herry.relaxreader.util.FileHelper;
+import com.herry.relaxreader.util.Utils;
 
 public class PageViewActivity extends Activity implements OnClickListener {
 	private static final String TAG = "PageViewActivity";
@@ -49,6 +50,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	private LinearLayout mOpLayout;
 	private Option mOptions;
 	private ScrollView mScrollView;
+	private LayoutInflater mLayoutInflater;
 
 	private GestureDetector mGestDetector;
 	private ScreenParams mScreenParams;
@@ -64,6 +66,11 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	private int position = 0;// init value
 	private int mItemIndex = -1;
 	private int mTotalDataNum = 0;
+	// 如果用户点击上下页的时候到了最前或最后一页，
+	// 记录这个时间戳，半个小时为周期，提示用户进入上一月或者下一月。
+	private long mPrevPageTimestamp = -1L;
+	private long mNextPageTimestamp = -1L;
+	private static final long MIN_TIP_TIME_INTERVAL = 10 * 60 * 1000;
 
 	// activity life time flag
 	private boolean mIsAlive;
@@ -96,9 +103,10 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DLG_LOADING_DATA_ID:
-			ProgressDialog pDlg = new ProgressDialog(this);
-			pDlg.setMessage(getString(R.string.loading_data_dlg_msg));
-			return pDlg;
+			AlertDialog loadingDlg = new AlertDialog.Builder(this).create();
+			View v = mLayoutInflater.inflate(R.layout.loading, null);
+			loadingDlg.setView(v, 0, 0, 0, 0);
+			return loadingDlg;
 		}
 		return super.onCreateDialog(id);
 	}
@@ -106,6 +114,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onStop() {
 		super.onStop();
+		Log.d(TAG, "onStop");
 	}
 
 	@Override
@@ -117,9 +126,11 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		Log.d(TAG, "onDestroy");
 	}
 
 	private void initUI() {
+		mLayoutInflater = getLayoutInflater();
 		mIsAlive = true;
 		mPrevAnim = AnimationUtils.loadAnimation(this, R.anim.animation_prev);
 		mNextAnim = AnimationUtils.loadAnimation(this, R.anim.animation_next);
@@ -143,6 +154,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		initScreenParams();
 		showDialog(DLG_LOADING_DATA_ID);
 		new LoadDataTask().execute(true);
+		mPrevPageTimestamp = -1L;
+		mNextPageTimestamp = -1L;
 	}
 
 	private void initScreenParams() {
@@ -258,21 +271,20 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void handleUserTouch(MotionEvent ev) {
 		float x = ev.getX();
-		int mid = 80;
-		int half = (mScreenParams.mWidth - mid) / 2;
-		if (x <= half) {
+		int leftSpan = (3 * mScreenParams.mWidth) / (2 * 5);
+		if (x <= leftSpan) {
 			// Log.e(TAG, "left");
-			onPrevJoke();
-		} else if (x >= half + mid) {
+			onPrevPage();
+		} else if (x >= leftSpan + mScreenParams.mWidth * 2 / 5) {
 			// Log.e(TAG, "right");
-			onNextJoke();
+			onNextPage();
 		} else {
 			// Log.e(TAG, "middle");
 		}
 
 	}
 
-	private void onPrevJoke() {
+	private void onPrevPage() {
 		if (position > 0) {
 			position--;
 			mContentTxt.setText(mDataList.get(position));
@@ -281,10 +293,17 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			updateTitle();
 		} else {
 			Log.e(TAG, "it is the first item");
+			long now = System.currentTimeMillis();
+			if (Utils.isNetworkActive(this)
+					&& (mPrevPageTimestamp == -1 || (now - mPrevPageTimestamp) > MIN_TIP_TIME_INTERVAL)) {
+				// show tip dialog
+				promptForAppOffer();
+				mPrevPageTimestamp = now;
+			}
 		}
 	}
 
-	private void onNextJoke() {
+	private void onNextPage() {
 		if (position < mDataList.size() - 1) {
 			position++;
 			mContentTxt.setText(mDataList.get(position));
@@ -293,8 +312,38 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			updateTitle();
 		} else {
 			Log.e(TAG, "it is the last item");
+			long now = System.currentTimeMillis();
+			if (Utils.isNetworkActive(this)
+					&& (mNextPageTimestamp == -1 || (now - mNextPageTimestamp) > MIN_TIP_TIME_INTERVAL)) {
+				// show tip dialog
+				promptForAppOffer();
+				mNextPageTimestamp = now;
+			}
 		}
 
+	}
+
+	private void promptForAppOffer() {
+		Intent i = new Intent(this, AppOfferTipActivity.class);
+		AppOfferTipItem item = new AppOfferTipItem();
+		if (position == 0) {
+			item.setFirstPage(Constants.FIRST_PAGE);
+		} else {
+			// last page
+			item.setFirstPage(Constants.NOT_FIRST_PAGE);
+		}
+		if (mItemIndex == 0) {
+			item.setFirstMonth(Constants.FIRST_MONTH);
+		} else {
+			item.setFirstMonth(Constants.NOT_FIRST_MONTH);
+		}
+		if (mItemIndex == mItemList.size() - 1) {
+			item.setLastMonth(Constants.LAST_MONTH);
+		} else {
+			item.setLastMonth(Constants.NOT_LAST_MONTH);
+		}
+		i.putExtra(Constants.EXTRA_APPOFFERTIP_ITEM, item);
+		startActivity(i);
 	}
 
 	private AnimationListener mAnimListener = new AnimationListener() {
@@ -354,28 +403,10 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		}
 
 		@Override
-		public boolean onDoubleTap(MotionEvent e) {
-			// Log.e(TAG, "onDoubleTap");
-			return super.onDoubleTap(e);
-		}
-
-		@Override
-		public boolean onDoubleTapEvent(MotionEvent e) {
-			// Log.e(TAG, "onDoubleTapEvent");
-			return super.onDoubleTapEvent(e);
-		}
-
-		@Override
 		public void onLongPress(MotionEvent e) {
 			// Log.e(TAG, "onLongPress");
 			mLongPress = true;
 			super.onLongPress(e);
-		}
-
-		@Override
-		public void onShowPress(MotionEvent e) {
-			// Log.e(TAG, "onShowPress");
-			super.onShowPress(e);
 		}
 
 		@Override
@@ -395,13 +426,6 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			}
 			return super.onSingleTapConfirmed(e);
 		}
-
-		@Override
-		public boolean onSingleTapUp(MotionEvent e) {
-			// Log.e(TAG, "onSingleTapUp");
-			return super.onSingleTapUp(e);
-		}
-
 	}
 
 	private class ScreenParams {
@@ -521,6 +545,12 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	/**
+	 * for mItemList
+	 * 
+	 * @author herry
+	 * 
+	 */
 	private class DataItem {
 		private String mShortName;
 		private String mAbsoluteName;
