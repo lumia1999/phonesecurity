@@ -36,6 +36,12 @@
             android:name=".PageViewActivity"
             android:windowSoftInputMode="stateHidden|adjustPan" >
         </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".AppOfferTipActivity"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="stateHidden|adjustPan" >
+        </activity>
 
         <!-- ad activity -->
         <activity

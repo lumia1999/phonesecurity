@@ -6,13 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.youmi.android.AdManager;
 import net.youmi.android.appoffers.YoumiOffersManager;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -32,12 +29,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.herry.relaxreader.util.Constants;
@@ -47,7 +45,7 @@ import com.herry.relaxreader.util.Utils;
 import com.herry.zip.ZipUtils;
 
 public class RelaxReaderActivity extends Activity implements
-		OnItemClickListener {
+		OnItemClickListener, OnClickListener {
 	private static final String TAG = "RelaxReaderActivity";
 	private ListView mListView;
 	private List<Item> mDataList = null;
@@ -57,9 +55,12 @@ public class RelaxReaderActivity extends Activity implements
 	private MainListAdapter mAdapter;
 	private LayoutInflater mLayoutInflater;
 	private Context mCtx;
+	private Button mExitConfirm;
+	private Button mExitCancel;
 
 	private static final int DLG_NO_SDCARD_EXIST_ID = 1;
 	private static final int DLG_UNZIP_IFNEEDED_ID = 2;
+	private static final int DLG_EXIT_APP_ID = 3;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -138,8 +139,26 @@ public class RelaxReaderActivity extends Activity implements
 				}
 			});
 			return pDialog;
+		case DLG_EXIT_APP_ID:
+			AlertDialog exitDlg = new AlertDialog.Builder(this).create();
+			View v = mLayoutInflater.inflate(R.layout.exit_app_dlg_view, null);
+			mExitConfirm = (Button) v.findViewById(R.id.exit_confirm);
+			mExitCancel = (Button) v.findViewById(R.id.exit_cancel);
+			mExitConfirm.setOnClickListener(this);
+			mExitCancel.setOnClickListener(this);
+			exitDlg.setView(v, 0, 0, 0, 0);
+			return exitDlg;
 		}
 		return super.onCreateDialog(id);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			showDialog(DLG_EXIT_APP_ID);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private void initUI() {
@@ -319,6 +338,19 @@ public class RelaxReaderActivity extends Activity implements
 			this.mIconId = iconId;
 			this.mTitleId = titleId;
 			this.mDestName = destName;
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.exit_confirm:
+			dismissDialog(DLG_EXIT_APP_ID);
+			finish();
+			break;
+		case R.id.exit_cancel:
+			dismissDialog(DLG_EXIT_APP_ID);
+			break;
 		}
 	}
 

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
@@ -38,5 +40,15 @@ public class Utils {
 		} else {
 			return false;
 		}
+	}
+
+	public static boolean isNetworkActive(Context ctx) {
+		ConnectivityManager cm = (ConnectivityManager) ctx
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo nInfo = cm.getActiveNetworkInfo();
+		if (nInfo == null) {
+			return false;
+		}
+		return nInfo.isConnected();
 	}
 }

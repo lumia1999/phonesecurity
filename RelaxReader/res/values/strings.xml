@@ -13,12 +13,14 @@
     <string name="item_horriblejoke">恐怖笑话</string>
     
     <!-- dialog string -->
-    <string name="unzip_dlg_msg">初始化中，请稍后。。。</string>
+    <string name="unzip_dlg_msg">量产中，请稍后。。。</string>
     <string name="no_sdcard_dlg_title">无存储卡</string>
     <string name="no_sdcard_dlg_msg">您的手机没有正确插入存储卡，请检查。</string>
+    <string name="exit_app_dlg_title">离开</string>
+    <string name="exit_app_dlg_msg">神马，要撤？有时间再回来哦^_^</string>
     
     <!-- header tip -->
-    <string name="global_tip">我型我阅\nWow...开启欢乐干线...</string>
+    <string name="global_tip">我型我阅\nWow...开启欢乐新干线...</string>
     
     <!-- view page string -->
     <string name="prev_month">上一月</string>
