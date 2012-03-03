@@ -14,16 +14,23 @@ import net.youmi.android.AdView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -80,6 +87,40 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private static final int DLG_LOADING_DATA_ID = 1;
 
+	private static final int MSG_PROMPT = 1;
+	private static final int MSG_JUMP = 2;
+	private Handler mHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case MSG_PROMPT:
+				handlePrompt(msg);
+				break;
+			case MSG_JUMP:
+				handleJump(msg);
+				break;
+			}
+		};
+	};
+
+	private void handlePrompt(Message msg) {
+		int type = msg.arg1;
+		switch (type) {
+		case Constants.PREV_MONTH:
+			onPrevMonth();
+			break;
+		case Constants.NEXT_MONTH:
+			onNextMonth();
+			break;
+		}
+	}
+
+	private void handleJump(Message msg) {
+		int pos = msg.arg1;
+		mItemIndex = pos;
+		showDialog(DLG_LOADING_DATA_ID);
+		new LoadDataTask().execute(false);
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate");
@@ -91,6 +132,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			mDestChNameId = i.getIntExtra(Constants.EXTRA_ITEM_CHNAME, -1);
 		}
 		initUI();
+		registerReceiver();
 	}
 
 	@Override
@@ -112,6 +154,42 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.option, menu);
+		menu.removeItem(R.id.about);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.remove_ad:
+			Log.d(TAG, "remove ad");
+			// TODO
+			return true;
+		case R.id.jump_to_month:
+			Log.d(TAG, "jump to month");
+			onJumpToMonth();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private void onJumpToMonth() {
+		Intent intent = new Intent(this, MonthSelectActivity.class);
+		intent.putExtra(Constants.EXTRA_JUMP_CUR_POS, mItemIndex);
+		int monthSize = mItemList.size();
+		String[] months = new String[monthSize];
+		for (int i = 0; i < mItemList.size(); i++) {
+			months[i] = mItemList.get(i).mItemChname;
+		}
+		intent.putExtra(Constants.EXTRA_JUMP_DATA, months);
+		intent.putExtra(Constants.EXTRA_ITEM_CHNAME, mDestChNameId);
+		startActivity(intent);
+	}
+
+	@Override
 	protected void onStop() {
 		super.onStop();
 		Log.d(TAG, "onStop");
@@ -127,6 +205,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		Log.d(TAG, "onDestroy");
+		unregisterReceiver();
 	}
 
 	private void initUI() {
@@ -571,4 +650,41 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		}
 
 	}
+
+	private void registerReceiver() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Constants.ACTION_PROMPT);
+		filter.addAction(Constants.ACTION_JUMP);
+		registerReceiver(mPromptReceiver, filter);
+	}
+
+	private void unregisterReceiver() {
+		unregisterReceiver(mPromptReceiver);
+	}
+
+	private BroadcastReceiver mPromptReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (TextUtils.equals(action, Constants.ACTION_PROMPT)) {
+				int type = intent.getIntExtra(Constants.EXTRA_PROMPT_TYPE, -1);
+				if (type != -1) {
+					Message msg = mHandler.obtainMessage();
+					msg.what = MSG_PROMPT;
+					msg.arg1 = type;
+					mHandler.sendMessage(msg);
+				}
+			} else if (TextUtils.equals(action, Constants.ACTION_JUMP)) {
+				int pos = intent.getIntExtra(Constants.EXTRA_JUMP_CUR_POS, -1);
+				if (pos != -1) {
+					Message msg = mHandler.obtainMessage();
+					msg.what = MSG_JUMP;
+					msg.arg1 = pos;
+					mHandler.sendMessage(msg);
+				}
+			}
+
+		}
+	};
 }
