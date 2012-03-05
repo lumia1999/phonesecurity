@@ -43,6 +43,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.herry.relaxreader.db.LastReadItem;
+import com.herry.relaxreader.db.RecordDbAdapter;
 import com.herry.relaxreader.util.Constants;
 import com.herry.relaxreader.util.FileHelper;
 import com.herry.relaxreader.util.Utils;
@@ -84,6 +86,9 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	// ad
 	private AdView mAdView;
+
+	// db
+	private RecordDbAdapter mDbAdapter;
 
 	private static final int DLG_LOADING_DATA_ID = 1;
 
@@ -177,6 +182,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	}
 
 	private void onJumpToMonth() {
+		mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+				.get(mItemIndex).mItemChname, position);
 		Intent intent = new Intent(this, MonthSelectActivity.class);
 		intent.putExtra(Constants.EXTRA_JUMP_CUR_POS, mItemIndex);
 		int monthSize = mItemList.size();
@@ -199,6 +206,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	public void finish() {
 		super.finish();
 		mIsAlive = false;
+		mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+				.get(mItemIndex).mItemChname, position);
 	}
 
 	@Override
@@ -231,10 +240,11 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		mGestDetector = new GestureDetector(this, new DefaultGestureListener());
 		mScreenParams = new ScreenParams();
 		initScreenParams();
-		showDialog(DLG_LOADING_DATA_ID);
-		new LoadDataTask().execute(true);
 		mPrevPageTimestamp = -1L;
 		mNextPageTimestamp = -1L;
+		mDbAdapter = RecordDbAdapter.getInstance(this);
+		showDialog(DLG_LOADING_DATA_ID);
+		new LoadDataTask().execute(true);
 	}
 
 	private void initScreenParams() {
@@ -252,6 +262,19 @@ public class PageViewActivity extends Activity implements OnClickListener {
 					.setText(mItemList.get(mItemIndex).mItemChname);
 		}
 		mTitles.mProgressTip.setText((position + 1) + "/" + mTotalDataNum);
+	}
+
+	private void updateOptions() {
+		if (mItemIndex > 0 && mItemIndex < mItemList.size() - 1) {
+			mOptions.mPrevMonth.setEnabled(true);
+			mOptions.mNextMonth.setEnabled(true);
+		} else if (mItemIndex <= 0) {
+			mOptions.mPrevMonth.setEnabled(false);
+			mOptions.mNextMonth.setEnabled(true);
+		} else {
+			mOptions.mPrevMonth.setEnabled(true);
+			mOptions.mNextMonth.setEnabled(false);
+		}
 	}
 
 	private class Title {
@@ -286,6 +309,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onPrevMonth() {
 		if (mItemIndex > 0) {
+			mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+					.get(mItemIndex).mItemChname, position);
 			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex--;
 			new LoadDataTask().execute(false);
@@ -305,6 +330,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onNextMonth() {
 		if (mItemIndex < mItemList.size() - 1) {
+			mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+					.get(mItemIndex).mItemChname, position);
 			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex++;
 			new LoadDataTask().execute(false);
@@ -530,6 +557,16 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			}
 		}
 
+		private int calcInitItemIndex(String month) {
+			int size = mItemList.size();
+			for (int i = 0; i < size; i++) {
+				if (TextUtils.equals(mItemList.get(i).mItemChname, month)) {
+					return i;
+				}
+			}
+			return 0;// default : first item
+		}
+
 		@Override
 		protected Boolean doInBackground(Boolean... params) {
 			boolean init = params[0];
@@ -555,7 +592,21 @@ public class PageViewActivity extends Activity implements OnClickListener {
 							obtainItemChName(fName)));
 				}
 				Collections.sort(mItemList, new DataItemCompare());
-				mItemIndex = 0;
+				// mItemIndex = 0;
+				Log.d(TAG, "mDbAdapter : " + mDbAdapter + ",mDestName : "
+						+ mDestName);
+				LastReadItem item = mDbAdapter
+						.getLastReadPositionByItem(mDestName);
+				if (item == null) {
+					mItemIndex = 0;
+					position = 0;
+				} else {
+					mItemIndex = calcInitItemIndex(item.getMonth());
+					position = item.getPosition();
+				}
+			} else {
+				position = mDbAdapter.getLastReadPositionByItemMonth(mDestName,
+						mItemList.get(mItemIndex).mItemChname);
 			}
 			// for (int i = 0; i < mItemList.size(); i++) {
 			// Log.e(TAG, "short name : " + mItemList.get(i).mShortName);
@@ -587,7 +638,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 						sb.append(line);
 					}
 				}
-				position = 0;
+				// position = 0;
 				mTotalDataNum = mDataList.size();
 			} catch (FileNotFoundException e) {
 				Log.e(TAG, "FileNotFoundException", e);
@@ -618,6 +669,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 									.getTop()
 									- mContentTxt.getPaddingLeft());
 					updateTitle();
+					updateOptions();
 				}
 				dismissDialog(DLG_LOADING_DATA_ID);
 			}

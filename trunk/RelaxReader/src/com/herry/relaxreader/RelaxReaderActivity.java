@@ -38,6 +38,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.herry.relaxreader.db.RecordDbAdapter;
 import com.herry.relaxreader.util.Constants;
 import com.herry.relaxreader.util.FileHelper;
 import com.herry.relaxreader.util.Prefs;
@@ -79,6 +80,12 @@ public class RelaxReaderActivity extends Activity implements
 		// e.printStackTrace();
 		// }
 		unzipIfNeeded();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.d(TAG, "onDestroy");
 	}
 
 	@Override
