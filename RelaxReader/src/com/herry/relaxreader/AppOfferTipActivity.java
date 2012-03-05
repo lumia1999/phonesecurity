@@ -1,7 +1,5 @@
 package com.herry.relaxreader;
 
-import java.io.ObjectOutputStream.PutField;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
