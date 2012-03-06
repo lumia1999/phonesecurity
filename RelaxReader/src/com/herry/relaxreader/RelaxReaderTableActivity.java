@@ -8,8 +8,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.youmi.android.AdManager;
-import net.youmi.android.appoffers.YoumiOffersManager;
+import com.herry.relaxreader.util.Constants;
+import com.herry.relaxreader.util.FileHelper;
+import com.herry.relaxreader.util.Prefs;
+import com.herry.relaxreader.util.Utils;
+import com.herry.zip.ZipUtils;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -28,33 +32,22 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TableLayout.LayoutParams;
 
-import com.herry.relaxreader.db.RecordDbAdapter;
-import com.herry.relaxreader.util.Constants;
-import com.herry.relaxreader.util.FileHelper;
-import com.herry.relaxreader.util.Prefs;
-import com.herry.relaxreader.util.Utils;
-import com.herry.zip.ZipUtils;
+public class RelaxReaderTableActivity extends Activity implements
+		OnClickListener {
+	private static final String TAG = "RelaxReaderTableActivity";
 
-public class RelaxReaderActivity extends Activity implements
-		OnItemClickListener, OnClickListener {
-	private static final String TAG = "RelaxReaderActivity";
-	private ListView mListView;
-	private List<Item> mDataList = null;
-	private static final String ITEM_ICON = "icon";
-	private static final String ITEM_TITLE = "title";
-	private static final String ITEM_DEST_NAME = "dest_name";
-	private MainListAdapter mAdapter;
+	private AlwaysMarqueeTextView mWelcomeTipTxt;
+	private TableLayout mTableLayout;
+	private List<Item> mDataList;
 	private LayoutInflater mLayoutInflater;
+
 	private Context mCtx;
 	private Button mExitConfirm;
 	private Button mExitCancel;
@@ -63,13 +56,11 @@ public class RelaxReaderActivity extends Activity implements
 	private static final int DLG_UNZIP_IFNEEDED_ID = 2;
 	private static final int DLG_EXIT_APP_ID = 3;
 
-	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		AdManager.init(this, "0025ccd4baca1bb2", "6f8360d97e84aa86", 30, true);
-		YoumiOffersManager.init(this, "0025ccd4baca1bb2", "6f8360d97e84aa86");
+		setContentView(R.layout.main_table);
 		initUI();
 		initData();
 		fillData();
@@ -83,23 +74,19 @@ public class RelaxReaderActivity extends Activity implements
 	}
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		Log.d(TAG, "onDestroy");
-	}
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		if (hasFocus) {
+			int screenHeight = getWindowManager().getDefaultDisplay()
+					.getHeight();
+			int tableHeight = mTableLayout.getMeasuredHeight();
+			if (tableHeight > screenHeight) {
+				mWelcomeTipTxt.setVisibility(View.GONE);
+			} else {
+				mWelcomeTipTxt.setVisibility(View.VISIBLE);
+			}
+		}
 
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		Item item = mDataList.get(position - 1);
-		// Toast.makeText(this, "dest name : " + item.mDestName,
-		// Toast.LENGTH_SHORT).show();
-		Intent i = new Intent(this, PageViewActivity.class);
-		i.putExtra(Constants.EXTRA_ITEM_NAME, item.mDestName);
-		i.putExtra(Constants.EXTRA_ITEM_CHNAME, item.mTitleId);
-		startActivity(i);
-		overridePendingTransition(R.anim.animation_right_in,
-				R.anim.animation_left_out);
 	}
 
 	@Override
@@ -169,13 +156,10 @@ public class RelaxReaderActivity extends Activity implements
 	}
 
 	private void initUI() {
-		mListView = (ListView) findViewById(android.R.id.list);
-		mListView.setOnItemClickListener(this);
 		mCtx = this;
 		mLayoutInflater = getLayoutInflater();
-		View header = mLayoutInflater.inflate(R.layout.list_view_header, null);
-		mListView.addHeaderView(header);
-		header.setOnClickListener(null);
+		mTableLayout = (TableLayout) findViewById(R.id.table);
+		mWelcomeTipTxt = (AlwaysMarqueeTextView) findViewById(R.id.welcome_tip);
 	}
 
 	private void initData() {
@@ -183,6 +167,9 @@ public class RelaxReaderActivity extends Activity implements
 			mDataList.clear();
 		} else {
 			mDataList = new ArrayList<Item>();
+		}
+		if (mTableLayout.getChildCount() > 0) {
+			mTableLayout.removeAllViews();
 		}
 		Item temp = null;
 		// qiushibaike
@@ -212,8 +199,34 @@ public class RelaxReaderActivity extends Activity implements
 	}
 
 	private void fillData() {
-		mAdapter = new MainListAdapter();
-		mListView.setAdapter(mAdapter);
+		int size = mDataList.size();
+		TableLayout.LayoutParams params = new TableLayout.LayoutParams(
+				LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		for (int i = 0; i < size; i++) {
+			mTableLayout.addView(createRowView(mDataList.get(i)), params);
+		}
+	}
+
+	private View createRowView(final Item item) {
+		View v = mLayoutInflater.inflate(R.layout.main_item, null);
+		ImageView icon = (ImageView) v.findViewById(R.id.main_icon);
+		TextView title = (TextView) v.findViewById(R.id.main_title);
+		icon.setBackgroundResource(item.mIconId);
+		title.setText(item.mTitleId);
+		v.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getApplicationContext(),
+						PageViewActivity.class);
+				i.putExtra(Constants.EXTRA_ITEM_NAME, item.mDestName);
+				i.putExtra(Constants.EXTRA_ITEM_CHNAME, item.mTitleId);
+				startActivity(i);
+				overridePendingTransition(R.anim.animation_right_in,
+						R.anim.animation_left_out);
+			}
+		});
+		return v;
 	}
 
 	private void unzipIfNeeded() {
@@ -293,49 +306,6 @@ public class RelaxReaderActivity extends Activity implements
 		}
 	}
 
-	private class MainListAdapter extends BaseAdapter {
-
-		@Override
-		public int getCount() {
-			return mDataList.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return position;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			ViewHolder viewHolder = null;
-			if (convertView == null) {
-				convertView = mLayoutInflater.inflate(R.layout.main_item, null);
-				viewHolder = new ViewHolder();
-				viewHolder.icon = (ImageView) convertView
-						.findViewById(R.id.main_icon);
-				viewHolder.title = (TextView) convertView
-						.findViewById(R.id.main_title);
-				convertView.setTag(viewHolder);
-			} else {
-				viewHolder = (ViewHolder) convertView.getTag();
-			}
-			Item item = mDataList.get(position);
-			viewHolder.icon.setBackgroundResource(item.mIconId);
-			viewHolder.title.setText(getString(item.mTitleId));
-			return convertView;
-		}
-	}
-
-	private class ViewHolder {
-		private ImageView icon;
-		private TextView title;
-	}
-
 	private class Item {
 		private int mIconId;
 		private int mTitleId;
@@ -360,5 +330,4 @@ public class RelaxReaderActivity extends Activity implements
 			break;
 		}
 	}
-
 }

@@ -55,6 +55,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	private int mDestChNameId;
 
 	private Title mTitles;
+	private AlwaysMarqueeTextView mPageItemTitleTxt;
 	private TextView mContentTxt;
 	private LinearLayout mOpLayout;
 	private Option mOptions;
@@ -71,7 +72,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	// itemList用于表示总共有多少个文件
 	// DataList用于存储每一个文件中的数据
 	private ArrayList<DataItem> mItemList = null;
-	private ArrayList<String> mDataList = null;
+	private ArrayList<PageItem> mDataList = null;
 	private int position = 0;// init value
 	private int mItemIndex = -1;
 	private int mTotalDataNum = 0;
@@ -226,6 +227,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		mTitles.mTitle = (TextView) findViewById(R.id.title);
 		mTitles.mCurrentMonth = (TextView) findViewById(R.id.current_month);
 		mTitles.mProgressTip = (TextView) findViewById(R.id.progress_tip);
+		mPageItemTitleTxt = (AlwaysMarqueeTextView) findViewById(R.id.item_title);
 		mContentTxt = (TextView) findViewById(R.id.content);
 		mOpLayout = (LinearLayout) findViewById(R.id.op);
 		mOptions = new Option();
@@ -265,6 +267,11 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	}
 
 	private void updateOptions() {
+		if (mItemList.size() < 2) {
+			mOptions.mPrevMonth.setEnabled(false);
+			mOptions.mNextMonth.setEnabled(false);
+			return;
+		}
 		if (mItemIndex > 0 && mItemIndex < mItemList.size() - 1) {
 			mOptions.mPrevMonth.setEnabled(true);
 			mOptions.mNextMonth.setEnabled(true);
@@ -275,6 +282,18 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			mOptions.mPrevMonth.setEnabled(true);
 			mOptions.mNextMonth.setEnabled(false);
 		}
+	}
+
+	private void updateContent(PageItem item) {
+		mContentTxt.setText(item.mContent);
+		if (item.mTitle != null && !"".equals(item.mTitle.trim())) {
+			mPageItemTitleTxt.setVisibility(View.VISIBLE);
+			mPageItemTitleTxt.setText(item.mTitle);
+		} else {
+			mPageItemTitleTxt.setVisibility(View.GONE);
+		}
+		mScrollView.smoothScrollTo(mContentTxt.getLeft(), mContentTxt.getTop()
+				- mContentTxt.getPaddingLeft());
 	}
 
 	private class Title {
@@ -323,7 +342,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		Intent i = new Intent(Intent.ACTION_SEND);
 		i.setType("text/plain");
 		i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_msg_title));
-		i.putExtra(Intent.EXTRA_TEXT, mDataList.get(position));
+		i.putExtra(Intent.EXTRA_TEXT, mDataList.get(position).mContent);
 		startActivity(Intent.createChooser(i,
 				getString(R.string.share_dlg_title)));
 	}
@@ -393,7 +412,9 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	private void onPrevPage() {
 		if (position > 0) {
 			position--;
-			mContentTxt.setText(mDataList.get(position));
+			updateContent(mDataList.get(position));
+			// mContentTxt.setText(mDataList.get(position).mContent);
+			mPageItemTitleTxt.setAnimation(mPrevAnim);
 			mPrevAnim.setAnimationListener(mAnimListener);
 			mContentTxt.startAnimation(mPrevAnim);
 			updateTitle();
@@ -412,7 +433,9 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	private void onNextPage() {
 		if (position < mDataList.size() - 1) {
 			position++;
-			mContentTxt.setText(mDataList.get(position));
+			updateContent(mDataList.get(position));
+			// mContentTxt.setText(mDataList.get(position).mContent);
+			mPageItemTitleTxt.setAnimation(mNextAnim);
 			mNextAnim.setAnimationListener(mAnimListener);
 			mContentTxt.startAnimation(mNextAnim);
 			updateTitle();
@@ -567,6 +590,16 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			return 0;// default : first item
 		}
 
+		private String obtainPageItemTitle(String line) {
+			int index = line.indexOf("#");
+			if (index != -1) {
+				return line.substring(index + 1);
+			} else {
+				return null;
+			}
+
+		}
+
 		@Override
 		protected Boolean doInBackground(Boolean... params) {
 			boolean init = params[0];
@@ -614,7 +647,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			if (mDataList != null && !mDataList.isEmpty()) {
 				mDataList.clear();
 			} else {
-				mDataList = new ArrayList<String>();
+				mDataList = new ArrayList<PageItem>();
 			}
 			BufferedReader br = null;
 			try {
@@ -624,6 +657,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 				br = new BufferedReader(new FileReader(curFile));
 				String line = null;
 				StringBuilder sb = null;
+				PageItem pageItem = null;
+				String title = null;
 				while ((line = br.readLine()) != null) {
 					// Log.e(TAG, "line" + line);
 					if (TextUtils.equals(line, "#END")) {
@@ -631,8 +666,11 @@ public class PageViewActivity extends Activity implements OnClickListener {
 					}
 					if (line.startsWith("#")) {
 						if (sb != null) {
-							mDataList.add(sb.toString());
+							pageItem = new PageItem(obtainPageItemTitle(title),
+									sb.toString());
+							mDataList.add(pageItem);
 						}
+						title = line;
 						sb = new StringBuilder();
 					} else {
 						sb.append(line);
@@ -663,11 +701,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			super.onPostExecute(result);
 			if (mIsAlive) {
 				if (result) {
-					mContentTxt.setText(mDataList.get(position));
-					mScrollView
-							.smoothScrollTo(mContentTxt.getLeft(), mContentTxt
-									.getTop()
-									- mContentTxt.getPaddingLeft());
+					PageItem item = mDataList.get(position);
+					updateContent(item);
 					updateTitle();
 					updateOptions();
 				}
@@ -701,6 +736,22 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			return obj1.mShortName.compareTo(obj2.mShortName);
 		}
 
+	}
+
+	/**
+	 * for mDataList
+	 * 
+	 * @author herry
+	 * 
+	 */
+	private class PageItem {
+		private String mTitle;
+		private String mContent;
+
+		public PageItem(String title, String content) {
+			mTitle = title;
+			mContent = content;
+		}
 	}
 
 	private void registerReceiver() {
