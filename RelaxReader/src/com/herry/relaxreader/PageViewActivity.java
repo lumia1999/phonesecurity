@@ -183,8 +183,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	}
 
 	private void onJumpToMonth() {
-		mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
-				.get(mItemIndex).mItemChname, position);
+		mDbAdapter.saveMonthReadPositionByItem(mDestName,
+				mItemList.get(mItemIndex).mItemChname, position);
 		Intent intent = new Intent(this, MonthSelectActivity.class);
 		intent.putExtra(Constants.EXTRA_JUMP_CUR_POS, mItemIndex);
 		int monthSize = mItemList.size();
@@ -207,8 +207,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	public void finish() {
 		super.finish();
 		mIsAlive = false;
-		mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
-				.get(mItemIndex).mItemChname, position);
+		mDbAdapter.saveMonthReadPositionByItem(mDestName,
+				mItemList.get(mItemIndex).mItemChname, position);
 	}
 
 	@Override
@@ -328,8 +328,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onPrevMonth() {
 		if (mItemIndex > 0) {
-			mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
-					.get(mItemIndex).mItemChname, position);
+			mDbAdapter.saveMonthReadPositionByItem(mDestName,
+					mItemList.get(mItemIndex).mItemChname, position);
 			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex--;
 			new LoadDataTask().execute(false);
@@ -349,8 +349,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onNextMonth() {
 		if (mItemIndex < mItemList.size() - 1) {
-			mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
-					.get(mItemIndex).mItemChname, position);
+			mDbAdapter.saveMonthReadPositionByItem(mDestName,
+					mItemList.get(mItemIndex).mItemChname, position);
 			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex++;
 			new LoadDataTask().execute(false);
@@ -396,11 +396,11 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void handleUserTouch(MotionEvent ev) {
 		float x = ev.getX();
-		int leftSpan = (3 * mScreenParams.mWidth) / (2 * 5);
+		int leftSpan = (5 * mScreenParams.mWidth) / (2 * 8);
 		if (x <= leftSpan) {
 			// Log.e(TAG, "left");
 			onPrevPage();
-		} else if (x >= leftSpan + mScreenParams.mWidth * 2 / 5) {
+		} else if (x >= leftSpan + mScreenParams.mWidth * 3 / 8) {
 			// Log.e(TAG, "right");
 			onNextPage();
 		} else {
@@ -489,9 +489,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 		@Override
 		public void onAnimationEnd(Animation animation) {
-			mScrollView.smoothScrollTo(mContentTxt.getLeft(), mContentTxt
-					.getTop()
-					- mContentTxt.getPaddingTop());
+			mScrollView.smoothScrollTo(mContentTxt.getLeft(),
+					mContentTxt.getTop() - mContentTxt.getPaddingTop());
 		}
 	};
 
