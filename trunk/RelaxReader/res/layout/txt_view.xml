@@ -22,10 +22,28 @@
                 android:layout_height="1dip"
                 android:background="@color/grey" />
 
-            <ScrollView android:id="@+id/scroll_view"
+            <com.herry.relaxreader.AlwaysMarqueeTextView
+                android:id="@+id/item_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:gravity="center_horizontal"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip"
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/black"
+                android:visibility="gone" />
+
+            <ScrollView
+                android:id="@+id/scroll_view"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:fadeScrollbars="false"
+                android:fadingEdge="none"
                 android:fillViewport="false" >
 
                 <include layout="@layout/content" />

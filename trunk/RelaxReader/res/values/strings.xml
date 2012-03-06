@@ -39,4 +39,6 @@
     <string name="share_msg_title">分享--来自我型我阅</string>
     <string name="loading_data_dlg_msg">正在拼命努力中。。。</string>
 
+    <!-- other value -->
+	<string name="welcome_tip">欢迎使用我型我阅，在这里，您可以尽情的放松自己，找到自己的愉悦所在！</string>
 </resources>

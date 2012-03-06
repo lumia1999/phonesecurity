@@ -13,8 +13,6 @@ public class FileHelper {
 	private static final String DEST_BASE = "jokeCollection";
 	public static final String DEST_QIUSHIBAIKE = "qiushibaike";
 	public static final String DEST_ADULT = "adult";
-	public static final String DEST_HOT = "hot";
-	public static final String DEST_NEWEST = "newest";
 	public static final String DEST_COLD = "cold";
 	public static final String DEST_HORRIBLE = "horrible";
 
