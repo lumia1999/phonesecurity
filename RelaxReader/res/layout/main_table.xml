@@ -3,7 +3,10 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/grey"
-    android:padding="10dip" >
+    android:paddingBottom="5dip"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip"
+    android:paddingTop="5dip" >
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -38,11 +41,11 @@
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
         android:text="@string/welcome_tip"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/mix_yellow"
-        android:marqueeRepeatLimit="marquee_forever"
         android:textStyle="italic" />
 
 </RelativeLayout>

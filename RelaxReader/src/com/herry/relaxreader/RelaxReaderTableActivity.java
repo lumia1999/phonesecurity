@@ -118,21 +118,39 @@ public class RelaxReaderTableActivity extends Activity implements
 				}
 			}).create();
 		case DLG_UNZIP_IFNEEDED_ID:
-			ProgressDialog pDialog = new ProgressDialog(this);
-			pDialog.setMessage(getString(R.string.unzip_dlg_msg));
-			pDialog.setCancelable(false);
-			pDialog.setOnKeyListener(new OnKeyListener() {
+			// ProgressDialog pDialog = new ProgressDialog(this);
+			// pDialog.setMessage(getString(R.string.unzip_dlg_msg));
+			// pDialog.setCancelable(false);
+			// pDialog.setOnKeyListener(new OnKeyListener() {
+			//
+			// @Override
+			// public boolean onKey(DialogInterface dialog, int keyCode,
+			// KeyEvent event) {
+			// if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+			// return true;
+			// }
+			// return false;
+			// }
+			// });
+			// return pDialog;
+			AlertDialog unzipDialog = new AlertDialog.Builder(this)
+					.setCancelable(false).setOnKeyListener(new OnKeyListener() {
 
-				@Override
-				public boolean onKey(DialogInterface dialog, int keyCode,
-						KeyEvent event) {
-					if (keyCode == KeyEvent.KEYCODE_SEARCH) {
-						return true;
-					}
-					return false;
-				}
-			});
-			return pDialog;
+						@Override
+						public boolean onKey(DialogInterface dialog,
+								int keyCode, KeyEvent event) {
+							if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+								return true;
+							}
+							return false;
+						}
+					}).create();
+			View unzipView = mLayoutInflater.inflate(R.layout.loading, null);
+			TextView msgTxt = (TextView) unzipView
+					.findViewById(R.id.loading_tip);
+			msgTxt.setText(R.string.unzip_dlg_msg);
+			unzipDialog.setView(unzipView, 0, 0, 0, 0);
+			return unzipDialog;
 		case DLG_EXIT_APP_ID:
 			AlertDialog exitDlg = new AlertDialog.Builder(this).create();
 			View v = mLayoutInflater.inflate(R.layout.exit_app_dlg_view, null);
@@ -188,9 +206,14 @@ public class RelaxReaderTableActivity extends Activity implements
 		// temp = new Item(R.drawable.item_new, R.string.item_newestjoke,
 		// FileHelper.DEST_NEWEST);
 		// mDataList.add(temp);
+
 		// cold
 		temp = new Item(R.drawable.item_cold, R.string.item_coldjoke,
 				FileHelper.DEST_COLD);
+		mDataList.add(temp);
+		// special
+		temp = new Item(R.drawable.item_special, R.string.item_special,
+				FileHelper.DEST_SPECIAL);
 		mDataList.add(temp);
 		// horrible
 		temp = new Item(R.drawable.item_horrible, R.string.item_horriblejoke,
