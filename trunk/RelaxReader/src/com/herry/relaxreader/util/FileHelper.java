@@ -14,6 +14,7 @@ public class FileHelper {
 	public static final String DEST_QIUSHIBAIKE = "qiushibaike";
 	public static final String DEST_ADULT = "adult";
 	public static final String DEST_COLD = "cold";
+	public static final String DEST_SPECIAL = "special";
 	public static final String DEST_HORRIBLE = "horrible";
 
 	/**

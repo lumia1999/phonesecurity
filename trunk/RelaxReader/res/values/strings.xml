@@ -10,6 +10,7 @@
     <string name="item_hotjoke">热门笑话</string>
     <string name="item_newestjoke">最新笑话</string>
     <string name="item_coldjoke">超冷笑话</string>
+    <string name="item_special">极品笑话</string>
     <string name="item_horriblejoke">恐怖笑话</string>
 
     <!-- dialog string -->
