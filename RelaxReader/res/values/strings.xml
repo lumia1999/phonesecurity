@@ -11,14 +11,14 @@
     <string name="item_newestjoke">最新笑话</string>
     <string name="item_coldjoke">超冷笑话</string>
     <string name="item_special">极品笑话</string>
-    <string name="item_horriblejoke">恐怖笑话</string>
+    <string name="item_ancient">古代笑话</string>
 
     <!-- dialog string -->
     <string name="unzip_dlg_msg">量产中，请稍后。。。</string>
     <string name="no_sdcard_dlg_title">无存储卡</string>
     <string name="no_sdcard_dlg_msg">您的手机没有正确插入存储卡，请检查。</string>
     <string name="exit_app_dlg_title">离开</string>
-    <string name="exit_app_dlg_msg">神马，要撤？有时间再回来哦^_^</string>
+    <string name="exit_app_dlg_msg">神马，要撤？我一定会回来的^_^</string>
     <string name="prompt_dlg_title">温馨提示</string>
     <string name="prompt_dlg_msg_first_page">您现在处于本月的第一条趣闻，看看下面的选项，有没有适合您的</string>
     <string name="prompt_dlg_msg_last_page">您已经阅读完本月所有趣闻</string>
