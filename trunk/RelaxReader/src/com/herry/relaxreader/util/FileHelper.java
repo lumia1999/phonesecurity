@@ -15,7 +15,7 @@ public class FileHelper {
 	public static final String DEST_ADULT = "adult";
 	public static final String DEST_COLD = "cold";
 	public static final String DEST_SPECIAL = "special";
-	public static final String DEST_HORRIBLE = "horrible";
+	public static final String DEST_ANCIENT = "ancient";
 
 	/**
 	 * omit the last "/" if exists

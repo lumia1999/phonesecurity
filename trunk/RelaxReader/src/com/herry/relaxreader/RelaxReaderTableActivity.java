@@ -216,8 +216,8 @@ public class RelaxReaderTableActivity extends Activity implements
 				FileHelper.DEST_SPECIAL);
 		mDataList.add(temp);
 		// horrible
-		temp = new Item(R.drawable.item_horrible, R.string.item_horriblejoke,
-				FileHelper.DEST_HORRIBLE);
+		temp = new Item(R.drawable.item_ancient, R.string.item_ancient,
+				FileHelper.DEST_ANCIENT);
 		mDataList.add(temp);
 	}
 
