@@ -10,14 +10,18 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import net.youmi.android.AdView;
+import net.youmi.android.appoffers.YoumiOffersManager;
+import net.youmi.android.appoffers.YoumiPointsManager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,6 +46,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.herry.relaxreader.db.LastReadItem;
 import com.herry.relaxreader.db.RecordDbAdapter;
@@ -142,6 +147,24 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		checkConsumePoints();
+	}
+
+	private void checkConsumePoints() {
+		long savedTS = Utils.getConsumeTimestamp(this);
+		if (savedTS == -1L) {
+			return;
+		}
+		long now = System.currentTimeMillis();
+		if (Math.abs(now - savedTS) > Constants.CONSUME_ACTIVE_TIME_INTERVAL) {
+			return;
+		}
+		mAdView.setVisibility(View.GONE);
+	}
+
+	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		initScreenParams();
@@ -172,7 +195,9 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		switch (item.getItemId()) {
 		case R.id.remove_ad:
 			Log.d(TAG, "remove ad");
-			// TODO
+			Intent i = new Intent(this, AppOfferTipActivity.class);
+			i.putExtra("extra", "extra");
+			startActivity(i);
 			return true;
 		case R.id.jump_to_month:
 			Log.d(TAG, "jump to month");
@@ -183,8 +208,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	}
 
 	private void onJumpToMonth() {
-		mDbAdapter.saveMonthReadPositionByItem(mDestName,
-				mItemList.get(mItemIndex).mItemChname, position);
+		mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+				.get(mItemIndex).mItemChname, position);
 		Intent intent = new Intent(this, MonthSelectActivity.class);
 		intent.putExtra(Constants.EXTRA_JUMP_CUR_POS, mItemIndex);
 		int monthSize = mItemList.size();
@@ -207,8 +232,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	public void finish() {
 		super.finish();
 		mIsAlive = false;
-		mDbAdapter.saveMonthReadPositionByItem(mDestName,
-				mItemList.get(mItemIndex).mItemChname, position);
+		mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+				.get(mItemIndex).mItemChname, position);
 	}
 
 	@Override
@@ -328,8 +353,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onPrevMonth() {
 		if (mItemIndex > 0) {
-			mDbAdapter.saveMonthReadPositionByItem(mDestName,
-					mItemList.get(mItemIndex).mItemChname, position);
+			mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+					.get(mItemIndex).mItemChname, position);
 			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex--;
 			new LoadDataTask().execute(false);
@@ -349,8 +374,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onNextMonth() {
 		if (mItemIndex < mItemList.size() - 1) {
-			mDbAdapter.saveMonthReadPositionByItem(mDestName,
-					mItemList.get(mItemIndex).mItemChname, position);
+			mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+					.get(mItemIndex).mItemChname, position);
 			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex++;
 			new LoadDataTask().execute(false);
@@ -396,11 +421,12 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void handleUserTouch(MotionEvent ev) {
 		float x = ev.getX();
-		int leftSpan = (5 * mScreenParams.mWidth) / (2 * 8);
+		int mid = 80;
+		int leftSpan = (mScreenParams.mWidth - mid) / 2;
 		if (x <= leftSpan) {
 			// Log.e(TAG, "left");
 			onPrevPage();
-		} else if (x >= leftSpan + mScreenParams.mWidth * 3 / 8) {
+		} else if (x >= leftSpan + mid) {
 			// Log.e(TAG, "right");
 			onNextPage();
 		} else {
@@ -489,8 +515,9 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 		@Override
 		public void onAnimationEnd(Animation animation) {
-			mScrollView.smoothScrollTo(mContentTxt.getLeft(),
-					mContentTxt.getTop() - mContentTxt.getPaddingTop());
+			mScrollView.smoothScrollTo(mContentTxt.getLeft(), mContentTxt
+					.getTop()
+					- mContentTxt.getPaddingTop());
 		}
 	};
 

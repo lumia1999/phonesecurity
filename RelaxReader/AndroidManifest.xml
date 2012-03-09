@@ -3,7 +3,7 @@
     android:installLocation="preferExternal"
     package="com.herry.relaxreader"
     android:versionCode="1"
-    android:versionName="1.5" >
+    android:versionName="1.6" >
 
     <supports-screens
         android:anyDensity="true"
