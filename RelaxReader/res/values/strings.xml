@@ -52,5 +52,6 @@
 
     <!-- other value -->
     <string name="welcome_tip">欢迎使用我型我阅，在这里，您可以尽情的放松自己，找到自己的愉悦所在！</string>
-
+	<string name="version_title">当前版本：</string>
+	<string name="author_title">联系作者：Xinwei.Yi@gmail.com</string>
 </resources>
