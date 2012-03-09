@@ -67,7 +67,7 @@ public class RelaxReaderTableActivity extends Activity implements
 		setContentView(R.layout.main_table);
 		if (!Utils.isConsumeActive(this)) {
 			AdManager.init(this, "0025ccd4baca1bb2", "6f8360d97e84aa86", 30,
-					true);
+					false);
 			YoumiOffersManager.init(this, "0025ccd4baca1bb2",
 					"6f8360d97e84aa86");
 		}
@@ -110,46 +110,51 @@ public class RelaxReaderTableActivity extends Activity implements
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch(item.getItemId()){
+		switch (item.getItemId()) {
 		case R.id.about:
 			showAbout();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	private void showAbout(){
-		
+
+	private void showAbout() {
+		Intent i = new Intent(this, AboutActivity.class);
+		startActivity(i);
 	}
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DLG_NO_SDCARD_EXIST_ID:
-			return new AlertDialog.Builder(this).setIcon(
-					android.R.drawable.ic_dialog_alert).setTitle(
-					R.string.no_sdcard_dlg_title).setMessage(
-					R.string.no_sdcard_dlg_msg).setPositiveButton(
-					android.R.string.ok, new DialogInterface.OnClickListener() {
+			return new AlertDialog.Builder(this)
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setTitle(R.string.no_sdcard_dlg_title)
+					.setMessage(R.string.no_sdcard_dlg_msg)
+					.setPositiveButton(android.R.string.ok,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									finish();
+								}
+							})
+					.setNegativeButton(android.R.string.no,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									finish();
+								}
+							}).setOnCancelListener(new OnCancelListener() {
 
 						@Override
-						public void onClick(DialogInterface dialog, int which) {
+						public void onCancel(DialogInterface dialog) {
 							finish();
 						}
-					}).setNegativeButton(android.R.string.no,
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							finish();
-						}
-					}).setOnCancelListener(new OnCancelListener() {
-
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					finish();
-				}
-			}).create();
+					}).create();
 		case DLG_UNZIP_IFNEEDED_ID:
 			AlertDialog unzipDialog = new AlertDialog.Builder(this)
 					.setCancelable(false).setOnKeyListener(new OnKeyListener() {
