@@ -8,6 +8,7 @@ public class Prefs {
 	private static SharedPreferences mInstance = null;
 
 	private static final String ITEM_VERSION = "version";
+	private static final String ITEM_CONSUME_POINTS_TS = "consume_points_ts";
 
 	private synchronized static SharedPreferences getInstance(Context ctx) {
 		if (mInstance == null) {
@@ -32,6 +33,19 @@ public class Prefs {
 	public static String getCurrentVersion(Context ctx) {
 		SharedPreferences pref = get(ctx);
 		return pref.getString(ITEM_VERSION, null);
+	}
+
+	public static void saveConsumeTimestamp(Context ctx, long ts) {
+		SharedPreferences pref = get(ctx);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putLong(ITEM_CONSUME_POINTS_TS, ts);
+		editor.commit();
+	}
+
+	// default value is -1L
+	public static long getConsumeTimestamp(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		return pref.getLong(ITEM_CONSUME_POINTS_TS, -1L);
 	}
 
 }

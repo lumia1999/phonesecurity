@@ -20,4 +20,8 @@ public class Constants {
 	public static final String ACTION_JUMP = "com.herry.relaxreader.ACTION_JUMP";
 	public static final String EXTRA_JUMP_CUR_POS = "jump_cur_pos";
 	public static final String EXTRA_JUMP_DATA = "month_data";
+
+	public static final int POINTS_PER_MONTH = 100;
+	public static final long CONSUME_ACTIVE_TIME_INTERVAL = 30 * 24 * 60 * 60
+			* 1000;// 30days
 }

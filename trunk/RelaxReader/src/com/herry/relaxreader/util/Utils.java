@@ -51,4 +51,46 @@ public class Utils {
 		}
 		return nInfo.isConnected();
 	}
+
+	public static void saveConsumeTimestamp(Context ctx) {
+		long ts = System.currentTimeMillis();
+		Prefs.saveConsumeTimestamp(ctx, ts);
+		FileHelper.saveConsumeTS(ts);
+	}
+
+	public static long getConsumeTimestamp(Context ctx) {
+		long prefTS = Prefs.getConsumeTimestamp(ctx);
+		long sdTS = FileHelper.getConsumeTS();
+		if (prefTS == -1L && sdTS == -1L) {
+			return -1L;
+		} else {
+			if (prefTS == -1L) {
+				Prefs.saveConsumeTimestamp(ctx, sdTS);
+				return sdTS;
+			} else if (sdTS == -1L) {
+				FileHelper.saveConsumeTS(prefTS);
+				return prefTS;
+			} else {
+				if (prefTS != sdTS) {
+					FileHelper.saveConsumeTS(prefTS);
+					return prefTS;
+				} else {
+					return prefTS;
+				}
+
+			}
+		}
+	}
+
+	public static boolean isConsumeActive(Context ctx) {
+		long savedTS = getConsumeTimestamp(ctx);
+		if (savedTS == -1L) {
+			return false;
+		}
+		long now = System.currentTimeMillis();
+		if (Math.abs(now - savedTS) > Constants.CONSUME_ACTIVE_TIME_INTERVAL) {
+			return false;
+		}
+		return true;
+	}
 }

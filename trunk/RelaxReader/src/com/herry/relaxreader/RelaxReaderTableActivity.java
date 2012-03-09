@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.youmi.android.AdManager;
+import net.youmi.android.appoffers.YoumiOffersManager;
+
 import com.herry.relaxreader.util.Constants;
 import com.herry.relaxreader.util.FileHelper;
 import com.herry.relaxreader.util.Prefs;
@@ -31,6 +34,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -58,9 +63,14 @@ public class RelaxReaderTableActivity extends Activity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_table);
+		if (!Utils.isConsumeActive(this)) {
+			AdManager.init(this, "0025ccd4baca1bb2", "6f8360d97e84aa86", 30,
+					true);
+			YoumiOffersManager.init(this, "0025ccd4baca1bb2",
+					"6f8360d97e84aa86");
+		}
 		initUI();
 		initData();
 		fillData();
@@ -87,6 +97,29 @@ public class RelaxReaderTableActivity extends Activity implements
 			}
 		}
 
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.option, menu);
+		menu.removeItem(R.id.remove_ad);
+		menu.removeItem(R.id.jump_to_month);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()){
+		case R.id.about:
+			showAbout();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	private void showAbout(){
+		
 	}
 
 	@Override
@@ -118,21 +151,6 @@ public class RelaxReaderTableActivity extends Activity implements
 				}
 			}).create();
 		case DLG_UNZIP_IFNEEDED_ID:
-			// ProgressDialog pDialog = new ProgressDialog(this);
-			// pDialog.setMessage(getString(R.string.unzip_dlg_msg));
-			// pDialog.setCancelable(false);
-			// pDialog.setOnKeyListener(new OnKeyListener() {
-			//
-			// @Override
-			// public boolean onKey(DialogInterface dialog, int keyCode,
-			// KeyEvent event) {
-			// if (keyCode == KeyEvent.KEYCODE_SEARCH) {
-			// return true;
-			// }
-			// return false;
-			// }
-			// });
-			// return pDialog;
 			AlertDialog unzipDialog = new AlertDialog.Builder(this)
 					.setCancelable(false).setOnKeyListener(new OnKeyListener() {
 

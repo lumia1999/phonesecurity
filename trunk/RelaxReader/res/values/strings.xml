@@ -28,6 +28,16 @@
     <string name="prompt_jump_to_month">跳转到...</string>
     <string name="about">关于</string>
     <string name="prompt_back">返回</string>
+    <!-- app offer string -->
+    <string name="app_offer_dlg_title">积分VIP</string>
+    <string name="app_offer_dlg_msg">您当前的积分为：{1}\n\n您只需要获取100个积分，即可享受为期整整一个月全版块的无广告阅读！\n\n{2}</string>
+    <string name="app_offer_dlg_msg_reminder">下载安装推荐应用可以获取积分，部分应用签到还将获取额外积分，了解详情请点击“赚积分”。</string>
+    <string name="app_offer_dlg_confirm_btn_txt">赚积分</string>
+    <string name="app_offer_dlg_consume_btn_txt">包月</string>
+    <string name="app_offer_dlg_cancel_btn_txt">退出</string>    
+    <string name="app_offer_points_insufficient">您当前积分不足</string>
+    <string name="app_offer_consume_active">您本月已开通VIP功能</string>
+    <string name="app_offer_consume_actived">恭喜，您已开通包月VIP功能</string>
 
     <!-- header tip -->
     <string name="global_tip">我型我阅\nWow...开启欢乐新干线...</string>
@@ -41,5 +51,6 @@
     <string name="loading_data_dlg_msg">正在拼命努力中。。。</string>
 
     <!-- other value -->
-	<string name="welcome_tip">欢迎使用我型我阅，在这里，您可以尽情的放松自己，找到自己的愉悦所在！</string>
+    <string name="welcome_tip">欢迎使用我型我阅，在这里，您可以尽情的放松自己，找到自己的愉悦所在！</string>
+
 </resources>
