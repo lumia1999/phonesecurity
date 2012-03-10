@@ -90,7 +90,8 @@ public class RelaxReaderTableActivity extends Activity implements
 		if (hasFocus) {
 			RelativeLayout header = (RelativeLayout) findViewById(R.id.header);
 			int top = header.getTop();
-			if (top < 10) {
+			Log.e(TAG, "top : " + top);
+			if (top < 20) {
 				mWelcomeTipTxt.setVisibility(View.GONE);
 			} else {
 				mWelcomeTipTxt.setVisibility(View.VISIBLE);
@@ -128,30 +129,34 @@ public class RelaxReaderTableActivity extends Activity implements
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DLG_NO_SDCARD_EXIST_ID:
-			return new AlertDialog.Builder(this).setIcon(
-					android.R.drawable.ic_dialog_alert).setTitle(
-					R.string.no_sdcard_dlg_title).setMessage(
-					R.string.no_sdcard_dlg_msg).setPositiveButton(
-					android.R.string.ok, new DialogInterface.OnClickListener() {
+			return new AlertDialog.Builder(this)
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setTitle(R.string.no_sdcard_dlg_title)
+					.setMessage(R.string.no_sdcard_dlg_msg)
+					.setPositiveButton(android.R.string.ok,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									finish();
+								}
+							})
+					.setNegativeButton(android.R.string.no,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									finish();
+								}
+							}).setOnCancelListener(new OnCancelListener() {
 
 						@Override
-						public void onClick(DialogInterface dialog, int which) {
+						public void onCancel(DialogInterface dialog) {
 							finish();
 						}
-					}).setNegativeButton(android.R.string.no,
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							finish();
-						}
-					}).setOnCancelListener(new OnCancelListener() {
-
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					finish();
-				}
-			}).create();
+					}).create();
 		case DLG_UNZIP_IFNEEDED_ID:
 			AlertDialog unzipDialog = new AlertDialog.Builder(this)
 					.setCancelable(false).setOnKeyListener(new OnKeyListener() {
