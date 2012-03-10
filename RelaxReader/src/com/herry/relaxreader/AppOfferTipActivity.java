@@ -37,6 +37,9 @@ public class AppOfferTipActivity extends Activity implements OnClickListener {
 	private Button mConsumeBtn;
 	private Button mCancelBtn;
 
+	// form option menu
+	private String extra;
+
 	private static final int DLG_SHOW_APPOFFER_ID = 1;
 
 	@Override
@@ -48,16 +51,18 @@ public class AppOfferTipActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.prompt_user_view);
 		initUI();
 		updateUI();
+		if (extra != null) {
+			showDialog(DLG_SHOW_APPOFFER_ID);
+		}
 
 	}
 
 	private void init() {
 		Intent i = getIntent();
 		if (i != null) {
-			String extra = i.getStringExtra("extra");
+			extra = i.getStringExtra("extra");
 			if (extra != null) {
-				showDialog(DLG_SHOW_APPOFFER_ID);
-				return;
+				// showDialog(DLG_SHOW_APPOFFER_ID);
 			}
 			item = i.getParcelableExtra(Constants.EXTRA_APPOFFERTIP_ITEM);
 			if (item != null) {
@@ -144,7 +149,16 @@ public class AppOfferTipActivity extends Activity implements OnClickListener {
 		msg = msg.replace("{1}", String.valueOf(curPoints));
 		long saveTS = Utils.getConsumeTimestamp(ctx);
 		if (saveTS != -1L) {
-			msg = msg.replace("{2}", "");
+			long now = System.currentTimeMillis();
+			long span = Math.abs(now - saveTS);
+			if (span < Constants.CONSUME_ACTIVE_TIME_INTERVAL) {
+				msg = msg.replace("{2}",
+						getString(R.string.app_offer_consume_actived) + "\t\n"
+								+ Utils.calcActiveTimeLeft(ctx, span));
+			} else {
+				msg = msg.replace("{2}",
+						getString(R.string.app_offer_consume_overdue));
+			}
 		} else {
 			msg = msg.replace("{2}",
 					getString(R.string.app_offer_dlg_msg_reminder));
@@ -203,7 +217,8 @@ public class AppOfferTipActivity extends Activity implements OnClickListener {
 			finish();
 		} else {
 			if (isStillActive(saveTS)) {
-				Toast.makeText(ctx, "", Toast.LENGTH_SHORT).show();
+				Toast.makeText(ctx, R.string.app_offer_consume_actived,
+						Toast.LENGTH_SHORT).show();
 			} else {
 				int points = YoumiPointsManager.queryPoints(ctx);
 				if (points < Constants.POINTS_PER_MONTH) {

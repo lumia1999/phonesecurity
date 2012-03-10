@@ -1,5 +1,7 @@
 package com.herry.relaxreader.util;
 
+import com.herry.relaxreader.R;
+
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -92,5 +94,12 @@ public class Utils {
 			return false;
 		}
 		return true;
+	}
+
+	public static String calcActiveTimeLeft(Context ctx, long span) {
+		long consumed = span / (Constants.ONE_DAY_TIME_INTERVAL);
+		return ctx.getString(R.string.app_offer_consume_active_lefttime) + " "
+				+ (Constants.OVERDUE_INTERVAL - consumed) + " "
+				+ ctx.getString(R.string.day);
 	}
 }
