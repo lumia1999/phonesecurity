@@ -21,7 +21,9 @@ public class Constants {
 	public static final String EXTRA_JUMP_CUR_POS = "jump_cur_pos";
 	public static final String EXTRA_JUMP_DATA = "month_data";
 
-	public static final int POINTS_PER_MONTH = 100;
-	public static final long CONSUME_ACTIVE_TIME_INTERVAL = 30 * 24 * 60 * 60
-			* 1000;// 30days
+	public static final int POINTS_PER_MONTH = 50;
+	public static final int OVERDUE_INTERVAL = 30;// 30days
+	public static final long ONE_DAY_TIME_INTERVAL = 24 * 60 * 60 * 1000L;// 1day
+	public static final long CONSUME_ACTIVE_TIME_INTERVAL = OVERDUE_INTERVAL
+			* ONE_DAY_TIME_INTERVAL;
 }

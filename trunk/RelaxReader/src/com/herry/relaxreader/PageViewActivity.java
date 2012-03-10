@@ -154,6 +154,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void checkConsumePoints() {
 		long savedTS = Utils.getConsumeTimestamp(this);
+		Log.e(TAG, "savedTS : " + savedTS);
 		if (savedTS == -1L) {
 			return;
 		}
@@ -161,6 +162,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		if (Math.abs(now - savedTS) > Constants.CONSUME_ACTIVE_TIME_INTERVAL) {
 			return;
 		}
+		Log.e(TAG, "consume actived!!!");
 		mAdView.setVisibility(View.GONE);
 	}
 

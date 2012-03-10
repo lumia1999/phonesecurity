@@ -40,6 +40,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TableLayout.LayoutParams;
@@ -87,14 +88,14 @@ public class RelaxReaderTableActivity extends Activity implements
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		if (hasFocus) {
-			int screenHeight = getWindowManager().getDefaultDisplay()
-					.getHeight();
-			int tableHeight = mTableLayout.getMeasuredHeight();
-			if (tableHeight > screenHeight) {
+			RelativeLayout header = (RelativeLayout) findViewById(R.id.header);
+			int top = header.getTop();
+			if (top < 10) {
 				mWelcomeTipTxt.setVisibility(View.GONE);
 			} else {
 				mWelcomeTipTxt.setVisibility(View.VISIBLE);
 			}
+
 		}
 
 	}
@@ -127,34 +128,30 @@ public class RelaxReaderTableActivity extends Activity implements
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DLG_NO_SDCARD_EXIST_ID:
-			return new AlertDialog.Builder(this)
-					.setIcon(android.R.drawable.ic_dialog_alert)
-					.setTitle(R.string.no_sdcard_dlg_title)
-					.setMessage(R.string.no_sdcard_dlg_msg)
-					.setPositiveButton(android.R.string.ok,
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									finish();
-								}
-							})
-					.setNegativeButton(android.R.string.no,
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									finish();
-								}
-							}).setOnCancelListener(new OnCancelListener() {
+			return new AlertDialog.Builder(this).setIcon(
+					android.R.drawable.ic_dialog_alert).setTitle(
+					R.string.no_sdcard_dlg_title).setMessage(
+					R.string.no_sdcard_dlg_msg).setPositiveButton(
+					android.R.string.ok, new DialogInterface.OnClickListener() {
 
 						@Override
-						public void onCancel(DialogInterface dialog) {
+						public void onClick(DialogInterface dialog, int which) {
 							finish();
 						}
-					}).create();
+					}).setNegativeButton(android.R.string.no,
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					}).setOnCancelListener(new OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					finish();
+				}
+			}).create();
 		case DLG_UNZIP_IFNEEDED_ID:
 			AlertDialog unzipDialog = new AlertDialog.Builder(this)
 					.setCancelable(false).setOnKeyListener(new OnKeyListener() {
@@ -213,6 +210,10 @@ public class RelaxReaderTableActivity extends Activity implements
 			mTableLayout.removeAllViews();
 		}
 		Item temp = null;
+		// mix
+		temp = new Item(R.drawable.item_mix, R.string.item_mix,
+				FileHelper.DEST_MIX);
+		mDataList.add(temp);
 		// qiushibaike
 		temp = new Item(R.drawable.item_qiushibaike, R.string.item_qiushibaike,
 				FileHelper.DEST_QIUSHIBAIKE);
@@ -308,7 +309,8 @@ public class RelaxReaderTableActivity extends Activity implements
 			InputStream is = null;
 			File destFile = null;
 			try {
-				is = am.open("jokeCollection.zip");
+				// is = am.open("jokeCollection.zip");
+				is = res.openRawResource(R.raw.jokecollection);
 				destFile = new File(FileHelper.getDestPath(),
 						"jokeCollection.zip");
 				if (destFile.exists()) {

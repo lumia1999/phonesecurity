@@ -19,7 +19,8 @@ public class FileHelper {
 	private static final String DOWNLOAD = "download";
 	private static final String DEST = ".relaxreader";
 
-	private static final String DEST_BASE = "jokeCollection";
+	private static final String DEST_BASE = "jokecollection";
+	public static final String DEST_MIX = "mix";
 	public static final String DEST_QIUSHIBAIKE = "qiushibaike";
 	public static final String DEST_ADULT = "adult";
 	public static final String DEST_COLD = "cold";
@@ -66,8 +67,7 @@ public class FileHelper {
 	}
 
 	private static String getConsumePath() {
-		return getSdcardRootPathWithoutSlash() + File.separator
-				+ APPOFFER_CONSUME_TS;
+		return getDestPath() + APPOFFER_CONSUME_TS;
 	}
 
 	// default value is -1L
