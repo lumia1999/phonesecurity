@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, RelaxReaderActivity!</string>
+    <string name="app_name">我型我阅</string>
+
+    <!-- main item -->
+    <string name="item_qiushibaike">糗事全集</string>
+    <string name="item_adult">成人笑话</string>
+    <string name="item_hotjoke">热门笑话</string>
+    <string name="item_newestjoke">最新笑话</string>
+    <string name="item_coldjoke">超冷笑话</string>
+    <string name="item_special">极品笑话</string>
+    <string name="item_ancient">古代笑话</string>
+    <string name="item_mix">大众笑话</string>
+
+    <!-- dialog string -->
+    <string name="unzip_dlg_msg">量产中，请稍后。。。</string>
+    <string name="no_sdcard_dlg_title">无存储卡</string>
+    <string name="no_sdcard_dlg_msg">您的手机没有正确插入存储卡，请检查。</string>
+    <string name="exit_app_dlg_title">离开</string>
+    <string name="exit_app_dlg_msg">神马，要撤？我一定会回来的^_^</string>
+    <string name="prompt_dlg_title">温馨提示</string>
+    <string name="prompt_dlg_msg_first_page">您现在处于本月的第一条趣闻，看看下面的选项，有没有适合您的</string>
+    <string name="prompt_dlg_msg_last_page">您已经阅读完本月所有趣闻</string>
+    <string name="prompt_btn_prev_month">上一月</string>
+    <string name="prompt_btn_next_mpnth">下一月</string>
+    <string name="prompt_remove_ad">去广告</string>
+    <string name="prompt_jump_to_month">跳转到...</string>
+    <string name="about">关于</string>
+    <string name="prompt_back">返回</string>
+    <!-- app offer string -->
+    <string name="app_offer_dlg_title">积分VIP</string>
+    <string name="app_offer_dlg_msg">您当前的积分为：{1}\n\n您只需要获取50个积分，即可享受为期整整一个月全版块的无广告阅读！\n\n{2}</string>
+    <string name="app_offer_dlg_msg_reminder">下载安装推荐应用可以获取积分，部分应用签到还将获取额外积分，了解详情请点击“赚积分”。</string>
+    <string name="app_offer_dlg_confirm_btn_txt">赚积分</string>
+    <string name="app_offer_dlg_consume_btn_txt">包月</string>
+    <string name="app_offer_dlg_cancel_btn_txt">退出</string>
+    <string name="app_offer_points_insufficient">您当前积分不足</string>
+    <string name="app_offer_consume_active">您本月已开通VIP功能</string>
+    <string name="app_offer_consume_actived">恭喜，您已开通包月VIP功能！</string>
+    <string name="app_offer_consume_overdue">您的包月VIP已过期！</string>
+    <string name="app_offer_consume_active_lefttime">有效期大约还有</string>
+    <string name="day">天</string>
+
+    <!-- header tip -->
+    <string name="global_tip">我型我阅\nWow...开启欢乐新干线...</string>
+
+    <!-- view page string -->
+    <string name="prev_month">上一月</string>
+    <string name="share">分享笑话</string>
+    <string name="next_month">下一月</string>
+    <string name="share_dlg_title">选择分享方式</string>
+    <string name="share_msg_title">分享--来自我型我阅</string>
+    <string name="loading_data_dlg_msg">正在拼命努力中。。。</string>
+
+    <!-- other value -->
+    <string name="welcome_tip">欢迎使用我型我阅，在这里，您可以尽情的放松自己，找到自己的愉悦所在！</string>
+    <string name="version_title">当前版本：</string>
+    <string name="author_title">联系作者：Xinwei.Yi@gmail.com</string>
+
+</resources>

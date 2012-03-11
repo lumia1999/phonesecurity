@@ -188,8 +188,21 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.option, menu);
-		menu.removeItem(R.id.about);
 		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.removeItem(R.id.about);
+		if (Utils.showOfferOption(this)) {
+			if (menu.findItem(R.id.remove_ad) == null) {
+				menu.add(0, R.id.remove_ad, 10, R.string.prompt_remove_ad)
+						.setIcon(R.drawable.menu_app_offer_point);
+			}
+		} else {
+			menu.removeItem(R.id.remove_ad);
+		}
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
@@ -210,8 +223,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	}
 
 	private void onJumpToMonth() {
-		mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
-				.get(mItemIndex).mItemChname, position);
+		mDbAdapter.saveMonthReadPositionByItem(mDestName,
+				mItemList.get(mItemIndex).mItemChname, position);
 		Intent intent = new Intent(this, MonthSelectActivity.class);
 		intent.putExtra(Constants.EXTRA_JUMP_CUR_POS, mItemIndex);
 		int monthSize = mItemList.size();
@@ -234,8 +247,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	public void finish() {
 		super.finish();
 		mIsAlive = false;
-		mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
-				.get(mItemIndex).mItemChname, position);
+		mDbAdapter.saveMonthReadPositionByItem(mDestName,
+				mItemList.get(mItemIndex).mItemChname, position);
 	}
 
 	@Override
@@ -355,8 +368,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onPrevMonth() {
 		if (mItemIndex > 0) {
-			mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
-					.get(mItemIndex).mItemChname, position);
+			mDbAdapter.saveMonthReadPositionByItem(mDestName,
+					mItemList.get(mItemIndex).mItemChname, position);
 			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex--;
 			new LoadDataTask().execute(false);
@@ -376,8 +389,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onNextMonth() {
 		if (mItemIndex < mItemList.size() - 1) {
-			mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
-					.get(mItemIndex).mItemChname, position);
+			mDbAdapter.saveMonthReadPositionByItem(mDestName,
+					mItemList.get(mItemIndex).mItemChname, position);
 			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex++;
 			new LoadDataTask().execute(false);
@@ -517,9 +530,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 		@Override
 		public void onAnimationEnd(Animation animation) {
-			mScrollView.smoothScrollTo(mContentTxt.getLeft(), mContentTxt
-					.getTop()
-					- mContentTxt.getPaddingTop());
+			mScrollView.smoothScrollTo(mContentTxt.getLeft(),
+					mContentTxt.getTop() - mContentTxt.getPaddingTop());
 		}
 	};
 

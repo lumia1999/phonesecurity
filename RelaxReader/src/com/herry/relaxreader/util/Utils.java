@@ -102,4 +102,19 @@ public class Utils {
 				+ (Constants.OVERDUE_INTERVAL - consumed) + " "
 				+ ctx.getString(R.string.day);
 	}
+
+	public static boolean showOfferOption(Context ctx) {
+		if (Constants.NO_OFFER) {
+			long now = System.currentTimeMillis();
+			long installTS = Prefs.getInstallTimestamp(ctx);
+			long span = now - installTS;
+			if (Math.abs(span) > Constants.OFFER_MAX_TIMESTAMP) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
+	}
 }
