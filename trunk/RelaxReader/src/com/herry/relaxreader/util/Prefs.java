@@ -9,6 +9,7 @@ public class Prefs {
 
 	private static final String ITEM_VERSION = "version";
 	private static final String ITEM_CONSUME_POINTS_TS = "consume_points_ts";
+	private static final String ITEM_INSTALL_TS = "install_ts";
 
 	private synchronized static SharedPreferences getInstance(Context ctx) {
 		if (mInstance == null) {
@@ -46,6 +47,19 @@ public class Prefs {
 	public static long getConsumeTimestamp(Context ctx) {
 		SharedPreferences pref = get(ctx);
 		return pref.getLong(ITEM_CONSUME_POINTS_TS, -1L);
+	}
+
+	public static void saveInstallTimestamp(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putLong(ITEM_INSTALL_TS, System.currentTimeMillis());
+		editor.commit();
+	}
+
+	// default value is -1L
+	public static long getInstallTimestamp(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		return pref.getLong(ITEM_INSTALL_TS, -1L);
 	}
 
 }

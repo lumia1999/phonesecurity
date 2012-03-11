@@ -82,7 +82,11 @@ public class AppOfferTipActivity extends Activity implements OnClickListener {
 		mPrevMonthBtn.setOnClickListener(this);
 		mRemoveAdBtn.setOnClickListener(this);
 		mNextMonthBtn.setOnClickListener(this);
-
+		if (Utils.showOfferOption(ctx)) {
+			mRemoveAdBtn.setVisibility(View.VISIBLE);
+		} else {
+			mRemoveAdBtn.setVisibility(View.GONE);
+		}
 	}
 
 	private void updateUI() {
