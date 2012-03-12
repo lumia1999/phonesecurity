@@ -10,6 +10,7 @@ public class Prefs {
 	private static final String ITEM_VERSION = "version";
 	private static final String ITEM_CONSUME_POINTS_TS = "consume_points_ts";
 	private static final String ITEM_INSTALL_TS = "install_ts";
+	private static final String ITEM_CUR_LANGUAGE = "cur_language";
 
 	private synchronized static SharedPreferences getInstance(Context ctx) {
 		if (mInstance == null) {
@@ -60,6 +61,24 @@ public class Prefs {
 	public static long getInstallTimestamp(Context ctx) {
 		SharedPreferences pref = get(ctx);
 		return pref.getLong(ITEM_INSTALL_TS, -1L);
+	}
+
+	public static void saveCurLangType(Context ctx, int type) {
+		SharedPreferences pref = get(ctx);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putInt(ITEM_CUR_LANGUAGE, type);
+		editor.commit();
+	}
+
+	/**
+	 * default value is {@code Constants#LANG_DEFAULT}
+	 * 
+	 * @param ctx
+	 * @return
+	 */
+	public static int getCurLangType(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		return pref.getInt(ITEM_CUR_LANGUAGE, Constants.LANG_DEFAULT);
 	}
 
 }

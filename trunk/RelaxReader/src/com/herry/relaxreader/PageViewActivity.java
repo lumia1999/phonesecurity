@@ -52,7 +52,9 @@ import com.herry.relaxreader.db.LastReadItem;
 import com.herry.relaxreader.db.RecordDbAdapter;
 import com.herry.relaxreader.util.Constants;
 import com.herry.relaxreader.util.FileHelper;
+import com.herry.relaxreader.util.Prefs;
 import com.herry.relaxreader.util.Utils;
+import com.spreada.utils.chinese.ZHConverter;
 
 public class PageViewActivity extends Activity implements OnClickListener {
 	private static final String TAG = "PageViewActivity";
@@ -95,6 +97,9 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	// db
 	private RecordDbAdapter mDbAdapter;
+
+	// 繁体简体标记
+	private ZHConverter mLangConverter;
 
 	private static final int DLG_LOADING_DATA_ID = 1;
 
@@ -223,8 +228,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	}
 
 	private void onJumpToMonth() {
-		mDbAdapter.saveMonthReadPositionByItem(mDestName,
-				mItemList.get(mItemIndex).mItemChname, position);
+		mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+				.get(mItemIndex).mItemChname, position);
 		Intent intent = new Intent(this, MonthSelectActivity.class);
 		intent.putExtra(Constants.EXTRA_JUMP_CUR_POS, mItemIndex);
 		int monthSize = mItemList.size();
@@ -247,8 +252,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	public void finish() {
 		super.finish();
 		mIsAlive = false;
-		mDbAdapter.saveMonthReadPositionByItem(mDestName,
-				mItemList.get(mItemIndex).mItemChname, position);
+		mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+				.get(mItemIndex).mItemChname, position);
 	}
 
 	@Override
@@ -325,10 +330,18 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	}
 
 	private void updateContent(PageItem item) {
-		mContentTxt.setText(item.mContent);
+		if (mLangConverter != null) {
+			mContentTxt.setText(mLangConverter.convert(item.mContent));
+		} else {
+			mContentTxt.setText(item.mContent);
+		}
 		if (item.mTitle != null && !"".equals(item.mTitle.trim())) {
 			mPageItemTitleTxt.setVisibility(View.VISIBLE);
-			mPageItemTitleTxt.setText(item.mTitle);
+			if (mLangConverter != null) {
+				mPageItemTitleTxt.setText(mLangConverter.convert(item.mTitle));
+			} else {
+				mPageItemTitleTxt.setText(item.mTitle);
+			}
 		} else {
 			mPageItemTitleTxt.setVisibility(View.GONE);
 		}
@@ -368,8 +381,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onPrevMonth() {
 		if (mItemIndex > 0) {
-			mDbAdapter.saveMonthReadPositionByItem(mDestName,
-					mItemList.get(mItemIndex).mItemChname, position);
+			mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+					.get(mItemIndex).mItemChname, position);
 			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex--;
 			new LoadDataTask().execute(false);
@@ -389,8 +402,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void onNextMonth() {
 		if (mItemIndex < mItemList.size() - 1) {
-			mDbAdapter.saveMonthReadPositionByItem(mDestName,
-					mItemList.get(mItemIndex).mItemChname, position);
+			mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+					.get(mItemIndex).mItemChname, position);
 			showDialog(DLG_LOADING_DATA_ID);
 			mItemIndex++;
 			new LoadDataTask().execute(false);
@@ -530,8 +543,9 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 		@Override
 		public void onAnimationEnd(Animation animation) {
-			mScrollView.smoothScrollTo(mContentTxt.getLeft(),
-					mContentTxt.getTop() - mContentTxt.getPaddingTop());
+			mScrollView.smoothScrollTo(mContentTxt.getLeft(), mContentTxt
+					.getTop()
+					- mContentTxt.getPaddingTop());
 		}
 	};
 
@@ -642,6 +656,14 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 		@Override
 		protected Boolean doInBackground(Boolean... params) {
+			if (Prefs.getCurLangType(getApplicationContext()) == Constants.LANG_ZH_TW) {
+				if (mLangConverter == null) {
+					mLangConverter = ZHConverter
+							.getInstance(ZHConverter.TRADITIONAL);
+				}
+			} else {
+				mLangConverter = null;
+			}
 			boolean init = params[0];
 			if (init) {
 				if (mItemList != null && !mItemList.isEmpty()) {
@@ -666,8 +688,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 				}
 				Collections.sort(mItemList, new DataItemCompare());
 				// mItemIndex = 0;
-				Log.d(TAG, "mDbAdapter : " + mDbAdapter + ",mDestName : "
-						+ mDestName);
+				// Log.d(TAG, "mDbAdapter : " + mDbAdapter + ",mDestName : "
+				// + mDestName);
 				LastReadItem item = mDbAdapter
 						.getLastReadPositionByItem(mDestName);
 				if (item == null) {
@@ -708,6 +730,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 						if (sb != null) {
 							pageItem = new PageItem(obtainPageItemTitle(title),
 									sb.toString());
+
 							mDataList.add(pageItem);
 						}
 						title = line;

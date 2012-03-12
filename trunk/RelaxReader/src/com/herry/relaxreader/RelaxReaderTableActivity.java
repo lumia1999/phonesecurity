@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import net.youmi.android.AdManager;
 import net.youmi.android.appoffers.YoumiOffersManager;
@@ -27,6 +28,7 @@ import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -72,12 +74,13 @@ public class RelaxReaderTableActivity extends Activity implements
 			YoumiOffersManager.init(this, "0025ccd4baca1bb2",
 					"6f8360d97e84aa86");
 		}
+		getLanguageType();
 		initUI();
 		initData();
 		fillData();
 		// try {
 		// ZipUtils.zip(FileHelper.getSdcardRootPathWithoutSlash()
-		// + File.separator + "jokeCollection" + File.separator);
+		// + File.separator + "jokecollection" + File.separator);
 		// } catch (IOException e) {
 		// e.printStackTrace();
 		// }
@@ -129,34 +132,30 @@ public class RelaxReaderTableActivity extends Activity implements
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DLG_NO_SDCARD_EXIST_ID:
-			return new AlertDialog.Builder(this)
-					.setIcon(android.R.drawable.ic_dialog_alert)
-					.setTitle(R.string.no_sdcard_dlg_title)
-					.setMessage(R.string.no_sdcard_dlg_msg)
-					.setPositiveButton(android.R.string.ok,
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									finish();
-								}
-							})
-					.setNegativeButton(android.R.string.no,
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									finish();
-								}
-							}).setOnCancelListener(new OnCancelListener() {
+			return new AlertDialog.Builder(this).setIcon(
+					android.R.drawable.ic_dialog_alert).setTitle(
+					R.string.no_sdcard_dlg_title).setMessage(
+					R.string.no_sdcard_dlg_msg).setPositiveButton(
+					android.R.string.ok, new DialogInterface.OnClickListener() {
 
 						@Override
-						public void onCancel(DialogInterface dialog) {
+						public void onClick(DialogInterface dialog, int which) {
 							finish();
 						}
-					}).create();
+					}).setNegativeButton(android.R.string.no,
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					}).setOnCancelListener(new OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					finish();
+				}
+			}).create();
 		case DLG_UNZIP_IFNEEDED_ID:
 			AlertDialog unzipDialog = new AlertDialog.Builder(this)
 					.setCancelable(false).setOnKeyListener(new OnKeyListener() {
@@ -198,6 +197,16 @@ public class RelaxReaderTableActivity extends Activity implements
 		return super.onKeyDown(keyCode, event);
 	}
 
+	private void getLanguageType() {
+		Configuration conf = getResources().getConfiguration();
+		Locale loc = conf.locale;
+		if (loc.equals(Locale.TAIWAN)) {
+			Prefs.saveCurLangType(this, Constants.LANG_ZH_TW);
+		} else if (loc.equals(Locale.CHINA)) {
+			Prefs.saveCurLangType(this, Constants.LANG_ZH_CN);
+		}
+	}
+
 	private void initUI() {
 		mCtx = this;
 		mLayoutInflater = getLayoutInflater();
@@ -215,6 +224,10 @@ public class RelaxReaderTableActivity extends Activity implements
 			mTableLayout.removeAllViews();
 		}
 		Item temp = null;
+		// mop
+		temp = new Item(R.drawable.item_mop, R.string.item_mop,
+				FileHelper.DEST_MOP);
+		mDataList.add(temp);
 		// mix
 		temp = new Item(R.drawable.item_mix, R.string.item_mix,
 				FileHelper.DEST_MIX);
@@ -263,8 +276,13 @@ public class RelaxReaderTableActivity extends Activity implements
 		View v = mLayoutInflater.inflate(R.layout.main_item, null);
 		ImageView icon = (ImageView) v.findViewById(R.id.main_icon);
 		TextView title = (TextView) v.findViewById(R.id.main_title);
+		TextView status = (TextView) v.findViewById(R.id.main_status);
 		icon.setBackgroundResource(item.mIconId);
 		title.setText(item.mTitleId);
+		if (TextUtils.equals(item.mDestName, FileHelper.DEST_MOP)) {
+			status.setVisibility(View.VISIBLE);
+			status.setText(R.string.status_new);
+		}
 		v.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -317,7 +335,7 @@ public class RelaxReaderTableActivity extends Activity implements
 				// is = am.open("jokeCollection.zip");
 				is = res.openRawResource(R.raw.jokecollection);
 				destFile = new File(FileHelper.getDestPath(),
-						"jokeCollection.zip");
+						"jokecollection.zip");
 				if (destFile.exists()) {
 					destFile.delete();
 				}

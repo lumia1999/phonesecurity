@@ -3,7 +3,7 @@
     android:installLocation="preferExternal"
     package="com.herry.relaxreader"
     android:versionCode="1"
-    android:versionName="01.001" >
+    android:versionName="01.002" >
 
     <supports-screens
         android:anyDensity="true"
@@ -86,7 +86,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation" >
         </activity>
         <meta-data android:name="YOUMI_CHANNEL"
-            android:value="10060"/>
+            android:value="10020"/>
     </application>
 	
 </manifest>

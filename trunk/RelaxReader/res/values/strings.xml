@@ -13,6 +13,7 @@
     <string name="item_special">极品笑话</string>
     <string name="item_ancient">古代笑话</string>
     <string name="item_mix">大众笑话</string>
+    <string name="item_mop">猫扑精华</string>
 
     <!-- dialog string -->
     <string name="unzip_dlg_msg">量产中，请稍后。。。</string>
@@ -58,5 +59,8 @@
     <string name="welcome_tip">欢迎使用我型我阅，在这里，您可以尽情的放松自己，找到自己的愉悦所在！</string>
     <string name="version_title">当前版本：</string>
     <string name="author_title">联系作者：Xinwei.Yi@gmail.com</string>
+    <!-- item status -->
+    <string name="status_new">New</string>
+    <string name="status_updated">Update</string>
 
 </resources>
