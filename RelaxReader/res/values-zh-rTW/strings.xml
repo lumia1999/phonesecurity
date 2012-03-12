@@ -13,6 +13,7 @@
     <string name="item_special">極品笑話</string>
     <string name="item_ancient">古代笑話</string>
     <string name="item_mix">大眾笑話</string>
+    <string name="item_mop">貓撲精華</string>
 
     <!-- dialog string -->
     <string name="unzip_dlg_msg">量產中，請稍後。 。 。</string>

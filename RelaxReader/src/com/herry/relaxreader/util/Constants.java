@@ -28,4 +28,9 @@ public class Constants {
 	public static final long ONE_DAY_TIME_INTERVAL = 24 * 60 * 60 * 1000L;// 1day
 	public static final long CONSUME_ACTIVE_TIME_INTERVAL = OVERDUE_INTERVAL
 			* ONE_DAY_TIME_INTERVAL;
+
+	// language type
+	public static final int LANG_DEFAULT = 1;
+	public static final int LANG_ZH_TW = 2;
+	public static final int LANG_ZH_CN = 3;
 }
