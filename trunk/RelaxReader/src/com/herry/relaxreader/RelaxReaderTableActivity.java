@@ -237,9 +237,11 @@ public class RelaxReaderTableActivity extends Activity implements
 				FileHelper.DEST_QIUSHIBAIKE);
 		mDataList.add(temp);
 		// adult
-		temp = new Item(R.drawable.item_adult, R.string.item_adult,
-				FileHelper.DEST_ADULT);
-		mDataList.add(temp);
+		if (!Constants.FOR_APPCHINA) {
+			temp = new Item(R.drawable.item_adult, R.string.item_adult,
+					FileHelper.DEST_ADULT);
+			mDataList.add(temp);
+		}
 		// hot
 		// temp = new Item(R.drawable.item_hot, R.string.item_hotjoke,
 		// FileHelper.DEST_HOT);
