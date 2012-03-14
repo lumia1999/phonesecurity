@@ -60,6 +60,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	private static final String TAG = "PageViewActivity";
 	private String mDestName;
 	private int mDestChNameId;
+	private String mContentType;
 
 	private Title mTitles;
 	private AlwaysMarqueeTextView mPageItemTitleTxt;
@@ -146,6 +147,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		if (i != null) {
 			mDestName = i.getStringExtra(Constants.EXTRA_ITEM_NAME);
 			mDestChNameId = i.getIntExtra(Constants.EXTRA_ITEM_CHNAME, -1);
+			mContentType = i.getStringExtra(Constants.EXTRA_ITEM_TYPE);
 		}
 		initUI();
 		registerReceiver();
@@ -252,8 +254,10 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	public void finish() {
 		super.finish();
 		mIsAlive = false;
-		mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
-				.get(mItemIndex).mItemChname, position);
+		if (mItemList != null) {
+			mDbAdapter.saveMonthReadPositionByItem(mDestName, mItemList
+					.get(mItemIndex).mItemChname, position);
+		}
 	}
 
 	@Override
@@ -282,6 +286,15 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		mOptions.mPrevMonth.setOnClickListener(this);
 		mOptions.mShare.setOnClickListener(this);
 		mOptions.mNextMonth.setOnClickListener(this);
+		if (mContentType != null) {
+			if (TextUtils.equals(mContentType, Constants.TYPE_OTHER)) {
+				mOptions.mPrevMonth.setText(R.string.prompt_btn_prev_post);
+				mOptions.mNextMonth.setText(R.string.prompt_btn_next_post);
+			} else if (TextUtils.equals(mContentType, Constants.TYPE_NORMAL)) {
+				mOptions.mPrevMonth.setText(R.string.prompt_btn_prev_month);
+				mOptions.mNextMonth.setText(R.string.prompt_btn_next_month);
+			}
+		}
 		mScrollView = (ScrollView) findViewById(R.id.scroll_view);
 		mAdView = (AdView) findViewById(R.id.adView);
 		mGestDetector = new GestureDetector(this, new DefaultGestureListener());
@@ -526,6 +539,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			item.setLastMonth(Constants.NOT_LAST_MONTH);
 		}
 		i.putExtra(Constants.EXTRA_APPOFFERTIP_ITEM, item);
+		i.putExtra(Constants.EXTRA_ITEM_TYPE, mContentType);
 		startActivity(i);
 	}
 

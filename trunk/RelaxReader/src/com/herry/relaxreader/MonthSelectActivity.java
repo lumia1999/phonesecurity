@@ -13,8 +13,10 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.FrameLayout.LayoutParams;
 
 public class MonthSelectActivity extends Activity implements
 		OnItemClickListener {
@@ -50,6 +52,14 @@ public class MonthSelectActivity extends Activity implements
 		mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		mListView.setOnItemClickListener(this);
 		mTitle = (TextView) findViewById(R.id.month_select_title);
+		if (android.os.Build.VERSION.SDK_INT >= 14) {
+			// ics
+			RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout);
+			LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT,
+					LayoutParams.WRAP_CONTENT);
+			params.setMargins(0, 0, 0, 0);
+			layout.setLayoutParams(params);
+		}
 	}
 
 	private void fillData() {
@@ -99,7 +109,6 @@ public class MonthSelectActivity extends Activity implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		// TODO
 		if (position != mPos) {
 			Intent i = new Intent(Constants.ACTION_JUMP);
 			i.putExtra(Constants.EXTRA_JUMP_CUR_POS, position);

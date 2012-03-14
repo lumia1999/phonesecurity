@@ -25,7 +25,9 @@
     <string name="prompt_dlg_msg_first_page">您现在处于本月的第一条趣闻，看看下面的选项，有没有适合您的</string>
     <string name="prompt_dlg_msg_last_page">您已经阅读完本月所有趣闻</string>
     <string name="prompt_btn_prev_month">上一月</string>
-    <string name="prompt_btn_next_mpnth">下一月</string>
+    <string name="prompt_btn_next_month">下一月</string>
+    <string name="prompt_btn_prev_post">上一贴</string>
+    <string name="prompt_btn_next_post">下一贴</string>
     <string name="prompt_remove_ad">去广告</string>
     <string name="prompt_jump_to_month">跳转到...</string>
     <string name="about">关于</string>
@@ -48,9 +50,7 @@
     <string name="global_tip">我型我阅\nWow...开启欢乐新干线...</string>
 
     <!-- view page string -->
-    <string name="prev_month">上一月</string>
     <string name="share">分享笑话</string>
-    <string name="next_month">下一月</string>
     <string name="share_dlg_title">选择分享方式</string>
     <string name="share_msg_title">分享--来自我型我阅</string>
     <string name="loading_data_dlg_msg">正在拼命努力中。。。</string>

@@ -291,6 +291,13 @@ public class RelaxReaderTableActivity extends Activity implements
 						PageViewActivity.class);
 				i.putExtra(Constants.EXTRA_ITEM_NAME, item.mDestName);
 				i.putExtra(Constants.EXTRA_ITEM_CHNAME, item.mTitleId);
+				if (TextUtils.equals(item.mDestName, FileHelper.DEST_MOP)) {
+					i.putExtra(Constants.EXTRA_ITEM_TYPE, Constants.TYPE_OTHER);
+				} else {
+					i
+							.putExtra(Constants.EXTRA_ITEM_TYPE,
+									Constants.TYPE_NORMAL);
+				}
 				startActivity(i);
 				overridePendingTransition(R.anim.animation_right_in,
 						R.anim.animation_left_out);
