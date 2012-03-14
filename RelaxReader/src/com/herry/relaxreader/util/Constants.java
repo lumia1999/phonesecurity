@@ -5,6 +5,9 @@ public class Constants {
 	public static final long OFFER_MAX_TIMESTAMP = 2 * 24 * 60 * 60 * 1000L;
 	public static final String EXTRA_ITEM_NAME = "extra_item_name";
 	public static final String EXTRA_ITEM_CHNAME = "extra_item_chname";
+	public static final String EXTRA_ITEM_TYPE = "extra_item_type";
+	public static final String TYPE_NORMAL = "normal";
+	public static final String TYPE_OTHER = "other";
 
 	public static final String EXTRA_APPOFFERTIP_ITEM = "extra_appoffertip_item";
 	public static final int FIRST_PAGE = 1;

@@ -3,7 +3,8 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="10dip"
-    android:layout_marginRight="10dip" >
+    android:layout_marginRight="10dip"
+    android:id="@+id/layout" >
 
     <RelativeLayout
         android:id="@+id/title_indicator"
@@ -96,7 +97,7 @@
                 android:layout_margin="5dip"
                 android:layout_weight="0.1"
                 android:background="@drawable/btn_bg_selector"
-                android:text="@string/prompt_btn_next_mpnth"
+                android:text="@string/prompt_btn_next_month"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
     </RelativeLayout>

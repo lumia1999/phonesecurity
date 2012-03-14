@@ -9,13 +9,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.FrameLayout.LayoutParams;
 
 import com.herry.relaxreader.util.Constants;
 import com.herry.relaxreader.util.Utils;
@@ -24,6 +27,7 @@ public class AppOfferTipActivity extends Activity implements OnClickListener {
 	private static final String TAG = "AppOfferTipActivity";
 
 	private AppOfferTipItem item = null;
+	private String mContentType;
 	private TextView mPromptMsgTxt;
 	private Button mPrevMonthBtn;
 	private Button mRemoveAdBtn;
@@ -65,11 +69,7 @@ public class AppOfferTipActivity extends Activity implements OnClickListener {
 				// showDialog(DLG_SHOW_APPOFFER_ID);
 			}
 			item = i.getParcelableExtra(Constants.EXTRA_APPOFFERTIP_ITEM);
-			if (item != null) {
-				Log.d(TAG, item.toString());
-			} else {
-				Log.e(TAG, "item is null");
-			}
+			mContentType = i.getStringExtra(Constants.EXTRA_ITEM_TYPE);
 		}
 	}
 
@@ -82,10 +82,27 @@ public class AppOfferTipActivity extends Activity implements OnClickListener {
 		mPrevMonthBtn.setOnClickListener(this);
 		mRemoveAdBtn.setOnClickListener(this);
 		mNextMonthBtn.setOnClickListener(this);
+		if (mContentType != null) {
+			if (TextUtils.equals(mContentType, Constants.TYPE_NORMAL)) {
+				mPrevMonthBtn.setText(R.string.prompt_btn_prev_month);
+				mNextMonthBtn.setText(R.string.prompt_btn_next_month);
+			} else if (TextUtils.equals(mContentType, Constants.TYPE_OTHER)) {
+				mPrevMonthBtn.setText(R.string.prompt_btn_prev_post);
+				mNextMonthBtn.setText(R.string.prompt_btn_next_post);
+			}
+		}
 		if (Utils.showOfferOption(ctx)) {
 			mRemoveAdBtn.setVisibility(View.VISIBLE);
 		} else {
 			mRemoveAdBtn.setVisibility(View.GONE);
+		}
+		if (android.os.Build.VERSION.SDK_INT >= 14) {
+			// ics
+			RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout);
+			LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT,
+					LayoutParams.WRAP_CONTENT);
+			params.setMargins(0, 0, 0, 0);
+			layout.setLayoutParams(params);
 		}
 	}
 

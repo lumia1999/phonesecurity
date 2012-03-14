@@ -3,6 +3,7 @@
 
     <style name="Theme.MyDialog" parent="android:style/Theme.Dialog">
         <item name="android:windowBackground">@null</item>
+        <item name="android:background">@null</item>
     </style>
 
 </resources>

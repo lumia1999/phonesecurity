@@ -3,8 +3,8 @@
     android:id="@+id/op"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
     android:layout_alignParentBottom="true"
+    android:layout_gravity="bottom"
     android:background="@color/grey"
     android:paddingBottom="4dip"
     android:paddingLeft="7dip"
@@ -19,7 +19,7 @@
         android:layout_margin="3dip"
         android:layout_weight="0.1"
         android:background="@drawable/btn_bg_selector"
-        android:text="@string/prev_month"
+        android:text="@string/prompt_btn_prev_month"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
@@ -39,7 +39,7 @@
         android:layout_margin="3dip"
         android:layout_weight="0.1"
         android:background="@drawable/btn_bg_selector"
-        android:text="@string/next_month"
+        android:text="@string/prompt_btn_next_month"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>
