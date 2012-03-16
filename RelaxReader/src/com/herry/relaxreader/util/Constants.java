@@ -2,7 +2,7 @@ package com.herry.relaxreader.util;
 
 public class Constants {
 	public static final boolean NO_OFFER = false;
-	public static final boolean FOR_APPCHINA = true;
+	public static final boolean FOR_APPCHINA = false;
 	public static final long OFFER_MAX_TIMESTAMP = 2 * 24 * 60 * 60 * 1000L;
 	public static final String EXTRA_ITEM_NAME = "extra_item_name";
 	public static final String EXTRA_ITEM_CHNAME = "extra_item_chname";
