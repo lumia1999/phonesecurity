@@ -64,6 +64,11 @@ public class RelaxReaderTableActivity extends Activity implements
 	private static final int DLG_UNZIP_IFNEEDED_ID = 2;
 	private static final int DLG_EXIT_APP_ID = 3;
 
+	static {
+		Constants.mUpdates.put(R.string.item_qiushibaike,
+				Constants.mQiushibaikeUpdates);
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,6 +86,7 @@ public class RelaxReaderTableActivity extends Activity implements
 		// try {
 		// ZipUtils.zip(FileHelper.getSdcardRootPathWithoutSlash()
 		// + File.separator + "jokecollection" + File.separator);
+		// Log.d(TAG, "zip done!!!!");
 		// } catch (IOException e) {
 		// e.printStackTrace();
 		// }
@@ -226,42 +232,38 @@ public class RelaxReaderTableActivity extends Activity implements
 		Item temp = null;
 		// mop
 		temp = new Item(R.drawable.item_mop, R.string.item_mop,
-				FileHelper.DEST_MOP);
+				FileHelper.DEST_MOP, State.NEW);
 		mDataList.add(temp);
-		// mix
-		temp = new Item(R.drawable.item_mix, R.string.item_mix,
-				FileHelper.DEST_MIX);
+		// tianya
+		temp = new Item(R.drawable.item_tianya, R.string.item_tianya,
+				FileHelper.DEST_TIANYA, State.NEW);
 		mDataList.add(temp);
 		// qiushibaike
 		temp = new Item(R.drawable.item_qiushibaike, R.string.item_qiushibaike,
-				FileHelper.DEST_QIUSHIBAIKE);
+				FileHelper.DEST_QIUSHIBAIKE, State.UPDATE);
+		mDataList.add(temp);
+		// mix
+		temp = new Item(R.drawable.item_mix, R.string.item_mix,
+				FileHelper.DEST_MIX, State.NORMAL);
 		mDataList.add(temp);
 		// adult
 		if (!Constants.FOR_APPCHINA) {
 			temp = new Item(R.drawable.item_adult, R.string.item_adult,
-					FileHelper.DEST_ADULT);
+					FileHelper.DEST_ADULT, State.NORMAL);
 			mDataList.add(temp);
 		}
-		// hot
-		// temp = new Item(R.drawable.item_hot, R.string.item_hotjoke,
-		// FileHelper.DEST_HOT);
-		// mDataList.add(temp);
-		// newest
-		// temp = new Item(R.drawable.item_new, R.string.item_newestjoke,
-		// FileHelper.DEST_NEWEST);
-		// mDataList.add(temp);
 
 		// cold
 		temp = new Item(R.drawable.item_cold, R.string.item_coldjoke,
-				FileHelper.DEST_COLD);
+				FileHelper.DEST_COLD, State.NORMAL);
 		mDataList.add(temp);
 		// special
 		temp = new Item(R.drawable.item_special, R.string.item_special,
-				FileHelper.DEST_SPECIAL);
+				FileHelper.DEST_SPECIAL, State.NORMAL);
 		mDataList.add(temp);
 		// horrible
 		temp = new Item(R.drawable.item_ancient, R.string.item_ancient,
-				FileHelper.DEST_ANCIENT);
+				FileHelper.DEST_ANCIENT, State.NORMAL);
 		mDataList.add(temp);
 	}
 
@@ -281,9 +283,13 @@ public class RelaxReaderTableActivity extends Activity implements
 		TextView status = (TextView) v.findViewById(R.id.main_status);
 		icon.setBackgroundResource(item.mIconId);
 		title.setText(item.mTitleId);
-		if (TextUtils.equals(item.mDestName, FileHelper.DEST_MOP)) {
+		State itemState = item.mState;
+		if (itemState == State.NEW) {
 			status.setVisibility(View.VISIBLE);
 			status.setText(R.string.status_new);
+		} else if (itemState == State.UPDATE) {
+			status.setVisibility(View.VISIBLE);
+			status.setText(R.string.status_updated);
 		}
 		v.setOnClickListener(new OnClickListener() {
 
@@ -294,6 +300,9 @@ public class RelaxReaderTableActivity extends Activity implements
 				i.putExtra(Constants.EXTRA_ITEM_NAME, item.mDestName);
 				i.putExtra(Constants.EXTRA_ITEM_CHNAME, item.mTitleId);
 				if (TextUtils.equals(item.mDestName, FileHelper.DEST_MOP)) {
+					i.putExtra(Constants.EXTRA_ITEM_TYPE, Constants.TYPE_OTHER);
+				} else if (TextUtils.equals(item.mDestName,
+						FileHelper.DEST_TIANYA)) {
 					i.putExtra(Constants.EXTRA_ITEM_TYPE, Constants.TYPE_OTHER);
 				} else {
 					i
@@ -344,7 +353,7 @@ public class RelaxReaderTableActivity extends Activity implements
 				// is = am.open("jokeCollection.zip");
 				is = res.openRawResource(R.raw.jokecollection);
 				destFile = new File(FileHelper.getDestPath(),
-						"jokecollection.zip");
+						"jokeCollection.zip");
 				if (destFile.exists()) {
 					destFile.delete();
 				}
@@ -390,12 +399,18 @@ public class RelaxReaderTableActivity extends Activity implements
 		private int mIconId;
 		private int mTitleId;
 		private String mDestName;
+		private State mState;
 
-		public Item(int iconId, int titleId, String destName) {
+		public Item(int iconId, int titleId, String destName, State state) {
 			this.mIconId = iconId;
 			this.mTitleId = titleId;
 			this.mDestName = destName;
+			this.mState = state;
 		}
+	}
+
+	private enum State {
+		NORMAL, NEW, UPDATE
 	}
 
 	@Override
