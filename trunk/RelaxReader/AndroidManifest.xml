@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="preferExternal"
     package="com.herry.relaxreader"
-    android:versionCode="1"
-    android:versionName="01.001" >
+    android:versionCode="2"
+    android:versionName="01.002" >
 
     <supports-screens
         android:anyDensity="true"
@@ -88,7 +88,7 @@
 
         <meta-data
             android:name="YOUMI_CHANNEL"
-            android:value="10050" />
+            android:value="10010" />
     </application>
 
 </manifest>

@@ -14,6 +14,7 @@
     <string name="item_ancient">古代笑话</string>
     <string name="item_mix">大众笑话</string>
     <string name="item_mop">猫扑精华</string>
+    <string name="item_tianya">天涯精华</string>
 
     <!-- dialog string -->
     <string name="unzip_dlg_msg">量产中，请稍后。。。</string>

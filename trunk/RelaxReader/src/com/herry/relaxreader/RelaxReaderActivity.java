@@ -73,13 +73,13 @@ public class RelaxReaderActivity extends Activity implements
 		initUI();
 		initData();
 		fillData();
-		// try {
-		// ZipUtils.zip(FileHelper.getSdcardRootPathWithoutSlash()
-		// + File.separator + "jokeCollection" + File.separator);
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
-		unzipIfNeeded();
+		try {
+			ZipUtils.zip(FileHelper.getSdcardRootPathWithoutSlash()
+					+ File.separator + "jokeCollection" + File.separator);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// unzipIfNeeded();
 	}
 
 	@Override

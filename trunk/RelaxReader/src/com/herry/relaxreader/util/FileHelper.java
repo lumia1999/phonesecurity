@@ -27,6 +27,7 @@ public class FileHelper {
 	public static final String DEST_SPECIAL = "special";
 	public static final String DEST_ANCIENT = "ancient";
 	public static final String DEST_MOP = "mop";
+	public static final String DEST_TIANYA = "tianya";
 
 	// app offer consume timestamp save place
 	public static final String APPOFFER_CONSUME_TS = "consume.txt";

@@ -1,5 +1,7 @@
 package com.herry.relaxreader.util;
 
+import java.util.HashMap;
+
 public class Constants {
 	public static final boolean NO_OFFER = false;
 	public static final boolean FOR_APPCHINA = false;
@@ -37,4 +39,10 @@ public class Constants {
 	public static final int LANG_DEFAULT = 1;
 	public static final int LANG_ZH_TW = 2;
 	public static final int LANG_ZH_CN = 3;
+
+	// updates data
+
+	public static HashMap<Integer, String[]> mUpdates = new HashMap<Integer, String[]>();
+	public static final String[] mQiushibaikeUpdates = new String[] {
+			"2010-06", "2010-07", "2010-08", "2010-09" };
 }
