@@ -28,9 +28,7 @@
                 android:id="@+id/table"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:cacheColorHint="@color/list_view_bg_color"
-                android:shrinkColumns="0"
-                android:stretchColumns="0" >
+                android:cacheColorHint="@color/list_view_bg_color" >
             </TableLayout>
         </ScrollView>
     </RelativeLayout>

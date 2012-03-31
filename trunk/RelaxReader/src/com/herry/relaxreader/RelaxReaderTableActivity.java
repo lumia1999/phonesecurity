@@ -30,6 +30,7 @@ import android.content.DialogInterface.OnKeyListener;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -44,6 +45,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TableLayout.LayoutParams;
 
@@ -53,6 +55,7 @@ public class RelaxReaderTableActivity extends Activity implements
 
 	private AlwaysMarqueeTextView mWelcomeTipTxt;
 	private TableLayout mTableLayout;
+	private List<Item> mHeadlineList;
 	private List<Item> mDataList;
 	private LayoutInflater mLayoutInflater;
 
@@ -81,6 +84,7 @@ public class RelaxReaderTableActivity extends Activity implements
 		}
 		getLanguageType();
 		initUI();
+		initHeadlineData();
 		initData();
 		fillData();
 		// try {
@@ -217,7 +221,38 @@ public class RelaxReaderTableActivity extends Activity implements
 		mCtx = this;
 		mLayoutInflater = getLayoutInflater();
 		mTableLayout = (TableLayout) findViewById(R.id.table);
+		mTableLayout.setColumnShrinkable(0, true);
+		mTableLayout.setColumnShrinkable(2, true);
+		mTableLayout.setColumnStretchable(0, true);
+		mTableLayout.setColumnStretchable(2, true);
 		mWelcomeTipTxt = (AlwaysMarqueeTextView) findViewById(R.id.welcome_tip);
+	}
+
+	private void initHeadlineData() {
+		if (mHeadlineList != null && !mHeadlineList.isEmpty()) {
+			mHeadlineList.clear();
+		} else {
+			mHeadlineList = new ArrayList<Item>();
+		}
+		Item temp = null;
+		// mop
+		temp = new Item(R.drawable.item_mop, R.string.item_mop,
+				FileHelper.DEST_MOP, State.NEW);
+		mHeadlineList.add(temp);
+		// tianya
+		temp = new Item(R.drawable.item_tianya, R.string.item_tianya,
+				FileHelper.DEST_TIANYA, State.NEW);
+		mHeadlineList.add(temp);
+
+		// bbsreply
+		temp = new Item(R.drawable.item_bbsreply, R.string.item_bbsreply,
+				FileHelper.DEST_BBSREPLY, State.NEW);
+		mHeadlineList.add(temp);
+		// qiushibaike
+		temp = new Item(R.drawable.item_qiushibaike, R.string.item_qiushibaike,
+				FileHelper.DEST_QIUSHIBAIKE, State.UPDATE);
+		mHeadlineList.add(temp);
+
 	}
 
 	private void initData() {
@@ -230,18 +265,7 @@ public class RelaxReaderTableActivity extends Activity implements
 			mTableLayout.removeAllViews();
 		}
 		Item temp = null;
-		// mop
-		temp = new Item(R.drawable.item_mop, R.string.item_mop,
-				FileHelper.DEST_MOP, State.NEW);
-		mDataList.add(temp);
-		// tianya
-		temp = new Item(R.drawable.item_tianya, R.string.item_tianya,
-				FileHelper.DEST_TIANYA, State.NEW);
-		mDataList.add(temp);
-		// qiushibaike
-		temp = new Item(R.drawable.item_qiushibaike, R.string.item_qiushibaike,
-				FileHelper.DEST_QIUSHIBAIKE, State.UPDATE);
-		mDataList.add(temp);
+
 		// mix
 		temp = new Item(R.drawable.item_mix, R.string.item_mix,
 				FileHelper.DEST_MIX, State.NORMAL);
@@ -268,12 +292,110 @@ public class RelaxReaderTableActivity extends Activity implements
 	}
 
 	private void fillData() {
+		int headlineSize = mHeadlineList.size();
 		int size = mDataList.size();
 		TableLayout.LayoutParams params = new TableLayout.LayoutParams(
 				LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		for (int i = 0; i < headlineSize; i += 2) {
+			mTableLayout.addView(createHeadlineRowView(i));
+		}
 		for (int i = 0; i < size; i++) {
 			mTableLayout.addView(createRowView(mDataList.get(i)), params);
 		}
+	}
+
+	private class HeadlineItem {
+		private ImageView icon;
+		private TextView title;
+		private TextView status;
+	}
+
+	private View createHeadlineRowView(int index) {
+		View v = null;
+		RelativeLayout left;
+		RelativeLayout right;
+		HeadlineItem itemLayoutLeft = new HeadlineItem();
+		HeadlineItem itemLayoutRight = new HeadlineItem();
+		State itemState;
+		final Item itemLeft = mHeadlineList.get(index);
+		final Item itemRight = mHeadlineList.get(index + 1);
+		v = mLayoutInflater.inflate(R.layout.main_headline_item, null);
+		left = (RelativeLayout) v.findViewById(R.id.left);
+		itemLayoutLeft.icon = (ImageView) v.findViewById(R.id.item_icon);
+		itemLayoutLeft.title = (TextView) v.findViewById(R.id.item_title);
+		itemLayoutLeft.status = (TextView) v.findViewById(R.id.item_status);
+		itemLayoutLeft.icon.setBackgroundResource(itemLeft.mIconId);
+		itemLayoutLeft.title.setText(itemLeft.mTitleId);
+		itemState = itemLeft.mState;
+		if (itemState == State.NEW) {
+			itemLayoutLeft.status.setVisibility(View.VISIBLE);
+			itemLayoutLeft.status.setText(R.string.status_new);
+		} else if (itemState == State.UPDATE) {
+			itemLayoutLeft.status.setVisibility(View.VISIBLE);
+			itemLayoutLeft.status.setText(R.string.status_updated);
+		}
+		left.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getApplicationContext(),
+						PageViewActivity.class);
+				i.putExtra(Constants.EXTRA_ITEM_NAME, itemLeft.mDestName);
+				i.putExtra(Constants.EXTRA_ITEM_CHNAME, itemLeft.mTitleId);
+				if (TextUtils.equals(itemLeft.mDestName, FileHelper.DEST_MOP)) {
+					i.putExtra(Constants.EXTRA_ITEM_TYPE, Constants.TYPE_OTHER);
+				} else if (TextUtils.equals(itemLeft.mDestName,
+						FileHelper.DEST_TIANYA)) {
+					i.putExtra(Constants.EXTRA_ITEM_TYPE, Constants.TYPE_OTHER);
+				} else {
+					i
+							.putExtra(Constants.EXTRA_ITEM_TYPE,
+									Constants.TYPE_NORMAL);
+				}
+				startActivity(i);
+				overridePendingTransition(R.anim.animation_right_in,
+						R.anim.animation_left_out);
+			}
+		});
+
+		right = (RelativeLayout) v.findViewById(R.id.right);
+		itemLayoutRight.icon = (ImageView) v.findViewById(R.id.item_icon2);
+		itemLayoutRight.title = (TextView) v.findViewById(R.id.item_title2);
+		itemLayoutRight.status = (TextView) v.findViewById(R.id.item_status2);
+		itemLayoutRight.icon.setBackgroundResource(itemRight.mIconId);
+		itemLayoutRight.title.setText(itemRight.mTitleId);
+		itemState = itemRight.mState;
+		if (itemState == State.NEW) {
+			itemLayoutRight.status.setVisibility(View.VISIBLE);
+			itemLayoutRight.status.setText(R.string.status_new);
+		} else if (itemState == State.UPDATE) {
+			itemLayoutRight.status.setVisibility(View.VISIBLE);
+			itemLayoutRight.status.setText(R.string.status_updated);
+		}
+		right.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getApplicationContext(),
+						PageViewActivity.class);
+				i.putExtra(Constants.EXTRA_ITEM_NAME, itemRight.mDestName);
+				i.putExtra(Constants.EXTRA_ITEM_CHNAME, itemRight.mTitleId);
+				if (TextUtils.equals(itemRight.mDestName, FileHelper.DEST_MOP)) {
+					i.putExtra(Constants.EXTRA_ITEM_TYPE, Constants.TYPE_OTHER);
+				} else if (TextUtils.equals(itemRight.mDestName,
+						FileHelper.DEST_TIANYA)) {
+					i.putExtra(Constants.EXTRA_ITEM_TYPE, Constants.TYPE_OTHER);
+				} else {
+					i
+							.putExtra(Constants.EXTRA_ITEM_TYPE,
+									Constants.TYPE_NORMAL);
+				}
+				startActivity(i);
+				overridePendingTransition(R.anim.animation_right_in,
+						R.anim.animation_left_out);
+			}
+		});
+		return v;
 	}
 
 	private View createRowView(final Item item) {

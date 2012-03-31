@@ -44,6 +44,6 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/red"
         android:textSize="@dimen/status_font_size"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </RelativeLayout>
