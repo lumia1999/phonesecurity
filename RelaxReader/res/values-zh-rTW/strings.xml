@@ -3,6 +3,7 @@
 
     <string name="hello">Hello World, RelaxReaderActivity!</string>
     <string name="app_name">我型我閱</string>
+    <string name="app_name_tip">軟件名稱：</string>
 
     <!-- main item -->
     <string name="item_qiushibaike">糗事全集</string>
@@ -15,6 +16,7 @@
     <string name="item_mix">大眾笑話</string>
     <string name="item_mop">貓撲精華</string>
     <string name="item_tianya">天涯精華</string>
+    <string name="item_bbsreply">暴強回复</string>
 
     <!-- dialog string -->
     <string name="unzip_dlg_msg">量產中，請稍後。 。 。</string>

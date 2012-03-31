@@ -20,6 +20,15 @@ public class AboutActivity extends Activity {
 				LinearLayout.LayoutParams.FILL_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 		layout.setOrientation(LinearLayout.VERTICAL);
+		TextView appView = new TextView(this);
+		appView.setBackgroundResource(R.color.grey);
+		appView.setTextColor(Color.BLACK);
+		appView.setPadding(5, 5, 5, 5);
+		appView.setSingleLine(true);
+		appView.setTextAppearance(this, android.R.attr.textAppearanceLarge);
+		appView.setText(getString(R.string.app_name_tip)
+				+ getString(R.string.app_name));
+		layout.addView(appView);
 		TextView txtView = new TextView(this);
 		txtView.setBackgroundResource(R.color.grey);
 		txtView.setTextColor(Color.BLACK);

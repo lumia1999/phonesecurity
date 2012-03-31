@@ -27,6 +27,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -64,6 +65,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private Title mTitles;
 	private AlwaysMarqueeTextView mPageItemTitleTxt;
+	// 帖子发表时间
+	private TextView mContentTsTxt;
 	private TextView mContentTxt;
 	private LinearLayout mOpLayout;
 	private Option mOptions;
@@ -277,6 +280,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		mTitles.mCurrentMonth = (TextView) findViewById(R.id.current_month);
 		mTitles.mProgressTip = (TextView) findViewById(R.id.progress_tip);
 		mPageItemTitleTxt = (AlwaysMarqueeTextView) findViewById(R.id.item_title);
+		mContentTsTxt = (TextView) findViewById(R.id.item_ts);
 		mContentTxt = (TextView) findViewById(R.id.content);
 		mOpLayout = (LinearLayout) findViewById(R.id.op);
 		mOptions = new Option();
@@ -344,9 +348,11 @@ public class PageViewActivity extends Activity implements OnClickListener {
 
 	private void updateContent(PageItem item) {
 		if (mLangConverter != null) {
-			mContentTxt.setText(mLangConverter.convert(item.mContent));
+			mContentTxt.setText(Html.fromHtml(mLangConverter
+					.convert(item.mContent)));
 		} else {
-			mContentTxt.setText(item.mContent);
+			// Log.e(TAG, "html : " + Html.fromHtml(item.mContent));
+			mContentTxt.setText(Html.fromHtml(item.mContent));
 		}
 		if (item.mTitle != null && !"".equals(item.mTitle.trim())) {
 			mPageItemTitleTxt.setVisibility(View.VISIBLE);
@@ -357,6 +363,12 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			}
 		} else {
 			mPageItemTitleTxt.setVisibility(View.GONE);
+		}
+		if (item.mTs != null && !"".equals(item.mTs.trim())) {
+			mContentTsTxt.setText(item.mTs);
+			mContentTsTxt.setVisibility(View.VISIBLE);
+		} else {
+			mContentTsTxt.setVisibility(View.GONE);
 		}
 		mScrollView.smoothScrollTo(mContentTxt.getLeft(), mContentTxt.getTop()
 				- mContentTxt.getPaddingLeft());
@@ -482,6 +494,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			updateContent(mDataList.get(position));
 			// mContentTxt.setText(mDataList.get(position).mContent);
 			mPageItemTitleTxt.setAnimation(mPrevAnim);
+			mContentTsTxt.setAnimation(mPrevAnim);
 			mPrevAnim.setAnimationListener(mAnimListener);
 			mContentTxt.startAnimation(mPrevAnim);
 			updateTitle();
@@ -503,6 +516,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			updateContent(mDataList.get(position));
 			// mContentTxt.setText(mDataList.get(position).mContent);
 			mPageItemTitleTxt.setAnimation(mNextAnim);
+			mContentTsTxt.setAnimation(mNextAnim);
 			mNextAnim.setAnimationListener(mAnimListener);
 			mContentTxt.startAnimation(mNextAnim);
 			updateTitle();
@@ -658,10 +672,11 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			return 0;// default : first item
 		}
 
-		private String obtainPageItemTitle(String line) {
+		private String[] obtainPageItemTitleAndTs(String line) {
 			int index = line.indexOf("#");
 			if (index != -1) {
-				return line.substring(index + 1);
+				String[] ret = line.substring(index + 1).split(",");
+				return ret;
 			} else {
 				return null;
 			}
@@ -742,8 +757,20 @@ public class PageViewActivity extends Activity implements OnClickListener {
 					}
 					if (line.startsWith("#")) {
 						if (sb != null) {
-							pageItem = new PageItem(obtainPageItemTitle(title),
-									sb.toString());
+							String[] ret = obtainPageItemTitleAndTs(title);
+							// Log.e(TAG, "DFDFSDFDSFSD RET : " + ret.length);
+							if (ret.length == 2) {
+								pageItem = new PageItem(ret[0], ret[1], sb
+										.toString());
+							} else {
+								if (ret.length == 0) {
+									pageItem = new PageItem(null, null, sb
+											.toString());
+								} else {
+									pageItem = new PageItem(ret[0], null, sb
+											.toString());
+								}
+							}
 
 							mDataList.add(pageItem);
 						}
@@ -823,10 +850,12 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	 */
 	private class PageItem {
 		private String mTitle;
+		private String mTs;
 		private String mContent;
 
-		public PageItem(String title, String content) {
+		public PageItem(String title, String ts, String content) {
 			mTitle = title;
+			mTs = ts;
 			mContent = content;
 		}
 	}
