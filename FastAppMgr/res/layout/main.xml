@@ -10,6 +10,9 @@
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			android:fastScrollEnabled="true"
+			android:divider="@null"
+			android:fadingEdge="none"
+			android:cacheColorHint="@color/list_view_bg_color"
 			android:layout_above="@+id/adView"/>
 		<include layout="@layout/ad"/>
     </RelativeLayout>
