@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -157,6 +158,36 @@ public class Utils {
 			}
 		} else {
 			System.out.println("it is not directory");
+		}
+	}
+
+	public static void formatFileContent() {
+		File f = new File("result.txt");
+		PrintWriter pw = null;
+		BufferedReader br = null;
+		try {
+			pw = new PrintWriter(new File("result222.txt"));
+			br = new BufferedReader(new FileReader(f));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				if (line.startsWith("#")) {
+					int index = line.indexOf(" ");
+					if (index != -1) {
+						pw.print(line.replaceFirst(" ", ","));
+					} else {
+						pw.print(line);
+					}
+				} else {
+					pw.print(line);
+				}
+				pw.print("\n");
+			}
+			pw.flush();
+			pw.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
