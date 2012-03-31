@@ -1,9 +1,14 @@
 package com.herry.htmlparser.demo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Vector;
 
 import org.htmlparser.Attribute;
@@ -169,5 +174,72 @@ public class MopUtils {
 			}
 		}
 		return null;
+	}
+
+	public static void createResult() {
+		File dir = new File("txt" + File.separator);
+		if (dir.isDirectory()) {
+			FileFilter filter = new FileFilter() {
+
+				@Override
+				public boolean accept(File file) {
+					if (file.getName().contains(".svn")) {
+						return false;
+					}
+					return true;
+				}
+			};
+			File[] files = dir.listFiles(filter);
+			Arrays.sort(files, new Sort());
+			// for (File file : files) {
+			// System.out.println(file.getName());
+			// }
+			FileOutputStream fos = null;
+			try {
+				fos = new FileOutputStream("result.txt");
+				FileInputStream fis = null;
+				ByteArrayOutputStream baos = null;
+				byte[] buf = new byte[1024];
+				int count = -1;
+				for (File file : files) {
+					try {
+						fis = new FileInputStream(file);
+						baos = new ByteArrayOutputStream();
+						count = -1;
+						while ((count = fis.read(buf)) != -1) {
+							baos.write(buf, 0, count);
+						}
+						fos.write(baos.toByteArray());
+						fos.write("\n".getBytes());
+
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				fos.write("#END".getBytes());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			System.err.println("it is not directory");
+		}
+	}
+
+	private static class Sort implements Comparator<File> {
+
+		@Override
+		public int compare(File o1, File o2) {
+			String name1 = o1.getName();
+			String name2 = o2.getName();
+			if (name1.length() != name2.length()) {
+				return name1.length() - name2.length();
+			} else {
+				return name1.compareTo(name2);
+			}
+		}
 	}
 }

@@ -124,16 +124,19 @@ public class TestMain {
 		/**
 		 * mop
 		 */
-		try {
-			MopUtils.extract();
-			// MopUtils.test();
-		} catch (ParserException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// try {
+		// MopUtils.extract();
+		// } catch (ParserException e) {
+		// e.printStackTrace();
+		// } catch (FileNotFoundException e) {
+		// e.printStackTrace();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+
+		// MopUtils.createResult();
+
+		Utils.formatFileContent();
 
 		// String data = Utils.parseDate("Thu Aug 27 06:40:20 CST 2009");
 		// System.out.println(data);
