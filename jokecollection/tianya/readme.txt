@@ -20,5 +20,7 @@ http://www.tianya.cn/publicforum/content/feeling/1/1286018.shtml
 
 unparse:
 
+http://www.tianya.cn/publicforum/content/feeling/1/2190001.shtml
 
+http://bbs.city.tianya.cn/tianyacity/Content/47/1/1353073.shtml
 
