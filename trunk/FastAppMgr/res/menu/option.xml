@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-  	<item android:id="@+id/about"
-  		android:icon="@drawable/menu_about"
-  		android:title="@string/about_txt"></item>
-  	<item android:id="@+id/app_offer_point"
-  	    android:icon="@drawable/menu_app_offer_point"
-  	    android:title="@string/app_offer_point_query"/>
-  	<item android:id="@+id/app_offer"
-		android:icon="@drawable/menu_app_offer"
-		android:title="@string/app_offer_txt"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/app_bootup"
+        android:icon="@drawable/menu_bootup"
+        android:title="@string/app_bootup_history"/>
+
+    <item
+        android:id="@+id/app_offer_point"
+        android:icon="@drawable/menu_app_offer_point"
+        android:title="@string/app_offer_point_query"/>
+
+    <item
+        android:id="@+id/app_offer"
+        android:icon="@drawable/menu_app_offer"
+        android:title="@string/app_offer_txt"/>
+
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/menu_about"
+        android:title="@string/about_txt"></item>
+
 </menu>

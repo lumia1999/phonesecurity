@@ -2,9 +2,11 @@
 <resources>
 
     <string name="app_name">應用管理</string>
+    <string name="app_name_tip">軟件名稱：</string>
     <string name="tab_uninstall">我的應用</string>
     <string name="tab_recet_install">最近安裝</string>
     <string name="no_item">您最近沒有安裝新的應用</string>
+    <string name="app_bootup_history">開機時間</string>
     <string name="about_txt">關於</string>
     <string name="app_offer_txt">獲取積分</string>
     <string name="app_offer_point_query">查詢積分</string>
@@ -12,7 +14,7 @@
     <string name="app_offer_point_msg">當前積分不足200分，去廣告？上積分牆賺取更多積分！</string>
     <string name="app_offer_point_msg1">恭喜您當前已在使用無廣告版本，去看看積分牆有什麼新奇推薦？</string>
     <string name="version_info">軟件版本：</string>
-    <string name="author">Email:Xinwei.Yi@gmail.com\n\n如您在使用過程中遇到任何疑問，請發郵件通知我。</string>
+    <string name="author">聯繫作者：Email:Xinwei.Yi@gmail.com</string>
     <string name="no_version_current">無法取得版本信息</string>
     <string name="youmioffertip">點擊Menu，下載推薦應用，200積分去廣告！</string>
     <string name="rom">ROM</string>
@@ -34,5 +36,4 @@
     <string name="version_tip">版本：</string>
     <string name="total_app_number_tip">當前總應用個數：</string>
     <string name="sort_app_title">應用排序</string>
-
 </resources>

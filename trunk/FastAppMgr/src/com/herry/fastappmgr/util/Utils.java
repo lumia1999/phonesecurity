@@ -22,7 +22,9 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.util.Log;
 
+import com.herry.fastappmgr.DevTimeInfo;
 import com.herry.fastappmgr.MemoryInfo;
 
 public final class Utils {
@@ -34,6 +36,7 @@ public final class Utils {
 			| DateUtils.FORMAT_SHOW_TIME;
 
 	private static final String RAM_INFO_PATH = "/proc/meminfo";
+	private static final String DEV_BOOTTIME_PATH = "/proc/uptime";
 
 	public static String formatAll(Context ctx, long date) {
 		return DateUtils.formatDateTime(ctx, date, formatDateAllFlag);
@@ -200,6 +203,30 @@ public final class Utils {
 			return doExchange(newArray);
 		} else {
 			return strArray;
+		}
+	}
+
+	public static DevTimeInfo getDevTimeInfo() {
+		BufferedReader br = null;
+		try {
+			File f = new File(DEV_BOOTTIME_PATH);
+			br = new BufferedReader(new FileReader(f));
+			String line = null;
+			StringBuilder sb = new StringBuilder();
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+			String value = sb.toString();
+			String[] splits = value.split(" ");
+			Log.d("DevTimeInfo", "[0] :  " + splits[0] + ",[1] : " + splits[1]);
+			return new DevTimeInfo(Double.valueOf(splits[0]), Double
+					.valueOf(splits[1]));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 }
