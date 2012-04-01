@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/app_bootup"
-        android:icon="@drawable/menu_bootup"
-        android:title="@string/app_bootup_history"/>
-
-    <item
         android:id="@+id/app_offer_point"
         android:icon="@drawable/menu_app_offer_point"
         android:title="@string/app_offer_point_query"/>
@@ -15,6 +10,11 @@
         android:id="@+id/app_offer"
         android:icon="@drawable/menu_app_offer"
         android:title="@string/app_offer_txt"/>
+
+    <item
+        android:id="@+id/app_bootup"
+        android:icon="@drawable/menu_bootup"
+        android:title="@string/app_bootup_history"/>
 
     <item
         android:id="@+id/about"
