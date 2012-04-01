@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class Utils {
 
@@ -86,6 +87,7 @@ public class Utils {
 
 	public static boolean isConsumeActive(Context ctx) {
 		long savedTS = getConsumeTimestamp(ctx);
+		// Log.e("RelaxReader.Utils", "savedTS : " + savedTS);
 		if (savedTS == -1L) {
 			return false;
 		}
