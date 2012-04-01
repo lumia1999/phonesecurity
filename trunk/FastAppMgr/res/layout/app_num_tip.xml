@@ -3,9 +3,10 @@
     android:id="@+id/app_total_apps"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@android:drawable/list_selector_background"
+    android:background="@drawable/list_item_bg_selector"
     android:gravity="center_vertical|center_horizontal"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:singleLine="true"
     android:text="total num is 20"
-    android:textAppearance="?android:attr/textAppearanceMedium" />
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:textColor="@android:color/black" />

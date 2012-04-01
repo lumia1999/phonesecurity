@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-	<drawable name="tab_bg">#FFFFFF</drawable>
-	<color name="list_view_bg_color">#00000000</color>
+
+    <drawable name="tab_bg">#FFFFFF</drawable>
+
+    <color name="grey">#a0a0a0</color>
+    <color name="lighter_gray">#ddd</color>
+    <color name="lighter_yellow">#FFF0AF</color>
+    <color name="list_view_bg_color">#00000000</color>
+
+    <drawable name="red">#FF0000</drawable>
+
 </resources>
