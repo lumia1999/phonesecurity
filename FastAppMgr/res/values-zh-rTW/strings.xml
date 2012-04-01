@@ -14,13 +14,14 @@
     <string name="version_info">軟件版本：</string>
     <string name="author">Email:Xinwei.Yi@gmail.com\n\n如您在使用過程中遇到任何疑問，請發郵件通知我。</string>
     <string name="no_version_current">無法取得版本信息</string>
-    <string name="youmioffertip">點擊Menu，下載您中意的應用\n
-		積分達到200分，即可升級為無廣告版本</string>
-    <string name="youmioffertip_noad">點擊Menu，查看下載您中意的App</string>
-    <string name="rom_total_tip">ROM總容量：</string>
-    <string name="rom_left_tip">剩餘容量：</string>
-    <string name="ram_total_tip">RAM總容量：</string>
-    <string name="ram_left_tip">剩餘容量：</string>
+    <string name="youmioffertip">點擊Menu，下載推薦應用，200積分去廣告！</string>
+    <string name="rom">ROM</string>
+    <string name="ram">RAM</string>
+    <string name="left_bracket">（</string>
+    <string name="right_bracket">）</string>
+    <string name="total_tip">總：</string>
+    <string name="left_tip">剩：</string>
+    <string name="slash">/</string>
     <string name="ram_rom_intro_dlg_title">Ram、Rom簡介</string>
 
     <!-- context menu string -->
@@ -29,7 +30,6 @@
     <string name="cm_detail_view">查看詳情</string>
     <string name="cm_install_shortcut">創建桌面快捷方式</string>
     <string name="app_non_launcher_point_toast">創建快捷方式失敗，(?)無程序入口點</string>
-    
     <string name="no_version">無版本</string>
     <string name="version_tip">版本：</string>
     <string name="total_app_number_tip">當前總應用個數：</string>

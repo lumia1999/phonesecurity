@@ -1,5 +1,7 @@
 package com.herry.fastappmgr.view;
 
+import java.util.Arrays;
+
 import net.youmi.android.AdManager;
 import net.youmi.android.appoffers.YoumiOffersManager;
 import android.app.AlertDialog;
@@ -12,21 +14,32 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.NinePatch;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.NinePatchDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Animation.AnimationListener;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.TabHost.TabSpec;
 
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.MemoryInfo;
@@ -42,6 +55,11 @@ public class AppTabActivity extends TabActivity {
 	private TextView mYoumiOfferTipTxt;
 	private MemoryInfo mRomInfo;
 	private boolean mTipClickable;
+
+	private LayoutInflater mLayoutInflater;
+	private TabHost mTabHost;
+	private TabHost.TabSpec mTabSpec;
+	private Intent mContentIntent;
 
 	private static final int MSG_CHANGE_TIP = 1;
 	private static final int MSG_UPDATE_ROM_INFO = 2;
@@ -85,6 +103,8 @@ public class AppTabActivity extends TabActivity {
 		public void onAnimationEnd(Animation animation) {
 			Animation a = AnimationUtils.loadAnimation(getApplicationContext(),
 					R.anim.in_youmioffer_tip);
+			mYoumiOfferTipTxt.setGravity(Gravity.CENTER_VERTICAL);
+			mYoumiOfferTipTxt.setPadding(15, 5, 5, 5);
 			mYoumiOfferTipTxt.setText(mRomInfo
 					.toString(getApplicationContext()));
 			mYoumiOfferTipTxt.startAnimation(a);
@@ -95,9 +115,11 @@ public class AppTabActivity extends TabActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab);
+		AdManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f", 30, false);
+		YoumiOffersManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f");
 		registerReceiver();
 		initUI();
-		AdManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f", 30, false);
+		setupTabs();
 	}
 
 	@Override
@@ -107,8 +129,8 @@ public class AppTabActivity extends TabActivity {
 	}
 
 	private void initUI() {
-		YoumiOffersManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f");
 		mTipClickable = false;
+		mLayoutInflater = getLayoutInflater();
 		mYoumiOfferTipTxt = (TextView) findViewById(R.id.youmiofferTip);
 		mRomInfo = Utils.getMemoryInfo(this);
 		if (Prefs.showYoumiOffer(this) && !Utils.youmiofferPointsReach(this)) {
@@ -119,6 +141,8 @@ public class AppTabActivity extends TabActivity {
 			mHandler.sendMessageDelayed(msg, 3000);
 		} else {
 			mTipClickable = true;
+			mYoumiOfferTipTxt.setGravity(Gravity.CENTER_VERTICAL);
+			mYoumiOfferTipTxt.setPadding(15, 5, 5, 5);
 			mYoumiOfferTipTxt.setText(mRomInfo.toString(this));
 			mYoumiOfferTipTxt.setVisibility(View.VISIBLE);
 		}
@@ -132,29 +156,32 @@ public class AppTabActivity extends TabActivity {
 				}
 			}
 		});
-		Resources res = getResources();
-		TabHost tabHost = getTabHost();
-		TabHost.TabSpec spec;
-		Intent intent;
-		// uninstall
-		intent = new Intent().setClass(this, UninstallActivity.class);
-		spec = tabHost
-				.newTabSpec(getString(R.string.tab_uninstall))
-				.setIndicator(getString(R.string.tab_uninstall),
-						res.getDrawable(R.drawable.uninstall_icon))
-				.setContent(intent);
-		tabHost.addTab(spec);
+	}
 
-		// install
-		intent = new Intent().setClass(this, RecentAddedActivity.class);
-		spec = tabHost
-				.newTabSpec(getString(R.string.tab_recet_install))
-				.setIndicator(getString(R.string.tab_recet_install),
-						res.getDrawable(R.drawable.recent_add_icon))
-				.setContent(intent);
-		tabHost.addTab(spec);
+	private void setupTabs() {
+		mTabHost = getTabHost();
+		mTabHost.setup(getLocalActivityManager());
+		TabWidget w = getTabWidget();
+		int[] colors = new int[3 * 50];
+		Arrays.fill(colors, Color.GREEN);
+		Bitmap b = Bitmap.createBitmap(colors, 3, 50, Bitmap.Config.RGB_565);
+		NinePatch np = new NinePatch(b, new byte[2 * 50], null);
+		NinePatchDrawable npd = new NinePatchDrawable(np);
+		// Log.e(TAG, "npd : " + npd);
+		w.setDividerDrawable(npd);
+		mContentIntent = new Intent().setClass(this, UninstallActivity.class);
+		setIndicator(getString(R.string.tab_uninstall), mContentIntent);
+		mContentIntent = new Intent().setClass(this, RecentAddedActivity.class);
+		setIndicator(getString(R.string.tab_recet_install), mContentIntent);
+		mTabHost.setCurrentTab(0);
+	}
 
-		tabHost.setCurrentTab(0);
+	private void setIndicator(String spec, Intent contentIntent) {
+		View v = mLayoutInflater.inflate(R.layout.tab_menu, null);
+		((TextView) v).setText(spec);
+		mTabSpec = mTabHost.newTabSpec(spec).setIndicator(v).setContent(
+				mContentIntent);
+		mTabHost.addTab(mTabSpec);
 	}
 
 	@Override
@@ -203,10 +230,9 @@ public class AppTabActivity extends TabActivity {
 		case DLG_SHOW_RAM_ROM_INFO:
 			WebView webView = new WebView(this);
 			webView.loadUrl("file:///android_asset/ram_rom_intro.html");
-			return new AlertDialog.Builder(this)
-					.setIcon(android.R.drawable.ic_dialog_alert)
-					.setTitle(R.string.ram_rom_intro_dlg_title)
-					.setView(webView).create();
+			return new AlertDialog.Builder(this).setIcon(
+					android.R.drawable.ic_dialog_alert).setTitle(
+					R.string.ram_rom_intro_dlg_title).setView(webView).create();
 		default:
 			return super.onCreateDialog(id);
 		}
