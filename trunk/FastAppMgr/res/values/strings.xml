@@ -37,4 +37,9 @@
     <string name="total_app_number_tip">当前总应用个数：</string>
     <string name="sort_app_title">应用排序</string>
 
+    <!-- boot up string -->
+    <string name="bootup_ticker_txt">本次开机共耗时：</string>
+    <string name="time_second">秒</string>
+	<string name="time_minute">分</string>
+	<string name="bootup_tip_title">开机耗时</string>
 </resources>

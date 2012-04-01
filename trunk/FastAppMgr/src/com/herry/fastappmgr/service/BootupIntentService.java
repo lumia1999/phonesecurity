@@ -20,7 +20,7 @@ public class BootupIntentService extends IntentService {
 	private static final String TAG = "BootupIntentService";
 
 	private static final int BOOTTIME_NOTIFICATION_ID = 10010;
-	private static final long ONE_MINUTE = 60 * 1000;
+	private static final long HALF_MINUTE = 30 * 1000;
 	public static final String ACTION_BOOTUP_NOTIFY = "com.herry.fastappmgr.ACTION_BOOTUP_NOTIFY";
 	public static final String EXTRA_UPTIME = "extra_uptime";
 
@@ -35,9 +35,9 @@ public class BootupIntentService extends IntentService {
 			if (TextUtils.equals(action, Intent.ACTION_BOOT_COMPLETED)) {
 				onBootCompleted();
 			} else if (TextUtils.equals(action, ACTION_BOOTUP_NOTIFY)) {
-				double uptime = intent.getDoubleExtra(EXTRA_UPTIME, -1.0);
+				String uptime = intent.getStringExtra(EXTRA_UPTIME);
 				Log.e(TAG, "***8ACTION_BOOTUP_NOTIFY*****,uptime : " + uptime);
-
+				notifyUser(uptime);
 			}
 		}
 	}
@@ -46,38 +46,41 @@ public class BootupIntentService extends IntentService {
 		DevTimeInfo tInfo = Utils.getDevTimeInfo();
 		Log.e(TAG, "" + tInfo.toString());
 		if (tInfo != null) {
+			String time = Utils.formatDuration(this, (long)tInfo.getUptime());
+			if(time != null){
 			// TODO :save info to db
-
 			// TODO : start a alarm for notification after one minute.
-			startAlarm(tInfo.getUptime());
+			startAlarm(time);
+			}
+			// if 'time equals null,it means that a exception operation occurs.
+			//and we don't consider it is a really boot up.
+			//so, we don't notify user any thing.
 		}
 	}
 
-	private void notifyUser(double uptime) {
+	private void notifyUser(String uptime) {
 		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notification = new Notification();
 		notification.icon = R.drawable.app_icon;
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		// notification.tickerText = getString(R.string.boottime_report_tip)
-		// + Utils.formatDuration(this, (long) sInfo.getUptime());
+		notification.tickerText = getString(R.string.bootup_ticker_txt)
+		 + uptime;
 		Intent intent = new Intent(this, AppTabActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
-		// notification.setLatestEventInfo(this,
-		// getString(R.string.item_boottime_report),
-		// getString(R.string.boottime_report_tip)
-		// + Utils.formatDuration(this, (long) sInfo.getUptime()),
-		// pi);
+		 notification.setLatestEventInfo(this,
+		 getString(R.string.bootup_tip_title),notification.tickerText,
+		 pi);
 		nm.notify(BOOTTIME_NOTIFICATION_ID, notification);
 	}
 
-	private void startAlarm(double uptime) {
+	private void startAlarm(String uptime) {
 		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(ACTION_BOOTUP_NOTIFY);
 		intent.putExtra(EXTRA_UPTIME, uptime);
 		PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
-		am.set(AlarmManager.RTC_WAKEUP,
-				System.currentTimeMillis() + ONE_MINUTE, pi);
+		am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
+				+ HALF_MINUTE, pi);
 	}
 
 	public static void runIntentService(Context ctx, Intent intent) {

@@ -26,6 +26,7 @@ import android.util.Log;
 
 import com.herry.fastappmgr.DevTimeInfo;
 import com.herry.fastappmgr.MemoryInfo;
+import com.herry.fastappmgr.R;
 
 public final class Utils {
 
@@ -228,5 +229,23 @@ public final class Utils {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public static String formatDuration(Context ctx, long duration) {
+		if(duration >= 5 * 60){
+			return null;
+		}
+		StringBuilder sb = new StringBuilder();
+		if (duration >= 60) {
+			long minute = duration / 60;
+			long second = duration % 60;
+			sb.append(minute).append(ctx.getString(R.string.time_minute));
+			if (second != 0) {
+				sb.append(second).append(ctx.getString(R.string.time_second));
+			}
+		} else {
+			sb.append(duration).append(ctx.getString(R.string.time_second));
+		}
+		return sb.toString();
 	}
 }
