@@ -49,7 +49,6 @@ import com.herry.fastappmgr.util.Utils;
 
 public class AppTabActivity extends TabActivity {
 	private static final String TAG = "AppTabActivity";
-	private static final int DLG_ABOUT_ID = 1;
 	private static final int DLG_SHOW_RAM_ROM_INFO = 2;
 
 	private TextView mYoumiOfferTipTxt;
@@ -220,13 +219,6 @@ public class AppTabActivity extends TabActivity {
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
-		case DLG_ABOUT_ID:
-			View aboutView = getLayoutInflater().inflate(R.layout.about, null);
-			TextView versionInfo = (TextView) aboutView
-					.findViewById(R.id.ver_info);
-			versionInfo.setText(getAppVersion());
-			return new AlertDialog.Builder(this).setView(aboutView)
-					.setPositiveButton(android.R.string.ok, null).create();
 		case DLG_SHOW_RAM_ROM_INFO:
 			WebView webView = new WebView(this);
 			webView.loadUrl("file:///android_asset/ram_rom_intro.html");
@@ -239,17 +231,7 @@ public class AppTabActivity extends TabActivity {
 	}
 
 	private void showAbout() {
-		showDialog(DLG_ABOUT_ID);
-	}
-
-	private String getAppVersion() {
-		try {
-			PackageManager pm = getPackageManager();
-			String version = pm.getPackageInfo(getPackageName(), 0).versionName;
-			return getString(R.string.version_info) + version;
-		} catch (NameNotFoundException e) {
-			return getString(R.string.no_version_current);
-		}
+		startActivity(new Intent(this, AboutActivity.class));
 	}
 
 	private void registerReceiver() {

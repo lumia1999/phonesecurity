@@ -2,6 +2,7 @@ package com.herry.fastappmgr.receiver;
 
 import com.herry.fastappmgr.db.PackageAddedDbAdapter;
 import com.herry.fastappmgr.db.PackageAddedDbHelper.RecentAddedPkgColumn;
+import com.herry.fastappmgr.service.BootupIntentService;
 import com.herry.fastappmgr.util.Constants;
 
 import android.content.BroadcastReceiver;
@@ -22,6 +23,11 @@ public class PackageBroascastReceiver extends BroadcastReceiver {
 			addPackage(context, intent);
 		} else if (TextUtils.equals(action, Intent.ACTION_PACKAGE_REMOVED)) {
 			removePackage(context, intent);
+		} else if (TextUtils.equals(action, Intent.ACTION_BOOT_COMPLETED)) {
+			BootupIntentService.runIntentService(context, intent);
+		} else if (TextUtils.equals(action,
+				BootupIntentService.ACTION_BOOTUP_NOTIFY)) {
+			BootupIntentService.runIntentService(context, intent);
 		}
 	}
 
