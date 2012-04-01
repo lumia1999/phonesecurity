@@ -76,12 +76,13 @@ public class RelaxReaderTableActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_table);
-		if (!Utils.isConsumeActive(this)) {
+		boolean active = Utils.isConsumeActive(this);
+		// Log.e(TAG, "active : " + active);
+		if (!active) {
 			AdManager.init(this, "0025ccd4baca1bb2", "6f8360d97e84aa86", 30,
 					false);
-			YoumiOffersManager.init(this, "0025ccd4baca1bb2",
-					"6f8360d97e84aa86");
 		}
+		YoumiOffersManager.init(this, "0025ccd4baca1bb2", "6f8360d97e84aa86");
 		getLanguageType();
 		initUI();
 		initHeadlineData();
