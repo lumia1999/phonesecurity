@@ -35,6 +35,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -50,7 +51,7 @@ public class RecentAddedActivity extends ListActivity {
 	private PackageManager mPackageMgr;
 	private List<Item> mDataList = null;
 	private PackageAddedDbAdapter mDbAdapter;
-	private ProgressBar mProgressBar;
+	private RelativeLayout mLoadingLayout;
 	private TextView mEmptyTipTxt;
 	private boolean mExit = false;
 	private RecentAddAdapter mAdapter;
@@ -75,7 +76,7 @@ public class RecentAddedActivity extends ListActivity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case MSG_NO_ITEM:
-				mProgressBar.setVisibility(View.GONE);
+				mLoadingLayout.setVisibility(View.GONE);
 				mEmptyTipTxt.setVisibility(View.VISIBLE);
 				break;
 			case MSG_FILL_DATA:
@@ -219,7 +220,7 @@ public class RecentAddedActivity extends ListActivity {
 		mAdView = (AdView) findViewById(R.id.adView);
 		mPackageMgr = getPackageManager();
 		mDbAdapter = PackageAddedDbAdapter.getInstance(this);
-		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
+		mLoadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
 		mEmptyTipTxt = (TextView) findViewById(R.id.empty);
 		registerForContextMenu(getListView());
 	}
@@ -349,7 +350,7 @@ public class RecentAddedActivity extends ListActivity {
 		} else {
 			mAdView.setVisibility(View.GONE);
 		}
-		mProgressBar.setVisibility(View.GONE);
+		mLoadingLayout.setVisibility(View.GONE);
 		mAdapter = new RecentAddAdapter();
 		setListAdapter(mAdapter);
 	}

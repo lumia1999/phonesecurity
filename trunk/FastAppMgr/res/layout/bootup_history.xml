@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/grey">
+    
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:background="@color/grey" >
+
+	    <TextView android:id="@+id/show_all_affect_apps"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/corner_border_selector"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:minHeight="48dip"
+	        android:singleLine="true"
+	        android:text="@string/list_all_bootup_required_apps"
+	        android:textAppearance="?android:attr/textAppearanceMedium"
+	        android:textColor="@android:color/black" 
+	        android:layout_margin="3dip"/>
+		<FrameLayout android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+			android:layout_below="@+id/show_all_affect_apps">
+		    <ListView android:id="@android:id/list"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:background="@drawable/list_item_bg_selector"
+			    android:divider="@null"
+		        android:fadingEdge="none"
+		        android:fastScrollEnabled="true" />
+		    <TextView android:id="@android:id/empty"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:gravity="center"
+		        android:layout_gravity="center"
+		        android:text="@string/no_bootup_history"
+		        android:textAppearance="?android:attr/textAppearanceSmall"
+		        android:textColor="@android:color/black"
+		        android:visibility="gone"/>
+		</FrameLayout>
+
+	</RelativeLayout>
+    <include layout="@layout/loading"/>
+</FrameLayout>

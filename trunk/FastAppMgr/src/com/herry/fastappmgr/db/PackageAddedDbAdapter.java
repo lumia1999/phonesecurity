@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.herry.fastappmgr.db.PackageAddedDbHelper.BoottimeHistoryColumn;
 import com.herry.fastappmgr.db.PackageAddedDbHelper.RecentAddedPkgColumn;
 
 public final class PackageAddedDbAdapter {
@@ -22,10 +23,12 @@ public final class PackageAddedDbAdapter {
 	}
 
 	public static synchronized PackageAddedDbAdapter getInstance(Context ctx) {
-		if (mInstance == null) {
-			mInstance = new PackageAddedDbAdapter(ctx);
-		}
-		return mInstance;
+//		Log.e(TAG, "getInstance ,mInstance : " + mInstance);
+//		if (mInstance == null) {
+//			mInstance = new PackageAddedDbAdapter(ctx);
+//		}
+//		return mInstance;
+		return new PackageAddedDbAdapter(ctx);
 	}
 
 	public long insertRecord(String pkgName, ContentValues values) {
@@ -75,5 +78,16 @@ public final class PackageAddedDbAdapter {
 
 	public void releaseMemory() {
 		SQLiteDatabase.releaseMemory();
+	}
+	
+	public long insertBootupRecord(ContentValues values) {
+		return mDb.insert(PackageAddedDbHelper.BOOTUP_TABLE_NAME,
+				BoottimeHistoryColumn.TIMEUSED, values);
+	}
+
+	public Cursor getAllBootupHistory() {
+		Cursor cursor = mDb.query(PackageAddedDbHelper.BOOTUP_TABLE_NAME, null,
+				null, null, null, null, BoottimeHistoryColumn.TS + " desc");
+		return cursor;
 	}
 }

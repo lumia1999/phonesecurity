@@ -45,6 +45,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -64,7 +65,7 @@ public class UninstallActivity extends ListActivity {
 	private ListView mListView;
 	private LayoutInflater mLayoutInflater;
 	private boolean mExit = false;
-	private ProgressBar mProgressBar;
+	private RelativeLayout mLoadingLayout;
 	int mTotalAppNum = 0;
 	int mIndex = 0;
 
@@ -352,7 +353,7 @@ public class UninstallActivity extends ListActivity {
 		} else {
 			mAdView.setVisibility(View.GONE);
 		}
-		mProgressBar.setVisibility(View.GONE);
+		mLoadingLayout.setVisibility(View.GONE);
 		((TextView) mHeader).setText(mTotalAppNumberString + mTotalAppNum);
 		mAdapter = new AppAdapter();
 		setListAdapter(mAdapter);
@@ -361,7 +362,7 @@ public class UninstallActivity extends ListActivity {
 	private void initUI() {
 		// ad
 		mAdView = (AdView) findViewById(R.id.adView);
-		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
+		mLoadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
 		mVersionTipString = getString(R.string.version_tip);
 		mNoVersionString = getString(R.string.no_version);
 		mTotalAppNumberString = getString(R.string.total_app_number_tip);
