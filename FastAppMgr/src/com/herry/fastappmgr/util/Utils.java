@@ -248,4 +248,10 @@ public final class Utils {
 		}
 		return sb.toString();
 	}
+	
+	public static String formatTs(Context ctx, long ts) {
+		return DateUtils.formatDateTime(ctx, ts, DateUtils.FORMAT_SHOW_DATE
+				| DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR
+				| DateUtils.FORMAT_SHOW_TIME);
+	}
 }

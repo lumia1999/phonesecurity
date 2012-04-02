@@ -193,15 +193,20 @@ public class AppTabActivity extends TabActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (Prefs.showYoumiOffer(this)) {
-			return true;
+			//
 		} else {
-			return false;
+			menu.removeItem(R.id.app_offer_point);
+			menu.removeItem(R.id.app_offer);
 		}
+		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.app_bootup:
+			startActivity(new Intent(this,BootupViewActivity.class));
+			break;
 		case R.id.about:
 			showAbout();
 			return true;

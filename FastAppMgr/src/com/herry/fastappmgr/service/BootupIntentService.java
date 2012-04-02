@@ -2,6 +2,8 @@ package com.herry.fastappmgr.service;
 
 import com.herry.fastappmgr.DevTimeInfo;
 import com.herry.fastappmgr.R;
+import com.herry.fastappmgr.db.PackageAddedDbAdapter;
+import com.herry.fastappmgr.db.PackageAddedDbHelper.BoottimeHistoryColumn;
 import com.herry.fastappmgr.util.Utils;
 import com.herry.fastappmgr.view.AppTabActivity;
 
@@ -10,6 +12,7 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -50,6 +53,10 @@ public class BootupIntentService extends IntentService {
 			if(time != null){
 			// TODO :save info to db
 			// TODO : start a alarm for notification after one minute.
+			ContentValues values = new ContentValues();
+			values.put(BoottimeHistoryColumn.TIMEUSED, (int) tInfo.getUptime());
+			values.put(BoottimeHistoryColumn.TS, System.currentTimeMillis());
+			PackageAddedDbAdapter.getInstance(this).insertBootupRecord(values);
 			startAlarm(time);
 			}
 			// if 'time equals null,it means that a exception operation occurs.
@@ -61,7 +68,7 @@ public class BootupIntentService extends IntentService {
 	private void notifyUser(String uptime) {
 		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notification = new Notification();
-		notification.icon = R.drawable.app_icon;
+		notification.icon = R.drawable.menu_bootup;
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		notification.tickerText = getString(R.string.bootup_ticker_txt)
 		 + uptime;

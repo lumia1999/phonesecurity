@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_bg_selector" >
+
+    <ImageView android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:background="@drawable/bootup_indicator"
+        android:layout_margin="5dip"/>
+    <TextView android:id="@+id/uptime"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black"
+        android:text="uptime"
+        android:paddingTop="5dip"
+        android:layout_toRightOf="@+id/indicator"
+        android:singleLine="true"/>
+	<TextView android:id="@+id/takeplace_time"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="?android:attr/textAppearanceSmall"
+	    android:text="take place time"
+	    android:layout_below="@+id/uptime"
+	    android:paddingBottom="5dip"
+	    android:layout_toRightOf="@+id/indicator"/>
+</RelativeLayout>

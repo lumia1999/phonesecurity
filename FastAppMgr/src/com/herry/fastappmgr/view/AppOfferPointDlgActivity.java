@@ -28,7 +28,7 @@ public class AppOfferPointDlgActivity extends Activity implements
 		Log.d(TAG, "onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.app_offer_point_dlg_layout);
-		setTitle(R.string.app_offer_point_query);
+		setTitle(R.string.app_offer_point_query);		
 		YoumiOffersManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f");
 		initUI();
 	}
