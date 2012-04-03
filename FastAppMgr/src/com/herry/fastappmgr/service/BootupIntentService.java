@@ -17,7 +17,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 public class BootupIntentService extends IntentService {
 	private static final String TAG = "BootupIntentService";
@@ -49,19 +48,23 @@ public class BootupIntentService extends IntentService {
 		DevTimeInfo tInfo = Utils.getDevTimeInfo();
 		Log.e(TAG, "" + tInfo.toString());
 		if (tInfo != null) {
-			String time = Utils.formatDuration(this, (long)tInfo.getUptime());
-			if(time != null){
-			// TODO :save info to db
-			// TODO : start a alarm for notification after one minute.
-			ContentValues values = new ContentValues();
-			values.put(BoottimeHistoryColumn.TIMEUSED, (int) tInfo.getUptime());
-			values.put(BoottimeHistoryColumn.TS, System.currentTimeMillis());
-			PackageAddedDbAdapter.getInstance(this).insertBootupRecord(values);
-			startAlarm(time);
+			String time = Utils.formatDuration(this, (long) tInfo.getUptime());
+			if (time != null) {
+				// TODO :save info to db
+				// TODO : start a alarm for notification after one minute.
+				ContentValues values = new ContentValues();
+				values.put(BoottimeHistoryColumn.TIMEUSED, (int) tInfo
+						.getUptime());
+				values
+						.put(BoottimeHistoryColumn.TS, System
+								.currentTimeMillis());
+				PackageAddedDbAdapter.getInstance(this).insertBootupRecord(
+						values);
+				startAlarm(time);
 			}
 			// if 'time equals null,it means that a exception operation occurs.
-			//and we don't consider it is a really boot up.
-			//so, we don't notify user any thing.
+			// and we don't consider it is a really boot up.
+			// so, we don't notify user any thing.
 		}
 	}
 
@@ -70,14 +73,15 @@ public class BootupIntentService extends IntentService {
 		Notification notification = new Notification();
 		notification.icon = R.drawable.menu_bootup;
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		notification.vibrate = new long[] { 200, 300, 200, 500 };
 		notification.tickerText = getString(R.string.bootup_ticker_txt)
-		 + uptime;
+				+ uptime;
 		Intent intent = new Intent(this, AppTabActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
-		 notification.setLatestEventInfo(this,
-		 getString(R.string.bootup_tip_title),notification.tickerText,
-		 pi);
+		notification.setLatestEventInfo(this,
+				getString(R.string.bootup_tip_title), notification.tickerText,
+				pi);
 		nm.notify(BOOTTIME_NOTIFICATION_ID, notification);
 	}
 
