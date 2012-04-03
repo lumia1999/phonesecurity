@@ -17,3 +17,6 @@ tag:
 
 gfan:
 APP Key : 1DD8QLI6OOUKK962GIRUGFV630
+
+preference¸ü¸Ä±³¾°ÑÕÉ«£º
+http://topic.csdn.net/u/20100722/10/8156df5c-a4b1-4ad1-a135-9b8721164570.html
