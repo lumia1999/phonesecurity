@@ -1,25 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/loading_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:gravity="center"
-    android:id="@+id/loading_layout" >
+    android:gravity="center" >
 
-    <ProgressBar android:id="@android:id/progress"
-        style="@android:style/Widget.ProgressBar.Small.Inverse"
-        android:indeterminateOnly="true" 
+    <ProgressBar
+        android:id="@+id/progress_anim"
+        style="?android:style/Widget.ProgressBar"
+        android:layout_width="100px"
+        android:layout_height="120px"
+        android:layout_centerHorizontal="true"
+        android:indeterminateDrawable="@drawable/anim_loading"
+        android:indeterminateOnly="true" />
+
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_height="wrap_content"/>
-	<TextView android:id="@+id/progress_txt"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:singleLine="true"
-	    android:layout_toRightOf="@android:id/progress"
-	    android:text="@string/loading"
-	    android:padding="5dip"
-	    android:textColor="@color/dark_blue"
-	    android:layout_centerVertical="true"
-	    android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progress_anim" >
+
+        <ProgressBar
+            android:id="@android:id/progress"
+            style="@android:style/Widget.ProgressBar.Small.Inverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:indeterminateOnly="true" />
+
+        <TextView
+            android:id="@+id/progress_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@android:id/progress"
+            android:layout_below="@+id/progress_anim"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@android:id/progress"
+            android:padding="5dip"
+            android:singleLine="true"
+            android:text="@string/loading"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/dark_blue" />
+    </RelativeLayout>
+
 </RelativeLayout>
