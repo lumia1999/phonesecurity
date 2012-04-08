@@ -96,8 +96,8 @@
     <string name="item_pwd_tab">密码设置</string>
     <!-- protection string -->
     <string name="protection_state">防盗状态</string>
-    <string name="state_on">开启</string>
-    <string name="state_off">关闭</string>
+    <string name="state_on">已开启</string>
+    <string name="state_off">已关闭，为了您手机的安全，请启用防盗功能</string>
     <string name="trust_number_title">受信号码</string>
     <string name="trust_number_desc">当您手机不幸丢失的时候，我们将发送丢失信息到此号码</string>
     <string name="master_markup_title">主人标识</string>

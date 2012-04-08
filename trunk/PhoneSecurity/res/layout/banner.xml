@@ -3,8 +3,9 @@
     android:id="@+id/banner"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/corner_border_selector"
+    android:background="@color/grey"
     android:padding="5dip"
     android:singleLine="true"
     android:text="dddd"
-    android:textAppearance="?android:attr/textAppearanceSmall" />
+    android:gravity="center"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
