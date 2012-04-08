@@ -15,7 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public abstract class AbstractActivity extends Activity {
-	private LayoutInflater mLayoutInflater;
+	protected LayoutInflater mLayoutInflater;
 	private ListView mListView;
 	private ViewAdpater mAdapter;
 	protected ArrayList<Item> mDataList;

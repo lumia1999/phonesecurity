@@ -2,9 +2,54 @@ package com.herry.phonesecurity.view;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
 import com.herry.phonesecurity.R;
+import com.herry.phonesecurity.Utils;
 
 public class MainSettingActivity extends AbstractActivity {
+	private static final String TAG = "MainSettingActivity";
+
+	private static final int DLG_NO_SIM = 1;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		initProtection();
+	}
+
+	private void initProtection() {
+		String imsi = Utils.getIMSI(this);
+		Log.d(TAG, "imsi : " + imsi);
+		if (imsi != null) {
+			showDialog(DLG_NO_SIM);
+		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch(id){
+		case DLG_NO_SIM:
+			AlertDialog noSimDlg = new AlertDialog.Builder(this).create();
+			View noSimView = mLayoutInflater.inflate(R.layout.no_sim_view, null);
+			noSimDlg.setView(noSimView, 0, 0, 0, 0);
+			noSimDlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+				
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					finish();
+				}
+			});
+			return noSimDlg;
+		}
+		return super.onCreateDialog(id);
+	}
+
 	@Override
 	protected void initData() {
 		if (mDataList != null && !mDataList.isEmpty()) {
