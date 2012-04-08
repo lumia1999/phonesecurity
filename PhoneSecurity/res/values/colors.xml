@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<drawable name="bg_gray">#6c6c6c</drawable>
+
+    <drawable name="bg_gray">#6c6c6c</drawable>
+
+    <color name="list_view_bg_color">#00000000</color>
+    <color name="grey">#a0a0a0</color>
+    <color name="lighter_yellow">#FFF0AF</color>
+    <color name="lighter_gray">#ddd</color>
+
 </resources>

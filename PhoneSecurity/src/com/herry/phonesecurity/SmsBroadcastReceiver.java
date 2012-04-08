@@ -13,19 +13,21 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
 		Log.d(TAG, "action : " + action);
-		if (action.equals(Const.ACTION_SMS_RECEIVED)) {
-			String smsBody = Utils.getSmsBody(intent);
-			String alarmPwd = Prefs.getAlarmPwd(context);
-			String selfNumber = Utils.getSelfNumber(context);
-			StringBuilder sb = new StringBuilder();
-			sb.append(selfNumber).append(alarmPwd).append(Const.ALARM);
-			if (alarmPwd != null && selfNumber != null
-					&& !"".equals(smsBody.trim())
-					&& smsBody.startsWith(sb.toString())) {
-				intent.setData(Uri.parse(Const.ALARM));
-				intent.setClass(context, HandleAlarmService.class);
-				context.startService(intent);
-				abortBroadcast();
+		if (action != null) {
+			if (action.equals(Const.ACTION_SMS_RECEIVED)) {
+				String smsBody = Utils.getSmsBody(intent);
+				String alarmPwd = Prefs.getAlarmPwd(context);
+				String selfNumber = Utils.getSelfNumber(context);
+				StringBuilder sb = new StringBuilder();
+				sb.append(selfNumber).append(alarmPwd).append(Const.ALARM);
+				if (alarmPwd != null && selfNumber != null
+						&& !"".equals(smsBody.trim())
+						&& smsBody.startsWith(sb.toString())) {
+					intent.setData(Uri.parse(Const.ALARM));
+					intent.setClass(context, HandleAlarmService.class);
+					context.startService(intent);
+					abortBroadcast();
+				}
 			}
 		}
 	}
