@@ -6,14 +6,12 @@
     android:layout_gravity="center"
     android:gravity="center" >
 
-    <ProgressBar
+    <ImageView
         android:id="@+id/progress_anim"
-        style="?android:style/Widget.ProgressBar"
-        android:layout_width="100px"
-        android:layout_height="120px"
-        android:layout_centerHorizontal="true"
-        android:indeterminateDrawable="@drawable/anim_loading"
-        android:indeterminateOnly="true" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/anim_loading"
+        android:layout_centerHorizontal="true" />
 
     <RelativeLayout
         android:layout_width="wrap_content"

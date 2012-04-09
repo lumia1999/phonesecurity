@@ -23,6 +23,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -66,6 +67,8 @@ public class UninstallActivity extends ListActivity {
 	private LayoutInflater mLayoutInflater;
 	private boolean mExit = false;
 	private RelativeLayout mLoadingLayout;
+	private ImageView mLoadingAnim;
+	private AnimationDrawable mAnimDrawable;
 	int mTotalAppNum = 0;
 	int mIndex = 0;
 
@@ -378,6 +381,19 @@ public class UninstallActivity extends ListActivity {
 		});
 		mListView.addHeaderView(mHeader);
 		registerForContextMenu(mListView);
+		mLoadingAnim = (ImageView) findViewById(R.id.progress_anim);
+		mAnimDrawable = (AnimationDrawable) mLoadingAnim.getBackground();
+
+	}
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		if (hasFocus) {
+			if (mAnimDrawable != null) {
+				mAnimDrawable.start();
+			}
+		}
 	}
 
 	private void initData() {

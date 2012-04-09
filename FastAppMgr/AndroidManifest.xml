@@ -47,13 +47,17 @@
             android:name=".view.AboutActivity"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.BootupViewActivity"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.DisplayBootupAppsActivity"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
 
-        <activity android:name=".view.BootupViewActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:configChanges="orientation|keyboardHidden"></activity>
-        <activity android:name=".view.DisplayBootupAppsActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:configChanges="orientation|keyboardHidden"></activity>
         <receiver android:name=".receiver.PackageBroascastReceiver" >
             <intent-filter >
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
@@ -84,6 +88,10 @@
         <activity
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:name="net.youmi.android.appoffers.YoumiOffersActivity" />
+
+        <meta-data
+            android:name="YOUMI_CHANNEL"
+            android:value="10020" />
     </application>
 
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
@@ -98,7 +106,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- boot up time usage -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-	<uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <uses-sdk android:minSdkVersion="7" />
 
 </manifest>

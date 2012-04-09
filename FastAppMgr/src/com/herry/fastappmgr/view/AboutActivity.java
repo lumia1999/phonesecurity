@@ -31,7 +31,7 @@ public class AboutActivity extends Activity {
 	private void fillData() {
 		mAppNameTxt.setText(getString(R.string.app_name_tip)
 				+ getString(R.string.app_name));
-		mAppVerTxt.setText(getString(R.string.version_info) + getAppVersion());
+		mAppVerTxt.setText(getAppVersion());
 		mWebView.loadUrl("file:///android_asset/about.html");
 	}
 
