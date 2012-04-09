@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="3dip"
+    android:paddingLeft="5dip"
+    android:paddingRight="5dip"
+    android:paddingTop="3dip"
+    android:visibility="gone" >
+
+    <TextView
+        android:id="@+id/tip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="ttt"
+        android:textAppearance="@android:attr/textAppearanceSmall"
+        android:textColor="@android:color/secondary_text_light" />
+
+    <EditText
+        android:id="@+id/pwd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tip"
+        android:hint="@string/set_alarm_pwd_hint"
+        android:password="true"
+        android:maxLength="6"
+        android:singleLine="true" />
+
+</RelativeLayout>

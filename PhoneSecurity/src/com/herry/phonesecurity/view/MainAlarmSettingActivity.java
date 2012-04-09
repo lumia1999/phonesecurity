@@ -2,6 +2,9 @@ package com.herry.phonesecurity.view;
 
 import java.util.ArrayList;
 
+import android.view.View;
+import android.view.ViewGroup;
+
 import com.herry.phonesecurity.R;
 
 public class MainAlarmSettingActivity extends AbstractActivity {
@@ -31,5 +34,19 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 				R.string.alarm_ringtone_about_desc, -1,
 				R.string.pref_about_alarm_ringtone);
 		mDataList.add(item);
+	}
+
+	@Override
+	protected void fillData() {
+		mAdapter = new AlarmAdapter();
+		mListView.setAdapter(mAdapter);
+	}
+
+	private class AlarmAdapter extends ViewAdpater {
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			return super.getView(position, convertView, parent);
+		}
 	}
 }

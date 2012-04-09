@@ -7,5 +7,6 @@
     <color name="grey">#a0a0a0</color>
     <color name="lighter_yellow">#FFF0AF</color>
     <color name="lighter_gray">#ddd</color>
+    <color name="normal_bg">#F0F0F0</color>
 
 </resources>
