@@ -18,6 +18,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -52,6 +53,8 @@ public class RecentAddedActivity extends ListActivity {
 	private List<Item> mDataList = null;
 	private PackageAddedDbAdapter mDbAdapter;
 	private RelativeLayout mLoadingLayout;
+	private ImageView mLoadingAnim;
+	private AnimationDrawable mAnimDrawable;
 	private TextView mEmptyTipTxt;
 	private boolean mExit = false;
 	private RecentAddAdapter mAdapter;
@@ -223,6 +226,18 @@ public class RecentAddedActivity extends ListActivity {
 		mLoadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
 		mEmptyTipTxt = (TextView) findViewById(R.id.empty);
 		registerForContextMenu(getListView());
+		mLoadingAnim = (ImageView) findViewById(R.id.progress_anim);
+		mAnimDrawable = (AnimationDrawable) mLoadingAnim.getBackground();
+	}
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		if (hasFocus) {
+			if (mAnimDrawable != null) {
+				mAnimDrawable.start();
+			}
+		}
 	}
 
 	private void initData() {

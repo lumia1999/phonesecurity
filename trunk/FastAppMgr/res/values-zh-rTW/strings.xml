@@ -36,16 +36,19 @@
     <string name="version_tip">版本：</string>
     <string name="total_app_number_tip">當前總應用個數：</string>
     <string name="sort_app_title">應用排序</string>
-    
+
     <!-- boot up string -->
     <string name="bootup_ticker_txt">本次開機共耗時：</string>
     <string name="time_second">秒</string>
-	<string name="time_minute">分</string>
-	<string name="bootup_tip_title">開機耗時</string>
-	<string name="list_all_bootup_required_apps">查看開機啟動應用列表</string>
-	<string name="no_bootup_history">暫無開機時間記錄</string>
-	<string name="uptime_tip">耗時：</string>
-	<string name="takeplace_time_tip">發生時間：</string>
-	    
-	<string name="loading">正在加載...</string>
+    <string name="time_minute">分</string>
+    <string name="bootup_tip_title">開機耗時</string>
+    <string name="list_all_bootup_required_apps">查看開機啟動應用列表</string>
+    <string name="no_bootup_history">暫無開機時間記錄</string>
+    <string name="uptime_tip">耗時：</string>
+    <string name="takeplace_time_tip">發生時間：</string>
+    <string name="loading">正在加載...</string>
+    <string name="no_bootup_apps">您的系統無開機自啟動應用！</string>
+    <string name="click_to_view_detail">點擊查看詳情</string>
+    <string name="activity_not_exist_toast">Well,詳情不可查看？</string>
+
 </resources>
