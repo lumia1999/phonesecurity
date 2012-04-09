@@ -107,6 +107,7 @@
     <string name="wrong_number_toast">请输入正确的手机号码</string>
     <string name="master_markup_tip">在这里输入您对爱机的标识语，加上您的手机号码将更加便于识别</string>
     <string name="master_markup_hint">潇洒哥的手机（号码：13800138000）</string>
+    <string name="reset_protection_setting_tip">重置设置之后，原有被保护的SIM卡相关信息将被清除，新的SIM卡将成为受保护对象</string>
 
     <!-- alarm string -->
     <string name="alarm_ringtone_title">报警铃声</string>
