@@ -11,8 +11,6 @@
     <string name="trust_number_summary">当您手机不幸丢失的时候，我们将发送丢失信息到此号码
 	</string>
     <string name="trust_number_input_title">请输入您信任的手机号码</string>
-    <string name="no_sim_title">无SIM卡</string>
-    <string name="no_sim_msg">请检查SIM卡设置</string>
     <string name="reset_title">重置</string>
     <string name="reset_dlg_title">重置您的基本信息</string>
     <string name="reset_dlg_msg">
@@ -61,13 +59,8 @@
     <string name="setting_quit_resetting">返回设置</string>
     <string name="setting_quit_nonreminder">不再提醒</string>
     <string name="set_alarm_pwd_title">请设置用户密码</string>
-    <string name="set_alarm_pwd_tip"><b>1.</b>
-		请设置用户密码，敬告：务必避免泄露密码！
-		请牢记用户密码，丢失密码将失去报警功能！
-	</string>
     <string name="set_alarm_pwd_firsttip">请输入密码</string>
     <string name="set_alarm_pwd_secondtip">请再次输入密码</string>
-    <string name="set_alarm_pwd_hint">至少六个字符</string>
     <string name="set_alarm_pwd_error_tip">密码长度不够或者两次密码输入不匹配</string>
     <string name="user_pwd_setting">密码设置</string>
     <string name="set_pwd_title">设置密码</string>
@@ -104,6 +97,16 @@
     <string name="master_markup_desc">发送防盗通知的时候会带上此标识</string>
     <string name="reset_protection_setting_title">防盗复位</string>
     <string name="reset_protection_setting_desc">此操作将重新标识您的手机，在您主动换SIM卡的情况下，请执行此操作</string>
+    <string name="no_sim_title">无SIM卡</string>
+    <string name="no_sim_msg">防盗保护需要您的手机SIM卡正确运行，请检查SIM卡设置</string>
+    <string name="protection_off_banner">关闭防盗</string>
+    <string name="protection_off_tip">您的手机将失去防盗保护，建议开启此项服务</string>
+    <string name="protection_on_tip">开启防盗</string>
+    <string name="trust_number_banner">设置信任手机号码</string>
+    <string name="trust_number_tip">此号码将用于接收防盗信息</string>
+    <string name="wrong_number_toast">请输入正确的手机号码</string>
+    <string name="master_markup_tip">在这里输入您对爱机的标识语，加上您的手机号码将更加便于识别</string>
+    <string name="master_markup_hint">潇洒哥的手机（号码：13800138000）</string>
 
     <!-- alarm string -->
     <string name="alarm_ringtone_title">报警铃声</string>
@@ -121,7 +124,14 @@
     <string name="change_pwd_title">更改密码</string>
     <string name="change_pwd_desc">如果您的密码已泄露或太简单，
 		您可以在此更改之前设置的用户密码。</string>
-	<string name="choose_timespan_title">选择时长</string>
-	<string name="choose_timespan_desc">请选择进入软件时弹出输入密码提示对话框的时间间隔</string>
+    <string name="choose_timespan_title">选择时长</string>
+    <string name="choose_timespan_desc">请选择进入软件时弹出输入密码提示对话框的时间间隔</string>
+    <string name="pwd_firsttip">请输入密码</string>
+    <string name="pwd_secondtip">请再次输入密码</string>
+    <string name="welcome">欢迎使用手机防盗</string>
+    <string name="set_alarm_pwd_hint">六个字符</string>
+    <string name="set_alarm_pwd_tip">请设置用户密码，敬告：务必避免泄露密码！请牢记用户密码，丢失密码将失去报警功能！
+	</string>
+    <string name="set_pwd_error_tip">密码长度不够或者两次密码输入不匹配</string>
 
 </resources>

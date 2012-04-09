@@ -2,24 +2,31 @@ package com.herry.phonesecurity.view;
 
 import java.util.ArrayList;
 
-import com.herry.phonesecurity.R;
-
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.herry.phonesecurity.R;
+
 public abstract class AbstractActivity extends Activity {
+	private static final String TAG = "AbstractActivity";
 	protected LayoutInflater mLayoutInflater;
-	private ListView mListView;
-	private ViewAdpater mAdapter;
+	protected ListView mListView;
+	protected ViewAdpater mAdapter;
 	protected ArrayList<Item> mDataList;
 	private View mHeader;
+
+	protected SharedPreferences mDefPrefs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +38,7 @@ public abstract class AbstractActivity extends Activity {
 	}
 
 	private void initUI() {
+		mDefPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		mLayoutInflater = getLayoutInflater();
 		mListView = (ListView) findViewById(android.R.id.list);
 		mHeader = mLayoutInflater.inflate(R.layout.header, null);
@@ -39,12 +47,9 @@ public abstract class AbstractActivity extends Activity {
 
 	abstract protected void initData();
 
-	private void fillData() {
-		mAdapter = new ViewAdpater();
-		mListView.setAdapter(mAdapter);
-	}
+	protected abstract void fillData();
 
-	private class ViewAdpater extends BaseAdapter {
+	protected class ViewAdpater extends BaseAdapter {
 
 		@Override
 		public int getCount() {
@@ -85,20 +90,20 @@ public abstract class AbstractActivity extends Activity {
 		}
 	}
 
-	private class ViewHolder {
-		private ImageView icon;
-		private TextView title;
-		private TextView desc;
+	protected class ViewHolder {
+		public ImageView icon;
+		public TextView title;
+		public TextView desc;
 	}
 
 	class Item {
-		private boolean mHasState;
-		private int mStateOnDrawableId;
-		private int mStateOffDrawableId;
-		private int mTitleId;
-		private int mDescOnId;
-		private int mDescOffId;
-		private int mPrefKey;
+		public boolean mHasState;
+		public int mStateOnDrawableId;
+		public int mStateOffDrawableId;
+		public int mTitleId;
+		public int mDescOnId;
+		public int mDescOffId;
+		public int mPrefKey;
 
 		public Item(boolean hasState, int stateOnDrawableId,
 				int stateOffDrawableId, int titleId, int descOnId,

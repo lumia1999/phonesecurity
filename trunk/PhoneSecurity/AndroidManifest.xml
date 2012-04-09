@@ -30,11 +30,11 @@
             -->
         </activity>
         <activity
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|navigation"
             android:launchMode="singleTop"
-            android:name=".view.MainTabActivity"
+            android:name=".view.ViewControlActivity"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="stateVisible|adjustResize" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,11 +42,25 @@
             </intent-filter>
         </activity>
         <activity
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:launchMode="singleTop"
+            android:name=".view.WelcomeActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
+        </activity>
+        <activity
             android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTop"
+            android:name=".view.MainTabActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden|navigation"
             android:launchMode="singleTop"
             android:name=".view.MainSettingActivity"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:configChanges="orientation|keyboardHidden"

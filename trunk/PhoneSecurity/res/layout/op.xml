@@ -4,17 +4,25 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/list_item_bg_normal"
+    android:gravity="center_vertical"
     android:orientation="horizontal" >
 
-    <Button android:id="@+id/op1"
+    <Button
+        android:id="@+id/op1"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
+        android:layout_margin="5dip"
         android:layout_weight="0.1"
-        android:layout_margin="5dip"/>
-    
-	<Button android:id="@+id/op2"
-	    android:layout_width="0dip"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="0.1"
-	    android:layout_margin="5dip"/>
+        android:background="@drawable/btn_bg_selector"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/op2"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dip"
+        android:layout_weight="0.1"
+        android:background="@drawable/btn_bg_selector"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
 </LinearLayout>

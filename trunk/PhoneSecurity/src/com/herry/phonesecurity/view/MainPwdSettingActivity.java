@@ -2,6 +2,9 @@ package com.herry.phonesecurity.view;
 
 import java.util.ArrayList;
 
+import android.view.View;
+import android.view.ViewGroup;
+
 import com.herry.phonesecurity.R;
 
 public class MainPwdSettingActivity extends AbstractActivity {
@@ -28,5 +31,22 @@ public class MainPwdSettingActivity extends AbstractActivity {
 				R.string.choose_timespan_title, R.string.choose_timespan_desc,
 				-1, R.string.pref_show_pwd_timespan);
 		mDataList.add(item);
+	}
+
+	@Override
+	protected void fillData() {
+		mAdapter = new PwdAdapter();
+		mListView.setAdapter(mAdapter);
+
+	}
+
+	private class PwdAdapter extends ViewAdpater {
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			return super.getView(position, convertView, parent);
+		}
+
 	}
 }
