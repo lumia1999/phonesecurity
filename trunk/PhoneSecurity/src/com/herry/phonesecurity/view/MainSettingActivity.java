@@ -4,11 +4,10 @@ import java.util.ArrayList;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -16,7 +15,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +29,7 @@ public class MainSettingActivity extends AbstractActivity {
 	private static final int DLG_STATE_CHANGE = 2;
 	private static final int DLG_SET_TRUST_NUM = 3;
 	private static final int DLG_SET_MASTER_MARKUP = 4;
-	private ViewHolder mViewHolder;
+	private static final int DLG_RESET_SETTING = 5;
 	private Item mItem;
 
 	@Override
@@ -90,6 +88,13 @@ public class MainSettingActivity extends AbstractActivity {
 			initMasterMarkup(v, id);
 			masterMarkupDlg.setView(v, 0, 0, 0, 0);
 			return masterMarkupDlg;
+		case DLG_RESET_SETTING:
+			AlertDialog resetSettingDlg = new AlertDialog.Builder(this)
+					.create();
+			v = mLayoutInflater.inflate(R.layout.dlg_tip, null);
+			initResetSetting(v, id);
+			resetSettingDlg.setView(v, 0, 0, 0, 0);
+			return resetSettingDlg;
 		}
 		return super.onCreateDialog(id);
 	}
@@ -236,6 +241,43 @@ public class MainSettingActivity extends AbstractActivity {
 		op2.setOnClickListener(listener);
 	}
 
+	private void initResetSetting(View v, int dlgId) {
+		TextView banner = (TextView) v.findViewById(R.id.banner);
+		TextView tip = (TextView) v.findViewById(R.id.tip);
+		Button op1 = (Button) v.findViewById(R.id.op1);
+		Button op2 = (Button) v.findViewById(R.id.op2);
+		final int id = dlgId;
+		op1.setText(android.R.string.yes);
+		op2.setText(android.R.string.cancel);
+		banner.setText(R.string.reset_protection_setting_title);
+		tip.setText(R.string.reset_protection_setting_tip);
+		OnClickListener listener = new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				switch(v.getId()){
+				case R.id.op1:
+					Context ctx = getApplicationContext();
+					Prefs.reset(ctx);
+					String imsi = Utils.getIMSI(ctx);
+					dismissDialog(id);		
+					if(imsi != null){
+						Prefs.setOldSim(ctx, imsi);
+					}else{
+						showDialog(DLG_NO_SIM);
+					}
+					break;
+				case R.id.op2:
+					dismissDialog(id);
+					break;
+				}
+			}
+		};
+		op1.setOnClickListener(listener);
+		op2.setOnClickListener(listener);
+		
+	}
+
 	@Override
 	protected void initData() {
 		if (mDataList != null && !mDataList.isEmpty()) {
@@ -297,7 +339,7 @@ public class MainSettingActivity extends AbstractActivity {
 
 				@Override
 				public void onClick(View v) {
-					Log.e(TAG, "pref key : " + getString(item.mPrefKey));
+					// Log.e(TAG, "pref key : " + getString(item.mPrefKey));
 					switch (item.mPrefKey) {
 					case R.string.pref_protection_state:
 						if (TextUtils.equals(viewHolder.desc.getText(),
@@ -322,6 +364,10 @@ public class MainSettingActivity extends AbstractActivity {
 					case R.string.pref_master_markup:
 						mItem = item;
 						showDialog(DLG_SET_MASTER_MARKUP);
+						break;
+					case R.string.pref_reset_setting:
+						mItem = item;
+						showDialog(DLG_RESET_SETTING);
 						break;
 					}
 				}
