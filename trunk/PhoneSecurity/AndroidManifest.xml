@@ -46,7 +46,7 @@
             android:launchMode="singleTop"
             android:name=".view.WelcomeActivity"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="stateVisible|adjustResize" >
+            android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
         <activity
             android:configChanges="orientation|keyboardHidden"
@@ -64,7 +64,6 @@
         </activity>
         <activity
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTop"
             android:name=".view.MainAlarmSettingActivity"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="adjustPan" >
@@ -73,6 +72,20 @@
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTop"
             android:name=".view.MainPwdSettingActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTop"
+            android:name=".view.AboutActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTop"
+            android:name=".view.AlarmAboutActivity"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="adjustPan" >
         </activity>

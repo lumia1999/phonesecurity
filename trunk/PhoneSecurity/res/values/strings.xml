@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
 
-    <string name="app_name">手机防盗</string>
     <string name="security_setting">安全选项设置</string>
     <string name="security_enabled_title">防盗状态</string>
     <string name="security_enabled_summaryon">开启</string>
@@ -116,6 +115,7 @@
     <string name="alarm_ringtone_test_desc">测试短信报警铃声</string>
     <string name="alarm_ringtone_about_title">如何使用</string>
     <string name="alarm_ringtone_about_desc">介绍有关短信报警使用细节</string>
+    <string name="alarm_ringtone_selection_tip">选择报警铃声</string>
 
     <!-- pwd string -->
     <string name="pwd_title">设置密码</string>
@@ -129,10 +129,26 @@
     <string name="choose_timespan_desc">请选择进入软件时弹出输入密码提示对话框的时间间隔</string>
     <string name="pwd_firsttip">请输入密码</string>
     <string name="pwd_secondtip">请再次输入密码</string>
+    <string name="old_pwd_tip">请输入当前密码：</string>
+    <string name="newly_pwd_tip">请输入新密码：</string>
+    <string name="newly_pwd_again_tip">请再次输入新密码：</string>
     <string name="welcome">欢迎使用手机防盗</string>
     <string name="set_alarm_pwd_hint">六个字符</string>
     <string name="set_alarm_pwd_tip">请设置用户密码，敬告：务必避免泄露密码！请牢记用户密码，丢失密码将失去报警功能！
 	</string>
+    <string name="change_alarm_pwd_tip">更换新的报警密码</string>
     <string name="set_pwd_error_tip">密码长度不够或者两次密码输入不匹配</string>
+    <string name="pwd_already_setted_toast">您的密码已经设置，如需更改请选择更改密码项</string>
+    <string name="wrong_old_pwd">原始密码输入有误</string>
+    <string name="new_pwd_mismatch">两次输入的新密码不匹配</string>
+    <string name="show_pwd">显示密码</string>
+    <string name="reset_pwd_success_toast">修改密码成功</string>
+    <string name="show_pwd_time_interval_banner">请选择时间间隔</string>
 
-</resources>
+    <!-- other -->
+    <string name="about_title">关于</string>
+    <string name="author">联系作者：Email:Xinwei.Yi@gmail.com</string>
+    <string name="version_info">软件版本：</string>
+    <string name="app_name">手机防盗</string>
+    <string name="app_name_tip">软件名称：</string>
+</resources>
