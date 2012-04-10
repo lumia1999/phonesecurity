@@ -3,8 +3,12 @@ package com.herry.phonesecurity.view;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -32,19 +36,41 @@ public class MainTabActivity extends TabActivity {
 		TabWidget tabWidget = getTabWidget();
 		tabWidget.setDividerDrawable(R.drawable.tab_divider);
 		mContentIntent = new Intent(this, MainSettingActivity.class);
-		setIndicator(getString(R.string.item_protection_tab), mContentIntent);
+		setIndicator(R.drawable.protection,
+				getString(R.string.item_protection_tab), mContentIntent);
 		mContentIntent = new Intent(this, MainAlarmSettingActivity.class);
-		setIndicator(getString(R.string.item_alarm_tab), mContentIntent);
+		setIndicator(R.drawable.alert, getString(R.string.item_alarm_tab),
+				mContentIntent);
 		mContentIntent = new Intent(this, MainPwdSettingActivity.class);
-		setIndicator(getString(R.string.item_pwd_tab), mContentIntent);
+		setIndicator(R.drawable.pwd, getString(R.string.item_pwd_tab),
+				mContentIntent);
 		mTabHost.setCurrentTab(0);
 	}
 
-	private void setIndicator(String spec, Intent contentIntent) {
+	private void setIndicator(int iconId, String spec, Intent contentIntent) {
 		View v = mLayoutInflater.inflate(R.layout.tab_menu, null);
-		((TextView) v).setText(spec);
+		((ImageView) v.findViewById(R.id.tab_menu_icon))
+				.setBackgroundResource(iconId);
+		((TextView) v.findViewById(R.id.tab_menu_title)).setText(spec);
 		mTabSpec = mTabHost.newTabSpec(spec).setIndicator(v).setContent(
 				mContentIntent);
 		mTabHost.addTab(mTabSpec);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.about, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.about:
+			startActivity(new Intent(this, AboutActivity.class));
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }

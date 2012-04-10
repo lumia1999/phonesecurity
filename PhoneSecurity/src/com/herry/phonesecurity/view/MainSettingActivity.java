@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -25,12 +26,15 @@ import com.herry.phonesecurity.Utils;
 public class MainSettingActivity extends AbstractActivity {
 	private static final String TAG = "MainSettingActivity";
 
+	private long[] intervals = new long[] { 1/* every time */,
+			30 * 60 * 1000/* 30minutes */, 24 * 60 * 60 * 1000/* 24dours */, -1 /* never */};
+
 	private static final int DLG_NO_SIM = 1;
 	private static final int DLG_STATE_CHANGE = 2;
 	private static final int DLG_SET_TRUST_NUM = 3;
 	private static final int DLG_SET_MASTER_MARKUP = 4;
 	private static final int DLG_RESET_SETTING = 5;
-	private Item mItem;
+	private static final int DLG_INPUT_PWD = 6;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,46 @@ public class MainSettingActivity extends AbstractActivity {
 			} else {
 				Prefs.setOldSim(this, imsi);
 			}
+		}
+		// check if it's time show pwd dialog
+		int position = Prefs.getShowPwdInterval(mCtx);
+		if (position == intervals.length - 1) {
+			return;
+		}
+		long lastPwdActiveTS = Prefs.getPwdLastShowTS(this);
+		if (lastPwdActiveTS == -1) {
+			showDialog(DLG_INPUT_PWD);
+			return;
+		}
+		long now = System.currentTimeMillis();
+		if (Math.abs(now - lastPwdActiveTS) > intervals[position]) {
+			showDialog(DLG_INPUT_PWD);
+		}
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		super.onPrepareDialog(id, dialog);
+		switch (id) {
+		case DLG_SET_TRUST_NUM:
+			String prefNumber = mDefPrefs.getString(getString(mItem.mPrefKey),
+					null);
+			if (prefNumber != null) {
+				((EditText) dialog.findViewById(R.id.trust_number))
+						.setText(prefNumber);
+			}
+			break;
+		case DLG_SET_MASTER_MARKUP:
+			String prefMarkup = mDefPrefs.getString(getString(mItem.mPrefKey),
+					null);
+			if (prefMarkup != null) {
+				((EditText) dialog.findViewById(R.id.content))
+						.setText(prefMarkup);
+			}
+			break;
+		case DLG_INPUT_PWD:
+			// TODO
+			break;
 		}
 	}
 
@@ -95,6 +139,13 @@ public class MainSettingActivity extends AbstractActivity {
 			initResetSetting(v, id);
 			resetSettingDlg.setView(v, 0, 0, 0, 0);
 			return resetSettingDlg;
+		case DLG_INPUT_PWD:
+			AlertDialog inputPwdDlg = new AlertDialog.Builder(mCtx).create();
+			v = mLayoutInflater.inflate(R.layout.input_pwd, null);
+			initInputPwd(v, id);
+			inputPwdDlg.setView(v, 0, 0, 0, 0);
+			return inputPwdDlg;
+
 		}
 		return super.onCreateDialog(id);
 	}
@@ -159,11 +210,6 @@ public class MainSettingActivity extends AbstractActivity {
 		op2.setText(android.R.string.cancel);
 		banner.setText(R.string.trust_number_banner);
 		tip.setText(R.string.trust_number_tip);
-		String prefNumber = mDefPrefs
-				.getString(getString(mItem.mPrefKey), null);
-		if (prefNumber != null) {
-			content.setText(prefNumber);
-		}
 		final int id = dlgId;
 		OnClickListener listener = new OnClickListener() {
 
@@ -206,11 +252,6 @@ public class MainSettingActivity extends AbstractActivity {
 		final int id = dlgId;
 		op1.setText(android.R.string.yes);
 		op2.setText(android.R.string.cancel);
-		String prefMarkup = mDefPrefs
-				.getString(getString(mItem.mPrefKey), null);
-		if (prefMarkup != null) {
-			content.setText(prefMarkup);
-		}
 		banner.setText(R.string.master_markup_title);
 		tip.setText(R.string.master_markup_tip);
 		OnClickListener listener = new OnClickListener() {
@@ -252,18 +293,18 @@ public class MainSettingActivity extends AbstractActivity {
 		banner.setText(R.string.reset_protection_setting_title);
 		tip.setText(R.string.reset_protection_setting_tip);
 		OnClickListener listener = new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				switch(v.getId()){
+				switch (v.getId()) {
 				case R.id.op1:
 					Context ctx = getApplicationContext();
 					Prefs.reset(ctx);
 					String imsi = Utils.getIMSI(ctx);
-					dismissDialog(id);		
-					if(imsi != null){
+					dismissDialog(id);
+					if (imsi != null) {
 						Prefs.setOldSim(ctx, imsi);
-					}else{
+					} else {
 						showDialog(DLG_NO_SIM);
 					}
 					break;
@@ -275,7 +316,11 @@ public class MainSettingActivity extends AbstractActivity {
 		};
 		op1.setOnClickListener(listener);
 		op2.setOnClickListener(listener);
-		
+
+	}
+
+	private void initInputPwd(View v, int dlgId) {
+		// TODO
 	}
 
 	@Override

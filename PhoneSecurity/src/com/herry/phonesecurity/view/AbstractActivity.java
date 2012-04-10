@@ -3,14 +3,13 @@ package com.herry.phonesecurity.view;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -25,6 +24,8 @@ public abstract class AbstractActivity extends Activity {
 	protected ViewAdpater mAdapter;
 	protected ArrayList<Item> mDataList;
 	private View mHeader;
+	protected Context mCtx;
+	protected Item mItem;
 
 	protected SharedPreferences mDefPrefs;
 
@@ -38,6 +39,7 @@ public abstract class AbstractActivity extends Activity {
 	}
 
 	private void initUI() {
+		mCtx = this;
 		mDefPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		mLayoutInflater = getLayoutInflater();
 		mListView = (ListView) findViewById(android.R.id.list);

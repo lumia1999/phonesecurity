@@ -1,34 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:orientation="vertical">
-  <TextView android:layout_width="fill_parent"
-  	android:layout_height="wrap_content"
-  	android:textAppearance="?android:attr/textAppearanceSmall"
-  	android:paddingBottom="5dip"
-  	android:text="@string/input_pwd_desc"/>
-  <RelativeLayout android:layout_width="fill_parent"
-  	android:layout_height="wrap_content"
-  	android:paddingBottom="5dip">
-	  	<TextView android:id="@+id/reference"
-	  		android:layout_width="wrap_content"
-	  		android:layout_height="wrap_content"
-	  		android:textAppearance="?android:attr/textAppearanceSmall"
-	  		android:text="@string/pwd_retry_times_left_tip"
-	  		android:layout_alignParentLeft="true"/>
-  	  	<TextView android:id="@+id/pwd_retry_times_left_value" 
-	  		android:layout_width="fill_parent"
-	  		android:layout_height="wrap_content"
-	  		android:textAppearance="?android:attr/textAppearanceSmall"
-	  		android:layout_toRightOf="@+id/reference"
-	  		android:textColor="#ff0000"
-	  		android:text="dsd"/>
-  </RelativeLayout>
-  <EditText android:id="@+id/input_pwd_edit"
-  	android:layout_width="fill_parent"
-  	android:layout_height="wrap_content"
-  	android:password="true"
-  	android:singleLine="true"/>
-</LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/normal_bg" >
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/banner" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/middle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banner"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dip"
+            android:text="@string/input_pwd_desc"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/secondary_text_light" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dip" >
+
+            <TextView
+                android:id="@+id/reference"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="@string/pwd_retry_times_left_tip"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/secondary_text_light" />
+
+            <TextView
+                android:id="@+id/pwd_retry_times_left_value"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/reference"
+                android:text="dsd"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#ff0000" />
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/input_pwd_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dip"
+            android:maxLength="6"
+            android:password="true"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/middle"
+        layout="@layout/op" />
+
+</RelativeLayout>
