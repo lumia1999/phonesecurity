@@ -181,7 +181,8 @@ public class WelcomeActivity extends Activity {
 			viewHolder3.pwd.setText("");
 		} else {
 			Prefs.setAlarmPwd(this, firstPwd);
-			startActivity(new Intent(this, MainTabActivity.class));
+			startActivity(new Intent(this, MainTabActivity.class).putExtra(
+					MainTabActivity.EXTRA_TYPE, MainTabActivity.TYPE_INIT));
 			finish();
 		}
 	}

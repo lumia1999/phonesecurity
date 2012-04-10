@@ -27,6 +27,7 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 	private static final String TAG = "MainAlarmSettingActivity";
 
 	private static final int DLG_ALARM_RINGTONE_SELECT = 1;
+	private static final int DLG_TEST_ALARM = 2;
 
 	private static final int mRequestCode = 1;
 
@@ -95,14 +96,21 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
+		View v = null;
 		switch (id) {
 		case DLG_ALARM_RINGTONE_SELECT:
 			AlertDialog ringtoneSelectDlg = new AlertDialog.Builder(mCtx)
 					.create();
-			View v = mLayoutInflater.inflate(R.layout.ringtone_select, null);
+			v = mLayoutInflater.inflate(R.layout.ringtone_select, null);
 			initRingtoneSelect(v, id);
 			ringtoneSelectDlg.setView(v, 0, 0, 0, 0);
 			return ringtoneSelectDlg;
+		case DLG_TEST_ALARM:
+			AlertDialog testAlarmDlg = new AlertDialog.Builder(mCtx).create();
+			v = mLayoutInflater.inflate(R.layout.dlg_tip, null);
+			initTestAlarm(v, id);
+			testAlarmDlg.setView(v, 0, 0, 0, 0);
+			return testAlarmDlg;
 		}
 		return super.onCreateDialog(id);
 	}
@@ -142,6 +150,23 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 
 			}
 		});
+	}
+
+	private void initTestAlarm(View v, int dlgId) {
+		TextView banner = (TextView) v.findViewById(R.id.banner);
+		TextView tip = (TextView) v.findViewById(R.id.tip);
+		Button op1 = (Button) v.findViewById(R.id.op1);
+		Button op2 = (Button) v.findViewById(R.id.op2);
+		op1.setVisibility(View.GONE);
+		op2.setText(android.R.string.cancel);
+		op2.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				//TODO
+			}
+		});
+		banner.setText(R.string.test_alarm_ringtone_tip);
 	}
 
 	@Override
@@ -192,6 +217,7 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 						showDialog(DLG_ALARM_RINGTONE_SELECT);
 						break;
 					case R.string.pref_test_alarm_ringtone:
+						showDialog(DLG_TEST_ALARM);
 						// TODO
 						break;
 					case R.string.pref_about_alarm_ringtone:

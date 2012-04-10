@@ -6,9 +6,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -28,6 +30,8 @@ public class MainSettingActivity extends AbstractActivity {
 
 	private long[] intervals = new long[] { 1/* every time */,
 			30 * 60 * 1000/* 30minutes */, 24 * 60 * 60 * 1000/* 24dours */, -1 /* never */};
+	private int mMaxPwdTryTimes = 3;
+	private int mTryTime = 0;
 
 	private static final int DLG_NO_SIM = 1;
 	private static final int DLG_STATE_CHANGE = 2;
@@ -54,6 +58,10 @@ public class MainSettingActivity extends AbstractActivity {
 			}
 		}
 		// check if it's time show pwd dialog
+		if (getIntent().getIntExtra(MainTabActivity.EXTRA_TYPE,
+				MainTabActivity.TYPE_NORMAL) == MainTabActivity.TYPE_INIT) {
+			return;
+		}
 		int position = Prefs.getShowPwdInterval(mCtx);
 		if (position == intervals.length - 1) {
 			return;
@@ -88,9 +96,6 @@ public class MainSettingActivity extends AbstractActivity {
 				((EditText) dialog.findViewById(R.id.content))
 						.setText(prefMarkup);
 			}
-			break;
-		case DLG_INPUT_PWD:
-			// TODO
 			break;
 		}
 	}
@@ -144,6 +149,18 @@ public class MainSettingActivity extends AbstractActivity {
 			v = mLayoutInflater.inflate(R.layout.input_pwd, null);
 			initInputPwd(v, id);
 			inputPwdDlg.setView(v, 0, 0, 0, 0);
+			inputPwdDlg.setCancelable(false);
+			inputPwdDlg.setOnKeyListener(new OnKeyListener() {
+
+				@Override
+				public boolean onKey(DialogInterface dialog, int keyCode,
+						KeyEvent event) {
+					if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+						return true;
+					}
+					return false;
+				}
+			});
 			return inputPwdDlg;
 
 		}
@@ -320,7 +337,55 @@ public class MainSettingActivity extends AbstractActivity {
 	}
 
 	private void initInputPwd(View v, int dlgId) {
-		// TODO
+		TextView banner = (TextView) v.findViewById(R.id.banner);
+		final TextView timesLeft = (TextView) v
+				.findViewById(R.id.pwd_retry_times_left_value);
+		final EditText content = (EditText) v.findViewById(R.id.input_pwd_edit);
+		final int id = dlgId;
+		Button op1 = (Button) v.findViewById(R.id.op1);
+		Button op2 = (Button) v.findViewById(R.id.op2);
+		op1.setText(android.R.string.yes);
+		op2.setText(android.R.string.cancel);
+		banner.setText(R.string.pwd_firsttip);
+		timesLeft.setText("" + (mMaxPwdTryTimes - mTryTime));
+		OnClickListener linstener = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				switch (v.getId()) {
+				case R.id.op1:
+					handlePwdInput(id, timesLeft, content);
+					break;
+				case R.id.op2:
+					dismissDialog(id);
+					finish();
+					break;
+				}
+			}
+		};
+		op1.setOnClickListener(linstener);
+		op2.setOnClickListener(linstener);
+
+	}
+
+	private void handlePwdInput(final int dlgId, final TextView tip,
+			final EditText content) {
+		mTryTime++;
+		String prefPwd = Prefs.getAlarmPwd(mCtx);
+		String pwd = content.getText().toString();
+		if (!TextUtils.equals(prefPwd, pwd)) {
+			if (mTryTime >= mMaxPwdTryTimes) {
+				dismissDialog(dlgId);
+				finish();
+				return;
+			}
+			content.setText("");
+			tip.setText("" + (mMaxPwdTryTimes - mTryTime));
+			Animation anim = AnimationUtils.loadAnimation(mCtx, R.anim.shake);
+			content.startAnimation(anim);
+		} else {
+			dismissDialog(dlgId);
+		}
 	}
 
 	@Override

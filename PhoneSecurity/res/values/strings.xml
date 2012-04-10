@@ -30,7 +30,6 @@
     <string name="alarm_test_dlg_msg_error">无法播放，请重新选择报警铃声</string>
     <string name="alarm_test_dlg_pos_text">停止测试</string>
     <string name="alarm_test_dlg_pos_text_quit">退出</string>
-    <string name="alarm_about_title">如何使用</string>
     <string name="alarm_about_summary">介绍有关短信报警使用细节</string>
     <string name="other_title">其他</string>
     <string name="other_show_title">关于</string>
@@ -116,6 +115,8 @@
     <string name="alarm_ringtone_about_title">如何使用</string>
     <string name="alarm_ringtone_about_desc">介绍有关短信报警使用细节</string>
     <string name="alarm_ringtone_selection_tip">选择报警铃声</string>
+    <string name="alarm_about_title">报警使用教程</string>
+    <string name="test_alarm_ringtone_tip">测试报警铃声</string>
 
     <!-- pwd string -->
     <string name="pwd_title">设置密码</string>
@@ -151,4 +152,5 @@
     <string name="version_info">软件版本：</string>
     <string name="app_name">手机防盗</string>
     <string name="app_name_tip">软件名称：</string>
-</resources>
+
+</resources>

@@ -17,10 +17,15 @@ import com.herry.phonesecurity.R;
 
 public class MainTabActivity extends TabActivity {
 
+	public static final String EXTRA_TYPE = "type";
+	public static final int TYPE_INIT = 1;
+	public static final int TYPE_NORMAL = 2;
+
 	private LayoutInflater mLayoutInflater;
 	private TabHost mTabHost;
 	private TabHost.TabSpec mTabSpec;
 	private Intent mContentIntent;
+	private int mType;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +35,19 @@ public class MainTabActivity extends TabActivity {
 	}
 
 	private void setupTabs() {
+		Intent i = getIntent();
+		if (i != null) {
+			mType = i.getIntExtra(EXTRA_TYPE, TYPE_NORMAL);
+		} else {
+			mType = TYPE_NORMAL;
+		}
 		mLayoutInflater = getLayoutInflater();
 		mTabHost = getTabHost();
 		mTabHost.setup(getLocalActivityManager());
 		TabWidget tabWidget = getTabWidget();
 		tabWidget.setDividerDrawable(R.drawable.tab_divider);
-		mContentIntent = new Intent(this, MainSettingActivity.class);
+		mContentIntent = new Intent(this, MainSettingActivity.class).putExtra(
+				EXTRA_TYPE, mType);
 		setIndicator(R.drawable.protection,
 				getString(R.string.item_protection_tab), mContentIntent);
 		mContentIntent = new Intent(this, MainAlarmSettingActivity.class);
