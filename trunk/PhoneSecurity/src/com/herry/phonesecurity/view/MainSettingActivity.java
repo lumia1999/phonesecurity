@@ -384,6 +384,8 @@ public class MainSettingActivity extends AbstractActivity {
 			Animation anim = AnimationUtils.loadAnimation(mCtx, R.anim.shake);
 			content.startAnimation(anim);
 		} else {
+			mTryTime = 0;
+			Prefs.setPwdLastShowTS(mCtx, System.currentTimeMillis());
 			dismissDialog(dlgId);
 		}
 	}

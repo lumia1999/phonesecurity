@@ -90,6 +90,8 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 				lv.setItemChecked(1, true);
 			}
 			break;
+		case DLG_TEST_ALARM:
+			break;
 		}
 		super.onPrepareDialog(id, dialog);
 	}
@@ -158,15 +160,16 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 		Button op1 = (Button) v.findViewById(R.id.op1);
 		Button op2 = (Button) v.findViewById(R.id.op2);
 		op1.setVisibility(View.GONE);
-		op2.setText(android.R.string.cancel);
+		tip.setText(R.string.test_alarm_tip);
+		op2.setText(R.string.test_alarm_stop);
 		op2.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				//TODO
+				// TODO
 			}
 		});
-		banner.setText(R.string.test_alarm_ringtone_tip);
+		banner.setText(R.string.test_alarm_ringtone_banner);
 	}
 
 	@Override
