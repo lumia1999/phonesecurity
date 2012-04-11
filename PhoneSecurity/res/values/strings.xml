@@ -116,7 +116,11 @@
     <string name="alarm_ringtone_about_desc">介绍有关短信报警使用细节</string>
     <string name="alarm_ringtone_selection_tip">选择报警铃声</string>
     <string name="alarm_about_title">报警使用教程</string>
-    <string name="test_alarm_ringtone_tip">测试报警铃声</string>
+    <string name="test_alarm_ringtone_banner">测试报警铃声</string>
+    <string name="test_alarm_tip">正在测试报警铃声</string>
+    <string name="test_alarm_error_tip">无法播放，请重新选择报警铃声</string>
+    <string name="test_alarm_stop">停止</string>
+    <string name="test_alarm_quit">退出</string>
 
     <!-- pwd string -->
     <string name="pwd_title">设置密码</string>
@@ -134,7 +138,7 @@
     <string name="newly_pwd_tip">请输入新密码：</string>
     <string name="newly_pwd_again_tip">请再次输入新密码：</string>
     <string name="welcome">欢迎使用手机防盗</string>
-    <string name="set_alarm_pwd_hint">六个字符</string>
+    <string name="set_alarm_pwd_hint">至少六个字符</string>
     <string name="set_alarm_pwd_tip">请设置用户密码，敬告：务必避免泄露密码！请牢记用户密码，丢失密码将失去报警功能！
 	</string>
     <string name="change_alarm_pwd_tip">更换新的报警密码</string>

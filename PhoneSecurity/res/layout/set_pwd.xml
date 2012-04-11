@@ -23,8 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tip"
         android:hint="@string/set_alarm_pwd_hint"
+        android:maxLength="12"
         android:password="true"
-        android:maxLength="6"
         android:singleLine="true" />
 
 </RelativeLayout>
