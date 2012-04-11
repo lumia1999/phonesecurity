@@ -1,0 +1,61 @@
+
+
+       ProGuard工具通过移除不用的代码，用语义上混淆的名字来重命名类、字段和方法等手段来压缩、优化和混淆你的代码。结果是更小的.apk文 件，并且更难于被反编译。由于ProGuard能够让你的程序难于被反编译，因此，当你的程序使用了一些机密的信息的时，使用它就显得更加重要。
+
+       ProGuard已经集成到Android的编译环境中，因此，用不着手动来触发它。ProGuard只在release模式下编译应用程序才会运行，所以，在debug模式下编译，你就不必处理混淆的代码。是否运行ProGuard是完全可选的，但强烈推荐使用。
+
+        这篇文章将描述如何启用和配置ProGuard，以及如何使用retrace工具来解码混淆过的堆栈跟踪信息。
+
+        启用ProGuard
+
+       当你创建Android工程时，proguard.cfg文件会在工程的根目录自动创建。这个文件定义了ProGuard如何优化和混淆代码，因此，理解如 何定制它是非常重要的。默认的配置文件只是覆盖了一些通用的情况，所以，基本上你需要编辑它来满足你的需求。参考后面的“配置ProGuard”章节来了 解如何定制ProGuard的相关信息。
+启用ProGuard让它跟随Ant或Eclipse编译时一起运行，你需要在<project_root>/default.properties文件中设置proguard.config属性。路径可以是绝对路径或是工程根目录的相对路径。
+
+        如果你把proguard.cfg文件放在默认的位置（工程的根目录），你可以像这样来指定它的位置：
+        proguard.config=proguard.cfg
+        你还可以把该文件移到任何你想放的位置，然后指定绝对路径：
+        proguard.config=/path/to/proguard.cfg
+
+        当你在release模式下编译你的程序，不管是用ant release还是用Eclipse的导出向导，编译系统都会自动检查proguard.config属性是否设置。如果设置了，ProGuard就会在 打包成.apk文件之前，自动处理应用程序的字节码。Debug模式编译，不会触发ProGuard，因为它会使得调试更加复杂累赘。
+
+       ProGuard运行结束后，输出以下文件：dump.txt
+       描述.apk文件中所有类文件间的内部结构 mapping.txt
+       列出了原始的类，方法和字段名与混淆后代码间的映射。这个文件很重要，当你从release版本中收到一个bug报告时，可以用它来翻译被混淆的代码。
+       seeds.txt
+       列出了未被混淆的类和成员
+       usage.txt
+       列出了从.apk中删除的代码
+
+       这些文件放在以下文件夹中：
+       · Ant：<project_root>/bin/proguard
+       · Eclipse: <project_root>/proguard
+
+        注意：每当你在release模式下编译时，这些文件都会被覆盖重写，当然，是被ProGuard工具生成的最新的文件所覆盖。每次你发布你的程序时，都应该保存一份，为了将来能够解码bug报告。
+
+        配置 ProGuard
+       一些情况下，proguard.cfg文件中的默认配置就足够了。然而，有些情况ProGuard也很难正确分析，它可能会删除它认为不用的代码，但实际上正是你的程序所需要的。例如：
+       只在AndroidManifest.xml文件中引用的类
+       由JNI调用的方法
+       动态引用的字段和方法
+
+       默认的proguard.cfg文件努力去覆盖通用的情况，但有可能你会遇到如ClassNotFoundException这样的异常，而这正好是由于ProGuard移除了整个类造成的。
+
+       你可以修正由于ProGuard移除代码造成的错误，只需要在proguard.cfg文件中添加一行“-keep”。例如：
+-keep public class <MyClass>
+
+        使用-keep选项时，有一些选项和建议，因此，强烈建议你阅读ProGuard手册来了解更多关于定制配置文件的信息。“Overview of Keep options”和“Examples section”将非常有用。
+
+        解码混淆过的堆栈跟踪信息
+        当混淆后的代码输出一个堆栈信息时，方法名是不可识别的，这使得调试变得很困难，甚至是不可能的。幸运的是，当ProGuard运行时，它都会输出一 个<project_root>/bin/proguard/mapping.txt文件，而这个文件中包含了原始的类，方法和字段名被映射 成的混淆名字。
+
+        retrace.bat脚本（Window）或retrace.sh脚本（Linux，Mac OS X）可以将一个被混淆过的堆栈跟踪信息还原成一个可读的信息。它位于<sdk_root>/tools/proguard文件夹中。执行 retrace工具的语法如下：
+retrace.bat|retrace.sh [-verbose] mapping.txt [<stacktrace_file>]
+
+        例如：
+       retrace.bat -verbose mapping.txt obfuscated_trace.txt
+       如果你没有指定<stacktrace_file>，retrace工具会从标准输入读取。
+
+       发布程序的调试建议
+       每次发布程序给用户时，都应该保存一份mapping.txt。这样的话，当用户遇到一个bug并提交一个混淆的堆栈信息，能确保你能调试这个问题。工程的mapping.txt文件在你每次进行release编译时都会被覆盖，所以，你一定要小心的保存你需要的版本。
+
+       如何保存mapping.txt文件是你的事。例如，你可以用一个包含版本信息或编译号的名字来重命名文件，或者让其和你的代码一样进行版本控制。
