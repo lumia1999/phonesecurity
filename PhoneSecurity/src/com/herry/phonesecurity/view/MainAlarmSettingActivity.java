@@ -5,10 +5,16 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +27,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.herry.phonesecurity.AlarmPlayService;
+import com.herry.phonesecurity.IAlarmCallback;
+import com.herry.phonesecurity.IAlarmService;
 import com.herry.phonesecurity.R;
 
 public class MainAlarmSettingActivity extends AbstractActivity {
@@ -111,6 +120,15 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 			AlertDialog testAlarmDlg = new AlertDialog.Builder(mCtx).create();
 			v = mLayoutInflater.inflate(R.layout.dlg_tip, null);
 			initTestAlarm(v, id);
+			testAlarmDlg
+					.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+						@Override
+						public void onDismiss(DialogInterface dialog) {
+							MainTabActivity.mTabCtx.unbindService(mConnection);
+							stopService(new Intent(mCtx, AlarmPlayService.class));
+						}
+					});
 			testAlarmDlg.setView(v, 0, 0, 0, 0);
 			return testAlarmDlg;
 		}
@@ -159,6 +177,7 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 		TextView tip = (TextView) v.findViewById(R.id.tip);
 		Button op1 = (Button) v.findViewById(R.id.op1);
 		Button op2 = (Button) v.findViewById(R.id.op2);
+		final int id = dlgId;
 		op1.setVisibility(View.GONE);
 		tip.setText(R.string.test_alarm_tip);
 		op2.setText(R.string.test_alarm_stop);
@@ -166,7 +185,7 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO
+				dismissDialog(id);
 			}
 		});
 		banner.setText(R.string.test_alarm_ringtone_banner);
@@ -222,6 +241,11 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 					case R.string.pref_test_alarm_ringtone:
 						showDialog(DLG_TEST_ALARM);
 						// TODO
+						Intent i = new Intent(mCtx, AlarmPlayService.class);
+						MainTabActivity.mTabCtx.bindService(i, mConnection,
+								Context.BIND_AUTO_CREATE);
+						startService(i.putExtra(
+								AlarmPlayService.EXTRA_TEST_FLAG, true));
 						break;
 					case R.string.pref_about_alarm_ringtone:
 						startActivity(new Intent(mCtx, AlarmAboutActivity.class));
@@ -232,4 +256,59 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 			return v;
 		}
 	}
+
+	// //////////////////////////////////////////////////////////
+	/*
+	 * bind service
+	 */
+	// /////////////////////////////////////////////////////////
+	private IAlarmService mAlarmPlayService;
+	private boolean mIsBound = false;
+	private IAlarmCallback mCallback = new IAlarmCallback.Stub() {
+
+		@Override
+		public void alarmFinished() throws RemoteException {
+			// TODO
+			Log.e(TAG, "alarmFinished");
+		}
+
+	};
+
+	private ServiceConnection mConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			// TODO
+			Log.e(TAG, "onServiceDisconnected");
+			if (mAlarmPlayService != null) {
+				try {
+					mAlarmPlayService.unregisterCallback(mCallback);
+					mIsBound = false;
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+			}
+
+			mAlarmPlayService = null;
+		}
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			// TODO
+			Log.e(TAG, "onServiceConnected");
+			mAlarmPlayService = IAlarmService.Stub.asInterface(service);
+			try {
+				mAlarmPlayService.registerCallback(mCallback);
+				mIsBound = true;
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
+	// //////////////////////////////////////////////////////////////
+	/*
+	 * end bind service
+	 */
+	// /////////////////////////////////////////////////////////////
 }
