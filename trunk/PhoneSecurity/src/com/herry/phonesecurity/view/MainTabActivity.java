@@ -1,9 +1,9 @@
 package com.herry.phonesecurity.view;
 
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +27,8 @@ public class MainTabActivity extends TabActivity {
 	private Intent mContentIntent;
 	private int mType;
 
+	public static Context mTabCtx;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,6 +37,7 @@ public class MainTabActivity extends TabActivity {
 	}
 
 	private void setupTabs() {
+		mTabCtx = this;
 		Intent i = getIntent();
 		if (i != null) {
 			mType = i.getIntExtra(EXTRA_TYPE, TYPE_NORMAL);

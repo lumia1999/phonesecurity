@@ -91,6 +91,17 @@
         </activity>
         <activity
             android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTop"
+            android:name=".view.AlarmControlActivity"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <!-- service -->
+        <service android:name=".AlarmPlayService" >
+        </service>
+
+        <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/alarm_title"
             android:launchMode="singleTop"
             android:name=".view.AlarmSettingActivity"

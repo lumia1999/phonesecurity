@@ -121,6 +121,8 @@
     <string name="test_alarm_error_tip">无法播放，请重新选择报警铃声</string>
     <string name="test_alarm_stop">停止</string>
     <string name="test_alarm_quit">退出</string>
+    <string name="alarm_ongoing_banner">来自手机防盗的警报</string>
+    <string name="alarm_ongoing_tip">请输入密码解除警报</string>
 
     <!-- pwd string -->
     <string name="pwd_title">设置密码</string>
