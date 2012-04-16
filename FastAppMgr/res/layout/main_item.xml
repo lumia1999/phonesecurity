@@ -23,7 +23,7 @@
             android:id="@+id/label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/black" />
 
         <LinearLayout
@@ -36,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
                 android:paddingTop="3dip"
+                android:textColor="@android:color/secondary_text_light"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <LinearLayout
@@ -49,7 +50,8 @@
                     android:id="@+id/size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@android:color/secondary_text_light" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

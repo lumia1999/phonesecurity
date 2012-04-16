@@ -3,12 +3,10 @@ package com.herry.fastappmgr.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.youmi.android.AdManager;
-import net.youmi.android.AdView;
-
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -44,6 +42,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.db.PackageAddedDbAdapter;
 import com.herry.fastappmgr.db.PackageAddedDbHelper.RecentAddedPkgColumn;
+import com.herry.fastappmgr.util.Constants;
 import com.herry.fastappmgr.util.Utils;
 
 public class RecentAddedActivity extends ListActivity {
@@ -59,6 +58,8 @@ public class RecentAddedActivity extends ListActivity {
 	private boolean mExit = false;
 	private RecentAddAdapter mAdapter;
 
+	private Cursor mCursor;
+
 	private static final int CM_UNINSTALL = 0;
 	private static final int CM_DETAIL_VIEW = 1;
 	private static final int CM_LAUNCH = 2;
@@ -68,10 +69,10 @@ public class RecentAddedActivity extends ListActivity {
 	private static final String ACTION_INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
 	private Bitmap bitmap;
 
-	private AdView mAdView;
 	private static final int MSG_NO_ITEM = 1;
 	private static final int MSG_FILL_DATA = 2;
 	private static final int MSG_UPDATE_UI_UNINSTALL = 3;
+	private static final int MSG_ADD_PACKAGE = 4;
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -87,6 +88,9 @@ public class RecentAddedActivity extends ListActivity {
 				break;
 			case MSG_UPDATE_UI_UNINSTALL:
 				onPackageUninstalled(msg);
+				break;
+			case MSG_ADD_PACKAGE:
+				onAddPackage(msg);
 				break;
 			}
 		}
@@ -116,7 +120,6 @@ public class RecentAddedActivity extends ListActivity {
 
 			}).start();
 		}
-		mAdView.refreshAd();
 	}
 
 	@Override
@@ -220,7 +223,6 @@ public class RecentAddedActivity extends ListActivity {
 	}
 
 	private void initUI() {
-		mAdView = (AdView) findViewById(R.id.adView);
 		mPackageMgr = getPackageManager();
 		mDbAdapter = PackageAddedDbAdapter.getInstance(this);
 		mLoadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
@@ -246,33 +248,34 @@ public class RecentAddedActivity extends ListActivity {
 			mDataList = null;
 		}
 		mDataList = new ArrayList<Item>();
-		Cursor cursor = mDbAdapter.getAllItems();
-		if (cursor == null) {
+		mCursor = mDbAdapter.getAllItems();
+		startManagingCursor(mCursor);
+		if (mCursor == null) {
 			mHandler.sendEmptyMessage(MSG_NO_ITEM);
 			return;
 		}
-		int count = cursor.getCount();
+		int count = mCursor.getCount();
 		if (count == 0) {
 			mHandler.sendEmptyMessage(MSG_NO_ITEM);
-			cursor.close();
+			// cursor.close();
 			return;
 		}
-		cursor.moveToFirst();
+		mCursor.moveToFirst();
 		String pkgName;
 		long ts;
 		int pkgNameIdx, tsIdx;
-		pkgNameIdx = cursor.getColumnIndex(RecentAddedPkgColumn.PackageName);
-		tsIdx = cursor.getColumnIndex(RecentAddedPkgColumn.InstalledTs);
+		pkgNameIdx = mCursor.getColumnIndex(RecentAddedPkgColumn.PackageName);
+		tsIdx = mCursor.getColumnIndex(RecentAddedPkgColumn.InstalledTs);
 		Item item = null;
 		do {
-			pkgName = cursor.getString(pkgNameIdx);
-			ts = cursor.getLong(tsIdx);
+			pkgName = mCursor.getString(pkgNameIdx);
+			ts = mCursor.getLong(tsIdx);
 			item = obtainPackageInfo(pkgName, ts);
 			if (item != null) {
 				mDataList.add(item);
 			}
-		} while (cursor.moveToNext());
-		cursor.close();
+		} while (mCursor.moveToNext());
+		// cursor.close();
 		if (mDataList.size() == 0) {
 			mHandler.sendEmptyMessage(MSG_NO_ITEM);
 		} else {
@@ -306,8 +309,8 @@ public class RecentAddedActivity extends ListActivity {
 
 	private void registerReceiver() {
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-		filter.addDataScheme("package");
+		filter.addAction(Constants.ACTION_UPDATE_ROM);
+		filter.addAction(Constants.ACTION_ADD_PACKAGE);
 		registerReceiver(packageRemovedReceiver, filter);
 	}
 
@@ -320,18 +323,26 @@ public class RecentAddedActivity extends ListActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			if (TextUtils.equals(action, Intent.ACTION_PACKAGE_REMOVED)) {
-				Uri data = intent.getData();
-				if (data != null) {
-					String pkgName = data.getSchemeSpecificPart();
-					if (pkgName != null) {
-						Message msg = mHandler.obtainMessage();
-						msg.obj = pkgName;
-						msg.what = MSG_UPDATE_UI_UNINSTALL;
-						mHandler.sendMessage(msg);
-					}
+			if (TextUtils.equals(action, Constants.ACTION_UPDATE_ROM)) {
+				String pkgName = intent.getStringExtra(Constants.EXTRA_PKGNAME);
+				if (pkgName != null) {
+					// Log.e(TAG, "onReceive pakg : " + pkgName);
+					Message msg = mHandler.obtainMessage();
+					msg.obj = pkgName;
+					msg.what = MSG_UPDATE_UI_UNINSTALL;
+					mHandler.sendMessage(msg);
+				}
+			} else if (TextUtils.equals(action, Constants.ACTION_ADD_PACKAGE)) {
+				ContentValues value = intent
+						.getParcelableExtra(Constants.EXTRA_VALUE);
+				if (value != null) {
+					Message msg = mHandler.obtainMessage();
+					msg.obj = value;
+					msg.what = MSG_ADD_PACKAGE;
+					mHandler.sendMessage(msg);
 				}
 			}
+
 		}
 	};
 
@@ -353,18 +364,20 @@ public class RecentAddedActivity extends ListActivity {
 		if (mDataList.size() < 1) {
 			mEmptyTipTxt.setVisibility(View.VISIBLE);
 			getListView().setVisibility(View.GONE);
-			mAdView.setVisibility(View.GONE);
 		} else {
 			mAdapter.notifyDataSetChanged();
 		}
 	}
 
+	private void onAddPackage(Message msg) {
+		ContentValues value = (ContentValues) msg.obj;
+		mDataList.add(0, obtainPackageInfo(value
+				.getAsString(RecentAddedPkgColumn.PackageName), value
+				.getAsLong(RecentAddedPkgColumn.InstalledTs)));
+		mAdapter.notifyDataSetChanged();
+	}
+
 	private void fillData() {
-		if (!Utils.youmiofferPointsReach(this)) {
-			mAdView.setVisibility(View.VISIBLE);
-		} else {
-			mAdView.setVisibility(View.GONE);
-		}
 		mLoadingLayout.setVisibility(View.GONE);
 		mAdapter = new RecentAddAdapter();
 		setListAdapter(mAdapter);

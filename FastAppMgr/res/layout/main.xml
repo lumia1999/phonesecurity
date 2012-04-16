@@ -13,15 +13,12 @@
             android:id="@android:id/list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_above="@+id/adView"
             android:cacheColorHint="@color/list_view_bg_color"
             android:divider="@null"
             android:fadingEdge="none"
             android:fastScrollEnabled="true" />
-
-        <include layout="@layout/ad" />
     </RelativeLayout>
 
-	<include layout="@layout/loading"/>
+    <include layout="@layout/loading" />
 
 </FrameLayout>

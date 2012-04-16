@@ -44,6 +44,11 @@ public class PackageBroascastReceiver extends BroadcastReceiver {
 						.currentTimeMillis());
 				adapter.insertRecord(pkgName, value);
 				adapter.releaseMemory();
+				if (!TextUtils.equals(pkgName, ctx.getPackageName())) {
+					//
+					ctx.sendBroadcast(new Intent(Constants.ACTION_ADD_PACKAGE)
+							.putExtra(Constants.EXTRA_VALUE, value));
+				}
 			}
 		}
 	}
@@ -58,7 +63,8 @@ public class PackageBroascastReceiver extends BroadcastReceiver {
 				adapter.deleteItem(pkgName);
 				adapter.releaseMemory();
 				if (!TextUtils.equals(pkgName, ctx.getPackageName())) {
-					ctx.sendBroadcast(new Intent(Constants.ACTION_UPDATE_ROM));
+					ctx.sendBroadcast(new Intent(Constants.ACTION_UPDATE_ROM)
+							.putExtra(Constants.EXTRA_PKGNAME, pkgName));
 				}
 			}
 		}
