@@ -6,4 +6,8 @@ public final class Constants {
 	public static final long YOUMIOFFER_MAX_TIMESTAMP = 2 * 24 * 60 * 60
 			* 1000L;
 	public static final String ACTION_UPDATE_ROM = "com.herry.fastappmgr.intent.ACTION_UPDATE_ROM";
+	public static final String EXTRA_PKGNAME = "pkgName";
+
+	public static final String ACTION_ADD_PACKAGE = "com.herry.fastappmgr.intent.ACTION_ADD_PACKAGE";
+	public static final String EXTRA_VALUE = "value";
 }

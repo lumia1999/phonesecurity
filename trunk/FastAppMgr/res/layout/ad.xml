@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<net.youmi.android.AdView
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:umadsdk="http://schemas.android.com/apk/res/com.herry.fastappmgr"
-    android:layout_height="wrap_content" 
-    android:id="@+id/adView" 
+<net.youmi.android.AdView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:umadsdk="http://schemas.android.com/apk/res/com.herry.fastappmgr"
+    android:id="@+id/adView"
     android:layout_width="fill_parent"
-    umadsdk:textColor="#ffffff"    
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="false"
     umadsdk:backgroundColor="#4076AA"
     umadsdk:backgroundTransparent="255"
-    android:layout_alignParentBottom="true"
-    android:visibility="invisible">	
- </net.youmi.android.AdView>
+    umadsdk:textColor="#ffffff" 
+    android:visibility="visible">
+
+</net.youmi.android.AdView>

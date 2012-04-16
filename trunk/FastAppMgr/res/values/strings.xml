@@ -11,12 +11,12 @@
     <string name="app_offer_txt">获取积分</string>
     <string name="app_offer_point_query">查询积分</string>
     <string name="app_offer_point_txt">当前积分</string>
-    <string name="app_offer_point_msg">当前积分不足200分，去广告？上积分墙赚取更多积分！</string>
+    <string name="app_offer_point_msg">当前积分不足50分，去广告？上积分墙赚取更多积分！</string>
     <string name="app_offer_point_msg1">恭喜您当前已在使用无广告版本，去看看积分墙有什么新奇推荐？</string>
     <string name="version_info">软件版本：</string>
     <string name="author">联系作者：Email:Xinwei.Yi@gmail.com</string>
     <string name="no_version_current">无法取得版本信息</string>
-    <string name="youmioffertip">点击Menu，下载推荐应用，200积分去广告！</string>
+    <string name="youmioffertip">点击Menu，下载推荐应用，50积分去广告！</string>
     <string name="rom">ROM</string>
     <string name="ram">RAM</string>
     <string name="left_bracket">（</string>

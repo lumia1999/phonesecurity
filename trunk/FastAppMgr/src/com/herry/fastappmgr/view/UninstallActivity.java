@@ -52,6 +52,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.herry.fastappmgr.R;
+import com.herry.fastappmgr.util.Constants;
 import com.herry.fastappmgr.util.Utils;
 
 public class UninstallActivity extends ListActivity {
@@ -115,6 +116,7 @@ public class UninstallActivity extends ListActivity {
 				refreshData(msg);
 				break;
 			case MSG_UPDATE_UI_UNINSTALL:
+				// Log.e(TAG, "***MSG_UPDATE_UI_UNINSTALL***");
 				if (mDelPos != -1) {
 					mDataList.remove(mDelPos);
 					mDelPos = -1;// reset
@@ -124,10 +126,12 @@ public class UninstallActivity extends ListActivity {
 					mAdapter.notifyDataSetChanged();
 				} else {
 					String pkgName = (String) msg.obj;
+					// Log.e(TAG, "pkgName : " + pkgName);
 					int size = mDataList.size();
 					Item item = null;
 					for (int i = 0; i < size; i++) {
 						item = mDataList.get(i);
+						// Log.e(TAG, "item package : " + item.pkgName);
 						if (TextUtils.equals(pkgName, item.pkgName)) {
 							mDataList.remove(i);
 							mAdapter.notifyDataSetChanged();
@@ -143,9 +147,6 @@ public class UninstallActivity extends ListActivity {
 		}
 
 	};
-
-	// ad
-	private AdView mAdView;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -172,11 +173,11 @@ public class UninstallActivity extends ListActivity {
 
 			}).start();
 		}
-		mAdView.refreshAd();
 	}
 
 	@Override
 	protected void onDestroy() {
+		Log.d(TAG, "onDestroy");
 		unregisterReceiver();
 		super.onDestroy();
 	}
@@ -321,8 +322,8 @@ public class UninstallActivity extends ListActivity {
 
 	private void registerReceiver() {
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-		filter.addDataScheme("package");
+		filter.addAction(Constants.ACTION_UPDATE_ROM);
+		filter.addAction(Constants.ACTION_ADD_PACKAGE);
 		registerReceiver(packageRemovedReceiver, filter);
 	}
 
@@ -335,27 +336,23 @@ public class UninstallActivity extends ListActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			if (TextUtils.equals(action, Intent.ACTION_PACKAGE_REMOVED)) {
-				Uri data = intent.getData();
-				if (data != null) {
-					String pkgName = data.getSchemeSpecificPart();
-					if (pkgName != null) {
-						Message msg = mHandler.obtainMessage();
-						msg.obj = pkgName;
-						msg.what = MSG_UPDATE_UI_UNINSTALL;
-						mHandler.sendEmptyMessage(MSG_UPDATE_UI_UNINSTALL);
-					}
+			if (TextUtils.equals(action, Constants.ACTION_UPDATE_ROM)) {
+
+				String pkgName = intent.getStringExtra(Constants.EXTRA_PKGNAME);
+				if (pkgName != null) {
+					// Log.e(TAG, "onReceive pakg : " + pkgName);
+					Message msg = mHandler.obtainMessage();
+					msg.obj = pkgName;
+					msg.what = MSG_UPDATE_UI_UNINSTALL;
+					mHandler.sendMessage(msg);
 				}
+			} else if (TextUtils.equals(action, Constants.ACTION_ADD_PACKAGE)) {
+				// TODO
 			}
 		}
 	};
 
 	private void fillData() {
-		if (!Utils.youmiofferPointsReach(this)) {
-			mAdView.setVisibility(View.VISIBLE);
-		} else {
-			mAdView.setVisibility(View.GONE);
-		}
 		mLoadingLayout.setVisibility(View.GONE);
 		((TextView) mHeader).setText(mTotalAppNumberString + mTotalAppNum);
 		mAdapter = new AppAdapter();
@@ -363,8 +360,6 @@ public class UninstallActivity extends ListActivity {
 	}
 
 	private void initUI() {
-		// ad
-		mAdView = (AdView) findViewById(R.id.adView);
 		mLoadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
 		mVersionTipString = getString(R.string.version_tip);
 		mNoVersionString = getString(R.string.no_version);

@@ -4,27 +4,34 @@
     android:layout_height="wrap_content"
     android:background="@drawable/list_item_bg_selector" >
 
-    <ImageView android:id="@+id/indicator"
+    <ImageView
+        android:id="@+id/indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
+        android:layout_margin="5dip"
         android:background="@drawable/bootup_indicator"
-        android:layout_margin="5dip"/>
-    <TextView android:id="@+id/uptime"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:id="@+id/uptime"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black"
-        android:text="uptime"
-        android:paddingTop="5dip"
         android:layout_toRightOf="@+id/indicator"
-        android:singleLine="true"/>
-	<TextView android:id="@+id/takeplace_time"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:textAppearance="?android:attr/textAppearanceSmall"
-	    android:text="take place time"
-	    android:layout_below="@+id/uptime"
-	    android:paddingBottom="5dip"
-	    android:layout_toRightOf="@+id/indicator"/>
+        android:paddingTop="5dip"
+        android:singleLine="true"
+        android:text="uptime"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/takeplace_time"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/uptime"
+        android:layout_toRightOf="@+id/indicator"
+        android:paddingBottom="5dip"
+        android:text="take place time"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/secondary_text_light" />
+
 </RelativeLayout>

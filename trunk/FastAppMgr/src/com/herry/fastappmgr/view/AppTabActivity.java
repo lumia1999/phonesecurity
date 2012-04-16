@@ -11,13 +11,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.NinePatch;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,16 +26,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Animation.AnimationListener;
 import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
-import android.widget.TabHost.TabSpec;
 
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.MemoryInfo;
@@ -114,7 +107,12 @@ public class AppTabActivity extends TabActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab);
-		AdManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f", 30, false);
+		if (!Utils.youmiofferPointsReach(this)) {
+			AdManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f", 30,
+					false);
+		} else {
+			findViewById(R.id.adView).setVisibility(View.GONE);
+		}
 		YoumiOffersManager.init(this, "76bd55779f7589ff", "d5fb065a3d0a675f");
 		registerReceiver();
 		initUI();
@@ -173,6 +171,7 @@ public class AppTabActivity extends TabActivity {
 		mContentIntent = new Intent().setClass(this, RecentAddedActivity.class);
 		setIndicator(getString(R.string.tab_recet_install), mContentIntent);
 		mTabHost.setCurrentTab(0);
+
 	}
 
 	private void setIndicator(String spec, Intent contentIntent) {
@@ -205,7 +204,7 @@ public class AppTabActivity extends TabActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.app_bootup:
-			startActivity(new Intent(this,BootupViewActivity.class));
+			startActivity(new Intent(this, BootupViewActivity.class));
 			break;
 		case R.id.about:
 			showAbout();

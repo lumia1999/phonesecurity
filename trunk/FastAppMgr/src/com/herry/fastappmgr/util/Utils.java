@@ -30,7 +30,7 @@ import com.herry.fastappmgr.R;
 
 public final class Utils {
 
-	public static final int MAX_OFFER_POINTS = 200;
+	public static final int MAX_OFFER_POINTS = 50;
 
 	private static final int formatDateAllFlag = DateUtils.FORMAT_SHOW_DATE
 			| DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR
@@ -230,9 +230,9 @@ public final class Utils {
 			return null;
 		}
 	}
-	
+
 	public static String formatDuration(Context ctx, long duration) {
-		if(duration >= 5 * 60){
+		if (duration >= 5 * 60) {
 			return null;
 		}
 		StringBuilder sb = new StringBuilder();
@@ -248,7 +248,7 @@ public final class Utils {
 		}
 		return sb.toString();
 	}
-	
+
 	public static String formatTs(Context ctx, long ts) {
 		return DateUtils.formatDateTime(ctx, ts, DateUtils.FORMAT_SHOW_DATE
 				| DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR
