@@ -127,6 +127,7 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 						public void onDismiss(DialogInterface dialog) {
 							MainTabActivity.mTabCtx.unbindService(mConnection);
 							stopService(new Intent(mCtx, AlarmPlayService.class));
+							mIsBound = false;
 						}
 					});
 			testAlarmDlg.setView(v, 0, 0, 0, 0);
@@ -240,7 +241,6 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 						break;
 					case R.string.pref_test_alarm_ringtone:
 						showDialog(DLG_TEST_ALARM);
-						// TODO
 						Intent i = new Intent(mCtx, AlarmPlayService.class);
 						MainTabActivity.mTabCtx.bindService(i, mConnection,
 								Context.BIND_AUTO_CREATE);
