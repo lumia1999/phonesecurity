@@ -1,5 +1,6 @@
 package com.herry.phonesecurity;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import com.herry.phonesecurity.view.AlarmControlActivity;
@@ -10,6 +11,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnErrorListener;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -159,20 +162,35 @@ public class AlarmPlayService extends Service {
 
 	private void startPlay(boolean test) {
 		if (test) {
-			mRepeatTimes = 1;
+			mRepeatTimes = 2;
 		} else {
 			forceScreenOn();
 			showAlarmScreen();
 		}
-		mMediaPlayer.setLooping(true);
-		for (int i = 0; i < mRepeatTimes; i++) {
-			// TODO
-			if (i == mRepeatTimes - 1) {
-				mMediaPlayer.setLooping(false);
+
+		mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+				mRepeatTimes--;
+				if (mRepeatTimes > 0) {
+					mp.start();
+				} else {
+					Log.e(TAG, "alarm end");
+					reportFinish();
+					stopSelf(mMaxStartId);
+				}
 			}
-			mMediaPlayer.start();
-		}
-		Log.e(TAG, "end");
+		});
+		mMediaPlayer.setOnErrorListener(new OnErrorListener() {
+
+			@Override
+			public boolean onError(MediaPlayer mp, int what, int extra) {
+				Log.e(TAG, "media player error");
+				return false;
+			}
+		});
+		mMediaPlayer.start();
 	}
 
 	private void showAlarmScreen() {
@@ -192,5 +210,16 @@ public class AlarmPlayService extends Service {
 			mWakeLock.setReferenceCounted(false);
 		}
 		mWakeLock.acquire();
+	}
+
+	private void reportFinish() {
+		try {
+			int N = mCallbacks.beginBroadcast();
+			for (int i = 0; i < N; i++) {
+				mCallbacks.getBroadcastItem(i).alarmFinished();
+			}
+		} catch (RemoteException e) {
+			//
+		}
 	}
 }
