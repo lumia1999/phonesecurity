@@ -164,10 +164,15 @@ public class AlarmPlayService extends Service {
 			forceScreenOn();
 			showAlarmScreen();
 		}
-
+		mMediaPlayer.setLooping(true);
 		for (int i = 0; i < mRepeatTimes; i++) {
 			// TODO
+			if (i == mRepeatTimes - 1) {
+				mMediaPlayer.setLooping(false);
+			}
+			mMediaPlayer.start();
 		}
+		Log.e(TAG, "end");
 	}
 
 	private void showAlarmScreen() {
