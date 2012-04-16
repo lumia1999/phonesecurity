@@ -459,11 +459,15 @@ public class MainSettingActivity extends AbstractActivity {
 							viewHolder.desc.setText(item.mDescOffId);
 							viewHolder.icon
 									.setBackgroundResource(item.mStateOffDrawableId);
+							mDefPrefs.edit().putBoolean(
+									getString(item.mPrefKey), false).commit();
 							showDialog(DLG_STATE_CHANGE);
 						} else {
 							viewHolder.desc.setText(item.mDescOnId);
 							viewHolder.icon
 									.setBackgroundResource(item.mStateOnDrawableId);
+							mDefPrefs.edit().putBoolean(
+									getString(item.mPrefKey), true).commit();
 							Toast.makeText(getApplicationContext(),
 									R.string.protection_on_tip,
 									Toast.LENGTH_SHORT).show();
