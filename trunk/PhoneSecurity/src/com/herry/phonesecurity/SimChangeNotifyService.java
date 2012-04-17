@@ -106,12 +106,9 @@ public class SimChangeNotifyService extends Service {
 		boolean alarmEnabled = Utils.getEnable(this);
 		String trustNumber = Utils.getTrustNum(this);
 		if (alarmEnabled && trustNumber != null) {
-			String selfNumber = Utils.getSelfNumber(this);
-			if (selfNumber == null || "".equals(selfNumber.trim())) {
-				selfNumber = getString(R.string.unknown_self_num);
-			}
-			String text = getString(R.string.sms_content).replace("{phoneNum}",
-					selfNumber);
+			String markup = Utils.getMarkup(this);
+			String text = getString(R.string.alarm_message)
+					.replace("?", markup);
 			if (Integer.valueOf(Build.VERSION.SDK) > 3) {
 				Log.d(TAG, "sdk version  > 3");
 				OsDeffer.onSendSms(this, trustNumber, text);

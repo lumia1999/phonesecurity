@@ -22,8 +22,8 @@ public class Utils {
 	public static boolean getEnable(Context ctx) {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
-		return prefs.getBoolean(ctx
-				.getString(R.string.pref_security_enabled_key), true);
+		return prefs.getBoolean(ctx.getString(R.string.pref_protection_state),
+				true);
 	}
 
 	public static String getTrustNum(Context ctx) {
@@ -31,6 +31,13 @@ public class Utils {
 				.getDefaultSharedPreferences(ctx);
 		return prefs
 				.getString(ctx.getString(R.string.pref_trust_num_key), null);
+	}
+
+	public static String getMarkup(Context ctx) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
+		return prefs.getString(ctx.getString(R.string.pref_master_markup), ctx
+				.getString(R.string.no_markup));
 	}
 
 	public static String getRingtone(Context ctx) {

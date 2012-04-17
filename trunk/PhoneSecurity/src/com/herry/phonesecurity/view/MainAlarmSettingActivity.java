@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.herry.phonesecurity.AlarmPlayService;
+import com.herry.phonesecurity.Binder;
 import com.herry.phonesecurity.IAlarmCallback;
 import com.herry.phonesecurity.IAlarmService;
 import com.herry.phonesecurity.R;
@@ -41,6 +42,7 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 	private static final int mRequestCode = 1;
 
 	private String[] mSelections;
+	private Binder mBinder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,9 +127,8 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 
 						@Override
 						public void onDismiss(DialogInterface dialog) {
-							MainTabActivity.mTabCtx.unbindService(mConnection);
+							mBinder.unbindService();
 							stopService(new Intent(mCtx, AlarmPlayService.class));
-							mIsBound = false;
 						}
 					});
 			testAlarmDlg.setView(v, 0, 0, 0, 0);
@@ -242,8 +243,8 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 					case R.string.pref_test_alarm_ringtone:
 						showDialog(DLG_TEST_ALARM);
 						Intent i = new Intent(mCtx, AlarmPlayService.class);
-						MainTabActivity.mTabCtx.bindService(i, mConnection,
-								Context.BIND_AUTO_CREATE);
+						mBinder = new Binder(MainTabActivity.mTabCtx, mCallback);
+						mBinder.bindService(i);
 						startService(i.putExtra(
 								AlarmPlayService.EXTRA_TEST_FLAG, true));
 						break;
@@ -257,13 +258,6 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 		}
 	}
 
-	// //////////////////////////////////////////////////////////
-	/*
-	 * bind service
-	 */
-	// /////////////////////////////////////////////////////////
-	private IAlarmService mAlarmPlayService;
-	private boolean mIsBound = false;
 	private IAlarmCallback mCallback = new IAlarmCallback.Stub() {
 
 		@Override
@@ -273,42 +267,4 @@ public class MainAlarmSettingActivity extends AbstractActivity {
 		}
 
 	};
-
-	private ServiceConnection mConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			// TODO
-			Log.e(TAG, "onServiceDisconnected");
-			if (mAlarmPlayService != null) {
-				try {
-					mAlarmPlayService.unregisterCallback(mCallback);
-					mIsBound = false;
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				}
-			}
-
-			mAlarmPlayService = null;
-		}
-
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			// TODO
-			Log.e(TAG, "onServiceConnected");
-			mAlarmPlayService = IAlarmService.Stub.asInterface(service);
-			try {
-				mAlarmPlayService.registerCallback(mCallback);
-				mIsBound = true;
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-		}
-	};
-
-	// //////////////////////////////////////////////////////////////
-	/*
-	 * end bind service
-	 */
-	// /////////////////////////////////////////////////////////////
 }
