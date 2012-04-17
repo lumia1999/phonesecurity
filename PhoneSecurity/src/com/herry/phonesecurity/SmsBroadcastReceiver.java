@@ -3,11 +3,11 @@ package com.herry.phonesecurity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 
 public class SmsBroadcastReceiver extends BroadcastReceiver {
 	private static final String TAG = "SmsBroadcastReceiver";
+	private static final boolean mTest = false;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -17,19 +17,19 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
 			if (action.equals(Const.ACTION_SMS_RECEIVED)) {
 				String smsBody = Utils.getSmsBody(intent);
 				String alarmPwd = Prefs.getAlarmPwd(context);
-				String selfNumber = Utils.getSelfNumber(context);
 				StringBuilder sb = new StringBuilder();
-				sb.append(selfNumber).append(alarmPwd).append(Const.ALARM);
-				if (alarmPwd != null && selfNumber != null
+				sb.append(Const.ALARM).append(alarmPwd);
+				boolean alarmFlag = alarmPwd != null && smsBody != null
 						&& !"".equals(smsBody.trim())
-						&& smsBody.startsWith(sb.toString())) {
-					intent.setData(Uri.parse(Const.ALARM));
-					intent.setClass(context, HandleAlarmService.class);
+						&& smsBody.equals(sb.toString());
+				if (alarmFlag || mTest) {
+					intent.setClass(context, AlarmPlayService.class);
 					context.startService(intent);
-					abortBroadcast();
+					if (!mTest) {
+						abortBroadcast();
+					}
 				}
 			}
 		}
 	}
-
 }

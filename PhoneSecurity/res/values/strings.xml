@@ -123,6 +123,8 @@
     <string name="test_alarm_quit">退出</string>
     <string name="alarm_ongoing_banner">来自手机防盗的警报</string>
     <string name="alarm_ongoing_tip">请输入密码解除警报</string>
+    <string name="alarm_message">【?】的手机SIM卡发生变化，若非所有者自己更换SIM卡，请转告之，多谢！</string>
+    <string name="no_markup">未设置手机标识用户</string>
 
     <!-- pwd string -->
     <string name="pwd_title">设置密码</string>

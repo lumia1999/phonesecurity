@@ -14,22 +14,6 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name" >
         <activity
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:name=".view.SecuritySettingActivity"
-            android:theme="@android:style/Theme.Light"
-            android:windowSoftInputMode="adjustPan" >
-
-            <!--
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </activity>
-        <activity
             android:configChanges="orientation|keyboardHidden|navigation"
             android:launchMode="singleTop"
             android:name=".view.ViewControlActivity"
@@ -63,17 +47,18 @@
             android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:launchMode="singleTop"
             android:name=".view.MainAlarmSettingActivity"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|navigation"
             android:launchMode="singleTop"
             android:name=".view.MainPwdSettingActivity"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:configChanges="orientation|keyboardHidden"
@@ -100,27 +85,6 @@
         <service android:name=".AlarmPlayService" >
         </service>
 
-        <activity
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/alarm_title"
-            android:launchMode="singleTop"
-            android:name=".view.AlarmSettingActivity"
-            android:windowSoftInputMode="adjustPan|adjustResize" >
-        </activity>
-        <activity
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/user_pwd_setting"
-            android:launchMode="singleTop"
-            android:name=".view.PwdSettingActivity"
-            android:windowSoftInputMode="adjustPan|adjustResize" />
-        <activity
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTop"
-            android:name=".view.PlayRingActivity" />
-        <activity
-            android:configChanges="orientation|keyboardHidden"
-            android:name=".view.TestActivity" />
-
         <receiver android:name=".BroadcastReceiver" >
             <intent-filter >
                 <action android:name="android.intent.action.SIM_STATE_CHANGED" />
@@ -132,9 +96,6 @@
                 <action android:name="com.herry.phonesecurity.intent.DELIVERED" />
             </intent-filter>
         </receiver>
-
-        <service android:name=".SendSmsIntentService" />
-
         <receiver android:name=".SmsBroadcastReceiver" >
             <intent-filter android:priority="2147483647" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
@@ -143,7 +104,6 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".HandleAlarmService" />
         <service android:name=".SimChangeNotifyService" />
     </application>
 

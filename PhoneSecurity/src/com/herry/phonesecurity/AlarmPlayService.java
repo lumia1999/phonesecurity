@@ -1,6 +1,5 @@
 package com.herry.phonesecurity;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import com.herry.phonesecurity.view.AlarmControlActivity;
@@ -98,7 +97,12 @@ public class AlarmPlayService extends Service {
 		}
 		mMaxStartId = startId;
 		mBTest = intent.getBooleanExtra(EXTRA_TEST_FLAG, false);
-		startPlay(mBTest);
+		if (!mAlarmOngoing) {
+			mAlarmOngoing = true;
+			startPlay(mBTest);
+		} else {
+			Log.d(TAG, "alarm ongoing, ignore this request");
+		}
 	}
 
 	@Override
@@ -128,6 +132,9 @@ public class AlarmPlayService extends Service {
 		mRingtoneDuration = mMediaPlayer.getDuration();
 		// Log.e(TAG, "mRingtoneDuration : " + mRingtoneDuration);
 		mRepeatTimes = TOTAL_ALARM_TIME / mRingtoneDuration;
+		if (mRepeatTimes == 0) {
+			mRepeatTimes = 1;
+		}
 		mAudioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		mAudioMode = mAudioMgr.getRingerMode();
 		mAudioModeVolume = mAudioMgr.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -194,7 +201,6 @@ public class AlarmPlayService extends Service {
 	}
 
 	private void showAlarmScreen() {
-		// TODO
 		Intent i = new Intent(this, AlarmControlActivity.class);
 		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(i);

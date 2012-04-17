@@ -23,20 +23,18 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
 				String imsi = Utils.getIMSI(context);
 				String new_sim = Prefs.getNewSim(context);
 				if (new_sim == null || !new_sim.equals(imsi)) {
+					new_sim = imsi;
 					Prefs.setNewSim(context, imsi);
 				}
 				String old_sim = Prefs.getOldSim(context);
-				if (old_sim != null && !old_sim.equals(imsi) && reason == null) {
-					// SendSmsIntentService.runIntentService(context, intent);
+				if (old_sim != null && !old_sim.equals(new_sim)
+						&& reason == null) {
 					SimChangeNotifyService.onSimChangeNoti(context);
 				}
-				// SimChangeNotifyService.onSimChangeNoti(context);
 			}
 		} else if (action.equals(Const.ACTION_SENT)) {
-			// TODO
 			Log.d(TAG, "SMS SENT");
 		} else if (action.equals(Const.ACTION_DELIVERED)) {
-			// TODO
 			Log.d(TAG, "SMS DELIVERED");
 		}
 	}
