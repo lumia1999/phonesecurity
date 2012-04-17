@@ -30,12 +30,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Animation.AnimationListener;
 import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.MemoryInfo;
+import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.util.Constants;
 import com.herry.fastappmgr.util.Prefs;
 import com.herry.fastappmgr.util.Utils;
@@ -167,16 +169,21 @@ public class AppTabActivity extends TabActivity {
 		// Log.e(TAG, "npd : " + npd);
 		w.setDividerDrawable(npd);
 		mContentIntent = new Intent().setClass(this, UninstallActivity.class);
-		setIndicator(getString(R.string.tab_uninstall), mContentIntent);
+		setIndicator(R.drawable.down, getString(R.string.tab_uninstall),
+				mContentIntent);
 		mContentIntent = new Intent().setClass(this, RecentAddedActivity.class);
-		setIndicator(getString(R.string.tab_recet_install), mContentIntent);
+		setIndicator(R.drawable.add, getString(R.string.tab_recet_install),
+				mContentIntent);
 		mTabHost.setCurrentTab(0);
 
 	}
 
-	private void setIndicator(String spec, Intent contentIntent) {
+	private void setIndicator(int iconId, String spec, Intent contentIntent) {
 		View v = mLayoutInflater.inflate(R.layout.tab_menu, null);
-		((TextView) v).setText(spec);
+		ImageView iv = (ImageView) v.findViewById(R.id.tab_menu_icon);
+		TextView tv = (TextView) v.findViewById(R.id.tab_menu_title);
+		iv.setBackgroundResource(iconId);
+		tv.setText(spec);
 		mTabSpec = mTabHost.newTabSpec(spec).setIndicator(v).setContent(
 				mContentIntent);
 		mTabHost.addTab(mTabSpec);
@@ -224,14 +231,44 @@ public class AppTabActivity extends TabActivity {
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DLG_SHOW_RAM_ROM_INFO:
-			WebView webView = new WebView(this);
-			webView.loadUrl("file:///android_asset/ram_rom_intro.html");
-			return new AlertDialog.Builder(this).setIcon(
-					android.R.drawable.ic_dialog_alert).setTitle(
-					R.string.ram_rom_intro_dlg_title).setView(webView).create();
+			AlertDialog dialog = new AlertDialog.Builder(this).create();
+			View v = getLayoutInflater().inflate(R.layout.memory_intro, null);
+			initMemoryDlgInfo(v, id);
+			dialog.setView(v, 0, 0, 0, 0);
+			return dialog;
 		default:
 			return super.onCreateDialog(id);
 		}
+	}
+
+	private void initMemoryDlgInfo(View v, int dId) {
+		WebView content = (WebView) v.findViewById(R.id.content);
+		content.loadUrl("file:///android_asset/ram_rom_intro.html");
+		Button op1 = (Button) v.findViewById(R.id.op1);
+		Button op2 = (Button) v.findViewById(R.id.op2);
+		op1.setTextColor(Color.argb(155, 255, 0, 0));
+		op1.setText(R.string.clean_cache);
+		op2.setText(R.string.quit);
+		final int id = dId;
+		OnClickListener listener = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				switch (v.getId()) {
+				case R.id.op1:
+					startActivity(new Intent(getApplicationContext(),
+							CacheAppsListActivity.class));
+					break;
+				case R.id.op2:
+					//
+					break;
+				}
+				dismissDialog(id);
+
+			}
+		};
+		op1.setOnClickListener(listener);
+		op2.setOnClickListener(listener);
 	}
 
 	private void showAbout() {

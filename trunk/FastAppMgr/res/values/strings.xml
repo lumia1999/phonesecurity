@@ -24,7 +24,6 @@
     <string name="total_tip">总：</string>
     <string name="left_tip">剩：</string>
     <string name="slash">/</string>
-    <string name="ram_rom_intro_dlg_title">Ram、Rom简介</string>
 
     <!-- context menu string -->
     <string name="cm_uninstall">快速卸载</string>
@@ -40,17 +39,19 @@
     <!-- boot up string -->
     <string name="bootup_ticker_txt">本次开机共耗时：</string>
     <string name="time_second">秒</string>
-	<string name="time_minute">分</string>
-	<string name="bootup_tip_title">开机耗时</string>
-	<string name="list_all_bootup_required_apps">查看开机启动应用列表</string>
-	<string name="no_bootup_history">暂无开机时间记录</string>
-	<string name="uptime_tip">耗时：</string>
-	<string name="takeplace_time_tip">发生时间：</string>
-	    
-	<string name="loading">正在加载...</string>
-	<string name="no_bootup_apps">您的系统无开机自启动应用！</string>
-	<string name="click_to_view_detail">点击查看详情</string>
-	<string name="activity_not_exist_toast">Well,详情不可查看？</string>
+    <string name="time_minute">分</string>
+    <string name="bootup_tip_title">开机耗时</string>
+    <string name="list_all_bootup_required_apps">查看开机启动应用列表</string>
+    <string name="no_bootup_history">暂无开机时间记录</string>
+    <string name="uptime_tip">耗时：</string>
+    <string name="takeplace_time_tip">发生时间：</string>
+    <string name="loading">正在加载...</string>
+    <string name="no_bootup_apps">您的系统无开机自启动应用！</string>
+    <string name="click_to_view_detail">点击查看详情</string>
+    <string name="activity_not_exist_toast">Well,详情不可查看？</string>
+    <string name="quit">退出</string>
+    <string name="clean_cache">清理缓存</string>
+    <string name="memory_tip">Ram、Rom简介</string>
+    <string name="clean">一键清理</string>
 
-	
 </resources>

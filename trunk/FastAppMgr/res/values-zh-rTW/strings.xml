@@ -24,7 +24,6 @@
     <string name="total_tip">總：</string>
     <string name="left_tip">剩：</string>
     <string name="slash">/</string>
-    <string name="ram_rom_intro_dlg_title">Ram、Rom簡介</string>
 
     <!-- context menu string -->
     <string name="cm_uninstall">快速卸載</string>
@@ -50,5 +49,8 @@
     <string name="no_bootup_apps">您的系統無開機自啟動應用！</string>
     <string name="click_to_view_detail">點擊查看詳情</string>
     <string name="activity_not_exist_toast">Well,詳情不可查看？</string>
+    <string name="quit">退出</string>
+    <string name="clean_cache">清理緩存</string>
+    <string name="memory_tip">Ram、Rom简介</string>
 
 </resources>
