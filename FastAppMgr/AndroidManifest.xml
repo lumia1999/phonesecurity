@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.herry.fastappmgr"
-    android:versionCode="10016"
-    android:versionName="01.00.15" >
+    android:versionCode="10018"
+    android:versionName="01.00.17" >
 
     <supports-screens
         android:anyDensity="true"
@@ -57,6 +57,11 @@
             android:name=".view.DisplayBootupAppsActivity"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.CacheAppsListActivity"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
 
         <receiver android:name=".receiver.PackageBroascastReceiver" >
             <intent-filter >
@@ -91,7 +96,7 @@
 
         <meta-data
             android:name="YOUMI_CHANNEL"
-            android:value="10020" />
+            android:value="10050" />
     </application>
 
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />

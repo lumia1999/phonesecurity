@@ -131,15 +131,6 @@ public class RecentAddedActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		// Item item = mDataList.get(position);
-		// Intent i = new Intent();
-		// i.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-		// i.setData(Uri.parse("package:" + item.pkgName));
-		// try {
-		// startActivity(i);
-		// } catch (ActivityNotFoundException e) {
-		// //
-		// }
 		openContextMenu(v);
 	}
 
@@ -370,11 +361,18 @@ public class RecentAddedActivity extends ListActivity {
 	}
 
 	private void onAddPackage(Message msg) {
-		ContentValues value = (ContentValues) msg.obj;
-		mDataList.add(0, obtainPackageInfo(value
-				.getAsString(RecentAddedPkgColumn.PackageName), value
-				.getAsLong(RecentAddedPkgColumn.InstalledTs)));
-		mAdapter.notifyDataSetChanged();
+		if (mDataList != null) {
+			ContentValues value = (ContentValues) msg.obj;
+			mDataList.add(0, obtainPackageInfo(value
+					.getAsString(RecentAddedPkgColumn.PackageName), value
+					.getAsLong(RecentAddedPkgColumn.InstalledTs)));
+			if (mAdapter != null) {
+				mAdapter.notifyDataSetChanged();
+			} else {
+				mLoadingLayout.setVisibility(View.GONE);
+				fillData();
+			}
+		}
 	}
 
 	private void fillData() {
