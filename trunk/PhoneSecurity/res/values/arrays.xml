@@ -9,7 +9,7 @@
     </string-array>
     <string-array name="alarm_ringtone_selection">
         <item>使用应用自带铃声</item>
-        <item>让我自己选择铃声</item>
+        <item>我要自己选择铃声</item>
     </string-array>
 
 </resources>
