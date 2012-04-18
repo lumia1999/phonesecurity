@@ -11,5 +11,10 @@
         <item>使用应用自带铃声</item>
         <item>我要自己选择铃声</item>
     </string-array>
+    <string-array name="new_version_notes">
+        <item>全版面UI调整，更加美观、整洁，带来全新感受。</item>
+        <item>调整报警响铃短信发送格式，请老用户仔细阅读报警设置中的如何使用部分。</item>
+        <item>不再要求用户输入本机号码，取而代之的是输入主人标识，用作防盗提示。</item>
+    </string-array>
 
 </resources>

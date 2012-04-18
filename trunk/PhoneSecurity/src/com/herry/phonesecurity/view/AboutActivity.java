@@ -1,12 +1,12 @@
 package com.herry.phonesecurity.view;
 
 import android.app.Activity;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.herry.phonesecurity.R;
+import com.herry.phonesecurity.Utils;
 
 public class AboutActivity extends Activity {
 	private TextView mAppNameTxt;
@@ -26,13 +26,9 @@ public class AboutActivity extends Activity {
 		mWebView = (WebView) findViewById(R.id.webview);
 		mAppNameTxt.setText(getString(R.string.app_name_tip)
 				+ getString(R.string.app_name));
-		String version = null;
-		try {
-			version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-		} catch (NameNotFoundException e) {
-			//
-		}
-		mVerInfoTxt.setText(getString(R.string.version_info) + version);
+
+		mVerInfoTxt.setText(getString(R.string.version_info)
+				+ Utils.getVersion(this));
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
