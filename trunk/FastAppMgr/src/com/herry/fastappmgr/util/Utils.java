@@ -254,4 +254,37 @@ public final class Utils {
 				| DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_YEAR
 				| DateUtils.FORMAT_SHOW_TIME);
 	}
+
+	public static void deleteFolder(File f) {
+		String TAG = "DeleteCache";
+		if (f.exists()) {
+			if (f.isFile()) {
+				Log.e(TAG, "f path : " + f.getAbsolutePath());
+				boolean ret = f.delete();
+				Log.d(TAG, "delete file ret : " + ret);
+			} else if (f.isDirectory()) {
+				File[] files = f.listFiles();
+				if (files != null) {
+					for (int i = 0; i < files.length; i++) {
+						deleteFolder(files[i]);
+					}
+				} else {
+					Log.d(TAG, "files is null");
+				}
+				boolean ret = f.delete();
+				Log.d(TAG, "dir path : " + f.getAbsolutePath());
+				Log.d(TAG, "delete dir ret : " + ret);
+			}
+		} else {
+			System.out.println("file not exist");
+		}
+	}
+
+	public static long getEnvironmentSize() {
+		File f = Environment.getDataDirectory();
+		String path = f.getPath();
+		StatFs sf = new StatFs(path);
+		long blk = sf.getBlockSize();
+		return sf.getBlockCount() * blk;
+	}
 }
