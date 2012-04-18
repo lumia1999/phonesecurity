@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -42,6 +43,15 @@ public class AlarmControlActivity extends Activity {
 		startService(i);
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK
+				|| keyCode == KeyEvent.KEYCODE_SEARCH) {
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
 	private void initUI() {
 		mBanner = (TextView) findViewById(R.id.banner);
 		mTip = (TextView) findViewById(R.id.tip);
@@ -74,12 +84,6 @@ public class AlarmControlActivity extends Activity {
 		mBinder.unbindService();
 		stopService(new Intent(this, AlarmPlayService.class));
 		finish();
-		restart();
-	}
-
-	private void restart() {
-		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		am.restartPackage(getPackageName());
 	}
 
 	private IAlarmCallback mCallback = new IAlarmCallback.Stub() {
