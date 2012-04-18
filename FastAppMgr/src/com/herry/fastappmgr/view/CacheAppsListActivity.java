@@ -39,6 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.herry.fastappmgr.R;
+import com.herry.fastappmgr.util.Utils;
 import com.hp.hpl.sparta.Sparta.CacheFactory;
 
 public class CacheAppsListActivity extends Activity {
@@ -60,7 +61,7 @@ public class CacheAppsListActivity extends Activity {
 	private PackageSizeObserver mPkgSizeObserver;
 	private Method getPackageSizeInfoMethod = null;
 	private CleanCacheObserver mCleanCacheObserver;
-	private Method deleteApplicationCacheFiles = null;
+	private Method freeStorageAndNotify = null;
 	private boolean mExit = false;
 
 	private int mState;
@@ -177,17 +178,17 @@ public class CacheAppsListActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (mState == STATE_READY) {
-					if (deleteApplicationCacheFiles != null) {
+					if (freeStorageAndNotify != null) {
 						showDialog(DLG_CLEAN_CACHE);
-						// try {
-						// Log.e(TAG, "pkgName : " + mDataList.get(1).pkgName);
-						// deleteApplicationCacheFiles.invoke(mPkgMgr,
-						// mDataList.get(0).pkgName,
-						// mCleanCacheObserver);
-						// } catch (Exception e) {
-						// Log.e(TAG, "Exception", e);
-						// }
-						new CleanCacheTask().execute();
+						try {
+							Log.e(TAG, "pkgName : " + mDataList.get(0).pkgName);
+							freeStorageAndNotify.invoke(mPkgMgr, Utils
+									.getEnvironmentSize() - 1L,
+									mCleanCacheObserver);
+						} catch (Exception e) {
+							Log.e(TAG, "Exception", e);
+						}
+						// new CleanCacheTask().execute();
 					} else {
 						Toast.makeText(getApplicationContext(),
 								R.string.clean_cache_fail, Toast.LENGTH_SHORT)
@@ -278,11 +279,12 @@ public class CacheAppsListActivity extends Activity {
 			updateTip();
 			mCleanCacheObserver = new CleanCacheObserver();
 			try {
-				deleteApplicationCacheFiles = mPkgMgr.getClass()
-						.getDeclaredMethod("deleteApplicationCacheFiles",
-								String.class, IPackageDataObserver.class);
+				freeStorageAndNotify = mPkgMgr.getClass().getDeclaredMethod(
+						"freeStorageAndNotify", Long.TYPE,
+						IPackageDataObserver.class);
 			} catch (NoSuchMethodException e) {
-				deleteApplicationCacheFiles = null;
+				freeStorageAndNotify = null;
+				Log.e(TAG, "NoSuchMethodException", e);
 			}
 		}
 	}
@@ -290,14 +292,15 @@ public class CacheAppsListActivity extends Activity {
 	private void updateTip() {
 		mTipLayout.setVisibility(View.VISIBLE);
 		String tip = null;
+		long count = 0;
+		int size = mDataList.size();
+		for (int i = 0; i < size; i++) {
+			count += mDataList.get(i).orgSize;
+		}
 		switch (mState) {
 		case STATE_INIT:
 			tip = getString(R.string.cache_tip_init);
-			long count = 0;
-			int size = mDataList.size();
-			for (int i = 0; i < size; i++) {
-				count += mDataList.get(i).orgSize;
-			}
+
 			tip = tip.replace(
 					"{1}",
 					"<b><font color=green>" + size
@@ -311,7 +314,10 @@ public class CacheAppsListActivity extends Activity {
 			mState = STATE_READY;
 			break;
 		case STATE_CLEANED:
-
+			tip = getString(R.string.cache_tip_cleaned);
+			tip = tip.replace("{1}", "<b><font color=green>"
+					+ Formatter.formatFileSize(this, count) + "</font></b>");
+			mTipTxt.setText(Html.fromHtml(tip));
 			break;
 		}
 	}
@@ -393,23 +399,13 @@ public class CacheAppsListActivity extends Activity {
 	}
 
 	private class CleanCacheTask extends AsyncTask<Void, Void, Void> {
-		// TODO
-		private boolean deleteDir(File f) {
-			if (f.isDirectory()) {
-				// deleteDir(f.listFiles());
-			} else {
-				f.delete();
-			}
-			return false;
-		}
-
 		@Override
 		protected Void doInBackground(Void... params) {
 			int size = mDataList.size();
 			File f = null;
 			for (int i = 0; i < size; i++) {
 				f = mDataList.get(i).cacheFile;
-				deleteDir(f);
+				Utils.deleteFolder(f);
 			}
 			return null;
 		}
@@ -418,6 +414,9 @@ public class CacheAppsListActivity extends Activity {
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 			Log.d(TAG, "onPostExecute");
+			dismissDialog(DLG_CLEAN_CACHE);
+			mState = STATE_CLEANED;
+			updateTip();
 		}
 
 	}
