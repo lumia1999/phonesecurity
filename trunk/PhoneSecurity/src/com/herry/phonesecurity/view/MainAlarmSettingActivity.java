@@ -5,15 +5,11 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,7 +26,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.herry.phonesecurity.AlarmPlayService;
 import com.herry.phonesecurity.Binder;
 import com.herry.phonesecurity.IAlarmCallback;
-import com.herry.phonesecurity.IAlarmService;
 import com.herry.phonesecurity.R;
 
 public class MainAlarmSettingActivity extends AbstractActivity {

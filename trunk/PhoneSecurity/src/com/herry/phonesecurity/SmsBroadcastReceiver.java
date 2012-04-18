@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class SmsBroadcastReceiver extends BroadcastReceiver {
 	private static final String TAG = "SmsBroadcastReceiver";
-	private static final boolean mTest = false;
+	private static final boolean mTest = true;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {

@@ -52,51 +52,6 @@ public class Utils {
 				.getString(R.string.no_markup));
 	}
 
-	public static String getRingtone(Context ctx) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
-		return prefs.getString(ctx.getString(R.string.pref_ringtone_key), null);
-	}
-
-	public static String getSelfNumber(Context ctx) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
-		return prefs.getString(ctx.getString(R.string.pref_myphonenum_key),
-				null);
-	}
-
-	public static String onSmsSettingKeyDown(Context ctx) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
-		String trustNum = prefs.getString(ctx
-				.getString(R.string.pref_trust_num_key), null);
-		boolean trust = trustNum == null || "".equals(trustNum.trim());
-		if (!trust) {
-			return null;
-		} else {
-			return ctx.getString(R.string.setting_quit_no_trustnum);
-		}
-	}
-
-	public static String onAlarmSettingKeyDown(Context ctx) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
-		String selfNum = prefs.getString(ctx
-				.getString(R.string.pref_myphonenum_key), null);
-		String ringtone = prefs.getString(ctx
-				.getString(R.string.pref_ringtone_key), null);
-		boolean self = selfNum == null || "".equals(selfNum.trim());
-		boolean ring = ringtone == null || "".equals(ringtone.trim());
-		if (self && ring) {
-			return ctx.getString(R.string.setting_quit_no_selfnum_ringtone);
-		} else if (self && !ring) {
-			return ctx.getString(R.string.setting_quit_no_selfnum);
-		} else if (!self && ring) {
-			return ctx.getString(R.string.setting_quit_no_ringtone);
-		}
-		return null;
-	}
-
 	// intercept sms,obtain its message body
 	@SuppressWarnings("deprecation")
 	public static String getSmsBody(Intent intent) {
