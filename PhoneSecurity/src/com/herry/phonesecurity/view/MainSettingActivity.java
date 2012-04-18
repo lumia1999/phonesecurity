@@ -18,6 +18,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,14 +42,21 @@ public class MainSettingActivity extends AbstractActivity {
 	private static final int DLG_SET_MASTER_MARKUP = 4;
 	private static final int DLG_RESET_SETTING = 5;
 	private static final int DLG_INPUT_PWD = 6;
+	private static final int DLG_SHOW_NEW_VERSION_NOTE = 7;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if (Prefs.showVersionNote(mCtx)) {
+			Prefs.hideVersionNote(mCtx);
+			showDialog(DLG_SHOW_NEW_VERSION_NOTE);
+			return;
+		}
 		initProtection();
 	}
 
 	private void initProtection() {
+		// Log.e(TAG, "initProtection");
 		String imsi = Utils.getIMSI(this);
 		String prefImsi = Prefs.getOldSim(this);
 		if (prefImsi == null) {
@@ -162,7 +172,20 @@ public class MainSettingActivity extends AbstractActivity {
 				}
 			});
 			return inputPwdDlg;
+		case DLG_SHOW_NEW_VERSION_NOTE:
+			AlertDialog newNoteDlg = new AlertDialog.Builder(mCtx).create();
+			v = mLayoutInflater.inflate(R.layout.new_version_note, null);
+			initVersionNote(v, id);
+			newNoteDlg.setView(v, 0, 0, 0, 0);
+			newNoteDlg
+					.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
+						@Override
+						public void onDismiss(DialogInterface dialog) {
+							initProtection();
+						}
+					});
+			return newNoteDlg;
 		}
 		return super.onCreateDialog(id);
 	}
@@ -388,6 +411,42 @@ public class MainSettingActivity extends AbstractActivity {
 			Prefs.setPwdLastShowTS(mCtx, System.currentTimeMillis());
 			dismissDialog(dlgId);
 		}
+	}
+
+	private void initVersionNote(View v, int dId) {
+		TextView banner = (TextView) v.findViewById(R.id.banner);
+		LinearLayout note = (LinearLayout) v.findViewById(R.id.content);
+		TextView oldUserTip = (TextView) v.findViewById(R.id.old_user_tip);
+		final int id = dId;
+		Button op1 = (Button) v.findViewById(R.id.op1);
+		Button op2 = (Button) v.findViewById(R.id.op2);
+		op1.setVisibility(View.GONE);
+		op2.setText(R.string.new_version_note_quit);
+		banner.setText(getString(R.string.new_version_banner).replace("{?}",
+				Utils.getVersion(mCtx)));
+		oldUserTip.setText(R.string.old_user_tip);
+		String[] notes = getResources().getStringArray(
+				R.array.new_version_notes);
+		int length = notes.length;
+		View child = null;
+		ImageView iconImg;
+		TextView noteTxt;
+		for (int i = 0; i < length; i++) {
+			child = mLayoutInflater.inflate(R.layout.new_version_note_item,
+					null);
+			iconImg = (ImageView) child.findViewById(R.id.item_icon);
+			noteTxt = (TextView) child.findViewById(R.id.item_note);
+			iconImg.setBackgroundResource(R.drawable.indicator);
+			noteTxt.setText(notes[i]);
+			note.addView(child);
+		}
+		op2.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dismissDialog(id);
+			}
+		});
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import com.herry.phonesecurity.os.OsDeffer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
@@ -17,6 +18,17 @@ public class Utils {
 		TelephonyManager tm = (TelephonyManager) ctx
 				.getSystemService(Context.TELEPHONY_SERVICE);
 		return tm.getSubscriberId();
+	}
+
+	public static String getVersion(Context ctx) {
+		String version = null;
+		try {
+			version = ctx.getPackageManager().getPackageInfo(
+					ctx.getPackageName(), 0).versionName;
+		} catch (NameNotFoundException e) {
+			//
+		}
+		return version;
 	}
 
 	public static boolean getEnable(Context ctx) {

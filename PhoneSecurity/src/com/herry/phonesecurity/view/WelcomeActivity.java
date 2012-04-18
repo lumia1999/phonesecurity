@@ -169,7 +169,7 @@ public class WelcomeActivity extends Activity {
 	private void handlePwdSet() {
 		String firstPwd = viewHolder2.pwd.getText().toString();
 		String secondPwd = viewHolder3.pwd.getText().toString();
-		Log.d(TAG, "firstPwd : " + firstPwd + ",secondPwd : " + secondPwd);
+		// Log.d(TAG, "firstPwd : " + firstPwd + ",secondPwd : " + secondPwd);
 		if (firstPwd.length() < 6 || secondPwd.length() < 6
 				|| !TextUtils.equals(firstPwd, secondPwd)) {
 			Toast

@@ -20,7 +20,7 @@ public class Prefs {
 	private static final String SHOW_PWD_INTERVAL = "show_pwd_interval";
 	private static final String LAST_ACTIVIE_TS = "last_active_ts";
 
-	private static final String VERSION_NOTE_10012 = "10012";
+	private static final String VERSION_NOTE_10013 = "10013";
 
 	public static SharedPreferences get(Context ctx) {
 		return ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -139,12 +139,12 @@ public class Prefs {
 	public static boolean hideVersionNote(Context ctx) {
 		SharedPreferences pref = get(ctx);
 		SharedPreferences.Editor editor = pref.edit();
-		editor.putBoolean(VERSION_NOTE_10012, false);
+		editor.putBoolean(VERSION_NOTE_10013, false);
 		return editor.commit();
 	}
 
 	public static boolean showVersionNote(Context ctx) {
 		SharedPreferences pref = get(ctx);
-		return pref.getBoolean(VERSION_NOTE_10012, true);
+		return pref.getBoolean(VERSION_NOTE_10013, true);
 	}
 }

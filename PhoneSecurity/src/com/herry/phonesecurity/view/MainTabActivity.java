@@ -4,6 +4,7 @@ import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,10 +13,11 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.TabHost.OnTabChangeListener;
 
 import com.herry.phonesecurity.R;
 
-public class MainTabActivity extends TabActivity {
+public class MainTabActivity extends TabActivity implements OnTabChangeListener {
 
 	public static final String EXTRA_TYPE = "type";
 	public static final int TYPE_INIT = 1;
@@ -46,7 +48,8 @@ public class MainTabActivity extends TabActivity {
 		}
 		mLayoutInflater = getLayoutInflater();
 		mTabHost = getTabHost();
-		mTabHost.setup(getLocalActivityManager());
+		mTabHost.setOnTabChangedListener(this);
+		// mTabHost.setup(getLocalActivityManager());
 		TabWidget tabWidget = getTabWidget();
 		tabWidget.setDividerDrawable(R.drawable.tab_divider);
 		mContentIntent = new Intent(this, MainSettingActivity.class).putExtra(
@@ -87,5 +90,11 @@ public class MainTabActivity extends TabActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onTabChanged(String tabId) {
+		Log.d("tttttt", "tabId : " + tabId);
+
 	}
 }
