@@ -68,12 +68,14 @@ public class CacheAppsListActivity extends Activity {
 	private static final int STATE_INIT = 1;
 	private static final int STATE_READY = 2;
 	private static final int STATE_CLEANED = 3;
+	private static final int STATE_NO_CLEAN_NEEDED = 4;
 
 	private static final int DLG_CLEAN_CACHE = 1;
 
 	private static final int MSG_GET_SIZE = 1;
 	private static final int MSG_GET_SIZE_FINISH = 2;
 	private static final int MSG_FILL_DATA = 3;
+	private static final int MSG_CACHE_CLEANED = 4;
 	private Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
@@ -85,6 +87,11 @@ public class CacheAppsListActivity extends Activity {
 				break;
 			case MSG_FILL_DATA:
 				fillData();
+				break;
+			case MSG_CACHE_CLEANED:
+				dismissDialog(DLG_CLEAN_CACHE);
+				mState = STATE_CLEANED;
+				updateTip();
 				break;
 			}
 		};
@@ -181,19 +188,20 @@ public class CacheAppsListActivity extends Activity {
 					if (freeStorageAndNotify != null) {
 						showDialog(DLG_CLEAN_CACHE);
 						try {
-							Log.e(TAG, "pkgName : " + mDataList.get(0).pkgName);
 							freeStorageAndNotify.invoke(mPkgMgr, Utils
 									.getEnvironmentSize() - 1L,
 									mCleanCacheObserver);
 						} catch (Exception e) {
 							Log.e(TAG, "Exception", e);
 						}
-						// new CleanCacheTask().execute();
 					} else {
 						Toast.makeText(getApplicationContext(),
 								R.string.clean_cache_fail, Toast.LENGTH_SHORT)
 								.show();
 					}
+				} else if (mState == STATE_CLEANED
+						|| mState == STATE_NO_CLEAN_NEEDED) {
+					finish();
 				}
 			}
 		});
@@ -201,6 +209,7 @@ public class CacheAppsListActivity extends Activity {
 		mTipTxt = (TextView) findViewById(R.id.clean_tip);
 		mListView = (ListView) findViewById(android.R.id.list);
 		mNoCacheTipTxt = (TextView) findViewById(R.id.no_cache_tip);
+		mNoCacheTipTxt.setText(R.string.no_cache_exist);
 		mLoadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
 		mAnimDrawable = (AnimationDrawable) findViewById(R.id.progress_anim)
 				.getBackground();
@@ -264,6 +273,7 @@ public class CacheAppsListActivity extends Activity {
 				throws RemoteException {
 			Log.e(TAG, "packageName : " + packageName + ",succeeded : "
 					+ succeeded);
+			mHandler.sendEmptyMessage(MSG_CACHE_CLEANED);
 		}
 	}
 
@@ -271,6 +281,8 @@ public class CacheAppsListActivity extends Activity {
 		// Log.e(TAG, "data size : " + mDataList.size());
 		mLoadingLayout.setVisibility(View.GONE);
 		if (mDataList.size() == 0) {
+			mState = STATE_NO_CLEAN_NEEDED;
+			mCleanButton.setText(R.string.quit);
 			mNoCacheTipTxt.setVisibility(View.VISIBLE);
 		} else {
 			Collections.sort(mDataList, new Sort());
@@ -318,6 +330,10 @@ public class CacheAppsListActivity extends Activity {
 			tip = tip.replace("{1}", "<b><font color=green>"
 					+ Formatter.formatFileSize(this, count) + "</font></b>");
 			mTipTxt.setText(Html.fromHtml(tip));
+			mListView.setVisibility(View.GONE);
+			mNoCacheTipTxt.setVisibility(View.VISIBLE);
+			mNoCacheTipTxt.setText(R.string.no_cache_tip);
+			mCleanButton.setText(R.string.quit);
 			break;
 		}
 	}
@@ -396,28 +412,5 @@ public class CacheAppsListActivity extends Activity {
 		public int compare(Item o1, Item o2) {
 			return -(int) (o1.orgSize - o2.orgSize);
 		}
-	}
-
-	private class CleanCacheTask extends AsyncTask<Void, Void, Void> {
-		@Override
-		protected Void doInBackground(Void... params) {
-			int size = mDataList.size();
-			File f = null;
-			for (int i = 0; i < size; i++) {
-				f = mDataList.get(i).cacheFile;
-				Utils.deleteFolder(f);
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			Log.d(TAG, "onPostExecute");
-			dismissDialog(DLG_CLEAN_CACHE);
-			mState = STATE_CLEANED;
-			updateTip();
-		}
-
 	}
 }
