@@ -52,5 +52,13 @@
     <string name="quit">退出</string>
     <string name="clean_cache">清理缓存</string>
     <string name="memory_tip">Ram、Rom简介</string>
+    <string name="clean">一键清理</string>
+    <string name="cache_tip_init">软件个数：{1}\n缓存总大小：{2}</string>
+    <string name="cache_tip_cleaned">恭喜您，总共释放内存：{1}</string>
+    <string name="app_unit">个</string>
+    <string name="clean_cache_ongoing">正在清理，请稍等。。。</string>
+    <string name="clean_cache_fail">清理缓存失败</string>
+    <string name="no_cache_tip">缓存已清理完毕！</string>
+    <string name="no_cache_exist">恭喜，未发现需要清理的缓存文件</string>
 
 </resources>

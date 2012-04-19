@@ -51,6 +51,14 @@
     <string name="activity_not_exist_toast">Well,詳情不可查看？</string>
     <string name="quit">退出</string>
     <string name="clean_cache">清理緩存</string>
-    <string name="memory_tip">Ram、Rom简介</string>
+    <string name="memory_tip">Ram、Rom簡介</string>
+    <string name="clean">一鍵清理</string>
+    <string name="cache_tip_init">軟件個數：{1}\n緩存總大小：{2}</string>
+    <string name="cache_tip_cleaned">恭喜您，總共釋放內存：{1}</string>
+    <string name="app_unit">個</string>
+    <string name="clean_cache_ongoing">正在清理，請稍等。 。 。</string>
+    <string name="clean_cache_fail">清理緩存失敗</string>
+    <string name="no_cache_tip">緩存已清理完畢！</string>
+    <string name="no_cache_exist">恭喜，未發現需要清理的緩存文件</string>
 
 </resources>
