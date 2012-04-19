@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="input_pwd_desc">您总共有三次尝试机会，三次过后还不能正确输入密码将退出应用！</string>
+    <string name="set_alarm_pwd_firsttip">请输入密码</string>
+    <string name="set_alarm_pwd_secondtip">请再次输入密码</string>
+    <string name="input_pwd_desc">您总共有三次尝试机会，三次过后还不能正确输入密码将退出应用！</string>
     <string name="pwd_retry_times_left_tip">当前剩余次数：</string>
     <string name="input_pwd_tip">输入密码进入应用</string>
     <string name="pwd_mismatch_toast">密码输入有误，请重新输入</string>
