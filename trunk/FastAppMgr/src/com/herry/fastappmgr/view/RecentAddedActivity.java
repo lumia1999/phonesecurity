@@ -3,6 +3,8 @@ package com.herry.fastappmgr.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -15,29 +17,28 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.db.PackageAddedDbAdapter;
@@ -60,10 +61,8 @@ public class RecentAddedActivity extends ListActivity {
 
 	private Cursor mCursor;
 
-	private static final int CM_UNINSTALL = 0;
-	private static final int CM_DETAIL_VIEW = 1;
-	private static final int CM_LAUNCH = 2;
-	private static final int CM_INSTALL_SHORTCUT = 3;
+	private int mAppItemPos = -1;
+	private static final int DLG_SHOW_OPTIONS = 1;
 
 	private static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 	private static final String ACTION_INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
@@ -104,6 +103,9 @@ public class RecentAddedActivity extends ListActivity {
 		setContentView(R.layout.recent_added_packages);
 		initUI();
 		registerReceiver();
+		mRootViewGroup = (ViewGroup) findViewById(R.id.root);
+		touchInterceptor = new FrameLayout(this);
+		touchInterceptor.setClickable(true);
 	}
 
 	@Override
@@ -120,6 +122,18 @@ public class RecentAddedActivity extends ListActivity {
 
 			}).start();
 		}
+		mRootViewGroup.removeView(touchInterceptor);
+	}
+
+	private FrameLayout touchInterceptor = null;
+	private ViewGroup mRootViewGroup = null;
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (touchInterceptor.getParent() == null) {
+			mRootViewGroup.addView(touchInterceptor);
+		}
 	}
 
 	@Override
@@ -129,9 +143,193 @@ public class RecentAddedActivity extends ListActivity {
 	}
 
 	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-		openContextMenu(v);
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DLG_SHOW_OPTIONS:
+			AlertDialog opDlg = new AlertDialog.Builder(this).create();
+			View v = getLayoutInflater().inflate(R.layout.app_sort, null);
+			// initAppOpDialog(v, id);
+			opDlg.setView(v, 0, 0, 0, 0);
+			opDlg.setCanceledOnTouchOutside(true);
+			opDlg.getWindow().getAttributes().windowAnimations = R.style.inflateDialogAnim;
+			return opDlg;
+		}
+		return super.onCreateDialog(id);
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch (id) {
+		case DLG_SHOW_OPTIONS:
+			initAppOpDialog(dialog, id);
+			break;
+		}
+		super.onPrepareDialog(id, dialog);
+	}
+
+	private void initAppOpDialog(Dialog v, int dId) {
+		final int dialogId = dId;
+		v.findViewById(R.id.title).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dismissDialog(dialogId);
+			}
+		});
+		v.findViewById(R.id.icon_banner).setVisibility(View.VISIBLE);
+		v.findViewById(R.id.banner).setVisibility(View.GONE);
+
+		ImageView banner_icon = (ImageView) v.findViewById(R.id.banner_icon);
+		TextView banner_title = (TextView) v.findViewById(R.id.banner_title);
+		Item item = mDataList.get(mAppItemPos);
+		banner_icon.setBackgroundDrawable(item.icon);
+		banner_title.setText(item.label);
+		ListView listView = (ListView) v.findViewById(android.R.id.list);
+		v.findViewById(R.id.op_layout).setVisibility(View.GONE);
+		listView.setAdapter(new OpArrayAdapter(this,
+				R.layout.simple_list_item_1, getResources().getStringArray(
+						R.array.app_op)));
+	}
+
+	private class OpArrayAdapter extends ArrayAdapter<String> {
+		private int mArrLenth;
+		private int mBlkTextColor;
+		private int mGreyTextColor;
+
+		public OpArrayAdapter(Context context, int textViewResourceId,
+				String[] objects) {
+			super(context, textViewResourceId, objects);
+			mArrLenth = getResources().getStringArray(R.array.app_op).length;
+			mBlkTextColor = getResources().getColor(android.R.color.black);
+			mGreyTextColor = Color.GRAY;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View v = super.getView(position, convertView, parent);
+			final int pos = position;
+			final Item item = mDataList.get(mAppItemPos);
+			if (item.launcherIntent == null) {
+				if (position == mArrLenth - 1 || position == mArrLenth - 2) {
+					v.setClickable(false);
+					v.setEnabled(false);
+					((TextView) v).setTextColor(mGreyTextColor);
+				} else {
+					v.setClickable(true);
+					v.setEnabled(true);
+					((TextView) v).setTextColor(mBlkTextColor);
+				}
+			} else {
+				v.setClickable(true);
+				v.setEnabled(true);
+				((TextView) v).setTextColor(mBlkTextColor);
+			}
+
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					switch (pos) {
+					case 0:
+						uninstall(item.pkgName);
+						break;
+					case 1:
+						viewDetail(item.pkgName);
+						break;
+					case 2:
+						if (v.isEnabled()) {
+							launch(item.launcherIntent);
+						} else {
+							// nothing
+						}
+						break;
+					case 3:
+						if (v.isEnabled()) {
+							createShortcut(item);
+						} else {
+							// nothing
+						}
+						break;
+					}
+
+				}
+			});
+			return v;
+		}
+	}
+
+	private void uninstall(String pkgName) {
+		new AsyncTask<String, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(String... params) {
+				Uri pkgUri = Uri.parse("package:" + params[0]);
+				Intent i = new Intent(Intent.ACTION_DELETE).setData(pkgUri);
+				startActivity(i);
+				return null;
+			}
+
+		}.execute(pkgName);
+		dismissDialog(DLG_SHOW_OPTIONS);
+	}
+
+	private void viewDetail(String pkgName) {
+		new AsyncTask<String, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(String... params) {
+				Uri pkgUri = Uri.parse("package:" + params[0]);
+				Intent i = new Intent(
+						"android.settings.APPLICATION_DETAILS_SETTINGS")
+						.setData(pkgUri);
+				try {
+					startActivity(i);
+				} catch (ActivityNotFoundException e) {
+					//
+				}
+				return null;
+			}
+
+		}.execute(pkgName);
+		dismissDialog(DLG_SHOW_OPTIONS);
+	}
+
+	private void launch(Intent launchIntent) {
+		new AsyncTask<Intent, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Intent... params) {
+				try {
+					startActivity(params[0]);
+				} catch (ActivityNotFoundException e) {
+					//
+				}
+				return null;
+			}
+
+		}.execute(launchIntent);
+		dismissDialog(DLG_SHOW_OPTIONS);
+	}
+
+	private void createShortcut(final Item temp) {
+		new AsyncTask<Void, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				if (temp.launcherIntent != null) {
+					Intent i = new Intent();
+					i.setAction(ACTION_INSTALL_SHORTCUT);
+					i.putExtra(Intent.EXTRA_SHORTCUT_NAME, temp.label);
+					i.putExtra(EXTRA_SHORTCUT_DUPLICATE, false);
+					i.putExtra(Intent.EXTRA_SHORTCUT_INTENT,
+							temp.launcherIntent);
+					i.putExtra(Intent.EXTRA_SHORTCUT_ICON,
+							createIconDrawable(temp.icon));
+					sendBroadcast(i);
+				}
+				return null;
+			}
+		}.execute();
+		dismissDialog(DLG_SHOW_OPTIONS);
 	}
 
 	private Bitmap createIconDrawable(Drawable drawable) {
@@ -153,64 +351,10 @@ public class RecentAddedActivity extends ListActivity {
 	}
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
-		Item temp = mDataList.get(info.position);
-		Uri pkgUri = Uri.parse("package:" + temp.pkgName);
-		Intent i = new Intent();
-		switch (item.getItemId()) {
-		case CM_UNINSTALL:
-			i.setAction(Intent.ACTION_DELETE).setData(pkgUri);
-			startActivity(i);
-			return true;
-		case CM_LAUNCH:
-			startActivity(temp.launcherIntent);
-			return true;
-		case CM_DETAIL_VIEW:
-			i.setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
-					.setData(pkgUri);
-			try {
-				startActivity(i);
-			} catch (ActivityNotFoundException e) {
-				//
-			}
-			return true;
-		case CM_INSTALL_SHORTCUT:
-			if (temp.launcherIntent != null) {
-				i.setAction(ACTION_INSTALL_SHORTCUT);
-				i.putExtra(Intent.EXTRA_SHORTCUT_NAME, temp.label);
-				i.putExtra(EXTRA_SHORTCUT_DUPLICATE, false);
-				i.putExtra(Intent.EXTRA_SHORTCUT_INTENT, temp.launcherIntent);
-				i.putExtra(Intent.EXTRA_SHORTCUT_ICON,
-						createIconDrawable(temp.icon));
-				sendBroadcast(i);
-			} else {
-				String toastTxt = getString(R.string.app_non_launcher_point_toast);
-				toastTxt = toastTxt.replace("(?)", "\"" + temp.label + "\"");
-				Toast.makeText(this, toastTxt, Toast.LENGTH_SHORT).show();
-			}
-			break;
-		}
-		return super.onContextItemSelected(item);
-	}
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-		Item item = mDataList.get(info.position);
-		menu.setHeaderIcon(new BitmapDrawable(createIconDrawable(item.icon)));
-		menu.setHeaderTitle(item.label);
-		menu.add(0, CM_UNINSTALL, 0, R.string.cm_uninstall);
-		menu.add(0, CM_DETAIL_VIEW, 0, R.string.cm_detail_view);
-		menu.add(0, CM_LAUNCH, 0, R.string.cm_launch);
-		menu.add(0, CM_INSTALL_SHORTCUT, 0, R.string.cm_install_shortcut);
-		if (item.launcherIntent == null) {
-			menu.getItem(CM_LAUNCH).setEnabled(false);
-			menu.getItem(CM_INSTALL_SHORTCUT).setEnabled(false);
-		}
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		mAppItemPos = position;
+		showDialog(DLG_SHOW_OPTIONS);
 	}
 
 	private void initUI() {
@@ -218,9 +362,9 @@ public class RecentAddedActivity extends ListActivity {
 		mDbAdapter = PackageAddedDbAdapter.getInstance(this);
 		mLoadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
 		mEmptyTipTxt = (TextView) findViewById(R.id.empty);
-		registerForContextMenu(getListView());
 		mLoadingAnim = (ImageView) findViewById(R.id.progress_anim);
 		mAnimDrawable = (AnimationDrawable) mLoadingAnim.getBackground();
+		mAppItemPos = -1;
 	}
 
 	@Override

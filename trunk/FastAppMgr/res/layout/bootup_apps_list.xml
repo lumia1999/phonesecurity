@@ -1,45 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    
-    <RelativeLayout 
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:background="@color/grey" >
-		<FrameLayout android:layout_width="fill_parent"
-		    android:layout_height="fill_parent">
-			<RelativeLayout android:layout_width="fill_parent"
-			    android:layout_height="fill_parent">
-			    <TextView android:id="@+id/bootup_apps_title"
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:textAppearance="?android:attr/textAppearanceMedium"
-			        android:textColor="@android:color/black"
-			        android:background="@drawable/corner_border_selector"
-			        android:layout_margin="3dip"
-			        android:padding="5dip"
-			        android:text="@string/click_to_view_detail"
-			        android:gravity="center"/>
-			    <ListView android:id="@android:id/list"
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:layout_below="@+id/bootup_apps_title"
-			        android:cacheColorHint="@color/list_view_bg_color"
-	            	android:divider="@null"
-	            	android:fadingEdge="none"
-	            	android:fastScrollEnabled="true"/>
-			</RelativeLayout>
-		    <TextView android:id="@android:id/empty"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:textAppearance="?android:attr/textAppearanceSmall"
-		        android:textColor="@android:color/black"
-		        android:layout_gravity="center"
-		        android:gravity="center"
-		        android:visibility="gone"
-		        android:text="@string/no_bootup_apps"/>
-		</FrameLayout>
-	</RelativeLayout>
-	<include layout="@layout/loading"/>
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/grey" >
+
+        <TextView
+            android:id="@+id/bootup_apps_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dip"
+            android:background="@drawable/corner_border_selector"
+            android:gravity="center"
+            android:minHeight="48dip"
+            android:padding="5dip"
+            android:text="@string/click_to_view_detail"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black" />
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/bootup_apps_title"
+            android:background="@color/normal_bg" >
+
+            <ListView
+                android:id="@android:id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/bootup_apps_title"
+                android:background="@color/normal_bg"
+                android:cacheColorHint="@color/list_view_bg_color"
+                android:divider="@null"
+                android:fadingEdge="none"
+                android:fastScrollEnabled="true" />
+
+            <TextView
+                android:id="@android:id/empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/no_bootup_apps"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/black"
+                android:visibility="gone" />
+        </FrameLayout>
+    </RelativeLayout>
+
+    <include layout="@layout/loading" />
+
 </merge>

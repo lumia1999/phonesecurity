@@ -1,6 +1,7 @@
 package com.herry.fastappmgr.view;
 
 import com.herry.fastappmgr.R;
+import com.herry.fastappmgr.util.Utils;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -31,17 +32,8 @@ public class AboutActivity extends Activity {
 	private void fillData() {
 		mAppNameTxt.setText(getString(R.string.app_name_tip)
 				+ getString(R.string.app_name));
-		mAppVerTxt.setText(getAppVersion());
+		mAppVerTxt.setText(Utils.getAppVersion(this, true));
 		mWebView.loadUrl("file:///android_asset/about.html");
 	}
 
-	private String getAppVersion() {
-		try {
-			PackageManager pm = getPackageManager();
-			String version = pm.getPackageInfo(getPackageName(), 0).versionName;
-			return getString(R.string.version_info) + version;
-		} catch (NameNotFoundException e) {
-			return getString(R.string.no_version_current);
-		}
-	}
 }

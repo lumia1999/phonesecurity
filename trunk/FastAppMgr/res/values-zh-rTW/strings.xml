@@ -60,5 +60,6 @@
     <string name="clean_cache_fail">清理緩存失敗</string>
     <string name="no_cache_tip">緩存已清理完畢！</string>
     <string name="no_cache_exist">恭喜，未發現需要清理的緩存文件</string>
-
+    <string name="new_version_note_title">應用管理{?}版更新</string>
+    <string name="quit_note_dlg">我知道了</string>
 </resources>

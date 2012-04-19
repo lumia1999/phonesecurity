@@ -173,6 +173,7 @@ public class CacheAppsListActivity extends Activity {
 			TextView tv = (TextView) v.findViewById(R.id.progress_txt);
 			tv.setText(R.string.clean_cache_ongoing);
 			dlg.setView(v, 0, 0, 0, 0);
+			dlg.getWindow().getAttributes().windowAnimations = R.style.inflateDialogAnim;
 			return dlg;
 		}
 		return super.onCreateDialog(id);

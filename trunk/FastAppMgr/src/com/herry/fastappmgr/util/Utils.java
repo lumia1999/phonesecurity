@@ -18,6 +18,8 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 import net.youmi.android.appoffers.YoumiPointsManager;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
@@ -286,5 +288,23 @@ public final class Utils {
 		StatFs sf = new StatFs(path);
 		long blk = sf.getBlockSize();
 		return sf.getBlockCount() * blk;
+	}
+
+	public static String getAppVersion(Context ctx, boolean addTip) {
+		try {
+			PackageManager pm = ctx.getPackageManager();
+			String version = pm.getPackageInfo(ctx.getPackageName(), 0).versionName;
+			if (addTip) {
+				return ctx.getString(R.string.version_info) + version;
+			} else {
+				return version;
+			}
+		} catch (NameNotFoundException e) {
+			if (addTip) {
+				return ctx.getString(R.string.no_version_current);
+			} else {
+				return null;
+			}
+		}
 	}
 }

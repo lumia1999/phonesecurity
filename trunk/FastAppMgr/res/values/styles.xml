@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="inflateDialogAnim" parent="@android:style/Theme.Dialog">
+        <item name="android:windowEnterAnimation">@anim/shrink_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_top</item>
+    </style>
+
+</resources>
