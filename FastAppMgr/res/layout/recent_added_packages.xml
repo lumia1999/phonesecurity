@@ -4,10 +4,10 @@
     android:layout_height="fill_parent" >
 
     <FrameLayout
+        android:id="@+id/root"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/grey"
-        android:orientation="vertical" >
+        android:background="@color/normal_bg" >
 
         <ListView
             android:id="@android:id/list"

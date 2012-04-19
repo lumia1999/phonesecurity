@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="app_sort_type">
+        <item>按大小</item>
+        <item>按名稱</item>
+    </string-array>
+    <string-array name="app_op">
+        <item>快速卸載</item>
+        <item>查看詳情</item>
+        <item>快速啟動</item>
+        <item>創建桌面快捷方式</item>
+    </string-array>
+    <string-array name="new_version_notes">
+        <item>增加新功能：緩存清理，隨時瘦身手機！ （點擊主頁的內存提示，在彈出的對話框中，點擊“清理緩存”）</item>
+        <item>統一UI顯示，界面更整潔</item>
+        <item>優化結構，體驗為當前最佳，你值得擁有！</item>
+        <item>點擊每一個應用，會彈出相應的操作選項對話框，點擊對話框標題欄，即可讓對話框消失</item>
+    </string-array>
+
+</resources>

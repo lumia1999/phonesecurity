@@ -25,13 +25,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Animation.AnimationListener;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -105,6 +108,9 @@ public class AppTabActivity extends TabActivity {
 		}
 	};
 
+	FrameLayout touchInterceptor = null;
+	private ViewGroup mRootViewGroup = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -119,6 +125,26 @@ public class AppTabActivity extends TabActivity {
 		registerReceiver();
 		initUI();
 		setupTabs();
+
+		mRootViewGroup = (RelativeLayout) findViewById(R.id.root);
+		touchInterceptor = new FrameLayout(this);
+		touchInterceptor.setClickable(true);
+	}
+
+	@Override
+	protected void onResume() {
+		Log.e(TAG, "onResume");
+		super.onResume();
+		mRootViewGroup.removeView(touchInterceptor);
+	}
+
+	@Override
+	protected void onPause() {
+		Log.e(TAG, "onPause");
+		super.onPause();
+		if (touchInterceptor.getParent() == null) {
+			mRootViewGroup.addView(touchInterceptor);
+		}
 	}
 
 	@Override
@@ -235,6 +261,8 @@ public class AppTabActivity extends TabActivity {
 			View v = getLayoutInflater().inflate(R.layout.memory_intro, null);
 			initMemoryDlgInfo(v, id);
 			dialog.setView(v, 0, 0, 0, 0);
+			dialog.setCanceledOnTouchOutside(true);
+			dialog.getWindow().getAttributes().windowAnimations = R.style.inflateDialogAnim;
 			return dialog;
 		default:
 			return super.onCreateDialog(id);

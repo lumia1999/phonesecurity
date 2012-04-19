@@ -60,5 +60,7 @@
     <string name="clean_cache_fail">清理缓存失败</string>
     <string name="no_cache_tip">缓存已清理完毕！</string>
     <string name="no_cache_exist">恭喜，未发现需要清理的缓存文件</string>
+    <string name="new_version_note_title">应用管理{?}版更新</string>
+    <string name="quit_note_dlg">我知道了</string>
 
 </resources>

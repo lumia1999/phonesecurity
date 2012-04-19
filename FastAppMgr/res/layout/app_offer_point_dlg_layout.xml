@@ -3,11 +3,23 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/list_item_bg_normal" >
-	
+
+    <TextView
+        android:id="@+id/banner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey"
+        android:gravity="center"
+        android:padding="5dip"
+        android:singleLine="true"
+        android:text="ddd"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <TextView
         android:id="@+id/current_point"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/banner"
         android:padding="3dip"
         android:text="200"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -26,9 +38,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/divider"
         android:padding="5dip"
-        android:textColor="@android:color/black"
         android:text="tip"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -36,10 +48,10 @@
         android:layout_below="@+id/get_point_tip"
         android:background="#c0c0c0c0"
         android:gravity="center_horizontal"
+        android:paddingBottom="7dip"
         android:paddingLeft="15dip"
         android:paddingRight="15dip"
-        android:paddingTop="7dip"
-        android:paddingBottom="7dip" >
+        android:paddingTop="7dip" >
 
         <Button
             android:id="@+id/yes"
