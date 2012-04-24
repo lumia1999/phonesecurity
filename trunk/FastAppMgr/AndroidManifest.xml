@@ -86,6 +86,10 @@
             android:exported="false"
             android:name=".service.BootupIntentService" >
         </service>
+        <service
+            android:exported="false"
+            android:name=".service.OfferCheckIntentService" >
+        </service>
         <!-- ad -->
         <activity
             android:configChanges="keyboard|keyboardHidden|orientation"

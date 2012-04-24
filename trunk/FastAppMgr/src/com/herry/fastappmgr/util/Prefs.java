@@ -12,6 +12,8 @@ public final class Prefs {
 
 	private static final String NEW_VERSION_NOTE = "10020";
 
+	private static final String ITEM_APP_INSTALLED_TS = "app_installed_ts";
+
 	private static SharedPreferences getInstance(Context ctx) {
 		if (mInstance == null) {
 			mInstance = ctx.getSharedPreferences(PREEF_NAME,
@@ -62,6 +64,19 @@ public final class Prefs {
 		} else {
 			return true;
 		}
+	}
 
+	public static long getAppInstalledTs(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		return pref.getLong(ITEM_APP_INSTALLED_TS + "-"
+				+ Utils.getAppVersion(ctx, false), -1L);
+	}
+
+	public static void setAppInstalledTs(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		Editor editor = pref.edit();
+		editor.putLong(ITEM_APP_INSTALLED_TS + "-"
+				+ Utils.getAppVersion(ctx, false), System.currentTimeMillis());
+		editor.commit();
 	}
 }
