@@ -20,6 +20,8 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
@@ -222,8 +224,8 @@ public final class Utils {
 			String value = sb.toString();
 			String[] splits = value.split(" ");
 			Log.d("DevTimeInfo", "[0] :  " + splits[0] + ",[1] : " + splits[1]);
-			return new DevTimeInfo(Double.valueOf(splits[0]), Double
-					.valueOf(splits[1]));
+			return new DevTimeInfo(Double.valueOf(splits[0]),
+					Double.valueOf(splits[1]));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -305,6 +307,17 @@ public final class Utils {
 			} else {
 				return null;
 			}
+		}
+	}
+
+	public static boolean isNetworkActived(Context ctx) {
+		ConnectivityManager cm = (ConnectivityManager) ctx
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo ni = cm.getActiveNetworkInfo();
+		if (ni != null && ni.isConnected()) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

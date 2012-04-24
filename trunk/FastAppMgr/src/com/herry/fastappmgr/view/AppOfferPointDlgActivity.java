@@ -72,6 +72,8 @@ public class AppOfferPointDlgActivity extends Activity implements
 			mBanner.setText(R.string.omit_ads);
 			mGetPointsTxt.setText(R.string.omit_ads_tip);
 			mCurrentPointsTxt.setVisibility(View.GONE);
+			mNoBtn.setVisibility(View.GONE);
+			mYesBtn.setText(R.string.remove_ad_btn_txt);
 			break;
 		}
 		mYesBtn.setOnClickListener(this);
