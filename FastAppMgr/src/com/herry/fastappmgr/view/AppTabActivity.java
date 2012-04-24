@@ -136,7 +136,7 @@ public class AppTabActivity extends TabActivity {
 		touchInterceptor = new FrameLayout(this);
 		touchInterceptor.setClickable(true);
 		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_CHECK_OFFER),
-				30 * 1000);
+				18 * 1000);
 	}
 
 	@Override

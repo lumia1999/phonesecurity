@@ -13,10 +13,6 @@ public class FastAppMgrApp extends Application {
 		if (Prefs.getAppFirstLaunch(this) == -1L) {
 			Prefs.setAppFirstLaunch(this);
 		}
-		// keep installed timestamp
-		if (Prefs.getAppInstalledTs(this) == -1L) {
-			Prefs.setAppInstalledTs(this);
-		}
 	}
 
 }

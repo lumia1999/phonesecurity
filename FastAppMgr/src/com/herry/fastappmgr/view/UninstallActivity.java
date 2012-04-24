@@ -203,7 +203,7 @@ public class UninstallActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		Log.e(TAG, "position : " + position);
+		// Log.e(TAG, "position : " + position);
 		mAppItemPos = position - 1;
 		showDialog(DLG_SHOW_OPTIONS);
 	}

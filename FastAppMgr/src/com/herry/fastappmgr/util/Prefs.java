@@ -13,6 +13,8 @@ public final class Prefs {
 	private static final String NEW_VERSION_NOTE = "10020";
 
 	private static final String ITEM_APP_INSTALLED_TS = "app_installed_ts";
+	private static final String ITEM_OFFER_SHOW_TIMES = "app_offer_show_times";
+	private static final String ITEM_OFFER_LAST_SHOW_TS = "app_offer_last_show_ts";
 
 	private static SharedPreferences getInstance(Context ctx) {
 		if (mInstance == null) {
@@ -66,17 +68,40 @@ public final class Prefs {
 		}
 	}
 
-	public static long getAppInstalledTs(Context ctx) {
+	public static int getOfferShowTimes(Context ctx) {
 		SharedPreferences pref = get(ctx);
-		return pref.getLong(ITEM_APP_INSTALLED_TS + "-"
-				+ Utils.getAppVersion(ctx, false), -1L);
+		return pref.getInt(
+				ITEM_OFFER_SHOW_TIMES + "-" + Utils.getAppVersion(ctx, false),
+				0);
 	}
 
-	public static void setAppInstalledTs(Context ctx) {
+	public static long getOfferLastShowTs(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		return pref
+				.getLong(
+						ITEM_OFFER_LAST_SHOW_TS + "-"
+								+ Utils.getAppVersion(ctx, false), -1L);
+	}
+
+	public static void setOfferShowTs(Context ctx) {
 		SharedPreferences pref = get(ctx);
 		Editor editor = pref.edit();
-		editor.putLong(ITEM_APP_INSTALLED_TS + "-"
-				+ Utils.getAppVersion(ctx, false), System.currentTimeMillis());
+		editor.putLong(
+				ITEM_OFFER_LAST_SHOW_TS + "-" + Utils.getAppVersion(ctx, false),
+				System.currentTimeMillis());
+		editor.commit();
+	}
+
+	public static void updateOfferShowInfo(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		int prevTimes = getOfferShowTimes(ctx);
+		Editor editor = pref.edit();
+		editor.putInt(
+				ITEM_OFFER_SHOW_TIMES + "-" + Utils.getAppVersion(ctx, false),
+				++prevTimes);
+		editor.putLong(
+				ITEM_OFFER_LAST_SHOW_TS + "-" + Utils.getAppVersion(ctx, false),
+				System.currentTimeMillis());
 		editor.commit();
 	}
 }
