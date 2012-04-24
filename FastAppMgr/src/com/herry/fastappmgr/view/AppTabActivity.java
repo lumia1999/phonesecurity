@@ -41,6 +41,7 @@ import android.widget.TextView;
 
 import com.herry.fastappmgr.MemoryInfo;
 import com.herry.fastappmgr.R;
+import com.herry.fastappmgr.service.OfferCheckIntentService;
 import com.herry.fastappmgr.util.Constants;
 import com.herry.fastappmgr.util.Prefs;
 import com.herry.fastappmgr.util.Utils;
@@ -60,6 +61,7 @@ public class AppTabActivity extends TabActivity {
 
 	private static final int MSG_CHANGE_TIP = 1;
 	private static final int MSG_UPDATE_ROM_INFO = 2;
+	private static final int MSG_CHECK_OFFER = 3;
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -78,6 +80,10 @@ public class AppTabActivity extends TabActivity {
 				mRomInfo = Utils.getMemoryInfo(getApplicationContext());
 				mYoumiOfferTipTxt.setText(mRomInfo
 						.toString(getApplicationContext()));
+				break;
+			case MSG_CHECK_OFFER:
+				startService(new Intent(getApplicationContext(),
+						OfferCheckIntentService.class));
 				break;
 			}
 		}
@@ -129,6 +135,8 @@ public class AppTabActivity extends TabActivity {
 		mRootViewGroup = (RelativeLayout) findViewById(R.id.root);
 		touchInterceptor = new FrameLayout(this);
 		touchInterceptor.setClickable(true);
+		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_CHECK_OFFER),
+				30 * 1000);
 	}
 
 	@Override
