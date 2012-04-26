@@ -100,7 +100,13 @@
 
         <meta-data
             android:name="YOUMI_CHANNEL"
-            android:value="10050" />
+            android:value="10000" />
+        <meta-data
+            android:name="gfan_statistics_appkey"
+            android:value="a22144efaf314739887380fba858d928" />
+        <meta-data
+            android:name="gfan_cpid"
+            android:value="androidmarket" />
     </application>
 
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />

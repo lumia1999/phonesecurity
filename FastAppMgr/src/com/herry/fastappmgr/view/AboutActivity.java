@@ -1,11 +1,10 @@
 package com.herry.fastappmgr.view;
 
+import com.gfan.sdk.statitistics.GFAgent;
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.util.Utils;
 
 import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -34,6 +33,18 @@ public class AboutActivity extends Activity {
 				+ getString(R.string.app_name));
 		mAppVerTxt.setText(Utils.getAppVersion(this, true));
 		mWebView.loadUrl("file:///android_asset/about.html");
+	}
+
+	@Override
+	protected void onResume() {
+		GFAgent.onResume(this);
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		GFAgent.onPause(this);
+		super.onPause();
 	}
 
 }

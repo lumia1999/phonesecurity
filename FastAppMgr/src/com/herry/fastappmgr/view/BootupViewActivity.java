@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.gfan.sdk.statitistics.GFAgent;
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.db.PackageAddedDbAdapter;
 import com.herry.fastappmgr.db.PackageAddedDbHelper.BoottimeHistoryColumn;
@@ -68,6 +69,18 @@ public class BootupViewActivity extends Activity {
 				initData();
 			}
 		}).start();
+	}
+
+	@Override
+	protected void onResume() {
+		GFAgent.onResume(this);
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		GFAgent.onPause(this);
+		super.onPause();
 	}
 
 	private void initUI() {

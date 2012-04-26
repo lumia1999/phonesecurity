@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gfan.sdk.statitistics.GFAgent;
 import com.herry.fastappmgr.R;
 
 public class DisplayBootupAppsActivity extends Activity {
@@ -94,6 +95,18 @@ public class DisplayBootupAppsActivity extends Activity {
 				initData();
 			}
 		}).start();
+	}
+	
+	@Override
+	protected void onResume() {
+		GFAgent.onResume(this);
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		GFAgent.onPause(this);
+		super.onPause();
 	}
 
 	private void initUI() {

@@ -19,7 +19,6 @@ import android.content.pm.PackageStats;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -38,9 +37,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gfan.sdk.statitistics.GFAgent;
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.util.Utils;
-import com.hp.hpl.sparta.Sparta.CacheFactory;
 
 public class CacheAppsListActivity extends Activity {
 	private static final String TAG = "CacheAppsListActivity";
@@ -157,6 +156,13 @@ public class CacheAppsListActivity extends Activity {
 				}
 			}).start();
 		}
+		GFAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		GFAgent.onPause(this);
+		super.onPause();
 	}
 
 	@Override
@@ -247,7 +253,7 @@ public class CacheAppsListActivity extends Activity {
 			label = mPkgMgr.getApplicationLabel(pInfo.applicationInfo)
 					.toString();
 			cacheFile = createPackageContext(pkgName, 0).getCacheDir();
-			Log.d(TAG, "cacheFile : " + cacheFile.getAbsolutePath());
+			// Log.d(TAG, "cacheFile : " + cacheFile.getAbsolutePath());
 			dataList.add(new Item(icon, label, pkgName, cacheSize, Formatter
 					.formatFileSize(this, cacheSize), cacheFile));
 		} catch (NameNotFoundException e) {
