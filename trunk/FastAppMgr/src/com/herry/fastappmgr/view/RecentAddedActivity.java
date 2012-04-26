@@ -40,6 +40,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.gfan.sdk.statitistics.GFAgent;
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.db.PackageAddedDbAdapter;
 import com.herry.fastappmgr.db.PackageAddedDbHelper.RecentAddedPkgColumn;
@@ -123,6 +124,7 @@ public class RecentAddedActivity extends ListActivity {
 			}).start();
 		}
 		mRootViewGroup.removeView(touchInterceptor);
+		GFAgent.onResume(this);
 	}
 
 	private FrameLayout touchInterceptor = null;
@@ -134,6 +136,7 @@ public class RecentAddedActivity extends ListActivity {
 		if (touchInterceptor.getParent() == null) {
 			mRootViewGroup.addView(touchInterceptor);
 		}
+		GFAgent.onPause(this);
 	}
 
 	@Override

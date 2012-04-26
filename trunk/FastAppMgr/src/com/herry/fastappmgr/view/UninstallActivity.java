@@ -50,6 +50,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.gfan.sdk.statitistics.GFAgent;
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.util.Constants;
 import com.herry.fastappmgr.util.Prefs;
@@ -180,6 +181,7 @@ public class UninstallActivity extends ListActivity {
 			}).start();
 		}
 		mRootViewGroup.removeView(touchInterceptor);
+		GFAgent.onResume(this);
 	}
 
 	private FrameLayout touchInterceptor = null;
@@ -197,6 +199,7 @@ public class UninstallActivity extends ListActivity {
 	protected void onDestroy() {
 		Log.d(TAG, "onDestroy");
 		unregisterReceiver();
+		GFAgent.onPause(this);
 		super.onDestroy();
 	}
 
