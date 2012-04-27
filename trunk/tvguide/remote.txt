@@ -1,0 +1,42 @@
+1.www.zokama.com/androlirc
+
+
+2.http://www.remotecentral.com/features.htm
+
+3.http://www.att.com/support_media/images/pdf/uverse/remote_control_user_guide.pdf
+
+4.http://forum.xda-developers.com/showthread.php?p=19568600#post19568600
+
+5.http://www.lirc.org/
+
+6.http://www.irda.org/
+
+12.http://www.remotecentral.com/features/irdisp1.htm
+
+http://winlirc.sourceforge.net/technicaldetails.html
+
+http://www.arcfn.com/2010/03/understanding-sony-ir-remote-codes-lirc.html
+
+万能遥控器：http://wenku.baidu.com/view/d37d5c0f7cd184254b35356e.html
+
+IR RC 原理 http://www.sbprojects.com/knowledge/ir/index.php
+
+7.http://freshpassport.blogspot.com/2009/01/blog-post_7177.html(资料)
+
+8.http://www.hseda.com/electric/hwjm1/hwjm1.htm
+
+9.http://blog.sina.com.cn/s/blog_4d357a480100exlh.html
+
+10.http://baike.baidu.com/view/2048154.htm
+
+11.http://wenku.baidu.com/view/c353e8360b4c2e3f57276349.html
+
+
+Redirect the output to a file on your SD card if you aren't using adb. I'm not quite sure whether the path to the external SD has changed for your device/version of Android, but for me it would be something similar (I've added the $ that represents the command prompt, don't type this!)
+
+$ cd /sdcard/external_sd
+$ dmesg > dmesg.output
+& ls -R /sys > sysfs.output
+
+Then copy dmesg.output and sysfs.output from the external card.
+
