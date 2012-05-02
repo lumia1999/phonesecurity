@@ -36,7 +36,7 @@ public class OfferCheckIntentService extends IntentService {
 			long span = Math.abs(now - lastShowTs);
 			// Log.e(TAG, "span : " + span);
 			int showTimes = Prefs.getOfferShowTimes(this);
-			if (showTimes < 3) {// ONLY show three times
+			if (showTimes < 2) {// ONLY show two times
 				if (!Utils.youmiofferPointsReach(this)) {
 					int days = (int) (span / ONE_DAY);
 					// Log.e(TAG, "days : " + days);

@@ -24,6 +24,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.StatFs;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -224,8 +225,8 @@ public final class Utils {
 			String value = sb.toString();
 			String[] splits = value.split(" ");
 			Log.d("DevTimeInfo", "[0] :  " + splits[0] + ",[1] : " + splits[1]);
-			return new DevTimeInfo(Double.valueOf(splits[0]),
-					Double.valueOf(splits[1]));
+			return new DevTimeInfo(Double.valueOf(splits[0]), Double
+					.valueOf(splits[1]));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -319,5 +320,26 @@ public final class Utils {
 		} else {
 			return false;
 		}
+	}
+
+	// device information
+
+	public static String getDevBasicInfo(Context ctx) {
+		String model = android.os.Build.MODEL;
+		String version = "Android " + android.os.Build.VERSION.RELEASE;
+		TelephonyManager tm = (TelephonyManager) ctx
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		String imei = tm.getDeviceId();
+		String imsi = tm.getSubscriberId();
+		StringBuilder sb = new StringBuilder();
+		sb.append(ctx.getString(R.string.model_tip)).append(model).append("\n");
+		sb.append(ctx.getString(R.string.version_tip)).append(version).append(
+				"\n");
+		sb.append(ctx.getString(R.string.imei_tip)).append(imei);
+		if (imsi != null && !TextUtils.equals(imsi.trim(), "")) {
+			sb.append("\n");
+			sb.append(ctx.getString(R.string.imsi_tip)).append(imsi);
+		}
+		return sb.toString();
 	}
 }

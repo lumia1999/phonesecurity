@@ -97,7 +97,6 @@ public class UninstallActivity extends ListActivity {
 	private int mSortCheckedPosition;
 
 	private static final int MSG_FILL_DATA = 1;
-	private static final int MSG_GET_PKG_SIZE = 2;
 	private static final int MSG_REFRESH_PKG_SIZE = 3;
 	private static final int MSG_UPDATE_UI_UNINSTALL = 4;
 	private Handler mHandler = new Handler() {
@@ -108,9 +107,6 @@ public class UninstallActivity extends ListActivity {
 			switch (msg.what) {
 			case MSG_FILL_DATA:
 				fillData();
-				break;
-			case MSG_GET_PKG_SIZE:
-				getAllPackageSize();
 				break;
 			case MSG_REFRESH_PKG_SIZE:
 				refreshData(msg);

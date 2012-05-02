@@ -64,5 +64,11 @@
     <string name="quit_note_dlg">我知道了</string>
     <string name="omit_ads">去广告</string>
     <string name="omit_ads_tip">只要拥有50积分，即可永久去除广告，你还在犹豫什么呢</string>
-	<string name="remove_ad_btn_txt">帮我去广告</string>
+    <string name="remove_ad_btn_txt">帮我去广告</string>
+
+    <!-- basic info -->
+    <string name="model_tip">型号：</string>
+    <string name="imei_tip">串号（IMEI）：</string>
+    <string name="imsi_tip">SIM卡串号（IMSI）：</string>
+
 </resources>
