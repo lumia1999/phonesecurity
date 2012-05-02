@@ -70,5 +70,22 @@
     <string name="model_tip">型号：</string>
     <string name="imei_tip">串号（IMEI）：</string>
     <string name="imsi_tip">SIM卡串号（IMSI）：</string>
-
+    <string name="max_freq_tip">最高频率：</string>
+    <string name="min_freq_tip">最低频率：</string>
+    <string name="cpu_title">CPU信息</string>
+    <string name="screen_resolution_tip">分辨率：</string>
+    <string name="screen_density_tip">密度：</string>
+    <string name="screen_density_dpi_tip">像素密度：</string>
+    <string name="screen_title">屏幕信息</string>
+    <string name="battery_title">电池信息</string>
+	<string name="battery_level_tip">剩余电量：</string>
+	<string name="battery_health_tip">健康情况：</string>
+	
+	<string name="battery_health_dead">电池已坏</string>
+	<string name="battery_health_good">良好</string>
+	<string name="battery_health_overheat">电池过热</string>
+	<string name="battery_health_over_voltage">电池电压过高</string>
+	<string name="battery_health_unknown">未知</string>
+	<string name="battery_health_unspecified_failure">未知原因导致不可用</string>
+	
 </resources>

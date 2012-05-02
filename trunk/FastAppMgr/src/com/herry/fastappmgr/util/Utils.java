@@ -17,17 +17,25 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import net.youmi.android.appoffers.YoumiPointsManager;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.BatteryManager;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.herry.fastappmgr.DevTimeInfo;
 import com.herry.fastappmgr.MemoryInfo;
@@ -341,5 +349,178 @@ public final class Utils {
 			sb.append(ctx.getString(R.string.imsi_tip)).append(imsi);
 		}
 		return sb.toString();
+	}
+
+	public static String getCpuInfo(Context ctx) {
+		String cpuModel = getCpuModel();
+		String cpuMaxFreq = getCpuMaxFreq();
+		String cpuMinFreq = getCpuMinFreq();
+		StringBuilder sb = new StringBuilder();
+		sb.append(ctx.getString(R.string.model_tip)).append(cpuModel).append("\n");
+		sb.append(ctx.getString(R.string.max_freq_tip)).append(formatCpuFreq(cpuMaxFreq)).append("\n");
+		sb.append(ctx.getString(R.string.min_freq_tip)).append(formatCpuFreq(cpuMinFreq));
+		return sb.toString();
+	}
+
+	private static final String CPU_PATH = "/proc/cpuinfo";
+	private static final String CPU_MAX_FREQ_PATH = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq";
+	private static final String CPU_MIN_RREQ_PATH = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq";
+
+	private static String getCpuModel() {
+		BufferedReader br = null;
+		try {
+			File f = new File(CPU_PATH);
+			br = new BufferedReader(new FileReader(f));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				break;
+			}
+			int idx = line.indexOf(":");
+			if (idx != -1) {
+				return line.substring(idx + 1).trim();
+			}
+			return null;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					//
+				}
+			}
+		}
+	}
+
+	private static String getCpuMaxFreq() {
+		BufferedReader br = null;
+		try {
+			File f = new File(CPU_MAX_FREQ_PATH);
+			br = new BufferedReader(new FileReader(f));
+			String line = null;
+			StringBuilder sb = new StringBuilder();
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+			return sb.toString();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					//
+				}
+			}
+		}
+	}
+
+	private static String getCpuMinFreq() {
+		BufferedReader br = null;
+		try {
+			File f = new File(CPU_MIN_RREQ_PATH);
+			br = new BufferedReader(new FileReader(f));
+			String line = null;
+			StringBuilder sb = new StringBuilder();
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+			return sb.toString();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static String formatCpuFreq(String freq) {
+		// Original unit is Hz
+		long value = Long.valueOf(freq);
+		if (value < 1000) {
+			return value + "Hz";
+		} else if (value < 1000 * 1000) {
+			return (value * 1.0) / 1000 + "Mhz";
+		} else {
+			return (value * 1.0) / (1000 * 1000) + "Ghz";
+		}
+	}
+	
+	public static String getScreenInfo(Context ctx){
+		WindowManager wm = (WindowManager)ctx.getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		DisplayMetrics dm = new DisplayMetrics();
+		display.getMetrics(dm);
+		int width = dm.widthPixels;
+		int height = dm.heightPixels;
+		float density = dm.density;		
+		int densityDpi = dm.densityDpi;
+		StringBuilder sb = new StringBuilder();
+		sb.append(ctx.getString(R.string.screen_resolution_tip)).append(width).append("*").append(height).append("\n");
+		sb.append(ctx.getString(R.string.screen_density_tip)).append(density).append("\n");
+		sb.append(ctx.getString(R.string.screen_density_dpi_tip)).append(densityDpi).append("Dpi").append("\n");
+		return sb.toString();
+	}
+	
+	private static String calcHealth(Context ctx,int health) {
+		switch (health) {
+		case BatteryManager.BATTERY_HEALTH_DEAD:
+			return ctx.getString(R.string.battery_health_dead);
+		case BatteryManager.BATTERY_HEALTH_GOOD:
+			return ctx.getString(R.string.battery_health_good);
+		case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
+			return ctx.getString(R.string.battery_health_over_voltage);
+		case BatteryManager.BATTERY_HEALTH_OVERHEAT:
+			return ctx.getString(R.string.battery_health_overheat);
+		case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
+			return ctx.getString(R.string.battery_health_unspecified_failure);
+		case BatteryManager.BATTERY_HEALTH_UNKNOWN:
+		default:
+			return ctx.getString(R.string.battery_health_unknown);
+		}
+	}
+	
+	private static String calcLevel(int level,int scale) {
+		return (int) ((level * 100.0) / scale) + "%";
+	}
+	
+	public static String getBatteryInfo(Context ctx){
+		IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		BroadcastReceiver receiver = new BroadcastReceiver() {
+			
+			@Override
+			public void onReceive(Context context, Intent intent) {
+							
+			}
+		};
+		Intent i = ctx.registerReceiver(receiver, filter);
+		ctx.unregisterReceiver(receiver);
+		if(i != null){
+			Bundle extras = i.getExtras();
+			if(extras != null){
+				int health = extras.getInt(BatteryManager.EXTRA_HEALTH);
+				int level = extras.getInt(BatteryManager.EXTRA_LEVEL);
+				int scale = extras.getInt(BatteryManager.EXTRA_SCALE);
+				StringBuilder sb = new StringBuilder();
+				sb.append(ctx.getString(R.string.battery_level_tip)).append(calcLevel(level,scale)).append("\n");
+				sb.append(ctx.getString(R.string.battery_health_tip)).append(calcHealth(ctx,health));
+				return sb.toString();
+			}else{
+				return null;
+			}
+		}else{
+			return null;
+		}
 	}
 }
