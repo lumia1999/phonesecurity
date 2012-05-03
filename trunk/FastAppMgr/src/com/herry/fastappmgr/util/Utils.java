@@ -356,9 +356,12 @@ public final class Utils {
 		String cpuMaxFreq = getCpuMaxFreq();
 		String cpuMinFreq = getCpuMinFreq();
 		StringBuilder sb = new StringBuilder();
-		sb.append(ctx.getString(R.string.model_tip)).append(cpuModel).append("\n");
-		sb.append(ctx.getString(R.string.max_freq_tip)).append(formatCpuFreq(cpuMaxFreq)).append("\n");
-		sb.append(ctx.getString(R.string.min_freq_tip)).append(formatCpuFreq(cpuMinFreq));
+		sb.append(ctx.getString(R.string.model_tip)).append(cpuModel).append(
+				"\n");
+		sb.append(ctx.getString(R.string.max_freq_tip)).append(
+				formatCpuFreq(cpuMaxFreq)).append("\n");
+		sb.append(ctx.getString(R.string.min_freq_tip)).append(
+				formatCpuFreq(cpuMinFreq));
 		return sb.toString();
 	}
 
@@ -444,7 +447,7 @@ public final class Utils {
 			return null;
 		}
 	}
-	
+
 	public static String formatCpuFreq(String freq) {
 		// Original unit is Hz
 		long value = Long.valueOf(freq);
@@ -456,24 +459,28 @@ public final class Utils {
 			return (value * 1.0) / (1000 * 1000) + "Ghz";
 		}
 	}
-	
-	public static String getScreenInfo(Context ctx){
-		WindowManager wm = (WindowManager)ctx.getSystemService(Context.WINDOW_SERVICE);
+
+	public static String getScreenInfo(Context ctx) {
+		WindowManager wm = (WindowManager) ctx
+				.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
 		DisplayMetrics dm = new DisplayMetrics();
 		display.getMetrics(dm);
 		int width = dm.widthPixels;
 		int height = dm.heightPixels;
-		float density = dm.density;		
+		float density = dm.density;
 		int densityDpi = dm.densityDpi;
 		StringBuilder sb = new StringBuilder();
-		sb.append(ctx.getString(R.string.screen_resolution_tip)).append(width).append("*").append(height).append("\n");
-		sb.append(ctx.getString(R.string.screen_density_tip)).append(density).append("\n");
-		sb.append(ctx.getString(R.string.screen_density_dpi_tip)).append(densityDpi).append("Dpi").append("\n");
+		sb.append(ctx.getString(R.string.screen_resolution_tip)).append(width)
+				.append("*").append(height).append("\n");
+		sb.append(ctx.getString(R.string.screen_density_tip)).append(density)
+				.append("\n");
+		sb.append(ctx.getString(R.string.screen_density_dpi_tip)).append(
+				densityDpi).append("Dpi").append("\n");
 		return sb.toString();
 	}
-	
-	private static String calcHealth(Context ctx,int health) {
+
+	private static String calcHealth(Context ctx, int health) {
 		switch (health) {
 		case BatteryManager.BATTERY_HEALTH_DEAD:
 			return ctx.getString(R.string.battery_health_dead);
@@ -490,36 +497,46 @@ public final class Utils {
 			return ctx.getString(R.string.battery_health_unknown);
 		}
 	}
-	
-	private static String calcLevel(int level,int scale) {
+
+	private static String calcLevel(int level, int scale) {
 		return (int) ((level * 100.0) / scale) + "%";
 	}
-	
-	public static String getBatteryInfo(Context ctx){
+
+	private static String calcTemperature(Context ctx, int temperature) {
+		return (temperature * 1.0) / 10 + "°C";
+	}
+
+	public static String getBatteryInfo(Context ctx) {
 		IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 		BroadcastReceiver receiver = new BroadcastReceiver() {
-			
+
 			@Override
 			public void onReceive(Context context, Intent intent) {
-							
+
 			}
 		};
 		Intent i = ctx.registerReceiver(receiver, filter);
 		ctx.unregisterReceiver(receiver);
-		if(i != null){
+		if (i != null) {
 			Bundle extras = i.getExtras();
-			if(extras != null){
+			if (extras != null) {
 				int health = extras.getInt(BatteryManager.EXTRA_HEALTH);
 				int level = extras.getInt(BatteryManager.EXTRA_LEVEL);
 				int scale = extras.getInt(BatteryManager.EXTRA_SCALE);
+				int temperature = extras
+						.getInt(BatteryManager.EXTRA_TEMPERATURE);
 				StringBuilder sb = new StringBuilder();
-				sb.append(ctx.getString(R.string.battery_level_tip)).append(calcLevel(level,scale)).append("\n");
-				sb.append(ctx.getString(R.string.battery_health_tip)).append(calcHealth(ctx,health));
+				sb.append(ctx.getString(R.string.battery_level_tip)).append(
+						calcLevel(level, scale)).append("\n");
+				sb.append(ctx.getString(R.string.battery_health_tip)).append(
+						calcHealth(ctx, health)).append("\n");
+				sb.append(ctx.getString(R.string.battery_temperature_tip))
+						.append(calcTemperature(ctx, temperature));
 				return sb.toString();
-			}else{
+			} else {
 				return null;
 			}
-		}else{
+		} else {
 			return null;
 		}
 	}

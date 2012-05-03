@@ -74,12 +74,13 @@
     <string name="min_freq_tip">最低频率：</string>
     <string name="cpu_title">CPU信息</string>
     <string name="screen_resolution_tip">分辨率：</string>
-    <string name="screen_density_tip">密度：</string>
+    <string name="screen_density_tip">屏幕密度：</string>
     <string name="screen_density_dpi_tip">像素密度：</string>
     <string name="screen_title">屏幕信息</string>
     <string name="battery_title">电池信息</string>
 	<string name="battery_level_tip">剩余电量：</string>
 	<string name="battery_health_tip">健康情况：</string>
+	<string name="battery_temperature_tip">温度：</string>
 	
 	<string name="battery_health_dead">电池已坏</string>
 	<string name="battery_health_good">良好</string>
