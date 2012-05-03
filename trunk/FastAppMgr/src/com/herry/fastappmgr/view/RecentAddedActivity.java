@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -143,6 +144,11 @@ public class RecentAddedActivity extends ListActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver();
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		return false;
 	}
 
 	@Override
@@ -373,10 +379,13 @@ public class RecentAddedActivity extends ListActivity {
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus) {
-			if (mAnimDrawable != null) {
-				mAnimDrawable.start();
-			}
+	}
+	
+	@Override
+	public void onAttachedToWindow() {
+		super.onAttachedToWindow();
+		if (mAnimDrawable != null) {
+			mAnimDrawable.start();
 		}
 	}
 

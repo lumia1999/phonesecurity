@@ -2,7 +2,6 @@ package com.herry.fastappmgr.view;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -21,6 +20,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -144,6 +144,8 @@ public class WelcomeActivity extends Activity {
 				orgCacheSize, isSysApp, launcherIntent);
 		if (isSysApp == PackageItem.USER_APP) {
 			DataStore.addDownloadedAppsItem(pItem);
+		} else if (isSysApp == PackageItem.SYS_APP) {
+			DataStore.addSysAppsItem(pItem);
 		}
 		if (orgCacheSize > 0) {
 			DataStore.addCacheAppsItem(pItem);
@@ -169,27 +171,33 @@ public class WelcomeActivity extends Activity {
 			@Override
 			protected Void doInBackground(Void... params) {
 				getBasicInfo();
-				mHandler.post(new Runnable() {
+				if (mHandler != null) {
+					mHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
-						mContentTip.setText(mBasicInfo);
-					}
+						@Override
+						public void run() {
+							mContentTip.setText(mBasicInfo);
+						}
 
-				});
+					});
+				}
 				getCpuInfo();
 				getScreenInfo();
 				getBatteryInfo();
-				mHandler.post(new Runnable() {
+				if (mHandler != null) {
+					mHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
-						fillContent();
-					}
+						@Override
+						public void run() {
+							fillContent();
+						}
 
-				});
+					});
+				}
 				initAppInfo();
-				mHandler.sendEmptyMessage(MSG_PARSE_PACKAGE_INFO);
+				if (mHandler != null) {
+					mHandler.sendEmptyMessage(MSG_PARSE_PACKAGE_INFO);
+				}
 				return null;
 			}
 
@@ -200,6 +208,17 @@ public class WelcomeActivity extends Activity {
 	public void finish() {
 		mIsFinished = true;
 		super.finish();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			mHandler = null;
+			DataStore.reset();
+			finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private void initUI() {
@@ -281,9 +300,11 @@ public class WelcomeActivity extends Activity {
 		@Override
 		public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
 				throws RemoteException {
-			Message msg = mHandler.obtainMessage(MSG_SAVE_PACKAGE_INFO);
-			msg.obj = pStats;
-			mHandler.sendMessage(msg);
+			if (mHandler != null) {
+				Message msg = mHandler.obtainMessage(MSG_SAVE_PACKAGE_INFO);
+				msg.obj = pStats;
+				mHandler.sendMessage(msg);
+			}
 		}
 	}
 }

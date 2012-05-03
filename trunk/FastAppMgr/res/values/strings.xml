@@ -3,6 +3,7 @@
 
     <string name="app_name">应用管理</string>
     <string name="app_name_tip">软件名称：</string>
+    <string name="tab_sys_app">系统应用</string>
     <string name="tab_uninstall">我的应用</string>
     <string name="tab_recet_install">最近安装</string>
     <string name="no_item">您最近没有安装新的应用</string>

@@ -1,6 +1,5 @@
 package com.herry.fastappmgr.view;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.youmi.android.AdManager;
@@ -22,6 +21,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,10 +41,10 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 
 import com.herry.fastappmgr.MemoryInfo;
-import com.herry.fastappmgr.PackageItem;
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.service.OfferCheckIntentService;
 import com.herry.fastappmgr.util.Constants;
+import com.herry.fastappmgr.util.DataStore;
 import com.herry.fastappmgr.util.Prefs;
 import com.herry.fastappmgr.util.Utils;
 
@@ -162,6 +162,16 @@ public class AppTabActivity extends TabActivity {
 		unregisterReceiver();
 		super.onDestroy();
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			DataStore.reset();
+			finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 
 	private void initUI() {
 		mTipClickable = false;
@@ -206,13 +216,16 @@ public class AppTabActivity extends TabActivity {
 		NinePatchDrawable npd = new NinePatchDrawable(np);
 		// Log.e(TAG, "npd : " + npd);
 		w.setDividerDrawable(npd);
+		mContentIntent = new Intent().setClass(this,SysAppsActivity.class);
+		setIndicator(R.drawable.menu_app_sys,getString(R.string.tab_sys_app),
+				mContentIntent);
 		mContentIntent = new Intent().setClass(this, UninstallActivity.class);
 		setIndicator(R.drawable.down, getString(R.string.tab_uninstall),
 				mContentIntent);
 		mContentIntent = new Intent().setClass(this, RecentAddedActivity.class);
 		setIndicator(R.drawable.add, getString(R.string.tab_recet_install),
 				mContentIntent);
-		mTabHost.setCurrentTab(0);
+		mTabHost.setCurrentTab(1);
 
 	}
 
