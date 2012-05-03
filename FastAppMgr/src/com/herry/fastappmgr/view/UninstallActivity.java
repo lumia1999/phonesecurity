@@ -1,6 +1,5 @@
 package com.herry.fastappmgr.view;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,7 +12,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -27,6 +25,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,8 +53,6 @@ import com.herry.fastappmgr.util.Utils;
 
 public class UninstallActivity extends ListActivity {
 	private static final String TAG = "UninstallActivity";
-
-	private PackageManager mPkgMgr;
 
 	private View mHeader;
 	private List<PackageItem> mDataList = null;
@@ -177,14 +174,19 @@ public class UninstallActivity extends ListActivity {
 		if (touchInterceptor.getParent() == null) {
 			mRootViewGroup.addView(touchInterceptor);
 		}
+		GFAgent.onPause(this);
 	}
 
 	@Override
 	protected void onDestroy() {
 		Log.d(TAG, "onDestroy");
 		unregisterReceiver();
-		GFAgent.onPause(this);
 		super.onDestroy();
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		return false;
 	}
 
 	@Override
