@@ -67,6 +67,11 @@
             android:name=".view.CacheAppsListActivity"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".view.MemoryIntroActivity"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
 
         <receiver android:name=".receiver.PackageBroascastReceiver" >
             <intent-filter >

@@ -38,7 +38,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gfan.sdk.statitistics.GFAgent;
+import com.herry.fastappmgr.PackageItem;
 import com.herry.fastappmgr.R;
+import com.herry.fastappmgr.util.DataStore;
 import com.herry.fastappmgr.util.Utils;
 
 public class CacheAppsListActivity extends Activity {
@@ -53,12 +55,9 @@ public class CacheAppsListActivity extends Activity {
 	private RelativeLayout mLoadingLayout;
 	private AnimationDrawable mAnimDrawable;
 
-	private ArrayList<Item> mDataList = null;
-	private List<PackageInfo> mAllData = null;
+	private ArrayList<PackageItem> mDataList = null;
 	private CacheAdapter mAdapter = null;
 	private PackageManager mPkgMgr;
-	private PackageSizeObserver mPkgSizeObserver;
-	private Method getPackageSizeInfoMethod = null;
 	private CleanCacheObserver mCleanCacheObserver;
 	private Method freeStorageAndNotify = null;
 	private boolean mExit = false;
@@ -70,20 +69,11 @@ public class CacheAppsListActivity extends Activity {
 	private static final int STATE_NO_CLEAN_NEEDED = 4;
 
 	private static final int DLG_CLEAN_CACHE = 1;
-
-	private static final int MSG_GET_SIZE = 1;
-	private static final int MSG_GET_SIZE_FINISH = 2;
 	private static final int MSG_FILL_DATA = 3;
 	private static final int MSG_CACHE_CLEANED = 4;
 	private Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
-			case MSG_GET_SIZE:
-				fireGetSize();
-				break;
-			case MSG_GET_SIZE_FINISH:
-				updateItemSize(msg);
-				break;
 			case MSG_FILL_DATA:
 				fillData();
 				break;
@@ -95,36 +85,6 @@ public class CacheAppsListActivity extends Activity {
 			}
 		};
 	};
-
-	private void fireGetSize() {
-		if (!mAllData.isEmpty()) {
-			if (getPackageSizeInfoMethod != null) {
-				PackageInfo item = mAllData.remove(0);
-				try {
-					getPackageSizeInfoMethod.invoke(mPkgMgr, item.packageName,
-							mPkgSizeObserver);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-			}
-		} else {
-			mHandler.sendEmptyMessage(MSG_FILL_DATA);
-		}
-	}
-
-	private void updateItemSize(Message msg) {
-		PackageStats pStats = (PackageStats) msg.obj;
-
-		if (pStats.cacheSize > 0) {
-			extraPackageInfo(pStats.cacheSize, pStats.packageName, mDataList);
-		}
-		// get next
-		mHandler.sendEmptyMessage(MSG_GET_SIZE);
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +112,7 @@ public class CacheAppsListActivity extends Activity {
 				@Override
 				public void run() {
 					initData();
-					mHandler.sendEmptyMessage(MSG_GET_SIZE);
+					mHandler.sendEmptyMessage(MSG_FILL_DATA);
 				}
 			}).start();
 		}
@@ -224,53 +184,8 @@ public class CacheAppsListActivity extends Activity {
 	}
 
 	private void initData() {
-		if (mDataList != null && !mDataList.isEmpty()) {
-			mDataList.clear();
-		} else {
-			mDataList = new ArrayList<Item>();
-		}
 		mPkgMgr = getPackageManager();
-		mPkgSizeObserver = new PackageSizeObserver();
-		try {
-			getPackageSizeInfoMethod = mPkgMgr.getClass().getDeclaredMethod(
-					"getPackageSizeInfo", String.class,
-					IPackageStatsObserver.class);
-		} catch (NoSuchMethodException e) {
-			getPackageSizeInfoMethod = null;
-		}
-		mAllData = mPkgMgr.getInstalledPackages(0);
-	}
-
-	private void extraPackageInfo(long cacheSize, String pkgName,
-			ArrayList<Item> dataList) {
-		Drawable icon;
-		String label;
-		File cacheFile;
-		PackageInfo pInfo = null;
-		try {
-			pInfo = mPkgMgr.getPackageInfo(pkgName, 0);
-			icon = mPkgMgr.getApplicationIcon(pInfo.applicationInfo);
-			label = mPkgMgr.getApplicationLabel(pInfo.applicationInfo)
-					.toString();
-			cacheFile = createPackageContext(pkgName, 0).getCacheDir();
-			// Log.d(TAG, "cacheFile : " + cacheFile.getAbsolutePath());
-			dataList.add(new Item(icon, label, pkgName, cacheSize, Formatter
-					.formatFileSize(this, cacheSize), cacheFile));
-		} catch (NameNotFoundException e) {
-			//
-		}
-	}
-
-	private class PackageSizeObserver extends IPackageStatsObserver.Stub {
-
-		@Override
-		public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
-				throws RemoteException {
-			Message msg = mHandler.obtainMessage(MSG_GET_SIZE_FINISH);
-			msg.obj = pStats;
-			mHandler.sendMessage(msg);
-		}
-
+		mDataList = DataStore.getCacheApps();
 	}
 
 	private class CleanCacheObserver extends IPackageDataObserver.Stub {
@@ -285,13 +200,13 @@ public class CacheAppsListActivity extends Activity {
 	}
 
 	private void fillData() {
-		// Log.e(TAG, "data size : " + mDataList.size());
 		mLoadingLayout.setVisibility(View.GONE);
-		if (mDataList.size() == 0) {
+		if (mDataList == null || mDataList.size() == 0) {
 			mState = STATE_NO_CLEAN_NEEDED;
 			mCleanButton.setText(R.string.quit);
 			mNoCacheTipTxt.setVisibility(View.VISIBLE);
 		} else {
+			Log.e(TAG, "data size : " + mDataList.size());
 			Collections.sort(mDataList, new Sort());
 			mAdapter = new CacheAdapter();
 			mListView.setAdapter(mAdapter);
@@ -314,7 +229,7 @@ public class CacheAppsListActivity extends Activity {
 		long count = 0;
 		int size = mDataList.size();
 		for (int i = 0; i < size; i++) {
-			count += mDataList.get(i).orgSize;
+			count += mDataList.get(i).getOrgCacheSize();
 		}
 		switch (mState) {
 		case STATE_INIT:
@@ -341,6 +256,7 @@ public class CacheAppsListActivity extends Activity {
 			mNoCacheTipTxt.setVisibility(View.VISIBLE);
 			mNoCacheTipTxt.setText(R.string.no_cache_tip);
 			mCleanButton.setText(R.string.quit);
+			DataStore.cleanCacheAppsInfo();
 			break;
 		}
 	}
@@ -379,10 +295,10 @@ public class CacheAppsListActivity extends Activity {
 			} else {
 				viewHolder = (ViewHolder) convertView.getTag();
 			}
-			Item item = mDataList.get(position);
-			viewHolder.icon.setBackgroundDrawable(item.icon);
-			viewHolder.label.setText(item.label);
-			viewHolder.cacheSize.setText(item.size);
+			PackageItem item = mDataList.get(position);
+			viewHolder.icon.setBackgroundDrawable(item.getIcon());
+			viewHolder.label.setText(item.getLabel());
+			viewHolder.cacheSize.setText(item.getCacheSize());
 			return convertView;
 		}
 
@@ -413,11 +329,11 @@ public class CacheAppsListActivity extends Activity {
 		}
 	}
 
-	private class Sort implements Comparator<Item> {
+	private class Sort implements Comparator<PackageItem> {
 
 		@Override
-		public int compare(Item o1, Item o2) {
-			return -(int) (o1.orgSize - o2.orgSize);
+		public int compare(PackageItem o1, PackageItem o2) {
+			return -(int) (o1.getOrgCacheSize() - o2.getOrgCacheSize());
 		}
 	}
 }

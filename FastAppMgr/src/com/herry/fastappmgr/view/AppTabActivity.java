@@ -1,5 +1,6 @@
 package com.herry.fastappmgr.view;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.youmi.android.AdManager;
@@ -40,6 +41,7 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 
 import com.herry.fastappmgr.MemoryInfo;
+import com.herry.fastappmgr.PackageItem;
 import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.service.OfferCheckIntentService;
 import com.herry.fastappmgr.util.Constants;
@@ -73,7 +75,6 @@ public class AppTabActivity extends TabActivity {
 						getApplicationContext(), R.anim.out_youmioffer_tip);
 				a.setAnimationListener(out);
 				mYoumiOfferTipTxt.startAnimation(a);
-				mTipClickable = true;
 				break;
 			case MSG_UPDATE_ROM_INFO:
 				Log.d(TAG, "MSG_UPDATE_ROM_INFO");
@@ -111,6 +112,7 @@ public class AppTabActivity extends TabActivity {
 			mYoumiOfferTipTxt.setText(mRomInfo
 					.toString(getApplicationContext()));
 			mYoumiOfferTipTxt.startAnimation(a);
+			mTipClickable = true;
 		}
 	};
 
@@ -136,7 +138,7 @@ public class AppTabActivity extends TabActivity {
 		touchInterceptor = new FrameLayout(this);
 		touchInterceptor.setClickable(true);
 		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_CHECK_OFFER),
-				18 * 1000);
+				5 * 1000);
 	}
 
 	@Override
@@ -185,7 +187,9 @@ public class AppTabActivity extends TabActivity {
 			public void onClick(View v) {
 				Log.d(TAG, "mTipClickable : " + mTipClickable);
 				if (mTipClickable) {
-					showDialog(DLG_SHOW_RAM_ROM_INFO);
+					// showDialog(DLG_SHOW_RAM_ROM_INFO);
+					startActivity(new Intent(getApplicationContext(),
+							MemoryIntroActivity.class));
 				}
 			}
 		});
