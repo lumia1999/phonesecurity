@@ -145,11 +145,6 @@ public class RecentAddedActivity extends ListActivity {
 		super.onDestroy();
 		unregisterReceiver();
 	}
-	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		return false;
-	}
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -380,7 +375,7 @@ public class RecentAddedActivity extends ListActivity {
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 	}
-	
+
 	@Override
 	public void onAttachedToWindow() {
 		super.onAttachedToWindow();
