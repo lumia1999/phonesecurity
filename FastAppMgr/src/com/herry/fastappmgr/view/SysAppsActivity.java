@@ -10,26 +10,31 @@ import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.util.DataStore;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class SysAppsActivity extends Activity {
 	private static final String TAG = "SysAppsActivity";
-	
+
 	private View mHeader;
 	private String mTotalAppNumberString;
 	int mTotalAppNum = 0;
@@ -41,30 +46,35 @@ public class SysAppsActivity extends Activity {
 	private RelativeLayout mLoadingLayout;
 	private ImageView mLoadingAnim;
 	private AnimationDrawable mAnimDrawable;
-	
+
 	private FrameLayout touchInterceptor = null;
 	private ViewGroup mRootViewGroup = null;
-	
+
+	private int mSortCheckedPosition;
+
+	private static final int DLG_SHOW_SORT_ID = 1;
+
 	private static final int MSG_FILL_DATA = 1;
-	private Handler mHandler = new Handler(){
+	private Handler mHandler = new Handler() {
 		public void handleMessage(Message msg) {
-			switch(msg.what){
+			switch (msg.what) {
 			case MSG_FILL_DATA:
 				fillData();
 				break;
 			}
 		};
 	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		initUI();		
+		initUI();
 		mRootViewGroup = (ViewGroup) findViewById(R.id.root);
 		touchInterceptor = new FrameLayout(this);
 		touchInterceptor.setClickable(true);
 	}
-	
+
 	@Override
 	public void onAttachedToWindow() {
 		super.onAttachedToWindow();
@@ -73,31 +83,26 @@ public class SysAppsActivity extends Activity {
 			mAnimDrawable.start();
 		}
 	}
-	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		return false;
-	}
-	
-	
+
 	@Override
 	protected void onResume() {
 		Log.e(TAG, "onResume");
 		super.onResume();
-		if(!mExit){
+		if (!mExit) {
 			mExit = !mExit;
-			new Thread(new Runnable(){
+			new Thread(new Runnable() {
 
 				@Override
 				public void run() {
 					initData();
 					mHandler.sendEmptyMessage(MSG_FILL_DATA);
-				}}).start();
+				}
+			}).start();
 		}
 		mRootViewGroup.removeView(touchInterceptor);
 		GFAgent.onResume(this);
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -106,22 +111,103 @@ public class SysAppsActivity extends Activity {
 		}
 		GFAgent.onPause(this);
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 	}
-	
-	private void initUI(){
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch (id) {
+		case DLG_SHOW_SORT_ID:
+			ListView lv = (ListView) dialog.findViewById(android.R.id.list);
+			mSortCheckedPosition = lv.getCheckedItemPosition();
+			if (mSortCheckedPosition == -1) {
+				mSortCheckedPosition = 0;
+			}
+			lv.setItemChecked(mSortCheckedPosition, true);
+			break;
+		}
+		super.onPrepareDialog(id, dialog);
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		View v = null;
+		switch (id) {
+		case DLG_SHOW_SORT_ID:
+			AlertDialog dlg = new AlertDialog.Builder(this).create();
+			v = mLayoutInflater.inflate(R.layout.app_sort, null);
+			initAppSortDialog(v, id);
+			dlg.setCanceledOnTouchOutside(true);
+			dlg.setView(v, 0, 0, 0, 0);
+			dlg.getWindow().getAttributes().windowAnimations = R.style.inflateDialogAnim;
+			return dlg;
+		}
+		return super.onCreateDialog(id);
+	}
+
+	private void initAppSortDialog(View v, int dId) {
+		final int dialogId = dId;
+		TextView banner = (TextView) v.findViewById(R.id.banner);
+		ListView listView = (ListView) v.findViewById(android.R.id.list);
+		Button op1 = (Button) v.findViewById(R.id.op1);
+		Button op2 = (Button) v.findViewById(R.id.op2);
+		op1.setVisibility(View.GONE);
+		op2.setText(android.R.string.cancel);
+		banner.setText(R.string.sort_app_title);
+		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		listView.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.simple_list_item_single_choice, getResources()
+						.getStringArray(R.array.app_sort_type)));
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// Log.e(TAG, "position : " + position
+				// + ",mSortCheckedPosition : " + mSortCheckedPosition);
+				if (mSortCheckedPosition != position) {
+					mSortCheckedPosition = position;
+					switch (position) {
+					case 0:
+						mCurrentSortType = mSortBySize;
+						break;
+					case 1:
+						mCurrentSortType = mSortByName;
+						break;
+					default:
+						break;
+					}
+					Collections.sort(mDataList, mCurrentSortType);
+					if (mAdapter != null) {
+						mAdapter.notifyDataSetChanged();
+					}
+				}
+				dismissDialog(dialogId);
+			}
+		});
+		op2.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dismissDialog(dialogId);
+
+			}
+		});
+	}
+
+	private void initUI() {
 		mLayoutInflater = getLayoutInflater();
-		mLoadingLayout = (RelativeLayout)findViewById(R.id.loading_layout);
-		mListView = (ListView)findViewById(android.R.id.list);
+		mLoadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
+		mListView = (ListView) findViewById(android.R.id.list);
 		mHeader = mLayoutInflater.inflate(R.layout.app_num_tip, null);
 		mHeader.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				//TODO
+				showDialog(DLG_SHOW_SORT_ID);
 			}
 		});
 		mListView.addHeaderView(mHeader);
@@ -129,21 +215,21 @@ public class SysAppsActivity extends Activity {
 		mLoadingAnim = (ImageView) findViewById(R.id.progress_anim);
 		mAnimDrawable = (AnimationDrawable) mLoadingAnim.getBackground();
 	}
-	
-	private void initData(){
+
+	private void initData() {
 		mDataList = DataStore.getSysApps();
-		Collections.sort(mDataList, mSortBySize);
+		Collections.sort(mDataList, mCurrentSortType);
 		mTotalAppNum = mDataList.size();
 	}
-	
-	private void fillData(){
+
+	private void fillData() {
 		mLoadingLayout.setVisibility(View.GONE);
 		mAdapter = new SysAppAdapter();
 		mListView.setAdapter(mAdapter);
-		((TextView)mHeader).setText(mTotalAppNumberString + mTotalAppNum);
+		((TextView) mHeader).setText(mTotalAppNumberString + mTotalAppNum);
 	}
-	
-	private class SysAppAdapter extends BaseAdapter{
+
+	private class SysAppAdapter extends BaseAdapter {
 
 		@Override
 		public int getCount() {
@@ -186,19 +272,20 @@ public class SysAppsActivity extends Activity {
 			viewHolder.size.setText(item.getSize());
 			return convertView;
 		}
-		
+
 	}
-	
+
 	private class ViewHolder {
 		private ImageView icon;
 		private TextView label;
 		private TextView version;
 		private TextView size;
 	}
-	
+
 	private AppSort mSortBySize = new AppSort(AppSort.SORT_BY_SIZE);
 	private AppSort mSortByName = new AppSort(AppSort.SORT_BY_NAME);
-	
+	private AppSort mCurrentSortType = mSortBySize;
+
 	private class AppSort implements Comparator<PackageItem> {
 
 		private static final int SORT_BY_SIZE = 0;

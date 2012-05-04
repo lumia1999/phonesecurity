@@ -159,18 +159,10 @@ public class AppTabActivity extends TabActivity {
 
 	@Override
 	protected void onDestroy() {
+		Log.d(TAG, "onDestroy");
 		unregisterReceiver();
+		DataStore.reset();
 		super.onDestroy();
-	}
-	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if(keyCode == KeyEvent.KEYCODE_BACK){
-			DataStore.reset();
-			finish();
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
 	}
 
 	private void initUI() {
@@ -216,8 +208,8 @@ public class AppTabActivity extends TabActivity {
 		NinePatchDrawable npd = new NinePatchDrawable(np);
 		// Log.e(TAG, "npd : " + npd);
 		w.setDividerDrawable(npd);
-		mContentIntent = new Intent().setClass(this,SysAppsActivity.class);
-		setIndicator(R.drawable.menu_app_sys,getString(R.string.tab_sys_app),
+		mContentIntent = new Intent().setClass(this, SysAppsActivity.class);
+		setIndicator(R.drawable.menu_app_sys, getString(R.string.tab_sys_app),
 				mContentIntent);
 		mContentIntent = new Intent().setClass(this, UninstallActivity.class);
 		setIndicator(R.drawable.down, getString(R.string.tab_uninstall),
