@@ -6,6 +6,7 @@
     <string name="tab_sys_app">系统应用</string>
     <string name="tab_uninstall">我的应用</string>
     <string name="tab_recet_install">最近安装</string>
+    <string name="tab_running_app">正在运行</string>
     <string name="no_item">您最近没有安装新的应用</string>
     <string name="app_bootup_history">开机时间</string>
     <string name="about_txt">关于</string>

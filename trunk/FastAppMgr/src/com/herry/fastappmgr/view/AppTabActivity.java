@@ -21,7 +21,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -217,6 +216,9 @@ public class AppTabActivity extends TabActivity {
 		mContentIntent = new Intent().setClass(this, RecentAddedActivity.class);
 		setIndicator(R.drawable.add, getString(R.string.tab_recet_install),
 				mContentIntent);
+		mContentIntent = new Intent().setClass(this, RunningAppsActivity.class);
+		setIndicator(R.drawable.menu_running_apps,
+				getString(R.string.tab_running_app), mContentIntent);
 		mTabHost.setCurrentTab(1);
 
 	}
