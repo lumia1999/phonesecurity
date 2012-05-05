@@ -742,8 +742,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			}
 			BufferedReader br = null;
 			try {
-				// Log.e(TAG, "absoluteName : " +
-				// mItemList.get(0).mAbsoluteName);
+				// Log.e(TAG, "absoluteName : "
+				// + mItemList.get(mItemIndex).mAbsoluteName);
 				File curFile = new File(mItemList.get(mItemIndex).mAbsoluteName);
 				br = new BufferedReader(new FileReader(curFile));
 				String line = null;
@@ -756,6 +756,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 						break;
 					}
 					if (line.startsWith("#")) {
+						// Log.d(TAG, "&&&&&&&start with #");
 						if (sb != null) {
 							String[] ret = obtainPageItemTitleAndTs(title);
 							// Log.e(TAG, "DFDFSDFDSFSD RET : " + ret.length);
@@ -777,6 +778,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 						title = line;
 						sb = new StringBuilder();
 					} else {
+						// Log.d(TAG, "&&&&&&&&content");
 						sb.append(line);
 					}
 				}
