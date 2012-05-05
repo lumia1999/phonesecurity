@@ -37,13 +37,20 @@
             android:name=".view.RecentAddedActivity" />
         <activity
             android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTop"
+            android:name=".view.RunningAppsActivity" >
+        </activity>
+        <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:name=".view.UninstallActivity" >
         </activity>
-        <activity android:name=".view.SysAppsActivity"
+        <activity
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop"
+            android:name=".view.SysAppsActivity" >
+        </activity>
         <activity
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTop"
