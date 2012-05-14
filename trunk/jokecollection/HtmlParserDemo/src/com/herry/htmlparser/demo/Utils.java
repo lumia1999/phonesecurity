@@ -101,34 +101,15 @@ public class Utils {
 				e.printStackTrace();
 				return;
 			}
-			boolean flag = false;
 			for (File f : files) {
-				long length = f.length();
-				if (length < 512) {
-					continue;
-				}
 				String line = null;
 				try {
 					br = new BufferedReader(new FileReader(f));
 					while ((line = br.readLine()) != null) {
-						if ("#\t".equals(line)) {
-							if (!flag) {
-								flag = !flag;
-								fos.write(line.replace("\t", "").trim()
-										.getBytes());
-								fos.write("\n".getBytes());
-							} else {
-								fos.write("\n".getBytes());
-								fos.write(line.replace("\t", "").trim()
-										.getBytes());
-								fos.write("\n".getBytes());
-							}
-						} else if (!"#END".equals(line)) {
-							// fos.write("\t\n".getBytes());
-							fos.write(line.trim().getBytes());
-							// fos.write("\t\n".getBytes());
-						}
+						fos.write(line.getBytes());
+						fos.write("\t\n".getBytes());
 					}
+					fos.write("\t\n".getBytes());
 					fos.flush();
 
 				} catch (FileNotFoundException e) {

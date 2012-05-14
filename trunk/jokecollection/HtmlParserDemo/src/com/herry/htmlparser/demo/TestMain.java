@@ -30,7 +30,6 @@ public class TestMain {
 	 */
 	public static void main(String[] args) {
 		// TODO
-
 		// String dir = System.getProperty("user.dir");
 		// try {
 		// for (int i = 1; i < 24; i++) {
@@ -91,25 +90,27 @@ public class TestMain {
 
 		// try {
 		// String[] ids = TianyaUtils
-		// .extraIds("http://www.tianya.cn/publicforum/content/feeling/1/1286018.shtml");
-		// // for (String id : ids) {
-		// // System.out.print(id);
-		// // System.out.print(" ");
-		// // }
+		//
+		// .extraIds("http://www.tianya.cn/publicforum/content/feeling/1/1941573.shtml");
+		// for (String id : ids) {
+		// System.out.print(id);
+		// System.out.print(" ");
+		// }
 		// String url =
 		// "http://www.tianya.cn/publicforum/content/feeling/1/%d.shtml";
-		// for (String id : ids) {
-		// String newurl = String.format(url, Integer.valueOf(id));
+		// int length = ids.length;
+		// for (int i = 0; i < length; i++) {
+		// String newurl = String.format(url, Integer.valueOf(ids[i]));
 		// System.out.println(newurl);
-		// TianyaUtils.extract(newurl, id);
-		// TianyaUtils.parseXml(id);
+		// TianyaUtils.extract(newurl, ids[i]);
+		// TianyaUtils.parseXml(ids[i]);
 		// }
 		// Utils.mergeFiles("txt" + File.separator);
 		// } catch (ParserException e) {
 		// e.printStackTrace();
 		// }
 
-		// Utils.mergeFiles("txt" + File.separator);
+		Utils.mergeFiles("temp" + File.separator);
 
 		/**
 		 * local
@@ -134,9 +135,15 @@ public class TestMain {
 		// e.printStackTrace();
 		// }
 
+		// try {
+		// Mop2Utils.parse();
+		// } catch (ParserException e) {
+		// e.printStackTrace();
+		// }
+
 		// MopUtils.createResult();
 
-		Utils.formatFileContent();
+		// Utils.formatFileContent();
 
 		// String data = Utils.parseDate("Thu Aug 27 06:40:20 CST 2009");
 		// System.out.println(data);
