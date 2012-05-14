@@ -1,6 +1,5 @@
 package com.herry.fastappmgr.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -27,6 +26,7 @@ public class RunningAppsActivity extends Activity {
 		mAm = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		mDataList = mAm.getRunningAppProcesses();
 		String[] pkgList = null;
+		Log.e(TAG, "size : " + mDataList.size());
 		for (int i = 0; i < mDataList.size(); i++) {
 			// pkgList = mDataList.get(i).pkgList;
 			// for (int j = 0; j < pkgList.length; j++) {
