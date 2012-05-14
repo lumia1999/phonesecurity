@@ -68,8 +68,6 @@ public class UninstallActivity extends ListActivity {
 	private int mDelPos = -1;
 	private int mAppItemPos = -1;
 
-	private static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
-	private static final String ACTION_INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
 	private Bitmap bitmap;
 
 	private String mTotalAppNumberString;
@@ -495,11 +493,11 @@ public class UninstallActivity extends ListActivity {
 			protected Void doInBackground(Void... params) {
 				if (temp.getLauncherIntent() != null) {
 					Intent i = new Intent();
-					i.setAction(ACTION_INSTALL_SHORTCUT);
+					i.setAction(Constants.ACTION_INSTALL_SHORTCUT);
 					i.putExtra(Intent.EXTRA_SHORTCUT_NAME, temp.getLabel());
-					i.putExtra(EXTRA_SHORTCUT_DUPLICATE, false);
-					i.putExtra(Intent.EXTRA_SHORTCUT_INTENT, temp
-							.getLauncherIntent());
+					i.putExtra(Constants.EXTRA_SHORTCUT_DUPLICATE, false);
+					i.putExtra(Intent.EXTRA_SHORTCUT_INTENT,
+							temp.getLauncherIntent());
 					i.putExtra(Intent.EXTRA_SHORTCUT_ICON,
 							createIconDrawable(temp.getIcon()));
 					sendBroadcast(i);

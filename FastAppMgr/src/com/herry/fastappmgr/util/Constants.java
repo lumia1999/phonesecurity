@@ -10,4 +10,7 @@ public final class Constants {
 
 	public static final String ACTION_ADD_PACKAGE = "com.herry.fastappmgr.intent.ACTION_ADD_PACKAGE";
 	public static final String EXTRA_VALUE = "value";
+
+	public static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
+	public static final String ACTION_INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
 }
