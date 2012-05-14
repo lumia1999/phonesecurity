@@ -50,7 +50,7 @@ public class MonthSelectActivity extends Activity implements
 		mMonthData = i.getStringArrayExtra(Constants.EXTRA_JUMP_DATA);
 		mPos = i.getIntExtra(Constants.EXTRA_JUMP_CUR_POS, -1);
 		mItemChNameId = i.getIntExtra(Constants.EXTRA_ITEM_CHNAME, -1);
-		mMonthUpdateData = Constants.mUpdates.get(R.string.item_qiushibaike);
+		mMonthUpdateData = Constants.mUpdates.get(mItemChNameId);
 		Log.d(TAG, "mPos : " + mPos + ", data size : " + mMonthData.length
 				+ ",mMonthUpdateData size : "
 				+ (mMonthUpdateData == null ? null : mMonthUpdateData.length));
@@ -91,6 +91,9 @@ public class MonthSelectActivity extends Activity implements
 	}
 
 	private boolean isNewItem(String data) {
+		if (mMonthUpdateData == null) {
+			return false;
+		}
 		for (int i = 0; i < mMonthUpdateData.length; i++) {
 			if (TextUtils.equals(data, mMonthUpdateData[i])) {
 				return true;
@@ -147,7 +150,7 @@ public class MonthSelectActivity extends Activity implements
 					.findViewById(android.R.id.text1);
 			tv.setText(mDataList.get(position).mData);
 			if (position == mPos) {
-				Log.e(TAG, "setChecked");
+				// Log.e(TAG, "setChecked");
 				tv.setChecked(true);
 			} else {
 				tv.setChecked(false);

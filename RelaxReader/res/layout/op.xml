@@ -19,7 +19,7 @@
         android:layout_margin="3dip"
         android:layout_weight="0.1"
         android:background="@drawable/btn_bg_selector"
-        android:text="@string/prompt_btn_prev_month"
+        android:text="@string/prompt_btn_prev_item"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
@@ -39,7 +39,7 @@
         android:layout_margin="3dip"
         android:layout_weight="0.1"
         android:background="@drawable/btn_bg_selector"
-        android:text="@string/prompt_btn_next_month"
+        android:text="@string/prompt_btn_next_item"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>
