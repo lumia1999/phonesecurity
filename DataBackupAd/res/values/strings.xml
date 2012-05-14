@@ -117,4 +117,8 @@
 	<string name="youmioffertip">选择下载您中意的应用，
 		积分达到200分，即可升级为无广告版本</string>
 	<string name="youmioffertip_noad">点击Menu，查看下载您中意的App</string>
+	
+	<string name="new_tab_datastat">统计</string>
+	<string name="new_tab_backup">备份</string>
+	<string name="new_tab_browse">浏览</string>
 </resources>
