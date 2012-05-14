@@ -246,7 +246,7 @@ public class TianyaUtils {
 				Element e = (Element) it.next();
 				String user = e.getChildText("user");
 				String content = e.getChildText("content");
-				if (user.contains("至爱烟味") && !content.contains("回复日期")) {
+				if (user.contains("小仓雪子") && !content.contains("回复日期")) {
 					fos.write("#".getBytes());
 					fos.write("\t\n".getBytes());
 					fos.write(content.replace("&nbsp;", "").replace("&quot;",

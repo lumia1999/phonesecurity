@@ -27,14 +27,15 @@ import org.htmlparser.util.SimpleNodeIterator;
 public class MopUtils {
 	public static void extract() throws ParserException, FileNotFoundException,
 			IOException {
-		String url = "http://dzh.mop.com/whbm/20090825/%d/O58F8lI997af18lO.shtml";
+		String url = "http://dzh.mop.com/whbm/20120328/%d/l88gz5I29302bdF3.shtml?dzhrefer=true";
 		Parser parser = null;
-		for (int i = 27; i < 170; i++) {
+		for (int i = 0; i < 24; i++) {
 			String newUrl = String.format(url, i);
+			// System.out.println(newUrl);
 			parser = new Parser(newUrl);
 			parser.setEncoding("utf-8");
 			parse(parser, i);
-			// break;
+			break;
 		}
 	}
 
@@ -130,10 +131,14 @@ public class MopUtils {
 				System.out.println("titleV : " + titleV + ",contentV : "
 						+ contentV);
 				fos.write("#".getBytes());
-				if ("".equals(titleV)) {
-					titleV = "楼主";
+				if (mParseTitle) {
+					if ("".equals(titleV)) {
+						titleV = "楼主";
+					}
+					fos
+							.write((titleV + " " + Utils.parseDate(date))
+									.getBytes());
 				}
-				fos.write((titleV + " " + Utils.parseDate(date)).getBytes());
 				fos.write("\n".getBytes());
 				fos.write(contentV.getBytes());
 				fos.write("\n".getBytes());
@@ -141,6 +146,8 @@ public class MopUtils {
 			}
 		}
 	}
+
+	private static boolean mParseTitle = false;
 
 	private static String parseTitle(Bullet bullet) throws ParserException {
 		Node[] children = bullet.getChildrenAsNodeArray();
