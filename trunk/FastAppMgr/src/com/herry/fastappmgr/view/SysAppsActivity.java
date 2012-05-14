@@ -7,12 +7,23 @@ import java.util.List;
 import com.gfan.sdk.statitistics.GFAgent;
 import com.herry.fastappmgr.PackageItem;
 import com.herry.fastappmgr.R;
+import com.herry.fastappmgr.util.Constants;
 import com.herry.fastappmgr.util.DataStore;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -51,8 +62,12 @@ public class SysAppsActivity extends Activity {
 	private ViewGroup mRootViewGroup = null;
 
 	private int mSortCheckedPosition;
+	private int mClickItemPosition;
+	private String[] mOpArray;
+	private Bitmap bitmap;
 
 	private static final int DLG_SHOW_SORT_ID = 1;
+	private static final int DLG_SHOW_OPTIONS = 2;
 
 	private static final int MSG_FILL_DATA = 1;
 	private Handler mHandler = new Handler() {
@@ -128,6 +143,9 @@ public class SysAppsActivity extends Activity {
 			}
 			lv.setItemChecked(mSortCheckedPosition, true);
 			break;
+		case DLG_SHOW_OPTIONS:
+			initAppOpDialog(dialog, id);
+			break;
 		}
 		super.onPrepareDialog(id, dialog);
 	}
@@ -144,6 +162,13 @@ public class SysAppsActivity extends Activity {
 			dlg.setView(v, 0, 0, 0, 0);
 			dlg.getWindow().getAttributes().windowAnimations = R.style.inflateDialogAnim;
 			return dlg;
+		case DLG_SHOW_OPTIONS:
+			AlertDialog opDlg = new AlertDialog.Builder(this).create();
+			v = mLayoutInflater.inflate(R.layout.app_sort, null);
+			opDlg.setView(v, 0, 0, 0, 0);
+			opDlg.setCanceledOnTouchOutside(true);
+			opDlg.getWindow().getAttributes().windowAnimations = R.style.inflateDialogAnim;
+			return opDlg;
 		}
 		return super.onCreateDialog(id);
 	}
@@ -198,6 +223,28 @@ public class SysAppsActivity extends Activity {
 		});
 	}
 
+	private void initAppOpDialog(Dialog v, int dId) {
+		final int dialogId = dId;
+		v.findViewById(R.id.title).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dismissDialog(dialogId);
+			}
+		});
+		v.findViewById(R.id.icon_banner).setVisibility(View.VISIBLE);
+		v.findViewById(R.id.banner).setVisibility(View.GONE);
+		ImageView banner_icon = (ImageView) v.findViewById(R.id.banner_icon);
+		TextView banner_title = (TextView) v.findViewById(R.id.banner_title);
+		PackageItem item = mDataList.get(mClickItemPosition);
+		banner_icon.setBackgroundDrawable(item.getIcon());
+		banner_title.setText(item.getLabel());
+		ListView listView = (ListView) v.findViewById(android.R.id.list);
+		v.findViewById(R.id.op_layout).setVisibility(View.GONE);
+		listView.setAdapter(new OpArrayAdapter(this,
+				R.layout.simple_list_item_1, mOpArray));
+	}
+
 	private void initUI() {
 		mLayoutInflater = getLayoutInflater();
 		mLoadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
@@ -211,12 +258,24 @@ public class SysAppsActivity extends Activity {
 			}
 		});
 		mListView.addHeaderView(mHeader);
+		mListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				mClickItemPosition = position - 1;
+				showDialog(DLG_SHOW_OPTIONS);
+			}
+		});
 		mTotalAppNumberString = getString(R.string.total_app_number_tip);
 		mLoadingAnim = (ImageView) findViewById(R.id.progress_anim);
 		mAnimDrawable = (AnimationDrawable) mLoadingAnim.getBackground();
 	}
 
 	private void initData() {
+		String[] ops = getResources().getStringArray(R.array.app_op);
+		mOpArray = new String[ops.length - 1];
+		System.arraycopy(ops, 1, mOpArray, 0, ops.length - 1);
 		mDataList = DataStore.getSysApps();
 		Collections.sort(mDataList, mCurrentSortType);
 		mTotalAppNum = mDataList.size();
@@ -316,5 +375,149 @@ public class SysAppsActivity extends Activity {
 				return 0;
 			}
 		}
+	}
+
+	private class OpArrayAdapter extends ArrayAdapter<String> {
+		private int mArrLenth;
+		private int mBlkTextColor;
+		private int mGreyTextColor;
+
+		public OpArrayAdapter(Context context, int textViewResourceId,
+				String[] objects) {
+			super(context, textViewResourceId, objects);
+			mArrLenth = mOpArray.length;
+			mBlkTextColor = getResources().getColor(android.R.color.black);
+			mGreyTextColor = Color.GRAY;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View v = super.getView(position, convertView, parent);
+			final int pos = position;
+			final PackageItem item = mDataList.get(mClickItemPosition);
+			if (item.getLauncherIntent() == null) {
+				if (position == mArrLenth - 1 || position == mArrLenth - 2) {
+					v.setClickable(false);
+					v.setEnabled(false);
+					((TextView) v).setTextColor(mGreyTextColor);
+				} else {
+					v.setClickable(true);
+					v.setEnabled(true);
+					((TextView) v).setTextColor(mBlkTextColor);
+				}
+			} else {
+				v.setClickable(true);
+				v.setEnabled(true);
+				((TextView) v).setTextColor(mBlkTextColor);
+			}
+
+			v.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// Log.d(TAG, "onClick");
+					switch (pos) {
+					case 0:
+						viewDetail(item.getPackageName());
+						break;
+					case 1:
+						if (v.isEnabled()) {
+							launch(item.getLauncherIntent());
+						} else {
+							// nothing
+						}
+						break;
+					case 2:
+						if (v.isEnabled()) {
+							createShortcut(item);
+						} else {
+							// nothing
+						}
+						break;
+					}
+
+				}
+			});
+			return v;
+		}
+	}
+
+	private void viewDetail(String packageName) {
+		new AsyncTask<String, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(String... params) {
+				Uri pkgUri = Uri.parse("package:" + params[0]);
+				Intent i = new Intent(
+						"android.settings.APPLICATION_DETAILS_SETTINGS")
+						.setData(pkgUri);
+				try {
+					startActivity(i);
+				} catch (ActivityNotFoundException e) {
+					//
+				}
+				return null;
+			}
+
+		}.execute(packageName);
+		dismissDialog(DLG_SHOW_OPTIONS);
+	}
+
+	private void launch(Intent launcherIntent) {
+		new AsyncTask<Intent, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Intent... params) {
+				try {
+					startActivity(params[0]);
+				} catch (ActivityNotFoundException e) {
+					//
+				}
+				return null;
+			}
+
+		}.execute(launcherIntent);
+		dismissDialog(DLG_SHOW_OPTIONS);
+	}
+
+	private void createShortcut(final PackageItem pItem) {
+		new AsyncTask<Void, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				if (pItem.getLauncherIntent() != null) {
+					Intent i = new Intent();
+					i.setAction(Constants.ACTION_INSTALL_SHORTCUT);
+					i.putExtra(Intent.EXTRA_SHORTCUT_NAME, pItem.getLabel());
+					i.putExtra(Constants.EXTRA_SHORTCUT_DUPLICATE, false);
+					i.putExtra(Intent.EXTRA_SHORTCUT_INTENT,
+							pItem.getLauncherIntent());
+					i.putExtra(Intent.EXTRA_SHORTCUT_ICON,
+							createIconDrawable(pItem.getIcon()));
+					sendBroadcast(i);
+				}
+				return null;
+			}
+
+		}.execute();
+
+		dismissDialog(DLG_SHOW_OPTIONS);
+	}
+
+	private Bitmap createIconDrawable(Drawable drawable) {
+		if (bitmap != null && !bitmap.isRecycled()) {
+			bitmap = null;
+		}
+		bitmap = ((BitmapDrawable) drawable).getBitmap();
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		float newWidth = getResources().getDimension(
+				android.R.dimen.app_icon_size);
+		float newHeight = newWidth;
+		float scaleWidth = newWidth / width;
+		float scaleHeight = newHeight / height;
+		Matrix matrix = new Matrix();
+		matrix.postScale(scaleWidth, scaleHeight);
+		bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+		return bitmap;
 	}
 }
