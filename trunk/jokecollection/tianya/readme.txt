@@ -24,3 +24,4 @@ http://www.tianya.cn/publicforum/content/feeling/1/2190001.shtml
 
 http://bbs.city.tianya.cn/tianyacity/Content/47/1/1353073.shtml
 
+http://www.tianya.cn/publicforum/content/feeling/1/1941573.shtml
