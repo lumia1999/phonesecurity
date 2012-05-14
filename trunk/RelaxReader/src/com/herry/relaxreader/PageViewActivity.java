@@ -10,18 +10,14 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import net.youmi.android.AdView;
-import net.youmi.android.appoffers.YoumiOffersManager;
-import net.youmi.android.appoffers.YoumiPointsManager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -47,7 +43,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.herry.relaxreader.db.LastReadItem;
 import com.herry.relaxreader.db.RecordDbAdapter;
@@ -290,15 +285,15 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		mOptions.mPrevMonth.setOnClickListener(this);
 		mOptions.mShare.setOnClickListener(this);
 		mOptions.mNextMonth.setOnClickListener(this);
-		if (mContentType != null) {
-			if (TextUtils.equals(mContentType, Constants.TYPE_OTHER)) {
-				mOptions.mPrevMonth.setText(R.string.prompt_btn_prev_post);
-				mOptions.mNextMonth.setText(R.string.prompt_btn_next_post);
-			} else if (TextUtils.equals(mContentType, Constants.TYPE_NORMAL)) {
-				mOptions.mPrevMonth.setText(R.string.prompt_btn_prev_month);
-				mOptions.mNextMonth.setText(R.string.prompt_btn_next_month);
-			}
-		}
+		// if (mContentType != null) {
+		// if (TextUtils.equals(mContentType, Constants.TYPE_OTHER)) {
+		// mOptions.mPrevMonth.setText(R.string.prompt_btn_prev_post);
+		// mOptions.mNextMonth.setText(R.string.prompt_btn_next_post);
+		// } else if (TextUtils.equals(mContentType, Constants.TYPE_NORMAL)) {
+		// mOptions.mPrevMonth.setText(R.string.prompt_btn_prev_month);
+		// mOptions.mNextMonth.setText(R.string.prompt_btn_next_month);
+		// }
+		// }
 		mScrollView = (ScrollView) findViewById(R.id.scroll_view);
 		mAdView = (AdView) findViewById(R.id.adView);
 		mGestDetector = new GestureDetector(this, new DefaultGestureListener());
@@ -365,6 +360,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			mPageItemTitleTxt.setVisibility(View.GONE);
 		}
 		if (item.mTs != null && !"".equals(item.mTs.trim())) {
+			Log.e(TAG, "mTs visible");
 			mContentTsTxt.setText(item.mTs);
 			mContentTsTxt.setVisibility(View.VISIBLE);
 		} else {
@@ -391,7 +387,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.prev_month:
 			// Log.d(TAG, "prev month");
-			onPrevMonth();
+			onPrevPage();
 			break;
 		case R.id.share:
 			// Log.d(TAG, "share");
@@ -399,7 +395,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.next_month:
 			// Log.d(TAG, "next month");
-			onNextMonth();
+			onNextPage();
 			break;
 		}
 	}
@@ -493,8 +489,12 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			position--;
 			updateContent(mDataList.get(position));
 			// mContentTxt.setText(mDataList.get(position).mContent);
-			mPageItemTitleTxt.setAnimation(mPrevAnim);
-			mContentTsTxt.setAnimation(mPrevAnim);
+			if (mPageItemTitleTxt.getVisibility() == View.VISIBLE) {
+				mPageItemTitleTxt.setAnimation(mPrevAnim);
+			}
+			if (mContentTsTxt.getVisibility() == View.VISIBLE) {
+				mContentTsTxt.setAnimation(mPrevAnim);
+			}
 			mPrevAnim.setAnimationListener(mAnimListener);
 			mContentTxt.startAnimation(mPrevAnim);
 			updateTitle();
@@ -515,8 +515,12 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			position++;
 			updateContent(mDataList.get(position));
 			// mContentTxt.setText(mDataList.get(position).mContent);
-			mPageItemTitleTxt.setAnimation(mNextAnim);
-			mContentTsTxt.setAnimation(mNextAnim);
+			if (mPageItemTitleTxt.getVisibility() == View.VISIBLE) {
+				mPageItemTitleTxt.setAnimation(mNextAnim);
+			}
+			if (mContentTsTxt.getVisibility() == View.VISIBLE) {
+				mContentTsTxt.setAnimation(mNextAnim);
+			}
 			mNextAnim.setAnimationListener(mAnimListener);
 			mContentTxt.startAnimation(mNextAnim);
 			updateTitle();

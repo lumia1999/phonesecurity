@@ -6,12 +6,12 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/adView" >
+        android:layout_above="@+id/op" >
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_above="@+id/op"
+            android:layout_above="@+id/adView"
             android:background="@drawable/txt_view_bg"
             android:orientation="vertical" >
 
@@ -36,9 +36,9 @@
             </ScrollView>
         </LinearLayout>
 
-        <include layout="@layout/op" />
+        <include layout="@layout/ad" />
     </RelativeLayout>
 
-    <include layout="@layout/ad" />
+    <include layout="@layout/op" />
 
 </RelativeLayout>

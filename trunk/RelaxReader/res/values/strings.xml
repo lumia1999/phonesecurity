@@ -31,6 +31,8 @@
     <string name="prompt_btn_next_month">下一月</string>
     <string name="prompt_btn_prev_post">上一贴</string>
     <string name="prompt_btn_next_post">下一贴</string>
+    <string name="prompt_btn_prev_item">上一条</string>
+    <string name="prompt_btn_next_item">下一条</string>
     <string name="prompt_remove_ad">去广告</string>
     <string name="prompt_jump_to_month">跳转到...</string>
     <string name="about">关于</string>

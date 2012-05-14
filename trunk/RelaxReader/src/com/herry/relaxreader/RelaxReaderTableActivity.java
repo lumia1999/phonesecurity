@@ -21,7 +21,6 @@ import com.herry.zip.ZipUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,7 +29,6 @@ import android.content.DialogInterface.OnKeyListener;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -45,7 +43,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TableLayout.LayoutParams;
 
@@ -70,6 +67,7 @@ public class RelaxReaderTableActivity extends Activity implements
 	static {
 		Constants.mUpdates.put(R.string.item_qiushibaike,
 				Constants.mQiushibaikeUpdates);
+		Constants.mUpdates.put(R.string.item_tianya, Constants.mTianyaUpdates);
 	}
 
 	@Override
@@ -238,16 +236,16 @@ public class RelaxReaderTableActivity extends Activity implements
 		Item temp = null;
 		// mop
 		temp = new Item(R.drawable.item_mop, R.string.item_mop,
-				FileHelper.DEST_MOP, State.NEW);
+				FileHelper.DEST_MOP, State.NORMAL);
 		mHeadlineList.add(temp);
 		// tianya
 		temp = new Item(R.drawable.item_tianya, R.string.item_tianya,
-				FileHelper.DEST_TIANYA, State.NEW);
+				FileHelper.DEST_TIANYA, State.UPDATE);
 		mHeadlineList.add(temp);
 
 		// bbsreply
 		temp = new Item(R.drawable.item_bbsreply, R.string.item_bbsreply,
-				FileHelper.DEST_BBSREPLY, State.NEW);
+				FileHelper.DEST_BBSREPLY, State.NORMAL);
 		mHeadlineList.add(temp);
 		// qiushibaike
 		temp = new Item(R.drawable.item_qiushibaike, R.string.item_qiushibaike,
