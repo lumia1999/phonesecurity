@@ -13,7 +13,7 @@ import java.util.Map;
 
 import net.youmi.android.AdManager;
 import net.youmi.android.AdView;
-import net.youmi.android.appoffers.AppOffersManager;
+import net.youmi.android.appoffers.YoumiOffersManager;
 
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlSerializer;
@@ -108,9 +108,6 @@ public class MainActivity extends ListActivity implements OnKeyListener {
 
 	// ad
 	private AdView mAdView;
-	static {
-		AdManager.init("705723767b26f167", "e2771fff0ed7faf1", 30, false);
-	}
 
 	/** Called when the activity is first created. */
 	@Override
@@ -155,7 +152,8 @@ public class MainActivity extends ListActivity implements OnKeyListener {
 			} else if (TextUtils.equals(launcher, OP_ABOUT)) {
 				showDialog(DLG_ABOUT_ID);
 			} else if (TextUtils.equals(launcher, OP_APPOFFER)) {
-				AppOffersManager.showAppOffers(this);
+				YoumiOffersManager.showOffers(this,
+						YoumiOffersManager.TYPE_REWARD_OFFERS);
 			}
 		}
 
@@ -243,7 +241,8 @@ public class MainActivity extends ListActivity implements OnKeyListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.app_offer:
-			AppOffersManager.showAppOffers(this);
+			YoumiOffersManager.showOffers(this,
+					YoumiOffersManager.TYPE_REWARD_OFFERS);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -263,8 +262,8 @@ public class MainActivity extends ListActivity implements OnKeyListener {
 	private void initUI() {
 		// ad
 		mAdView = (AdView) findViewById(R.id.adView);
-		AppOffersManager.init(this, "705723767b26f167", "e2771fff0ed7faf1",
-				false);
+		AdManager.init(this, "705723767b26f167", "e2771fff0ed7faf1", 30, false);
+		YoumiOffersManager.init(this, "705723767b26f167", "e2771fff0ed7faf1");
 	}
 
 	private void fillData() {

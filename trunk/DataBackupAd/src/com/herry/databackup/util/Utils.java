@@ -2,7 +2,7 @@ package com.herry.databackup.util;
 
 import java.text.SimpleDateFormat;
 
-import net.youmi.android.appoffers.AppOffersManager;
+import net.youmi.android.appoffers.YoumiPointsManager;
 
 import com.herry.databackup.R;
 
@@ -109,7 +109,7 @@ public class Utils {
 	}
 
 	public static boolean youmiofferPointsReach(Context ctx) {
-		int points = AppOffersManager.getPoints(ctx);
+		int points = YoumiPointsManager.queryPoints(ctx);
 		if (points >= Constants.MAX_OFFER_POINTS) {
 			return true;
 		} else {
