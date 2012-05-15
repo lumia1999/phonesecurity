@@ -241,8 +241,8 @@ public class CalllogViewListActivity extends ListActivity {
 						parser.next();
 						map
 								.put(CalllogXmlElement.DURATION, Utils
-										.formatDuration(Long.valueOf(parser
-												.getText())));
+										.formatDuration(this,Long.valueOf(parser
+												.getText()),Utils.LOCALE_EN));
 					} else if (TextUtils.equals(tag, CalllogXmlElement.TYPE)) {
 						parser.next();
 						map.put(CalllogXmlElement.TYPE, String

@@ -1,6 +1,7 @@
 package com.herry.databackup.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import net.youmi.android.appoffers.YoumiPointsManager;
 
@@ -16,6 +17,7 @@ import android.provider.CallLog;
 import android.provider.CallLog.Calls;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.PhoneLookup;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 
@@ -32,6 +34,9 @@ public class Utils {
 			| DateUtils.FORMAT_SHOW_TIME;
 	private static final long HOUR_UNIT = 60 * 60;
 	private static final long MINUTE_UNIT = 60;
+	
+	public static final String LOCALE_ZH = "zh";
+	public static final String LOCALE_EN = "en";
 
 	public static String formatTS(long ts) {
 		return sdf.format(ts);
@@ -56,7 +61,7 @@ public class Utils {
 		return DateUtils.formatDateTime(ctx, date, formatDateAllFlag);
 	}
 
-	public static String formatDuration(long duration) {
+	public static String formatDuration(Context ctx,long duration,String locale) {
 		if (duration == 0) {
 			return "0";
 		}
@@ -68,10 +73,16 @@ public class Utils {
 			} else {
 				sb.append(0).append(hour);
 			}
-			sb.append(":");
+			if(TextUtils.equals(locale, LOCALE_ZH)){
+				sb.append(ctx.getString(R.string.hour_unit));
+			}else if (TextUtils.equals(locale, LOCALE_EN))	{
+				sb.append(":");
+			}
 			duration = duration % HOUR_UNIT;
 		} else {
-			sb.append(0).append(0).append(":");
+			if(TextUtils.equals(locale, LOCALE_EN)){
+				sb.append(0).append(0).append(":");
+			}
 		}
 		long minute = duration / MINUTE_UNIT;
 		if (minute != 0) {
@@ -80,17 +91,30 @@ public class Utils {
 			} else {
 				sb.append(0).append(minute);
 			}
-			sb.append(":");
+			if(TextUtils.equals(locale, LOCALE_ZH)){
+				sb.append(ctx.getString(R.string.minute_unit));
+			}else if (TextUtils.equals(locale, LOCALE_EN)){
+				sb.append(":");
+			}
 			duration = duration % MINUTE_UNIT;
 		} else {
-			sb.append(0).append(0).append(":");
+			if(TextUtils.equals(locale, LOCALE_EN)){
+				sb.append(0).append(0).append(":");
+			}
 		}
 		if (duration >= 10) {
 			sb.append(duration);
 		} else {
 			sb.append(0).append(duration);
 		}
+		if(!TextUtils.equals(locale, LOCALE_EN)){
+			sb.append(ctx.getString(R.string.second_unit));
+		}
 		return sb.toString();
+	}
+
+	public static String formatDuration2(Context ctx,long duration,String locale) {
+		return formatDuration(ctx,duration,locale);
 	}
 
 	public static String getDisplayName(Context ctx, String number) {

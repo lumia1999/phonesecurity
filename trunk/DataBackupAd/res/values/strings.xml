@@ -128,9 +128,9 @@
     <string name="loading">正在加载。。。</string>
     <string name="stat_group_calllog">通话统计</string>
     <string name="stat_group_sms">短信统计</string>
-    <string name="stat_child_calllog_total_tip">总共通话时长：</string>
-    <string name="stat_child_calllog_outgoing_tip">拨出电话时长：</string>
-    <string name="stat_child_calllog_incoming_tip">接听电话时长：</string>
+    <string name="stat_child_calllog_total_tip">总共通话时长</string>
+    <string name="stat_child_calllog_outgoing_tip">拨出电话时长</string>
+    <string name="stat_child_calllog_incoming_tip">接听电话时长</string>
     <string name="stat_child_sms_total_tip">短信总数：</string>
     <string name="stat_child_sms_send_tip">发送条数：</string>
     <string name="stat_child_sms_recv_tip">接收条数：</string>
@@ -138,5 +138,8 @@
     <string name="stat_child_sms_send_space_tip">发送信息占用空间：</string>
     <string name="stat_child_sms_recv_space_tip">接收信息占用空间：</string>
     <string name="sms_unit"> 条</string>
+    <string name="hour_unit">小时</string>
+    <string name="minute_unit">分钟</string>
+    <string name="second_unit">秒</string>
 
 </resources>
