@@ -56,12 +56,13 @@ public class NewTabActivity extends TabActivity {
 		mContentIntent = new Intent(this, NewDataStatActivity.class);
 		setIndicator(R.drawable.menu_datastat,
 				getString(R.string.new_tab_datastat), mContentIntent);
+		mContentIntent = new Intent(this, NewDataAlarmActivity.class);
+		setIndicator(R.drawable.menu_alarm, getString(R.string.new_tab_alarm),
+				mContentIntent);
 		mContentIntent = new Intent(this, NewDataBackupActivity.class);
 		setIndicator(R.drawable.menu_backup,
 				getString(R.string.new_tab_backup), mContentIntent);
-		mContentIntent = new Intent(this, NewDataBrowseActivity.class);
-		setIndicator(R.drawable.menu_browse,
-				getString(R.string.new_tab_browse), mContentIntent);
+		mTabHost.setCurrentTab(1);
 	}
 
 	private void setIndicator(int iconId, String spec, Intent contentIntent) {
