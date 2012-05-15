@@ -47,15 +47,15 @@ public class NewDataStatActivity extends AbstractListActivity {
 			child.add(new StatChildItem(true, null, null));
 		} else {
 			child.add(new StatChildItem(false,
-					getString(R.string.stat_child_calllog_total_tip), String
-							.valueOf(calllogStat.getmTotalDuration())));
+					getString(R.string.stat_child_calllog_total_tip),
+				Utils.formatDuration2(this,	calllogStat.getmTotalDuration(),Utils.LOCALE_ZH)));
 			child.add(new StatChildItem(false,
-					getString(R.string.stat_child_calllog_outgoing_tip), String
-							.valueOf(calllogStat.getmOugoingDuraion())));
+					getString(R.string.stat_child_calllog_outgoing_tip),
+					Utils.formatDuration2(this,calllogStat.getmOugoingDuraion(),Utils.LOCALE_ZH)));
 
 			child.add(new StatChildItem(false,
-					getString(R.string.stat_child_calllog_incoming_tip), String
-							.valueOf(calllogStat.getmIncomingDuration())));
+					getString(R.string.stat_child_calllog_incoming_tip),
+					Utils.formatDuration2(this,calllogStat.getmIncomingDuration(),Utils.LOCALE_ZH)));
 		}
 		mChildData.add(child);
 		// sms
@@ -120,7 +120,12 @@ public class NewDataStatActivity extends AbstractListActivity {
 			StatChildItem item = (StatChildItem) mChildData.get(groupPosition)
 					.get(childPosition);
 			viewHolder.titleTip.setText(item.tip);
-			viewHolder.title.setText(item.content);
+			if (item.content != null) {
+				viewHolder.title.setVisibility(View.VISIBLE);
+				viewHolder.title.setText(item.content);
+			} else {
+				viewHolder.title.setVisibility(View.GONE);
+			}
 			return convertView;
 		}
 
