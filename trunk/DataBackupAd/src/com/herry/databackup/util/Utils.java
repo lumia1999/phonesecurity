@@ -4,14 +4,20 @@ import java.text.SimpleDateFormat;
 
 import net.youmi.android.appoffers.YoumiPointsManager;
 
+import com.herry.databackup.CalllogStat;
 import com.herry.databackup.R;
+import com.herry.databackup.SmsStat;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.CallLog;
+import android.provider.CallLog.Calls;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.PhoneLookup;
 import android.text.format.DateUtils;
+import android.util.Log;
 
 public class Utils {
 	private static final String FORMAT = "yyyy-MM-dd_HH-mm-ss";
@@ -115,5 +121,70 @@ public class Utils {
 		} else {
 			return false;
 		}
+	}
+
+	public static CalllogStat getCalllogStat(Context ctx) {
+		ContentResolver cr = ctx.getContentResolver();
+		String[] projects = new String[] { Calls.DURATION, Calls.TYPE };
+		StringBuilder where = new StringBuilder();
+		where.append(Calls.TYPE).append(" in ").append("(").append("'").append(
+				Calls.INCOMING_TYPE).append("'").append(",").append("'")
+				.append(Calls.OUTGOING_TYPE).append("'").append(")");
+		Cursor c = cr.query(CallLog.Calls.CONTENT_URI, projects, where
+				.toString(), null, null);
+		if (c == null) {
+			return null;
+		}
+		boolean exist = c.moveToFirst();
+		if (!exist) {
+			c.close();
+			return null;
+		}
+		long outgoing = 0, incoming = 0;
+		int type;
+		long duration;
+		do {
+			type = c.getInt(c.getColumnIndex(Calls.TYPE));
+			duration = c.getLong(c.getColumnIndex(Calls.DURATION));
+			if (type == Calls.OUTGOING_TYPE) {
+				outgoing += duration;
+			} else if (type == Calls.INCOMING_TYPE) {
+				incoming += duration;
+			}
+		} while (c.moveToNext());
+		c.close();
+		return new CalllogStat(outgoing + incoming, outgoing, incoming);
+	}
+
+	public static SmsStat getSmsStat(Context ctx) {
+		ContentResolver cr = ctx.getContentResolver();
+		String[] projects = new String[] { "type", "body" };
+		Cursor c = cr.query(Constants.SMS_CONTENT_URI, projects, null, null,
+				null);
+		if (c == null) {
+			return null;
+		}
+		boolean exist = c.moveToFirst();
+		if (!exist) {
+			c.close();
+			return null;
+		}
+		int send = 0, recv = 0;
+		int sendSpace = 0, recvSpace = 0;
+		int type;
+		String body;
+		do {
+			type = c.getInt(c.getColumnIndex("type"));
+			body = c.getString(c.getColumnIndex("body"));
+			if (type == Constants.SMS_TYPE_RECV) {
+				recv++;
+				recvSpace += body.getBytes().length;
+			} else if (type == Constants.SMS_TYPE_SEND) {
+				send++;
+				sendSpace += body.getBytes().length;
+			}
+		} while (c.moveToNext());
+		return new SmsStat(send + recv, send, recv, sendSpace + recvSpace,
+				sendSpace, recvSpace);
 	}
 }

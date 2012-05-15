@@ -32,6 +32,8 @@ public final class Constants {
 
 	// sms content uri
 	public static final Uri SMS_CONTENT_URI = Uri.parse("content://sms");
+	public static final int SMS_TYPE_RECV = 1;
+	public static final int SMS_TYPE_SEND = 2;
 
 	// youmi offer show time interval
 	public static final long YOUMIOFFER_MAX_TIMESTAMP = 2 * 24 * 60 * 60

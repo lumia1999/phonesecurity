@@ -32,7 +32,7 @@
         <activity
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTop"
-            android:name=".view.NewDataBrowseActivity" >
+            android:name=".view.NewDataAlarmActivity" >
         </activity>
         <activity
             android:configChanges="orientation|keyboardHidden"
