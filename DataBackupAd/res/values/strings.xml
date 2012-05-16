@@ -82,7 +82,6 @@
     <string name="calllog_view_summary">浏览您备份在SD卡上的通话记录</string>
     <string name="calllog_view_no_item">您尚未备份通话记录</string>
     <string name="sms_view_no_item">您尚未备份短消息</string>
-    <string name="contact_no_name">未知名</string>
     <string name="parse_xml_fail">备份文件存在错误</string>
     <string name="calllog_delete_title">删除备份</string>
     <string name="calllog_delete_summary">您可以删除不再需要的通话记录备份，以节省存储空间</string>
@@ -128,9 +127,11 @@
     <string name="loading">正在加载。。。</string>
     <string name="stat_group_calllog">通话统计</string>
     <string name="stat_group_sms">短信统计</string>
-    <string name="stat_child_calllog_total_tip">总共通话时长</string>
-    <string name="stat_child_calllog_outgoing_tip">拨出电话时长</string>
-    <string name="stat_child_calllog_incoming_tip">接听电话时长</string>
+    <string name="calllog_empty">无通话记录</string>
+    <string name="sms_empty">无短信记录</string>
+    <string name="stat_child_calllog_total_tip">总共通话时长：</string>
+    <string name="stat_child_calllog_outgoing_tip">拨出电话时长：</string>
+    <string name="stat_child_calllog_incoming_tip">接听电话时长：</string>
     <string name="stat_child_sms_total_tip">短信总数：</string>
     <string name="stat_child_sms_send_tip">发送条数：</string>
     <string name="stat_child_sms_recv_tip">接收条数：</string>
@@ -141,5 +142,15 @@
     <string name="hour_unit">小时</string>
     <string name="minute_unit">分钟</string>
     <string name="second_unit">秒</string>
+    <string name="alarm_group_reminder">提醒</string>
+    <string name="alarm_group_missedcall">未接来电详情（共{?}个）</string>
+    <string name="alarm_child_calllog_title">通话提醒</string>
+    <string name="alarm_child_calllog_desc">当通话数量达到设定值时，提示用户</string>
+    <string name="alarm_child_sms_title">短信提醒</string>
+    <string name="alarm_child_sms_desc">当短信数量达到设定值时，提示用户</string>
+    <string name="alarm_child_missed_call_title">未接来电提醒</string>
+    <string name="alarm_child_missed_call_desc">当有未接来电时，提示用户查看</string>
+    <string name="empty_missed_call">无未接来电</string>
+    <string name="contact_no_name">无名</string>
 
 </resources>

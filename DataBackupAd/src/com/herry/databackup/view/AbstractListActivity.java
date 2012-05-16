@@ -60,6 +60,9 @@ public abstract class AbstractListActivity extends Activity {
 
 			@Override
 			public void onGroupCollapse(int groupPosition) {
+				if (mOpType == OPTYPE.ALARM && groupPosition == 1) {
+					return;
+				}
 				mExpListView.expandGroup(groupPosition);
 			}
 		});

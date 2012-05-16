@@ -34,7 +34,7 @@ public class Utils {
 			| DateUtils.FORMAT_SHOW_TIME;
 	private static final long HOUR_UNIT = 60 * 60;
 	private static final long MINUTE_UNIT = 60;
-	
+
 	public static final String LOCALE_ZH = "zh";
 	public static final String LOCALE_EN = "en";
 
@@ -61,7 +61,8 @@ public class Utils {
 		return DateUtils.formatDateTime(ctx, date, formatDateAllFlag);
 	}
 
-	public static String formatDuration(Context ctx,long duration,String locale) {
+	public static String formatDuration(Context ctx, long duration,
+			String locale) {
 		if (duration == 0) {
 			return "0";
 		}
@@ -73,14 +74,14 @@ public class Utils {
 			} else {
 				sb.append(0).append(hour);
 			}
-			if(TextUtils.equals(locale, LOCALE_ZH)){
+			if (TextUtils.equals(locale, LOCALE_ZH)) {
 				sb.append(ctx.getString(R.string.hour_unit));
-			}else if (TextUtils.equals(locale, LOCALE_EN))	{
+			} else if (TextUtils.equals(locale, LOCALE_EN)) {
 				sb.append(":");
 			}
 			duration = duration % HOUR_UNIT;
 		} else {
-			if(TextUtils.equals(locale, LOCALE_EN)){
+			if (TextUtils.equals(locale, LOCALE_EN)) {
 				sb.append(0).append(0).append(":");
 			}
 		}
@@ -91,14 +92,14 @@ public class Utils {
 			} else {
 				sb.append(0).append(minute);
 			}
-			if(TextUtils.equals(locale, LOCALE_ZH)){
+			if (TextUtils.equals(locale, LOCALE_ZH)) {
 				sb.append(ctx.getString(R.string.minute_unit));
-			}else if (TextUtils.equals(locale, LOCALE_EN)){
+			} else if (TextUtils.equals(locale, LOCALE_EN)) {
 				sb.append(":");
 			}
 			duration = duration % MINUTE_UNIT;
 		} else {
-			if(TextUtils.equals(locale, LOCALE_EN)){
+			if (TextUtils.equals(locale, LOCALE_EN)) {
 				sb.append(0).append(0).append(":");
 			}
 		}
@@ -107,14 +108,15 @@ public class Utils {
 		} else {
 			sb.append(0).append(duration);
 		}
-		if(!TextUtils.equals(locale, LOCALE_EN)){
+		if (!TextUtils.equals(locale, LOCALE_EN)) {
 			sb.append(ctx.getString(R.string.second_unit));
 		}
 		return sb.toString();
 	}
 
-	public static String formatDuration2(Context ctx,long duration,String locale) {
-		return formatDuration(ctx,duration,locale);
+	public static String formatDuration2(Context ctx, long duration,
+			String locale) {
+		return formatDuration(ctx, duration, locale);
 	}
 
 	public static String getDisplayName(Context ctx, String number) {
@@ -210,5 +212,17 @@ public class Utils {
 		} while (c.moveToNext());
 		return new SmsStat(send + recv, send, recv, sendSpace + recvSpace,
 				sendSpace, recvSpace);
+	}
+
+	public static Cursor getMissedCall(Context ctx) {
+		ContentResolver cr = ctx.getContentResolver();
+		String[] projects = new String[] { Calls._ID, Calls.NUMBER, Calls.DATE,
+				Calls.TYPE, Calls.CACHED_NAME };
+		StringBuilder where = new StringBuilder();
+		where.append(Calls.TYPE).append("=").append("'").append(
+				Calls.MISSED_TYPE).append("'");
+		Cursor c = cr.query(Calls.CONTENT_URI, projects, where.toString(),
+				null, null);
+		return c;
 	}
 }
