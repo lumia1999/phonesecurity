@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="3dip"
+    android:background="@drawable/list_item_bg_selector"
+    android:clickable="true"
+    android:focusable="true"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:padding="5dip" >
+
+    <include layout="@layout/normal_alarm_child_item" />
+
+    <include layout="@layout/special_alarm_child_item" />
+
+</RelativeLayout>
