@@ -41,6 +41,7 @@ import android.widget.TextView;
 
 import com.herry.fastappmgr.MemoryInfo;
 import com.herry.fastappmgr.R;
+import com.herry.fastappmgr.service.BootupIntentService;
 import com.herry.fastappmgr.service.OfferCheckIntentService;
 import com.herry.fastappmgr.util.Constants;
 import com.herry.fastappmgr.util.DataStore;
@@ -132,6 +133,15 @@ public class AppTabActivity extends TabActivity {
 		registerReceiver();
 		initUI();
 		setupTabs();
+
+		Intent i = getIntent();
+		if (i != null) {
+			int fromBootup = i.getIntExtra(
+					BootupIntentService.EXTRA_FROM_BOOTUP, -1);
+			if (fromBootup == BootupIntentService.BOOTUP_CONFIRM) {
+				startActivity(new Intent(this, BootupViewActivity.class));
+			}
+		}
 
 		mRootViewGroup = (RelativeLayout) findViewById(R.id.root);
 		touchInterceptor = new FrameLayout(this);

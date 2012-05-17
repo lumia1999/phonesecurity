@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.herry.fastappmgr.PackageItem;
 import com.herry.fastappmgr.R;
+import com.herry.fastappmgr.service.BootupIntentService;
 import com.herry.fastappmgr.util.DataStore;
 import com.herry.fastappmgr.util.Utils;
 
@@ -60,6 +61,8 @@ public class WelcomeActivity extends Activity {
 	private String mNoVersionString;
 
 	private boolean mIsFinished;
+
+	private int mFromBootup;
 
 	private static final int MSG_PARSE_PACKAGE_INFO = 1;
 	private static final int MSG_SAVE_PACKAGE_INFO = 2;
@@ -93,7 +96,8 @@ public class WelcomeActivity extends Activity {
 			}
 		} else {
 			if (!mIsFinished) {
-				Intent i = new Intent(mCtx, AppTabActivity.class);
+				Intent i = new Intent(mCtx, AppTabActivity.class).putExtra(
+						BootupIntentService.EXTRA_FROM_BOOTUP, mFromBootup);
 				startActivity(i);
 				finish();
 			}
@@ -165,6 +169,11 @@ public class WelcomeActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.welcome);
+		Intent i = getIntent();
+		if (i != null) {
+			mFromBootup = i.getIntExtra(BootupIntentService.EXTRA_FROM_BOOTUP,
+					-1);
+		}
 		initUI();
 		new AsyncTask<Void, Void, Void>() {
 

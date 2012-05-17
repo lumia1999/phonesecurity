@@ -1,12 +1,5 @@
 package com.herry.fastappmgr.service;
 
-import com.herry.fastappmgr.DevTimeInfo;
-import com.herry.fastappmgr.R;
-import com.herry.fastappmgr.db.PackageAddedDbAdapter;
-import com.herry.fastappmgr.db.PackageAddedDbHelper.BoottimeHistoryColumn;
-import com.herry.fastappmgr.util.Utils;
-import com.herry.fastappmgr.view.AppTabActivity;
-
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.Notification;
@@ -18,6 +11,14 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.herry.fastappmgr.DevTimeInfo;
+import com.herry.fastappmgr.R;
+import com.herry.fastappmgr.db.PackageAddedDbAdapter;
+import com.herry.fastappmgr.db.PackageAddedDbHelper.BoottimeHistoryColumn;
+import com.herry.fastappmgr.util.Utils;
+import com.herry.fastappmgr.view.BootupViewActivity;
+import com.herry.fastappmgr.view.WelcomeActivity;
+
 public class BootupIntentService extends IntentService {
 	private static final String TAG = "BootupIntentService";
 
@@ -25,6 +26,9 @@ public class BootupIntentService extends IntentService {
 	private static final long HALF_MINUTE = 30 * 1000;
 	public static final String ACTION_BOOTUP_NOTIFY = "com.herry.fastappmgr.ACTION_BOOTUP_NOTIFY";
 	public static final String EXTRA_UPTIME = "extra_uptime";
+
+	public static final String EXTRA_FROM_BOOTUP = "extra_from_bootup";
+	public static final int BOOTUP_CONFIRM = 1;
 
 	public BootupIntentService() {
 		super(BootupIntentService.class.getName());
@@ -76,7 +80,8 @@ public class BootupIntentService extends IntentService {
 		notification.vibrate = new long[] { 200, 300, 200, 500 };
 		notification.tickerText = getString(R.string.bootup_ticker_txt)
 				+ uptime;
-		Intent intent = new Intent(this, AppTabActivity.class);
+		Intent intent = new Intent(this, WelcomeActivity.class).putExtra(
+				EXTRA_FROM_BOOTUP, BOOTUP_CONFIRM);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
 		notification.setLatestEventInfo(this,
