@@ -145,12 +145,20 @@
     <string name="alarm_group_reminder">提醒</string>
     <string name="alarm_group_missedcall">未接来电详情（共{?}个）</string>
     <string name="alarm_child_calllog_title">通话提醒</string>
-    <string name="alarm_child_calllog_desc">当通话数量达到设定值时，提示用户</string>
+    <string name="alarm_child_calllog_desc">当通话数量达到：{?} 时，提示用户</string>
+    <string name="alarm_child_disable_desc">提醒服务已取消</string>
     <string name="alarm_child_sms_title">短信提醒</string>
-    <string name="alarm_child_sms_desc">当短信数量达到设定值时，提示用户</string>
+    <string name="alarm_child_sms_desc">当短信数量达到：{?} 时，提示用户</string>
     <string name="alarm_child_missed_call_title">未接来电提醒</string>
     <string name="alarm_child_missed_call_desc">当有未接来电时，提示用户查看</string>
     <string name="empty_missed_call">无未接来电</string>
     <string name="contact_no_name">无名</string>
+    <string name="alarm_num_tip">请输入提醒阈值</string>
+    <string name="alarm_calllog_default">默认值：100</string>
+    <string name="alarm_sms_default">默认值：300</string>
+    <string name="calllog">当通话</string>
+    <string name="sms">当短信</string>
+    <string name="alarm_msg">达到您设定的阈值时，会提示您及时进行备份、清除，以便加速手机运行</string>
+    <string name="alarm_missed_call_msg">当您有未接来电时，会提示您及时查看未接来电，以免错过重要事项</string>
 
 </resources>

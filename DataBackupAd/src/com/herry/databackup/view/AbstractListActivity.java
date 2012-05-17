@@ -5,6 +5,7 @@ import java.util.List;
 import com.herry.databackup.R;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ public abstract class AbstractListActivity extends Activity {
 	protected ExpandableListView mExpListView;
 	protected ViewAdapter mAdapter;
 	protected LayoutInflater mLayoutInflater;
+	protected Context mCtx;
 
 	private OPTYPE mOpType;
 
@@ -67,6 +69,7 @@ public abstract class AbstractListActivity extends Activity {
 			}
 		});
 		mLayoutInflater = getLayoutInflater();
+		mCtx = this;
 	}
 
 	protected abstract void initData();
