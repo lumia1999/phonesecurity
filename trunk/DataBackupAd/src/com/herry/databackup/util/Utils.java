@@ -11,8 +11,10 @@ import com.herry.databackup.SmsStat;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.CallLog;
 import android.provider.CallLog.Calls;
 import android.provider.ContactsContract.Contacts;
@@ -225,4 +227,38 @@ public class Utils {
 				null, null);
 		return c;
 	}
+
+	// SharedPreference
+	public static boolean getAlarmState(Context ctx, String key) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
+		return prefs.getBoolean(key, true);
+	}
+
+	public static void setAlarmState(Context ctx, String key, boolean value) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
+		prefs.edit().putBoolean(key, value).commit();
+	}
+
+	public static int getAlarmThreshold(Context ctx, String key) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
+		if (TextUtils.equals(key, ctx
+				.getString(R.string.key_calllog_alarm_number))) {
+			return prefs.getInt(key, Constants.CALLLOG_ALARM_DEFAULT_VALUE);
+		} else if (TextUtils.equals(key, ctx
+				.getString(R.string.key_sms_alarm_number))) {
+			return prefs.getInt(key, Constants.SMS_ALARM_DEFAULT_VALUE);
+		} else {
+			return -1;// should never happen
+		}
+	}
+
+	public static void setAlarmThreshold(Context ctx, String key, int value) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
+		prefs.edit().putInt(key, value).commit();
+	}
+
 }

@@ -3,6 +3,8 @@ package com.herry.databackup.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CallLog.Calls;
@@ -10,8 +12,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,11 +27,90 @@ public class NewDataAlarmActivity extends AbstractListActivity {
 
 	private static final String TAG = "NewDataAlarmActivity";
 
+	private AlarmChildItem mItem;
+	private ChildViewHolder childViewHolder;
+	private SetAlarmViewHolder setAlarmViewHolder;
+
+	private static final int DLG_SET_ALARM = 1;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.new_data_alarm);
 		setOpType(OPTYPE.ALARM);
 		super.onCreate(savedInstanceState);
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		AlertDialog dialog = null;
+		View v = null;
+		switch (id) {
+		case DLG_SET_ALARM:
+			dialog = new AlertDialog.Builder(mCtx).create();
+			v = mLayoutInflater.inflate(R.layout.alarm_setting, null);
+			dialog.setView(v, 0, 0, 0, 0);
+			initSetAlarmDialog(v, id);
+			return dialog;
+		}
+		return super.onCreateDialog(id);
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		switch (id) {
+		case DLG_SET_ALARM:
+			updateSetAlarmDialog();
+			break;
+		}
+		super.onPrepareDialog(id, dialog);
+	}
+
+	private class SetAlarmViewHolder {
+		private TextView banner;
+		private TextView numTip;
+		private EditText number;
+		private TextView msg;
+		private Button op1;
+		private Button op2;
+		private RelativeLayout numLayout;
+	}
+
+	private void initSetAlarmDialog(View v, int dlgId) {
+		setAlarmViewHolder = new SetAlarmViewHolder();
+		setAlarmViewHolder.banner = (TextView) v.findViewById(R.id.banner);
+		setAlarmViewHolder.numTip = (TextView) v
+				.findViewById(R.id.alarm_num_tip);
+		setAlarmViewHolder.number = (EditText) v.findViewById(R.id.alarm_num);
+		setAlarmViewHolder.msg = (TextView) v.findViewById(R.id.msg);
+		setAlarmViewHolder.op1 = (Button) v.findViewById(R.id.op1);
+		setAlarmViewHolder.op2 = (Button) v.findViewById(R.id.op2);
+		setAlarmViewHolder.numLayout = (RelativeLayout) v
+				.findViewById(R.id.new_alarm_num);
+		setAlarmViewHolder.op1.setText(android.R.string.yes);
+		setAlarmViewHolder.op2.setText(android.R.string.cancel);
+
+	}
+
+	private void updateSetAlarmDialog() {
+		setAlarmViewHolder.banner.setText(mItem.normal.title);
+		if (mItem.normal.alarmNumPref != null) {
+			setAlarmViewHolder.numLayout.setVisibility(View.VISIBLE);
+			if (TextUtils.equals(getString(R.string.key_calllog_alarm),
+					mItem.normal.alarmStatePref)) {
+				setAlarmViewHolder.number
+						.setHint(R.string.alarm_calllog_default);
+				setAlarmViewHolder.msg.setText(getString(R.string.calllog)
+						+ getString(R.string.alarm_msg));
+			} else if (TextUtils.equals(getString(R.string.key_sms_alarm),
+					mItem.normal.alarmStatePref)) {
+				setAlarmViewHolder.number.setHint(R.string.alarm_sms_default);
+				setAlarmViewHolder.msg.setText(getString(R.string.sms)
+						+ getString(R.string.alarm_msg));
+			}
+		} else {
+			setAlarmViewHolder.numLayout.setVisibility(View.GONE);
+			setAlarmViewHolder.msg.setText(R.string.alarm_missed_call_msg);
+		}
 	}
 
 	@Override
@@ -58,13 +142,21 @@ public class NewDataAlarmActivity extends AbstractListActivity {
 		// reminder
 		child.add(new AlarmChildItem(new NormalAlarmChildItem(
 				getString(R.string.alarm_child_calllog_title),
-				getString(R.string.alarm_child_calllog_desc), true), null));
+				getString(R.string.alarm_child_calllog_desc),
+				getString(R.string.alarm_child_disable_desc),
+				getString(R.string.key_calllog_alarm),
+				getString(R.string.key_calllog_alarm_number)), null));
 		child.add(new AlarmChildItem(new NormalAlarmChildItem(
 				getString(R.string.alarm_child_sms_title),
-				getString(R.string.alarm_child_sms_desc), true), null));
+				getString(R.string.alarm_child_sms_desc),
+				getString(R.string.alarm_child_disable_desc),
+				getString(R.string.key_sms_alarm),
+				getString(R.string.key_sms_alarm_number)), null));
 		child.add(new AlarmChildItem(new NormalAlarmChildItem(
 				getString(R.string.alarm_child_missed_call_title),
-				getString(R.string.alarm_child_missed_call_desc), true), null));
+				getString(R.string.alarm_child_missed_call_desc),
+				getString(R.string.alarm_child_disable_desc),
+				getString(R.string.key_missed_call), null), null));
 		mChildData.add(child);
 
 		// missed call
@@ -140,15 +232,19 @@ public class NewDataAlarmActivity extends AbstractListActivity {
 			} else {
 				viewHolder = (ChildViewHolder) convertView.getTag();
 			}
-			AlarmChildItem item = (AlarmChildItem) mChildData
-					.get(groupPosition).get(childPosition);
+			final ChildViewHolder tick = viewHolder;
+			final AlarmChildItem item = (AlarmChildItem) mChildData.get(
+					groupPosition).get(childPosition);
 			if (item.normal != null) {
 				convertView.findViewById(R.id.normal).setVisibility(
 						View.VISIBLE);
 				convertView.findViewById(R.id.special).setVisibility(View.GONE);
 				viewHolder.title.setText(item.normal.title);
-				viewHolder.desc.setText(item.normal.desc);
-				viewHolder.checkbox.setChecked(item.normal.checked);
+				viewHolder.desc.setText(item.normal.desc.replace("{?}", ""
+						+ Utils.getAlarmThreshold(mCtx,
+								item.normal.alarmNumPref)));
+				viewHolder.checkbox.setChecked(Utils.getAlarmState(mCtx,
+						item.normal.alarmStatePref));
 				convertView.setOnClickListener(new OnClickListener() {
 
 					@Override
@@ -156,7 +252,9 @@ public class NewDataAlarmActivity extends AbstractListActivity {
 						// TODO
 						Toast.makeText(getApplicationContext(), "normal",
 								Toast.LENGTH_SHORT).show();
-
+						mItem = item;
+						childViewHolder = tick;
+						showDialog(DLG_SET_ALARM);
 					}
 				});
 			} else {
@@ -184,7 +282,7 @@ public class NewDataAlarmActivity extends AbstractListActivity {
 							// TODO
 							Toast.makeText(getApplicationContext(), "special",
 									Toast.LENGTH_SHORT).show();
-
+							mItem = item;
 						}
 					});
 				}
@@ -256,12 +354,17 @@ public class NewDataAlarmActivity extends AbstractListActivity {
 	private class NormalAlarmChildItem {
 		private String title;
 		private String desc;
-		private boolean checked;
+		private String disableDesc;
+		private String alarmStatePref;
+		private String alarmNumPref;
 
-		public NormalAlarmChildItem(String title, String desc, boolean checked) {
+		public NormalAlarmChildItem(String title, String desc,
+				String disableDesc, String alarmStatePref, String alarmNumPref) {
 			this.title = title;
 			this.desc = desc;
-			this.checked = checked;
+			this.disableDesc = disableDesc;
+			this.alarmStatePref = alarmStatePref;
+			this.alarmNumPref = alarmNumPref;
 		}
 	}
 

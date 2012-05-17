@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/new_alarm_num"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/normal_bg"
+    android:paddingBottom="3dip"
+    android:paddingLeft="5dip"
+    android:paddingRight="5dip"
+    android:paddingTop="3dip" >
+
+    <TextView
+        android:id="@+id/alarm_num_tip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="@string/alarm_num_tip"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/secondary_text_light" />
+
+    <EditText
+        android:id="@+id/alarm_num"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/alarm_num_tip"
+        android:paddingTop="3dip"
+        android:singleLine="true" />
+
+</RelativeLayout>
