@@ -16,7 +16,7 @@
     <string name="item_mix">大眾笑話</string>
     <string name="item_mop">貓撲精華</string>
     <string name="item_tianya">天涯精華</string>
-    <string name="item_bbsreply">暴強回复</string>
+    <string name="item_bbsreply">網絡流行語</string>
 
     <!-- dialog string -->
     <string name="unzip_dlg_msg">量產中，請稍後。 。 。</string>
