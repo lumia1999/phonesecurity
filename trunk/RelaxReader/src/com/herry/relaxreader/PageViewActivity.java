@@ -324,15 +324,10 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	}
 
 	private void updateOptions() {
-		if (mItemList.size() < 2) {
-			mOptions.mPrevMonth.setEnabled(false);
-			mOptions.mNextMonth.setEnabled(false);
-			return;
-		}
-		if (mItemIndex > 0 && mItemIndex < mItemList.size() - 1) {
+		if (position > 0 && position < mTotalDataNum - 1) {
 			mOptions.mPrevMonth.setEnabled(true);
 			mOptions.mNextMonth.setEnabled(true);
-		} else if (mItemIndex <= 0) {
+		} else if (position <= 0) {
 			mOptions.mPrevMonth.setEnabled(false);
 			mOptions.mNextMonth.setEnabled(true);
 		} else {
@@ -508,6 +503,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 				mPrevPageTimestamp = now;
 			}
 		}
+		updateOptions();
 	}
 
 	private void onNextPage() {
@@ -534,7 +530,7 @@ public class PageViewActivity extends Activity implements OnClickListener {
 				mNextPageTimestamp = now;
 			}
 		}
-
+		updateOptions();
 	}
 
 	private void promptForAppOffer() {
