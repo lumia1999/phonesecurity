@@ -68,6 +68,8 @@ public class RelaxReaderTableActivity extends Activity implements
 		Constants.mUpdates.put(R.string.item_qiushibaike,
 				Constants.mQiushibaikeUpdates);
 		Constants.mUpdates.put(R.string.item_tianya, Constants.mTianyaUpdates);
+		Constants.mUpdates.put(R.string.item_bbsreply,
+				Constants.mBbsReplyUpdates);
 	}
 
 	@Override
@@ -245,7 +247,7 @@ public class RelaxReaderTableActivity extends Activity implements
 
 		// bbsreply
 		temp = new Item(R.drawable.item_bbsreply, R.string.item_bbsreply,
-				FileHelper.DEST_BBSREPLY, State.NORMAL);
+				FileHelper.DEST_BBSREPLY, State.UPDATE);
 		mHeadlineList.add(temp);
 		// qiushibaike
 		temp = new Item(R.drawable.item_qiushibaike, R.string.item_qiushibaike,

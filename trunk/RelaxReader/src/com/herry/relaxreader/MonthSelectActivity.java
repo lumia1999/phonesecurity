@@ -1,6 +1,8 @@
 package com.herry.relaxreader;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
@@ -88,6 +90,18 @@ public class MonthSelectActivity extends Activity implements
 				mDataList.add(new Item(false, data));
 			}
 		}
+		Collections.sort(mDataList, new Comparator<Item>() {
+
+			@Override
+			public int compare(Item lhs, Item rhs) {
+				if (lhs.mIsNew) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+
+		});
 	}
 
 	private boolean isNewItem(String data) {
