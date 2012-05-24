@@ -1,0 +1,17 @@
+ip 121.37.61.19
+user xinwei.yi
+pwd xinwei123
+
+mysql 
+user xinwei.yi
+pwd xinwei123
+database name xinwei
+
+你把你的东西都放到/home下面你那个文件夹下
+/usr/local下的jboss,tomcat,apache2你已经有权限
+
+1.数据库脚本导入。
+	进入mysql,选择相应的database,执行：source 脚本文件完整路径 即可。
+
+2.当你在一个数据库中停留时间过长，以致自己也忘记了正在使用哪一个数据库时（一般都会存在多个数据库）。可以使用如下方式查询。
+	mysql>status; 或者mysql>select database();
