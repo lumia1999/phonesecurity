@@ -48,4 +48,6 @@ public class Constants {
 			"我在成都火车站做小姐的日子", "818大学里和QQ上几个女人之间的那些混蛋事" };
 	public static final String[] mBbsReplyUpdates = new String[] {
 			"2012流行语-01", "2012流行语-02" };
+	public static final String[] mMopUpdates = new String[] { "异性合租的往事",
+			"在机关工作的那些日子" };
 }

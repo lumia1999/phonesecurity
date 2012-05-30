@@ -85,11 +85,12 @@ public class MonthSelectActivity extends Activity implements
 		for (int i = 0; i < length; i++) {
 			data = mMonthData[i];
 			if (isNewItem(data)) {
-				mDataList.add(new Item(true, data));
+				mDataList.add(new Item(true, data, i));
 			} else {
-				mDataList.add(new Item(false, data));
+				mDataList.add(new Item(false, data, i));
 			}
 		}
+		Item selectedItem = mDataList.get(mPos);
 		Collections.sort(mDataList, new Comparator<Item>() {
 
 			@Override
@@ -102,6 +103,13 @@ public class MonthSelectActivity extends Activity implements
 			}
 
 		});
+		for (int i = 0; i < length; i++) {
+			if (TextUtils.equals(selectedItem.mData, mDataList.get(i).mData)) {
+				mPos = i;
+				break;
+			}
+		}
+
 	}
 
 	private boolean isNewItem(String data) {
@@ -177,9 +185,10 @@ public class MonthSelectActivity extends Activity implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
+		Item item = mDataList.get(position);
 		if (position != mPos) {
 			Intent i = new Intent(Constants.ACTION_JUMP);
-			i.putExtra(Constants.EXTRA_JUMP_CUR_POS, position);
+			i.putExtra(Constants.EXTRA_JUMP_CUR_POS, item.mPos);
 			sendBroadcast(i);
 		}
 		finish();
@@ -187,11 +196,13 @@ public class MonthSelectActivity extends Activity implements
 
 	private class Item {
 		private boolean mIsNew;
+		private int mPos;
 		private String mData;
 
-		public Item(boolean isNew, String data) {
+		public Item(boolean isNew, String data, int pos) {
 			this.mIsNew = isNew;
 			this.mData = data;
+			this.mPos = pos;
 		}
 	}
 

@@ -70,6 +70,7 @@ public class RelaxReaderTableActivity extends Activity implements
 		Constants.mUpdates.put(R.string.item_tianya, Constants.mTianyaUpdates);
 		Constants.mUpdates.put(R.string.item_bbsreply,
 				Constants.mBbsReplyUpdates);
+		Constants.mUpdates.put(R.string.item_mop, Constants.mMopUpdates);
 	}
 
 	@Override
@@ -238,7 +239,7 @@ public class RelaxReaderTableActivity extends Activity implements
 		Item temp = null;
 		// mop
 		temp = new Item(R.drawable.item_mop, R.string.item_mop,
-				FileHelper.DEST_MOP, State.NORMAL);
+				FileHelper.DEST_MOP, State.UPDATE);
 		mHeadlineList.add(temp);
 		// tianya
 		temp = new Item(R.drawable.item_tianya, R.string.item_tianya,
