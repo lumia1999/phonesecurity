@@ -34,5 +34,7 @@ http://tt.mop.com/read_11084992_1_1.html
 ****
 http://dzh.mop.com/ycwx/20120315/0/O737OgI29140adF3.shtml
 http://www.180qu.com/dir_2806.html
+
+http://club.jctrans.com/viewthread.php?tid=1284024&extra=&page=1
 Ãâ·ÑÐ¡ËµÍø
 http://www.180qu.com/
