@@ -38,6 +38,11 @@ http://www.riyedu.com/a/54866.html
 
 http://www.riyedu.com/a/53149.html
 
+(*)
+http://www.xiaoshuomi.com/8/8887/
+http://vip.book.sina.com.cn/book/index_137750.html
+http://www.zhaoxiaoshuo.com/book/3892616/all/
+
 http://www.qidian.com/BookReader/1454635.aspx
 　一百三十四
 　　
