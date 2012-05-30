@@ -337,12 +337,12 @@ public class PageViewActivity extends Activity implements OnClickListener {
 	}
 
 	private void updateContent(PageItem item) {
+		// Log.e(TAG, "item content : " + item.mContent);
 		if (mLangConverter != null) {
-			mContentTxt.setText(Html.fromHtml(mLangConverter
-					.convert(item.mContent)));
+			mContentTxt.setText(mLangConverter.convert(item.mContent.trim()));
 		} else {
 			// Log.e(TAG, "html : " + Html.fromHtml(item.mContent));
-			mContentTxt.setText(Html.fromHtml(item.mContent));
+			mContentTxt.setText(item.mContent.trim());
 		}
 		if (item.mTitle != null && !"".equals(item.mTitle.trim())) {
 			mPageItemTitleTxt.setVisibility(View.VISIBLE);
@@ -648,6 +648,10 @@ public class PageViewActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	public static final byte CR = 13;
+	public static final byte LF = 10;
+	public static final byte[] CRLF = new byte[] { CR, LF };
+
 	private class LoadDataTask extends AsyncTask<Boolean, Void, Boolean> {
 
 		private String obtainItemChName(String fName) {
@@ -742,8 +746,8 @@ public class PageViewActivity extends Activity implements OnClickListener {
 			}
 			BufferedReader br = null;
 			try {
-				// Log.e(TAG, "absoluteName : "
-				// + mItemList.get(mItemIndex).mAbsoluteName);
+				Log.e(TAG, "absoluteName : "
+						+ mItemList.get(mItemIndex).mAbsoluteName);
 				File curFile = new File(mItemList.get(mItemIndex).mAbsoluteName);
 				br = new BufferedReader(new FileReader(curFile));
 				String line = null;
@@ -779,7 +783,10 @@ public class PageViewActivity extends Activity implements OnClickListener {
 						sb = new StringBuilder();
 					} else {
 						// Log.d(TAG, "&&&&&&&&content");
-						sb.append(line);
+						// Log.e(TAG, "line:" + line.length());
+						if (line.length() != 0) {
+							sb.append(line + "\n");
+						}
 					}
 				}
 				// position = 0;
