@@ -34,6 +34,7 @@ import com.herry.fastappmgr.R;
 import com.herry.fastappmgr.service.BootupIntentService;
 import com.herry.fastappmgr.util.DataStore;
 import com.herry.fastappmgr.util.Utils;
+import com.rlm.client.android.MMApp;
 
 public class WelcomeActivity extends Activity {
 	private static final String TAG = "WelcomeActivity";
@@ -245,6 +246,7 @@ public class WelcomeActivity extends Activity {
 		mRight2LeftAnim = AnimationUtils.loadAnimation(mCtx,
 				R.anim.slide_from_right_to_left);
 		mIsFinished = false;
+		MMApp.init(this);
 	}
 
 	private void getBasicInfo() {

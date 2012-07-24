@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<declare-styleable name="net.youmi.android.AdView">
-		<attr name="backgroundColor" format="color" />
-		<!--
-			广告背景颜色[只对文字广告有效]
-		-->
-		<attr name="textColor" format="color" />            <!--广告文本颜色[只对文字广告有效] -->
-		<attr name="backgroundTransparent" format="integer" /> <!--广告背景透明度[只对文字广告有效] 范围是0到255[0表示完全透明,255表示完全不透明]  -->
-	</declare-styleable>
+
+    <declare-styleable name="net.youmi.android.AdView">
+        <attr format="color" name="backgroundColor" />
+        <!-- 广告背景颜色[只对文字广告有效] -->
+        <attr format="color" name="textColor" /> <!-- 广告文本颜色[只对文字广告有效] -->
+        <attr format="integer" name="backgroundTransparent" /> <!-- 广告背景透明度[只对文字广告有效] 范围是0到255[0表示完全透明,255表示完全不透明] -->
+    </declare-styleable>
+    <declare-styleable name="com.rlm.client.android.MMPlaceHolderView">
+        <attr format="string" name="delivery_server_ip" />
+        <attr format="boolean" name="is_debug_mode" />
+        <attr format="string" name="context_full_name" />
+        <attr format="string" name="place_holder_name" />
+        <attr format="boolean" name="show_ads_only_after_loaded" />
+        <attr format="integer" name="multi_match" />
+        <attr format="integer" name="rotate_time" />
+        <attr format="boolean" name="is_resize" />
+        <attr format="reference" name="default_creative_id" />
+        <attr format="string" name="default_creative_url" />
+        <attr format="string" name="default_interaction_url" />
+    </declare-styleable>
+
 </resources>
