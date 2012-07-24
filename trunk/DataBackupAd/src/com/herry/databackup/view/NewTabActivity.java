@@ -4,9 +4,6 @@ import java.util.Arrays;
 
 import net.youmi.android.AdManager;
 import net.youmi.android.appoffers.YoumiOffersManager;
-
-import com.herry.databackup.R;
-
 import android.app.TabActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,14 +13,18 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.herry.databackup.R;
+
 public class NewTabActivity extends TabActivity {
 	private static final String TAG = "NewTabActivity";
 
+	private TextView mTitle;
 	private Intent mContentIntent;
 	private TabHost mTabHost;
 	private TabHost.TabSpec mTabSpec;
@@ -50,6 +51,15 @@ public class NewTabActivity extends TabActivity {
 		NinePatch np = new NinePatch(b, new byte[2 * 50], null);
 		NinePatchDrawable npd = new NinePatchDrawable(np);
 		w.setDividerDrawable(npd);
+		mTitle = (TextView) findViewById(R.id.title);
+		mTitle.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				YoumiOffersManager.showOffers(getApplicationContext(),
+						YoumiOffersManager.TYPE_REWARD_OFFERS);
+			}
+		});
 	}
 
 	private void setupTabs() {

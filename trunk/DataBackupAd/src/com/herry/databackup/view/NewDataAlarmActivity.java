@@ -3,6 +3,7 @@ package com.herry.databackup.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.R.dimen;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.database.Cursor;
@@ -88,6 +89,23 @@ public class NewDataAlarmActivity extends AbstractListActivity {
 				.findViewById(R.id.new_alarm_num);
 		setAlarmViewHolder.op1.setText(android.R.string.yes);
 		setAlarmViewHolder.op2.setText(android.R.string.cancel);
+		final int dId = dlgId;
+		OnClickListener listener = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				switch (v.getId()) {
+				case R.id.op1:
+					// TODO
+					break;
+				case R.id.op2:
+					dismissDialog(dId);
+					break;
+				}
+			}
+		};
+		setAlarmViewHolder.op1.setOnClickListener(listener);
+		setAlarmViewHolder.op2.setOnClickListener(listener);
 
 	}
 
