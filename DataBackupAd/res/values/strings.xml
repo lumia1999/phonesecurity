@@ -116,8 +116,6 @@
     <!-- ad -->
     <string name="main_appoffer_title">升级为无广告</string>
     <string name="app_offer_txt">有米推荐</string>
-    <string name="youmioffertip">选择下载您中意的应用，
-		积分达到200分，即可升级为无广告版本</string>
     <string name="youmioffertip_noad">点击Menu，查看下载您中意的App</string>
 
     <!-- new version -->
@@ -160,5 +158,6 @@
     <string name="sms">当短信</string>
     <string name="alarm_msg">达到您设定的阈值时，会提示您及时进行备份、清除，以便加速手机运行</string>
     <string name="alarm_missed_call_msg">当您有未接来电时，会提示您及时查看未接来电，以免错过重要事项</string>
+    <string name="youmioffertip">让我赚50积分把这广告去了吧</string>
 
 </resources>
