@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">SportsLive</string>
+    <string name="loading">正在加载中。。。</string>
+    <string name="Logo">体育直播早知道</string>
+    <string name="banner_title">直播吧</string>
+</resources>
