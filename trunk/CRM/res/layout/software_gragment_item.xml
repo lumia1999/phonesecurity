@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_bg_selector"
+    android:clickable="true"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="true"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:paddingLeft="5dip" >
+
+    <ImageView
+        android:id="@+id/item_icon"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/ic_launcher"
+        android:scaleType="fitXY" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toLeftOf="@+id/item_download"
+        android:layout_toRightOf="@+id/item_icon"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip" >
+
+        <TextView
+            android:id="@+id/item_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:singleLine="true"
+            android:text="author"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_author"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:paddingRight="5dip"
+            android:singleLine="true"
+            android:text="name"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RatingBar
+            android:id="@+id/item_ratingbar"
+            style="@style/RatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_name"
+            android:isIndicator="true"
+            android:paddingBottom="5dip" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/item_download"
+        android:layout_width="60dip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/list_item_btn_bg_selector"
+        android:clickable="false"
+        android:drawableTop="@drawable/down_btn_0"
+        android:focusable="false"
+        android:gravity="center_horizontal"
+        android:paddingLeft="3dip"
+        android:paddingRight="3dip"
+        android:paddingTop="3dip"
+        android:text="download"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>
