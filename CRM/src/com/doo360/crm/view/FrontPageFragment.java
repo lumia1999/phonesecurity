@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -31,8 +33,8 @@ public class FrontPageFragment extends Fragment {
 	private static final int TAG_SOFTWARE = 2;
 	private static final int TAG_SHOP = 3;
 	private static final int TAG_SERVICECENTER = 4;
-	private static final int TAG_NEWMODEL = 5;
-	private static final int TAG_HOTMODEL = 6;
+	private static final int TAG_HOTMODEL = 5;
+	private static final int TAG_PERSONALCENTER = 6;
 
 	// data
 	private ArrayList<Item> mDataList;
@@ -56,7 +58,6 @@ public class FrontPageFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-		// TODO
 		Log.d(TAG, "onResume");
 		super.onResume();
 		fillData();
@@ -68,6 +69,7 @@ public class FrontPageFragment extends Fragment {
 		Log.d(TAG, "onCreateView");
 		View v = inflater.inflate(R.layout.front_page_grid, container, false);
 		mGridView = (GridView) v.findViewById(R.id.front_pagge_grid);
+		mGridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 		return v;
 	}
 
@@ -77,18 +79,18 @@ public class FrontPageFragment extends Fragment {
 		} else {
 			mDataList = new ArrayList<Item>();
 		}
-		mDataList.add(new Item(R.drawable.front_page_icon_1,
+		mDataList.add(new Item(R.drawable.front_page_warrantly_selector,
 				R.string.front_page_warranty_desc, TAG_WARRANTLY));
-		mDataList.add(new Item(R.drawable.front_page_icon_2,
+		mDataList.add(new Item(R.drawable.front_page_software_selector,
 				R.string.front_page_software_desc, TAG_SOFTWARE));
-		mDataList.add(new Item(R.drawable.front_page_icon_3,
+		mDataList.add(new Item(R.drawable.front_page_shop_selector,
 				R.string.front_page_shop_desc, TAG_SHOP));
-		mDataList.add(new Item(R.drawable.front_page_icon_4,
+		mDataList.add(new Item(R.drawable.front_page_servicecenter_selector,
 				R.string.front_page_servicecenter_desc, TAG_SERVICECENTER));
-		mDataList.add(new Item(R.drawable.front_page_icon_5,
-				R.string.front_page_newmodel_desc, TAG_NEWMODEL));
-		mDataList.add(new Item(R.drawable.front_page_icon_6,
+		mDataList.add(new Item(R.drawable.front_page_hotmodel_selector,
 				R.string.front_page_hotmodel_desc, TAG_HOTMODEL));
+		mDataList.add(new Item(R.drawable.front_page_personalcenter_selector,
+				R.string.front_page_personalcenter_desc, TAG_PERSONALCENTER));
 	}
 
 	private void fillData() {
@@ -112,7 +114,8 @@ public class FrontPageFragment extends Fragment {
 		int tag = item.tag;
 		switch (tag) {
 		case TAG_WARRANTLY:
-
+			startActivity(new Intent(mAct, TestActivity.class));
+			mAct.overridePendingTransition(0, 0);
 			break;
 		case TAG_SOFTWARE:
 			showSoftware();
@@ -123,17 +126,23 @@ public class FrontPageFragment extends Fragment {
 		case TAG_SERVICECENTER:
 
 			break;
-		case TAG_NEWMODEL:
 
-			break;
 		case TAG_HOTMODEL:
 
+			break;
+		case TAG_PERSONALCENTER:
+			showPersonalCenter();
 			break;
 		}
 	}
 
 	private void showSoftware() {
 		startActivity(new Intent(mAct, SoftwareListActivity.class));
+		mAct.overridePendingTransition(0, 0);
+	}
+
+	private void showPersonalCenter() {
+		startActivity(new Intent(mAct, PersonalCenterListActivity.class));
 		mAct.overridePendingTransition(0, 0);
 	}
 

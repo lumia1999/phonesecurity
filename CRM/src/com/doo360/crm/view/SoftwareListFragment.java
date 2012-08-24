@@ -296,7 +296,7 @@ public class SoftwareListFragment extends ListFragment implements
 
 				break;
 			}
-
+			// DEMO
 			if (position == 1) {
 				viewHolder.download.setCompoundDrawablesWithIntrinsicBounds(0,
 						R.drawable.down_btn_1, 0, 0);
@@ -325,8 +325,8 @@ public class SoftwareListFragment extends ListFragment implements
 				Intent i = new Intent(mAct, DownloadApkService.class);
 				i.putExtra(DownloadApkService.EXTRA_APK_URL,
 						item.getDownloadUrl());
+				i.putExtra(DownloadApkService.EXTRA_APK_NAME, item.getName());
 				mAct.startService(i);
-
 			} else {
 				// TODO nothing happens
 			}
@@ -339,6 +339,24 @@ public class SoftwareListFragment extends ListFragment implements
 		private TextView name;
 		private RatingBar rate;
 		private TextView download;
+	}
+
+	public void updateItemStatus(String pkgName) {
+		Log.d(TAG, "updateItemStatus");
+		int size = mDataList.size();
+		SoftwareItem item = null;
+		boolean exist = false;
+		for (int i = 0; i < size; i++) {
+			item = mDataList.get(i);
+			if (TextUtils.equals(item.getPackagename(), pkgName)) {
+				item.setStatus(SoftwareItem.STATUS_INSTALLED);
+				exist = true;
+				break;
+			}
+		}
+		if (exist) {
+			mAdapter.notifyDataSetChanged();
+		}
 	}
 
 }

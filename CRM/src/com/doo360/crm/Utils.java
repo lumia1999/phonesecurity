@@ -1,5 +1,7 @@
 package com.doo360.crm;
 
+import java.text.SimpleDateFormat;
+
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -7,6 +9,14 @@ import android.text.TextUtils;
 
 public class Utils {
 
+	/**
+	 * check apk status
+	 * 
+	 * @param pm
+	 * @param pkgName
+	 * @param versionName
+	 * @return
+	 */
 	public static int checkItemStatus(PackageManager pm, String pkgName,
 			String versionName) {
 		PackageInfo pInfo = null;
@@ -26,5 +36,12 @@ public class Utils {
 		} catch (NameNotFoundException e) {
 			return SoftwareItem.STATUS_DOWNLOAD;
 		}
+	}
+
+	private static final SimpleDateFormat sdf = new SimpleDateFormat(
+			"yyyy-MM-dd HH:mm");
+
+	public static String formatAnchor(long anchor) {
+		return sdf.format(anchor);
 	}
 }

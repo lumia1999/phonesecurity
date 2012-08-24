@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_bg_selector"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:paddingLeft="5dip" >
+
+    <ImageView
+        android:id="@+id/item_icon"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/ic_launcher"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:id="@+id/item_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/item_icon"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingLeft="5dip"
+        android:paddingRight="3dip"
+        android:paddingTop="10dip"
+        android:text="dddd"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/item_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_content"
+        android:layout_toRightOf="@id/item_icon"
+        android:paddingLeft="5dip"
+        android:paddingRight="3dip"
+        android:paddingTop="3dip"
+        android:singleLine="true"
+        android:text="2012-8-22 17:34"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>
