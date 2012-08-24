@@ -2,6 +2,7 @@
 <resources>
 
     <color name="front_page_bg">#FFFFFF</color>
+    <color name="red">#FF0000</color>
 
     <drawable name="white">#FFFFFF</drawable>
     <drawable name="grey">#D0D0D0</drawable>

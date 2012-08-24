@@ -10,4 +10,5 @@
     android:paddingBottom="3dip"
     android:paddingTop="3dip"
     android:text="@string/invalid_network"
+    android:textAppearance="?android:attr/textAppearanceMedium"
     android:visibility="gone" />

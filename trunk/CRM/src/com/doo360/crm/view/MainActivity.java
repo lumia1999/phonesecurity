@@ -2,11 +2,13 @@ package com.doo360.crm.view;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.doo360.crm.FileHelper;
 import com.doo360.crm.R;
 
 public class MainActivity extends FragmentActivity {
@@ -19,6 +21,8 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		initUI();
+		String dir = FileHelper.getApkTempDirPath(this);
+		Log.d(TAG, "dir : " + dir);
 	}
 
 	@Override

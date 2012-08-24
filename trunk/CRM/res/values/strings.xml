@@ -5,19 +5,45 @@
     <string name="title_activity_main">MainActivity</string>
 
     <!-- front page string -->
-    <string name="front_page_warranty_desc">Warrantly</string>
-    <string name="front_page_software_desc">Software</string>
-    <string name="front_page_shop_desc">Shop</string>
-    <string name="front_page_servicecenter_desc">Service Center</string>
-    <string name="front_page_newmodel_desc">New Model</string>
-    <string name="front_page_hotmodel_desc">Hot Model</string>
+    <string name="front_page_warranty_desc">保修记录</string>
+    <string name="front_page_software_desc">软件升级</string>
+    <string name="front_page_shop_desc">门店查询</string>
+    <string name="front_page_servicecenter_desc">售后网点</string>
+    <string name="front_page_hotmodel_desc">热销机型</string>
+    <string name="front_page_personalcenter_desc">个人中心</string>
     <string name="banner_title">客户服务</string>
     <string name="menu_search">"搜索"</string>
+    <string name="search_confirm_txt">Go</string>
 
     <!-- software string -->
     <string name="software_download">下载</string>
     <string name="software_installed">已安装</string>
     <string name="software_update">可更新</string>
+
+    <!-- notification string -->
+    <string name="total_noti_title">正在下载</string>
+    <string name="total_noti_txt">您有{?}个任务正在进行中</string>
+    <string name="total_noti_ticker">您添加了新的下载任务</string>
+    <string name="apk_noti_title">下载完成</string>
+    <string name="apk_noti_txt">{?}下载已完成，请安装</string>
+    <string name="apk_noti_ticker">{?}下载已完成</string>
+
+    <!-- address string -->
+    <string name="add_new_address">添加新地址</string>
+    <string name="province_txt">省</string>
+    <string name="city_txt">市</string>
+    <string name="district_txt">区</string>
+    <string name="address_info_title_new">添加地址</string>
+    <string name="address_info_title_edit">编辑地址</string>
+    <string name="address_info_title_detail">地址详情</string>
+    <string name="name_tip">　*联系人：</string>
+    <string name="phone_tip">*联系电话：</string>
+    <string name="area_tip">*所在地区：</string>
+    <string name="detail_tip">*详细地址：</string>
+    <string name="postcode_tip">　　*邮编：</string>
+    <string name="btn_save_txt">保存设置</string>
+    <string name="btn_edit_txt">编辑地址</string>
+    <string name="btn_delete_txt">删除地址</string>
     <!-- other -->
     <string name="invalid_network">Network error!</string>
 

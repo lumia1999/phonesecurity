@@ -2,29 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/banner_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/grey"
+    android:layout_height="48dip"
+    android:background="@drawable/banner_bg"
     android:gravity="center_vertical"
     android:padding="7dip" >
-	<ImageView android:id="@+id/prev"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:background="@drawable/prev"
-	    android:layout_alignParentLeft="true"
-	    android:scaleType="fitXY"/>
+
+    <ImageView
+        android:id="@+id/prev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/go_back_selector"
+        android:scaleType="fitCenter" />
+
     <TextView
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:gravity="center_horizontal"
         android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        android:singleLine="true"
         android:text="@string/banner_title"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-	<ImageView android:id="@+id/home"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:background="@drawable/home"
-	    android:layout_alignParentRight="true"
-	    android:scaleType="fitXY"/>
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ImageView
+        android:id="@+id/home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/home"
+        android:scaleType="fitCenter" />
+
 </RelativeLayout>
