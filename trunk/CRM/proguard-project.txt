@@ -18,3 +18,76 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontpreverify
+-repackageclasses 'com.doo360.crm'
+-allowaccessmodification
+-optimizations !code/simplification/arithmetic
+
+-dontnote *.** `
+
+<!--
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable
+-->
+
+-keepattributes *Annotation*
+
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+
+-keep public class * extends android.view.View {
+	public &lt;init&gt;(android.content.Context);
+	public &lt;init&gt;(android.content.Context, android.util.AttributeSet);
+	public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int);
+	public void set*(...);
+}
+
+-keepclasseswithmembers class * {
+	public &lt;init&gt;(android.content.Context, android.util.AttributeSet);
+}
+
+-keepclasseswithmembers class * {
+	public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int);
+}
+
+-keepclassmembers class * implements android.os.Parcelable {
+	static android.os.Parcelable$Creator CREATOR;
+}
+
+-keepclassmembers class **.R$* {
+	public static &lt;fields&gt;;
+}
+
+-keep public interface com.android.vending.licensing.ILicensingService
+-dontnote com.android.vending.licensing.ILicensingService
+
+-keepclasseswithmembernames class * {
+	native &lt;methods&gt;;
+}
+
+-keepclassmembers class * extends java.lang.Enum {
+	public static **[] values();
+	public static ** valueOf(java.lang.String);
+}
+#-keep public interface oms.mspaces.services.ISyncService
+#-dontnote oms.mspaces.services.ISyncService
+#-keep public interface oms.mspaces.services.ISyncServiceCallback
+#-dontnote oms.mspaces.services.ISyncServiceCallback
+
+-keep class org.**
+			-dontnote org.**
+			-keepclassmembers class org.** {
+			*;
+			}
+			-keep class com.google.**
+			-dontnot com.google.**
+			-keepclassmembers class com.google.** {
+			*;
+			}
+
+-keep public class com.doo360.crm.R$*{
+	public static final int exchange_*; }

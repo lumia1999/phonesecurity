@@ -13,7 +13,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -200,36 +199,23 @@ public class PersonalCenterListActivity extends ListActivity implements
 				viewHolder.tip.setText(item.tip);
 			}
 			final int pos = position;
-			if (Build.VERSION.SDK_INT < 16) {
+			if (Build.VERSION.SDK_INT < 16) {/* bug fix for sdk version LT 16 */
 				final Item data = mDataList.get(pos);
-				// convertView.setOnTouchListener(new OnTouchListener() {
-				//
-				// @Override
-				// public boolean onTouch(View v, MotionEvent event) {
-				// int action = event.getAction();
-				// ImageView iv = ((ViewHolder) v.getTag()).icon;
-				// if (action == MotionEvent.ACTION_CANCEL
-				// || action == MotionEvent.ACTION_UP) {
-				// iv.setBackgroundResource(data.iconNormalResId);
-				// } else {
-				// iv.setBackgroundResource(data.iconPressedResId);
-				// }
-				// return false;
-				// }
-				// });
-				convertView
-						.setOnFocusChangeListener(new OnFocusChangeListener() {
+				convertView.setOnTouchListener(new OnTouchListener() {
 
-							@Override
-							public void onFocusChange(View v, boolean hasFocus) {
-								ImageView iv = ((ViewHolder) v.getTag()).icon;
-								if (hasFocus) {
-									iv.setBackgroundResource(data.iconPressedResId);
-								} else {
-									iv.setBackgroundResource(data.iconNormalResId);
-								}
-							}
-						});
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						int action = event.getAction();
+						ImageView iv = ((ViewHolder) v.getTag()).icon;
+						if (action == MotionEvent.ACTION_CANCEL
+								|| action == MotionEvent.ACTION_UP) {
+							iv.setBackgroundResource(data.iconNormalResId);
+						} else {
+							iv.setBackgroundResource(data.iconPressedResId);
+						}
+						return false;
+					}
+				});
 			}
 			convertView.setOnClickListener(new OnClickListener() {
 
