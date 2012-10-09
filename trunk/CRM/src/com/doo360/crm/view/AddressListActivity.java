@@ -1,9 +1,9 @@
 package com.doo360.crm.view;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +19,9 @@ public class AddressListActivity extends FragmentActivity implements
 	private ImageView mPrevImage;
 	private ImageView mHomeImage;
 	private TextView mTitleText;
+
+	private FragmentManager mFragMgr;
+	private AddressListFragment mAddressFragment;
 
 	@Override
 	protected void onCreate(Bundle bundle) {
@@ -36,6 +39,10 @@ public class AddressListActivity extends FragmentActivity implements
 		mHomeImage.setOnClickListener(this);
 		mTitleText
 				.setText(getResources().getStringArray(R.array.personal_info)[2]);
+		mFragMgr = getSupportFragmentManager();
+		mAddressFragment = (AddressListFragment) mFragMgr
+				.findFragmentById(R.id.address_fragment);
+		mAddressFragment.setShowType(AddressListFragment.SHOW_TYPE_NORMAL);
 	}
 
 	@Override
@@ -51,17 +58,13 @@ public class AddressListActivity extends FragmentActivity implements
 	}
 
 	private void movePrev() {
-		startActivity(new Intent(this, PersonalCenterListActivity.class)
-				.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-		overridePendingTransition(0, 0);
 		finish();
+		overridePendingTransition(0, 0);
 	}
 
 	private void goHome() {
-		startActivity(new Intent(this, MainActivity.class)
-				.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-		overridePendingTransition(0, 0);
 		setResult(Activity.RESULT_OK);
 		finish();
+		overridePendingTransition(0, 0);
 	}
 }

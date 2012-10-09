@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/light_grey" >
+
+    <include layout="@layout/banner" />
+
+    <ScrollView
+        android:id="@+id/scroll_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/post_order"
+        android:layout_below="@id/banner_layout"
+        android:persistentDrawingCache="none" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:id="@+id/purchase_workflow_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/banner_layout"
+                android:background="@drawable/purchase_confirm_layout_bg_normal"
+                android:padding="5dip" >
+
+                <TextView
+                    android:id="@+id/workflow_tip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/purchase_confirm_workflow_tip_txt"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/light_grey" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/workflow_tip"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dip"
+                    android:background="@drawable/purchase_confirm_workflow_view"
+                    android:scaleType="centerCrop" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/purchase_item_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/purchase_workflow_layout"
+                android:background="@drawable/purchase_confirm_layout_bg_desc"
+                android:gravity="center_vertical"
+                android:padding="5dip" >
+
+                <ImageView
+                    android:id="@+id/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/hotmodel_icon_holder"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/icon"
+                    android:paddingLeft="5dip"
+                    android:paddingTop="5dip"
+                    android:text="@string/product_detail_name"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/name"
+                    android:layout_toRightOf="@id/icon"
+                    android:paddingLeft="5dip"
+                    android:paddingRight="5dip"
+                    android:singleLine="true"
+                    android:text="@string/order_price_txt"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/red" />
+
+                <TextView
+                    android:id="@+id/transport_charge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/name"
+                    android:paddingRight="5dip"
+                    android:singleLine="true"
+                    android:text="@string/transport_no_charge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/light_grey" />
+            </RelativeLayout>
+
+            <com.doo360.crm.view.LinearLayoutForListView
+                android:id="@+id/detail_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/purchase_item_desc"
+                android:orientation="vertical" >
+            </com.doo360.crm.view.LinearLayoutForListView>
+        </RelativeLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/post_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dip"
+        android:layout_marginTop="5dip"
+        android:background="@drawable/personal_address_btn_bg_selector"
+        android:gravity="center"
+        android:padding="7dip"
+        android:text="@string/post_order_txt"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/banner_layout" >
+
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            layout="@layout/loading" />
+
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            layout="@layout/retry" />
+    </RelativeLayout>
+
+</RelativeLayout>

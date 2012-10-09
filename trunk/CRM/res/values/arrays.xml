@@ -1,19 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="msgs">
-        <item>真心不要钱！20部索爱安卓新机等你拿！索尼爱立信上线了“百里挑一——白色智爱大事发生的范德萨发生的丰盛的”</item>
-        <item>真心不要钱！20部索爱安卓新机等你拿！索尼爱立信上线了“百里挑一——白色智爱大事发生的范德萨发生的丰盛的”</item>
-        <item>真心不要钱！20部索爱安卓新机等你拿！索尼爱立信上线了“百里挑一——白色智爱大事发生的范德萨发生的丰盛的”</item>
-        <item>真心不要钱！20部索爱安卓新机等你拿！索尼爱立信上线了“百里挑一——白色智爱大事发生的范德萨发生的丰盛的”</item>
-        <item>真心不要钱！20部索爱安卓新机等你拿！索尼爱立信上线了“百里挑一——白色智爱大事发生的范德萨发生的丰盛的”</item>
-        <item>真心不要钱！20部索爱安卓新机等你拿！索尼爱立信上线了“百里挑一——白色智爱大事发生的范德萨发生的丰盛的”</item>
-        <item>真心不要钱！20部索爱安卓新机等你拿！索尼爱立信上线了“百里挑一——白色智爱大事发生的范德萨发生的丰盛的”</item>
-    </string-array>
     <string-array name="personal_info">
         <item>我的消息</item>
         <item>我的订单</item>
         <item>收货地址</item>
+    </string-array>
+    <string-array name="product_param_list">
+        <item>商品详情</item>
+        <item>规格参数</item>
+        <item>评价详情</item>
+    </string-array>
+    <string-array name="order_status">
+        <item>仓库配货中</item>
+        <item>派送中</item>
+        <item>交易成功</item>
+        <item>关闭交易</item>
+    </string-array>
+    <string-array name="address_item_tips">
+        <item>所在地区</item>
+        <item>详细地址</item>
+        <item>收货人姓名</item>
+        <item>手机号码</item>
+        <item>邮编</item>
+    </string-array>
+    <string-array name="address_item_hints">
+        <item>所在地区</item>
+        <item>请输入详细地址</item>
+        <item>请输入收货人姓名</item>
+        <item>请输入联系电话</item>
+        <item>请输入邮编</item>
+    </string-array>
+
+    <!-- demo data -->
+    <string-array name="hotmodel_product_name">
+        <item>三星I9300 Galaxy S|||</item>
+        <item>HTC X315e G21 Sensation XL</item>
+    </string-array>
+    <string-array name="hotmodel_product_desc">
+        <item>外观设计：直板\n屏幕尺寸：4.8英寸\n分辨率：1280*720像素\n触控方式：电容屏（多点触控）\n摄像头像素：800万像素\n操作系统：Android OS 4.0\n内存：1GB RAM\n机身容量：16GB/32GB/64GB\n类型：锂电池，2100mAh\n重量：133.0g</item>
+        <item>外观设计：直板\n屏幕尺寸：4.8英寸\n分辨率：1280*720像素\n触控方式：电容屏（多点触控）\n摄像头像素：800万像素\n操作系统：Android OS 4.0\n内存：1GB RAM\n机身容量：16GB/32GB/64GB\n类型：锂电池，2100mAh\n重量：133.0g</item>
+    </string-array>
+    <string-array name="topfree_product_name">
+        <item>Nokia 808</item>
+        <item>三星S5830i</item>
+    </string-array>
+    <string-array name="purchase_confirm_details">
+        <item>收货地址</item>
+        <item>购买数量</item>
+        <item>机身颜色</item>
+        <item>运送方式</item>
+        <item>到付金额</item>
+        <item>给我们留言</item>
     </string-array>
 
 </resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<list>
+	<item>
+		<id>1</id>
+		<iconurl>ddd</iconurl>
+		<bref><![CDATA[Nokia/诺基亚808 4100万像素新款手机4英寸大屏 正品行货]]></bref>
+		<sold>32</sold>
+		<comments>198</comments>
+		<rank>4.5</rank>
+		<detailurl>dddddd</detailurl>
+	</item>
+	<item>
+		<id>2</id>
+		<iconurl>ddd</iconurl>
+		<bref><![CDATA[Samsung/三星 S5830i安卓2.3智能手机全新升级带4G卡]]></bref>
+		<sold>32</sold>
+		<comments>198</comments>
+		<rank>4.5</rank>
+		<detailurl>dddddd</detailurl>
+	</item>
+	<item>
+		<id>3</id>
+		<iconurl>ddd</iconurl>
+		<bref><![CDATA[三星（SAMSUNG）I929 3G手机（金属灰）CDMA2000/GSM双模双待]]></bref>
+		<sold>32</sold>
+		<comments>198</comments>
+		<rank>4.5</rank>
+		<detailurl>dddddd</detailurl>
+	</item>
+	<item>
+		<id>4</id>
+		<iconurl>ddd</iconurl>
+		<bref><![CDATA[魅族（MEIZI）MX新双核16G 3G手机（黑色）WCDMA/GSM]]></bref>
+		<sold>32</sold>
+		<comments>198</comments>
+		<rank>4.5</rank>
+		<detailurl>dddddd</detailurl>
+	</item>
+	<item>
+		<id>5</id>
+		<iconurl>ddd</iconurl>
+		<bref><![CDATA[华为（HUAWEI）Honor U8860 3G手机（白）WCDMA/GSM限时送贴膜]]></bref>
+		<sold>32</sold>
+		<comments>198</comments>
+		<rank>4.5</rank>
+		<detailurl>dddddd</detailurl>
+	</item>
+</list>

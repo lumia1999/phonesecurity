@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/area_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/address_area_select_tip_bg"
+        android:paddingBottom="10dip"
+        android:paddingLeft="10dip"
+        android:paddingRight="5dip"
+        android:paddingTop="10dip"
+        android:text="ddsd/ddd/ddd"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/area_tip"
+        android:divider="@null"
+        android:fadingEdge="none" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/area_tip"
+        android:gravity="center" >
+
+        <include layout="@layout/loading" />
+    </RelativeLayout>
+
+</RelativeLayout>

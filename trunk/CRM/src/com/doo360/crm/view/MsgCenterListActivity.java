@@ -1,7 +1,6 @@
 package com.doo360.crm.view;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -70,17 +69,14 @@ public class MsgCenterListActivity extends FragmentActivity implements
 	}
 
 	private void movePrev() {
-		startActivity(new Intent(this, PersonalCenterListActivity.class)
-				.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-		overridePendingTransition(0, 0);
 		finish();
+		overridePendingTransition(0, 0);
 	}
 
 	private void goHome() {
-		startActivity(new Intent(this, MainActivity.class)
-				.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-		overridePendingTransition(0, 0);
 		setResult(Activity.RESULT_OK);
 		finish();
+		overridePendingTransition(0, 0);
+
 	}
 }

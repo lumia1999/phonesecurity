@@ -1,13 +1,26 @@
 package com.doo360.crm;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources.NotFoundException;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
+
+import com.doo360.crm.provider.CrmDb;
 
 public class Utils {
+	private static final String TAG = "CRM.Utils";
 
 	/**
 	 * check apk status
@@ -44,4 +57,115 @@ public class Utils {
 	public static String formatAnchor(long anchor) {
 		return sdf.format(anchor);
 	}
+
+	private static final double DEF_PI180 = 0.01745329252; // PI/180.0
+	private static double DEF_R = 6370693.5; // radius of earth
+
+	/**
+	 * get the geo distance between two geopoint
+	 * 
+	 * @param longtitude1
+	 * @param latitude1
+	 * @param longtitude2
+	 * @param latitude2
+	 * @return
+	 */
+	public static double getPointDistance(double longtitude1, double latitude1,
+			double longtitude2, double latitude2) {
+		double ew1, ns1, ew2, ns2;
+		double distance;
+		ew1 = longtitude1 * DEF_PI180;
+		ns1 = latitude1 * DEF_PI180;
+		ew2 = longtitude2 * DEF_PI180;
+		ns2 = latitude2 * DEF_PI180;
+		distance = Math.sin(ns1) * Math.sin(ns2) + Math.cos(ns1)
+				* Math.cos(ns2) * Math.cos(ew1 - ew2);
+		if (distance > 1.0) {
+			distance = 1.0;
+		} else if (distance < -1.0) {
+			distance = -1.0;
+		}
+		distance = DEF_R * Math.acos(distance);
+		return distance;
+	}
+
+	public static String getIMEI(Context ctx) {
+		TelephonyManager tm = (TelephonyManager) ctx
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		return tm.getDeviceId();
+	}
+
+	public static String getDevModel() {
+		return android.os.Build.MODEL;
+	}
+
+	public static String getAddressArea(ContentValues value) {
+		StringBuilder sb = new StringBuilder();
+		String province = value.getAsString(CrmDb.Address.PROVINCE);
+		if (province != null) {
+			sb.append(province);
+		}
+		String city = value.getAsString(CrmDb.Address.CITY);
+		if (city != null) {
+			sb.append(city);
+		}
+		String district = value.getAsString(CrmDb.Address.DISTRICT);
+		if (district != null) {
+			sb.append(district);
+		}
+		return sb.toString();
+	}
+
+	public static void copyRawDb(Context ctx) {
+		File dbPath = ctx.getDatabasePath("allcitydata.db");
+		boolean copyed = Prefs.isRawDbCopyed(ctx);
+		if (copyed) {
+			Log.d(TAG, "db exist");
+		} else {
+			Log.e(TAG, "db has not been copyed");
+			InputStream is = null;
+			try {
+				is = ctx.getResources().openRawResource(R.raw.allcitydata);
+				FileOutputStream fos = new FileOutputStream(dbPath);
+				byte[] buf = new byte[8192];
+				int len = -1;
+				while ((len = is.read(buf)) != -1) {
+					fos.write(buf, 0, len);
+				}
+				fos.flush();
+				fos.close();
+				Prefs.setRawDbCopyed(ctx);
+			} catch (NotFoundException e) {
+				Log.e(TAG, "NotFoundException", e);
+			} catch (FileNotFoundException e) {
+				Log.e(TAG, "FileNotFoundException", e);
+			} catch (IOException e) {
+				Log.e(TAG, "IOException", e);
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						//
+					}
+				}
+			}
+		}
+	}
+
+	public static String formatAreaInfo(String province, String city,
+			String district) {
+		StringBuilder sb = new StringBuilder();
+		if (province != null) {
+			sb.append(province);
+		}
+		if (city != null) {
+			sb.append(Constants.SLASH).append(city);
+		}
+		if (district != null) {
+			sb.append(Constants.SLASH).append(district);
+		}
+		return sb.toString();
+	}
+
 }

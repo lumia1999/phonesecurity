@@ -2,10 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/banner_layout"
     android:layout_width="match_parent"
-    android:layout_height="48dip"
+    android:layout_height="wrap_content"
     android:background="@drawable/banner_bg"
     android:gravity="center_vertical"
-    android:padding="7dip" >
+    android:paddingLeft="7dip"
+    android:paddingRight="7dip" >
 
     <ImageView
         android:id="@+id/prev"
@@ -13,7 +14,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:background="@drawable/go_back_selector"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitXY" />
+
+    <Button
+        android:id="@+id/city_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:background="@null"
+        android:text="City"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/title"
@@ -30,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:background="@drawable/home"
-        android:scaleType="fitCenter" />
+        android:background="@drawable/home_selector"
+        android:scaleType="fitXY" />
 
 </RelativeLayout>

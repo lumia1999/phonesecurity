@@ -72,6 +72,10 @@ public class DownloadApkService extends Service implements
 
 	private Apk getAndRemoveApk(String url) {
 		synchronized (mLock) {
+			if (mApks == null) {
+				// TODO bug fix
+				return null;
+			}
 			int size = mApks.size();
 			for (int i = 0; i < size; i++) {
 				if (TextUtils.equals(url, mApks.get(i).url)) {

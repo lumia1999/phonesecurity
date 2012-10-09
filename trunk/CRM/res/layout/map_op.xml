@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/tip_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/map_op_distance_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip"
+            android:text="@string/map_op_distance_tip"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/map_op_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/map_op_distance_tip"
+            android:padding="5dip"
+            android:text="ddd"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/red" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/map_op_routing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tip_layout"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/route_selector"
+        android:gravity="center"
+        android:padding="5dip"
+        android:text="@string/routing" />
+
+    <include
+        android:id="@+id/map_op_address_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/map_op_routing"
+        layout="@layout/shop_list_item_content" />
+
+</RelativeLayout>

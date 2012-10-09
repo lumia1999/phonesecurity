@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/address_item_bg"
+    android:clickable="false"
+    android:focusable="false"
+    android:gravity="center_vertical"
+    android:padding="5dip" >
+
+    <RelativeLayout
+        android:id="@+id/content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/item_indicator" >
+
+        <TextView
+            android:id="@+id/item_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="ddd"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/item_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_content"
+            android:singleLine="true"
+            android:text="tip"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/light_grey" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/item_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/item_indicator"
+        android:background="@null"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingBottom="5dip"
+        android:paddingLeft="1dip"
+        android:paddingTop="5dip"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <ImageView
+        android:id="@+id/item_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dip"
+        android:background="@drawable/arrow_selector" />
+
+</RelativeLayout>

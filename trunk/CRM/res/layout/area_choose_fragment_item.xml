@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_area"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/product_param_item_bg_selector"
+    android:gravity="center_vertical"
+    android:paddingBottom="5dip"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip"
+    android:paddingTop="5dip"
+    android:text="ddd"
+    android:textAppearance="?android:attr/textAppearanceSmall"
+    android:textColor="@drawable/text_bg_selector" >
+
+</TextView>

@@ -110,6 +110,7 @@ public class SoftwareListFragment extends ListFragment implements
 		mPrevImage.setOnClickListener(this);
 		mHomeImage.setOnClickListener(this);
 		mRetryText.setOnClickListener(this);
+		mBannerText.setText(R.string.front_page_software_desc);
 		return v;
 	}
 
@@ -130,15 +131,12 @@ public class SoftwareListFragment extends ListFragment implements
 	}
 
 	private void movePrev() {
-		startActivity(new Intent(mAct, MainActivity.class));
-		mAct.overridePendingTransition(0, 0);
 		mAct.finish();
+		mAct.overridePendingTransition(0, 0);
 	}
 
 	private void goHome() {
-		startActivity(new Intent(mAct, MainActivity.class));
-		mAct.overridePendingTransition(0, 0);
-		mAct.finish();
+		movePrev();
 	}
 
 	private void retry() {
@@ -238,7 +236,7 @@ public class SoftwareListFragment extends ListFragment implements
 
 	private void notifyError() {
 		mLoadingProgressbar.setVisibility(View.GONE);
-		mListView.setVisibility(View.VISIBLE);
+		mListView.setVisibility(View.GONE);
 		mRetryText.setVisibility(View.VISIBLE);
 	}
 
@@ -265,7 +263,7 @@ public class SoftwareListFragment extends ListFragment implements
 			if (convertView == null) {
 				viewHolder = new ViewHolder();
 				convertView = mAct.getLayoutInflater().inflate(
-						R.layout.software_gragment_item, null);
+						R.layout.software_fragment_item, null);
 				viewHolder.icon = (ImageView) convertView
 						.findViewById(R.id.item_icon);
 				viewHolder.author = (TextView) convertView
@@ -297,26 +295,45 @@ public class SoftwareListFragment extends ListFragment implements
 				break;
 			}
 			// DEMO
-			if (position == 1) {
-				viewHolder.download.setCompoundDrawablesWithIntrinsicBounds(0,
-						R.drawable.down_btn_1, 0, 0);
-				viewHolder.download.setText(R.string.software_installed);
-			} else if (position == 3) {
-				viewHolder.download.setCompoundDrawablesWithIntrinsicBounds(0,
-						R.drawable.down_btn_2, 0, 0);
-				viewHolder.download.setText(R.string.software_update);
-			} else {
-				viewHolder.download.setCompoundDrawablesWithIntrinsicBounds(0,
-						R.drawable.down_btn_0, 0, 0);
-				viewHolder.download.setText(R.string.software_download);
+			switch (position) {
+			case 0:
+				viewHolder.icon.setBackgroundResource(R.drawable.soft_icon_0);
+				break;
+			case 1:
+				viewHolder.icon.setBackgroundResource(R.drawable.soft_icon_1);
+				break;
+			case 2:
+				viewHolder.icon.setBackgroundResource(R.drawable.soft_icon_2);
+				break;
+			case 3:
+				viewHolder.icon.setBackgroundResource(R.drawable.soft_icon_3);
+				break;
+			case 4:
+				viewHolder.icon.setBackgroundResource(R.drawable.soft_icon_4);
+				break;
 			}
-			viewHolder.download.setOnClickListener(new OnClickListener() {
+			if (position == 1) {
+				viewHolder.download.setText(R.string.software_installed);
+				viewHolder.download
+						.setBackgroundResource(R.drawable.soft_item_bg_pressed);
+			} else if (position == 3) {
+				viewHolder.download.setText(R.string.software_update);
+				viewHolder.download
+						.setBackgroundResource(R.drawable.soft_item_bg_update_selector);
+			} else {
+				viewHolder.download.setText(R.string.software_download);
+				viewHolder.download
+						.setBackgroundResource(R.drawable.soft_item_bg_install_selector);
+			}
+			if (position != 1) {
+				viewHolder.download.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					handleItemClick(item);
-				}
-			});
+					@Override
+					public void onClick(View v) {
+						handleItemClick(item);
+					}
+				});
+			}
 			return convertView;
 		}
 

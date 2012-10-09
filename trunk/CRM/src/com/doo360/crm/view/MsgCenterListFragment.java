@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.doo360.crm.R;
-import com.doo360.crm.Utils;
 import com.doo360.crm.provider.CrmDb;
 import com.doo360.crm.provider.ProviderOp;
 
@@ -103,11 +103,21 @@ public class MsgCenterListFragment extends ListFragment {
 			} else {
 				mDataList = new ArrayList<Item>();
 			}
+			ProviderOp.markAllMsgRead(mAct.getContentResolver());
 			Cursor c = ProviderOp.getAllMsgs(mAct.getContentResolver());
+			if (c == null) {
+				return false;
+			}
+			int count = c.getCount();
+			if (count == 0) {
+				c.close();
+				return false;
+			}
 			c.moveToFirst();
 			do {
 				mDataList.add(new Item(c.getString(c
-						.getColumnIndex(CrmDb.Msg.MESSAGE)), c.getLong(c
+						.getColumnIndex(CrmDb.Msg.MESSAGE)), c.getString(c
+						.getColumnIndex(CrmDb.Msg.ID)), c.getString(c
 						.getColumnIndex(CrmDb.Msg.ANCHOR))));
 			} while (c.moveToNext());
 			c.close();
@@ -174,10 +184,36 @@ public class MsgCenterListFragment extends ListFragment {
 			}
 			Item item = mDataList.get(position);
 			viewHolder.content.setText(item.content);
-			viewHolder.anchor.setText(Utils.formatAnchor(item.anchor));
+			viewHolder.anchor.setText(item.anchor);
+			final int pos = position;
+			convertView.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					Log.e(TAG, "onClick");
+					updateListUI(pos);
+				}
+			});
 			return convertView;
 		}
+	}
 
+	private void updateListUI(int pos) {
+		int size = mListView.getCount();
+		// Log.e(TAG, "pos : " + pos + ",size : " + size);
+		View v = null;
+		for (int i = 0; i < size; i++) {
+			v = mListView.getChildAt(i);
+			if (i == pos) {
+				((ViewHolder) v.getTag()).content
+						.setMaxLines(Integer.MAX_VALUE);
+				((ViewHolder) v.getTag()).content.setEllipsize(null);
+			} else {
+				((ViewHolder) v.getTag()).content.setMaxLines(2);
+				((ViewHolder) v.getTag()).content
+						.setEllipsize(TextUtils.TruncateAt.END);
+			}
+		}
 	}
 
 	private class ViewHolder {
@@ -187,10 +223,12 @@ public class MsgCenterListFragment extends ListFragment {
 
 	private class Item {
 		private String content;
-		private long anchor;
+		private String id;
+		private String anchor;
 
-		public Item(String content, long anchor) {
+		public Item(String content, String id, String anchor) {
 			this.content = content;
+			this.id = id;
 			this.anchor = anchor;
 		}
 	}

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/purchase_confirm_layout_bg_normal"
+    android:clickable="true"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:padding="5dip" >
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/item_tip"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip"
+        android:singleLine="true"
+        android:text="ddd"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/item_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_title"
+        android:layout_marginRight="10dip"
+        android:layout_toLeftOf="@+id/item_tip"
+        android:paddingLeft="5dip"
+        android:paddingTop="3dip"
+        android:text="ddfsfs"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@drawable/text_bg_selector" />
+
+    <TextView
+        android:id="@+id/item_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dip"
+        android:singleLine="true"
+        android:text="drrr"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/light_grey" />
+
+    <ImageView
+        android:id="@+id/item_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dip"
+        android:background="@drawable/arrow_normal"
+        android:clickable="false"
+        android:focusable="false"
+        android:scaleType="centerCrop" />
+
+</RelativeLayout>

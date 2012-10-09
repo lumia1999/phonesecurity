@@ -18,7 +18,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.doo360.crm.R;
 
@@ -32,7 +31,7 @@ public class FrontPageFragment extends Fragment {
 	private static final int TAG_WARRANTLY = 1;
 	private static final int TAG_SOFTWARE = 2;
 	private static final int TAG_SHOP = 3;
-	private static final int TAG_SERVICECENTER = 4;
+	private static final int TAG_TOPFREE = 4;
 	private static final int TAG_HOTMODEL = 5;
 	private static final int TAG_PERSONALCENTER = 6;
 
@@ -79,16 +78,16 @@ public class FrontPageFragment extends Fragment {
 		} else {
 			mDataList = new ArrayList<Item>();
 		}
-		mDataList.add(new Item(R.drawable.front_page_warrantly_selector,
-				R.string.front_page_warranty_desc, TAG_WARRANTLY));
-		mDataList.add(new Item(R.drawable.front_page_software_selector,
-				R.string.front_page_software_desc, TAG_SOFTWARE));
-		mDataList.add(new Item(R.drawable.front_page_shop_selector,
-				R.string.front_page_shop_desc, TAG_SHOP));
-		mDataList.add(new Item(R.drawable.front_page_servicecenter_selector,
-				R.string.front_page_servicecenter_desc, TAG_SERVICECENTER));
 		mDataList.add(new Item(R.drawable.front_page_hotmodel_selector,
 				R.string.front_page_hotmodel_desc, TAG_HOTMODEL));
+		mDataList.add(new Item(R.drawable.front_page_topfree_selector,
+				R.string.front_page_topfree_desc, TAG_TOPFREE));
+		mDataList.add(new Item(R.drawable.front_page_shop_selector,
+				R.string.front_page_shop_desc, TAG_SHOP));
+		mDataList.add(new Item(R.drawable.front_page_software_selector,
+				R.string.front_page_software_desc, TAG_SOFTWARE));
+		mDataList.add(new Item(R.drawable.front_page_warrantly_selector,
+				R.string.front_page_warranty_desc, TAG_WARRANTLY));
 		mDataList.add(new Item(R.drawable.front_page_personalcenter_selector,
 				R.string.front_page_personalcenter_desc, TAG_PERSONALCENTER));
 	}
@@ -101,9 +100,6 @@ public class FrontPageFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// TODO
-				Toast.makeText(mAct, "position : " + position,
-						Toast.LENGTH_SHORT).show();
 				handleClick(position);
 			}
 		});
@@ -114,21 +110,21 @@ public class FrontPageFragment extends Fragment {
 		int tag = item.tag;
 		switch (tag) {
 		case TAG_WARRANTLY:
-			startActivity(new Intent(mAct, TestActivity.class));
+			startActivity(new Intent(mAct, WarrantlyActivity.class));
 			mAct.overridePendingTransition(0, 0);
 			break;
 		case TAG_SOFTWARE:
 			showSoftware();
 			break;
 		case TAG_SHOP:
-
+			showShop();
 			break;
-		case TAG_SERVICECENTER:
-
+		case TAG_TOPFREE:
+			showTopfree();
 			break;
 
 		case TAG_HOTMODEL:
-
+			showHotmodel();
 			break;
 		case TAG_PERSONALCENTER:
 			showPersonalCenter();
@@ -138,6 +134,25 @@ public class FrontPageFragment extends Fragment {
 
 	private void showSoftware() {
 		startActivity(new Intent(mAct, SoftwareListActivity.class));
+		mAct.overridePendingTransition(0, 0);
+	}
+
+	private void showShop() {
+		startActivity(new Intent(mAct, ShopListActivity.class));
+		mAct.overridePendingTransition(0, 0);
+	}
+
+	private void showTopfree() {
+		startActivity(new Intent(mAct, TopfreeListActivity.class).putExtra(
+				TopfreeListActivity.EXTRA_TYPE,
+				TopfreeListActivity.TYPE_TOPFREE));
+		mAct.overridePendingTransition(0, 0);
+	}
+
+	private void showHotmodel() {
+		startActivity(new Intent(mAct, HotmodelListActivity.class).putExtra(
+				HotmodelListActivity.EXTRA_TYPE,
+				HotmodelListActivity.TYPE_HOTMODEL));
 		mAct.overridePendingTransition(0, 0);
 	}
 
