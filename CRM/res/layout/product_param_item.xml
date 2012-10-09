@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/product_param_item_bg_selector"
+    android:gravity="center_vertical"
+    android:padding="5dip" >
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dip"
+        android:singleLine="true"
+        android:text="ddd"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@drawable/text_bg_selector" />
+
+    <TextView
+        android:id="@+id/item_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dip"
+        android:layout_toLeftOf="@+id/item_arrow"
+        android:singleLine="true"
+        android:text="@string/product_comment_tip_txt"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@drawable/text_bg_selector" />
+
+    <ImageView
+        android:id="@+id/item_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/arrow_selector"
+        android:scaleType="centerCrop" />
+
+</RelativeLayout>

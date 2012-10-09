@@ -1,0 +1,12 @@
+channelId=xxx
+imei=dddd
+id=ddd
+name=三星I9300 Galaxy S|||
+price=3390.00
+transportCharge=免运费
+addressId=1
+count=1
+color=黑色
+transport=货到付款
+allCharge=3390.00
+msg=邮寄前，请检查手机质量没有问题，多谢

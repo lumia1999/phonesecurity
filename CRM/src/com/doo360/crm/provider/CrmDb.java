@@ -14,6 +14,7 @@ public class CrmDb {
 	// message center
 	public interface MsgColumn extends BaseColumns {
 		public static final String MESSAGE = "message";
+		public static final String ID = "id";
 		public static final String STATUS = "status";
 		public static final String ANCHOR = "anchor";
 	}
@@ -39,10 +40,17 @@ public class CrmDb {
 		public static final String DISTRICT = "district";
 		public static final String DETAIL = "detail";
 		public static final String POSTCODE = "postcode";
+		public static final String DEFAULT = "is_default";
 		public static final String ANCHOR = "anchor";
 	}
 
+	public interface AddressDefault {
+		public static final int DEFAULT = 1;
+		public static final int NODEFAULT = 0;
+	}
+
 	public static final class Address implements AddressColumn {
+		public static final String ID = "id";/* ONLY for data parser */
 		public static final String DIRECTORY = "address";
 		public static final Uri CONTENT_URI = Uri.parse("content://"
 				+ AUTHORITY + "/" + DIRECTORY);

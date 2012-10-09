@@ -1,40 +1,46 @@
 package com.doo360.crm.view;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
+import com.doo360.crm.BetterPopupWindow;
 import com.doo360.crm.R;
 
-public class TestActivity extends Activity implements BDLocationListener {
+public class TestActivity extends FragmentActivity {
 
 	private static final String TAG = "TestActivity";
-
-	private LocationClient mLocClient = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.testloc);
-		Button btn = (Button) findViewById(R.id.locate);
+		Button btn = (Button) findViewById(R.id.btn);
 		btn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				mLocClient.start();
-				int i = mLocClient.requestLocation();
-				Log.d(TAG, "i : " + i);
+				// TODO Auto-generated method stub
+				DemoPopupWindow dw = new DemoPopupWindow(v);
+				dw.showLikeQuickAction(0, 30);
 			}
 		});
-		mLocClient = new LocationClient(this);
-		mLocClient.registerLocationListener(this);
+		
+		TextView tv = (TextView)findViewById(R.id.radiobtn);
+		tv.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				//
+			}
+		});
 	}
 
 	@Override
@@ -46,16 +52,38 @@ public class TestActivity extends Activity implements BDLocationListener {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	@Override
-	public void onReceiveLocation(BDLocation location) {
-		// TODO Auto-generated method stub
-		Log.d(TAG, "location : " + location.getAddrStr());
-	}
+	private static class DemoPopupWindow extends BetterPopupWindow implements
+			OnClickListener {
+		public DemoPopupWindow(View anchor) {
+			super(anchor);
+		}
 
-	@Override
-	public void onReceivePoi(BDLocation location) {
-		// TODO Auto-generated method stub
+		@Override
+		protected void onCreate() {
+			// inflate layout
+			LayoutInflater inflater = (LayoutInflater) this.anchor.getContext()
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+			ViewGroup root = (ViewGroup) inflater.inflate(R.layout.routeing_op,
+					null);
+
+			// RelativeLayout r = new RelativeLayout(this.anchor.getContext());
+			// r.setLayoutParams(new RelativeLayout.LayoutParams(
+			// RelativeLayout.LayoutParams.WRAP_CONTENT,
+			// RelativeLayout.LayoutParams.WRAP_CONTENT));
+			// TextView root = new TextView(this.anchor.getContext());
+			// root.setText("Tetteerwr");
+			// r.addView(root);
+
+			// set the inflated view as what we want to display
+			this.setContentView(root);
+		}
+
+		@Override
+		public void onClick(View v) {
+			// we'll just display a simple toast on a button click
+			this.dismiss();
+		}
 	}
 
 }

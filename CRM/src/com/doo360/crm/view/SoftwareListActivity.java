@@ -41,6 +41,7 @@ public class SoftwareListActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.software);
 		initUI();
+
 		registerReceiver();
 	}
 

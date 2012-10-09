@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addresslist>
+	<address>
+		<id>1</id>
+		<name><![CDATA[紫紫]]></name>
+		<phone>13351060581</phone>
+		<province><![CDATA[广东省]]></province>
+		<city><![CDATA[深圳市]]></city>
+		<district><![CDATA[南山区]]></district>
+		<detail><![CDATA[高新南十二道长虹大厦]]></detail>
+		<postcode>518057</postcode>
+		<default>0</default>
+		<anchor>1347508227758</anchor>
+	</address>
+	<address>
+		<id>2</id>
+		<name><![CDATA[紫紫]]></name>
+		<phone>13351060581</phone>
+		<province><![CDATA[广东省]]></province>
+		<city><![CDATA[深圳市]]></city>
+		<district><![CDATA[南山区]]></district>
+		<detail><![CDATA[科技园高新南十二道康佳研发大厦6层6C-F]]></detail>
+		<postcode>518057</postcode>
+		<default>1</default>
+		<anchor>1347508227758</anchor>
+	</address>
+	<address>
+		<id>3</id>
+		<name><![CDATA[紫紫]]></name>
+		<phone>13351060581</phone>
+		<province><![CDATA[广东省]]></province>
+		<city><![CDATA[深圳市]]></city>
+		<district><![CDATA[南山区]]></district>
+		<detail><![CDATA[科技园高新南十二道康佳研发大厦6层6C-F]]></detail>
+		<postcode>518057</postcode>
+		<default>0</default>
+		<anchor>1347508227758</anchor>
+	</address>
+</addresslist>

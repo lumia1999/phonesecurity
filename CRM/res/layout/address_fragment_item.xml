@@ -2,11 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_item_bg_selector"
+    android:background="@drawable/address_list_item_bg_selector"
     android:clickable="true"
     android:descendantFocusability="blocksDescendants"
     android:focusable="true"
-    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:gravity="center_vertical"
     android:paddingLeft="5dip" >
 
     <TextView
@@ -25,7 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/item_indicator"
         android:layout_toRightOf="@id/item_name"
+        android:ellipsize="end"
         android:padding="3dip"
+        android:singleLine="true"
         android:text="dddfsfs"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold" />
@@ -46,8 +48,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="5dip"
-        android:background="@drawable/img_arrow"
-        android:scaleType="fitCenter" />
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="20dip"
+        android:background="@drawable/arrow_selector"
+        android:scaleType="centerCrop" />
 
 </RelativeLayout>

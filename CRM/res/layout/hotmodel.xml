@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/light_grey" >
+
+    <include layout="@layout/banner" />
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banner_layout"
+        layout="@layout/ad" />
+
+    <fragment
+        android:id="@+id/hotmodel_fragment"
+        android:name="com.doo360.crm.view.HotmodelListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/ad" />
+
+</RelativeLayout>

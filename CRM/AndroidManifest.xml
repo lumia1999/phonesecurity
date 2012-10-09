@@ -5,7 +5,14 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="15" />
+        android:targetSdkVersion="11" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
 
     <permission android:name="android.permission.BAIDU_LOCATION_SERVICE" >
     </permission>
@@ -31,8 +38,11 @@
     </uses-permission>
     <uses-permission android:name="android.permission.READ_LOGS" >
     </uses-permission>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
+        android:name=".App"
+        android:hardwareAccelerated="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -42,7 +52,7 @@
         <activity
             android:name=".view.MainActivity"
             android:configChanges="orientation"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="stateHidden" >
@@ -51,6 +61,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.WarrantlyActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.EvaluateActivity"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name=".view.SoftwareListActivity"
@@ -64,6 +84,14 @@
             android:configChanges="orientation|screenSize" >
         </activity>
         <activity
+            android:name=".view.OrderListActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".view.OrderDetailListActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+        <activity
             android:name=".view.AddressListActivity"
             android:configChanges="orientation|screenSize" >
         </activity>
@@ -72,12 +100,68 @@
             android:configChanges="orientation|screenSize" >
         </activity>
         <activity
-            android:name=".view.TestActivity"
+            android:name=".view.AddressItemListActivity"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="stateUnspecified|adjustPan" >
+        </activity>
+        <activity
+            android:name=".view.ShopListActivity"
             android:configChanges="orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".view.RouteingActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.TopfreeListActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".view.PurchaseConfirmActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".view.AddressSelectListActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".view.CityListActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".view.HotmodelListActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".view.ProductDetailActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.ProductMoreDetailListActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".view.ProductParameterListActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".view.ProductCommentListActivity"
+            android:configChanges="orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".view.TestActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="sensor" >
         </activity>
 
         <service
             android:name=".service.DownloadApkService"
+            android:exported="false" >
+        </service>
+        <service
+            android:name=".service.UpdateMsgsIntentService"
             android:exported="false" >
         </service>
 

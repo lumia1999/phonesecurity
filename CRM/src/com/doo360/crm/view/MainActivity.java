@@ -1,19 +1,23 @@
 package com.doo360.crm.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.doo360.crm.FileHelper;
 import com.doo360.crm.R;
+import com.doo360.crm.Utils;
 
 public class MainActivity extends FragmentActivity {
 	private static final String TAG = "MainActivity";
 	private EditText mSearchEdit;
+	private TextView mSearchGoText;
 	private ImageView mAdView;
 
 	@Override
@@ -21,20 +25,32 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		initUI();
-		String dir = FileHelper.getApkTempDirPath(this);
-		Log.d(TAG, "dir : " + dir);
+		// Log.e(TAG, "model : " + Utils.getDevModel());
+		Utils.copyRawDb(this);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu_main, menu);
-		return true;
+		// getMenuInflater().inflate(R.menu.menu_main, menu);
+		// return true;
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.search:
+			startActivity(new Intent(this, TestActivity.class));
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private void initUI() {
-		findViewById(R.id.prev).setVisibility(View.GONE);
-		findViewById(R.id.home).setVisibility(View.GONE);
+		findViewById(R.id.prev).setVisibility(View.INVISIBLE);
+		findViewById(R.id.home).setVisibility(View.INVISIBLE);
 		mSearchEdit = (EditText) findViewById(R.id.global_search);
+		mSearchGoText = (TextView) findViewById(R.id.global_search_confirm);
 		mAdView = (ImageView) findViewById(R.id.ad);
 	}
 }
