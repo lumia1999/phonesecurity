@@ -101,8 +101,7 @@ public class ProductConfirmAdapter extends BaseAdapter {
 		final int pos = position;
 		if (item.getIndex() == ProductConfirmDetailItem.INDEX_ADDR
 				|| item.getIndex() == ProductConfirmDetailItem.INDEX_COMMENT) {
-			convertView
-					.setBackgroundResource(R.drawable.purchase_confirm_layout_bg_selector);
+			convertView.setBackgroundResource(R.drawable.list_item_selector);
 			// convertView.setOnClickListener(new OnClickListener() {
 			//
 			// @Override
@@ -118,8 +117,7 @@ public class ProductConfirmAdapter extends BaseAdapter {
 			// }
 			// });
 		} else {
-			convertView
-					.setBackgroundResource(R.drawable.purchase_confirm_layout_bg_normal);
+			convertView.setBackgroundResource(R.drawable.list_item_bg_normal);
 		}
 		return convertView;
 	}

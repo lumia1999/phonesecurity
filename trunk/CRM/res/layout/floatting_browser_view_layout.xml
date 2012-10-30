@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:background="@drawable/floatting_browser_title_bg" >
+        
+        <ImageView 
+            android:id="@+id/floatting_browser_title_back_btn" 
+            android:background="@drawable/floatting_browser_title_button_bg" 
+            android:clickable="true" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:layout_marginLeft="5.0dip" 
+            android:layout_marginRight="5.0dip" 
+            android:src="@drawable/floatting_browser_title_back" />
+        
+        <TextView
+            android:id="@+id/floatting_browser_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+	    	android:background="@drawable/floatting_browser_title_background" 
+         	android:layout_marginLeft="5.0dip" 
+         	android:layout_toRightOf="@id/floatting_browser_title_back_btn"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:maxWidth="160dip"
+            android:singleLine="true"
+	    	android:gravity="center_vertical" 
+            android:textColor="#ffeeeeee"
+            android:textSize="14.0dip" 
+	    	android:shadowColor="#77000000" 
+	    	android:shadowDy="-1.0"
+	    	android:shadowRadius="0.5" />
+        
+        <ImageView
+            android:id="@+id/floatting_browser_title_refresh_btn"
+           	android:clickable="true" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dip"
+           	android:background="@drawable/floatting_browser_title_button_bg" 
+            android:src="@drawable/floatting_browser_title_refresh"/>
+
+        <ImageView
+            android:id="@+id/floatting_browser_title_stop_btn"
+            android:clickable="true" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dip"
+            android:background="@drawable/floatting_browser_title_button_bg" 
+            android:src="@drawable/floatting_browser_title_close"
+            android:visibility="invisible" />
+        
+        <ImageView 
+            android:id="@+id/floatting_separatior" 
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content" 
+            android:layout_toLeftOf="@id/floatting_browser_title_refresh_btn"
+            android:src="@drawable/floatting_browser_title_separator" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#ffffff" >
+
+        <WebView
+            android:id="@+id/floatting_webview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#888888"
+            android:fadeScrollbars="true"
+            android:scrollbars="vertical" />
+
+        <ProgressBar
+            android:id="@+id/floatting_browser_progress_small"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="6dip"
+            android:layout_gravity="top"
+            android:progressDrawable="@drawable/floatting_browser_progressbar" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="15dip"
+            android:layout_gravity="bottom"
+            android:background="@drawable/floatting_footbar_bg_shadow" />
+    </FrameLayout>
+
+</LinearLayout>

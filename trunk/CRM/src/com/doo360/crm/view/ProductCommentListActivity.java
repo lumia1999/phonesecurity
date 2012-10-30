@@ -1,7 +1,5 @@
 package com.doo360.crm.view;
 
-import com.doo360.crm.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,23 +8,55 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.doo360.crm.R;
+import com.doo360.crm.view.ProductCommentListFragment.OnDataLoadedListener;
+
 public class ProductCommentListActivity extends FragmentActivity implements
-		OnClickListener {
+		OnClickListener, OnDataLoadedListener {
 	private static final String TAG = "ProductCommentListActivity";
+
+	private static final int REQ_CODE_COMMENT = 1;
+
+	public static final String EXTRA_PRODUCTID = "extra_pId";
+
+	private String mPId;
 
 	// title
 	private ImageView mPrevImage;
 	private TextView mTitleText;
 	private ImageView mHomeImage;
 
+	// op
+	private LinearLayout mOpLayout;
+	private TextView mCommentText;
+
 	@Override
 	protected void onCreate(Bundle bundle) {
 		Log.d(TAG, "onCreate");
 		super.onCreate(bundle);
 		setContentView(R.layout.product_comment);
+		Intent i = getIntent();
+		if (i != null) {
+			mPId = i.getStringExtra(EXTRA_PRODUCTID);
+		}
 		initUI();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case REQ_CODE_COMMENT:
+			if (resultCode == Activity.RESULT_OK) {
+				setResult(Activity.RESULT_OK);
+				finish();
+				overridePendingTransition(0, 0);
+			}
+			break;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -38,6 +68,9 @@ public class ProductCommentListActivity extends FragmentActivity implements
 		case R.id.home:
 			goHome();
 			break;
+		case R.id.confirm:
+			evaluate();
+			break;
 		}
 	}
 
@@ -48,6 +81,14 @@ public class ProductCommentListActivity extends FragmentActivity implements
 		mPrevImage.setOnClickListener(this);
 		mTitleText.setText(R.string.product_comment_title_txt);
 		mHomeImage.setOnClickListener(this);
+
+		mOpLayout = (LinearLayout) findViewById(R.id.op_layout);
+		mCommentText = (TextView) findViewById(R.id.confirm);
+		mCommentText.setText(R.string.product_comment_txt);
+		mCommentText.setOnClickListener(this);
+		findViewById(R.id.neuter).setVisibility(View.GONE);
+		findViewById(R.id.cancel).setVisibility(View.GONE);
+		mOpLayout.setVisibility(View.GONE);
 	}
 
 	private void movePrev() {
@@ -59,6 +100,24 @@ public class ProductCommentListActivity extends FragmentActivity implements
 		setResult(Activity.RESULT_OK);
 		finish();
 		overridePendingTransition(0, 0);
+	}
+
+	private void evaluate() {
+		startActivityForResult(new Intent(this, EvaluateActivity.class),
+				REQ_CODE_COMMENT);
+	}
+
+	public String getPId() {
+		return mPId;
+	}
+
+	@Override
+	public void onDataLoaded(boolean showCommentAction) {
+		if (showCommentAction) {
+			mOpLayout.setVisibility(View.VISIBLE);
+		} else {
+			mOpLayout.setVisibility(View.GONE);
+		}
 	}
 
 }

@@ -2,26 +2,36 @@
 <orderlist>
     <order>
         <number>34568732</number>
-        <iconurl>xxx.action</iconurl>
-        <name><![CDATA[三星I9300 Galaxy S|||]]></name>
-		<price>3199.00</price>
-		<count>1</count>
-		<detailurl>xxx/ddd.action</detailurl>
+		<items>
+			<item>
+			    <iconurl>http://ddd/xxx1.action</iconurl>
+				<name><![CDATA[三星I9300 Galaxy S|||]]></name>
+				<price>3199.00</price>
+				<count>1</count>
+			</item>
+		</items>
+
     </order>
 	<order>
         <number>34568733</number>
-        <iconurl>xxx.action</iconurl>
-        <name><![CDATA[HTC ONE X]]></name>
-		<price>2999.00</price>
-		<count>1</count>
-		<detailurl>xxx/ddd.action</detailurl>
+		<items>
+			<item>
+				<iconurl>http://ddd/xxx2.action</iconurl>
+				<name><![CDATA[HTC ONE X]]></name>
+				<price>2999.00</price>
+				<count>1</count>
+			</item>
+		</items>
     </order>
 	<order>
         <number>34568734</number>
-        <iconurl>xxx.action</iconurl>
-        <name><![CDATA[三星Galaxy Note 10.1]]></name>
-		<price>4999.00</price>
-		<count>1</count>
-		<detailurl>xxx/ddd.action</detailurl>
+		<items>
+			<item>
+				<iconurl>http://ddd/xxx3.action</iconurl>
+				<name><![CDATA[三星Galaxy Note 10.1]]></name>
+				<price>4999.00</price>
+				<count>1</count>
+			</item>
+		</items>
     </order>
 </orderlist>

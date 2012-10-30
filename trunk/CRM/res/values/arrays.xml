@@ -31,6 +31,16 @@
         <item>请输入联系电话</item>
         <item>请输入邮编</item>
     </string-array>
+    <string-array name="transport_ways">
+        <item>快递</item>
+        <item>EMS</item>
+        <item>包裹</item>
+    </string-array>
+    <string-array name="payment_ways">
+        <item>货到付款</item>
+        <item>刷卡</item>
+        <item>在线支付</item>
+    </string-array>
 
     <!-- demo data -->
     <string-array name="hotmodel_product_name">
@@ -50,6 +60,7 @@
         <item>购买数量</item>
         <item>机身颜色</item>
         <item>运送方式</item>
+        <item>支付方式</item>
         <item>到付金额</item>
         <item>给我们留言</item>
     </string-array>

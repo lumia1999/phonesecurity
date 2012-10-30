@@ -1,14 +1,9 @@
 package com.doo360.crm;
 
-import android.app.AlarmManager;
 import android.app.Application;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import com.baidu.mapapi.BMapManager;
-import com.doo360.crm.service.UpdateMsgsIntentService;
 
 public class App extends Application {
 	private static final String TAG = "App";
@@ -20,10 +15,7 @@ public class App extends Application {
 		Log.d(TAG, "onCreate");
 		mMapMgr = new BMapManager(this);
 		mMapMgr.init(BDMapKey, null);
-		if (!Prefs.isMsgAlarmBaseAnchorSetted(this)) {
-			Prefs.setMsgAlarmBaseAnchor(this);
-		}
-		setMsgAlarm();
+		Utils.setMsgAlarm(this);
 		super.onCreate();
 	}
 
@@ -39,17 +31,6 @@ public class App extends Application {
 
 	public BMapManager getBMapManager() {
 		return this.mMapMgr;
-	}
-
-	private static final long MSG_ALARM_SPAN = 1 * 60 * 1000L; // 1minute
-
-	private void setMsgAlarm() {
-		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent intent = new Intent(this, UpdateMsgsIntentService.class);
-		PendingIntent pi = PendingIntent.getService(this, 0, intent, 0);
-		long initAnchor = Prefs.getMsgAlarmBaseAnchor(this);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, initAnchor + MSG_ALARM_SPAN,
-				MSG_ALARM_SPAN, pi);
 	}
 
 }

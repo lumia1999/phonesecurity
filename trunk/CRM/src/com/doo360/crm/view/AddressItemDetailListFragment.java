@@ -1,6 +1,17 @@
 package com.doo360.crm.view;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.protocol.HTTP;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -34,6 +45,10 @@ import android.widget.Toast;
 import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 import com.doo360.crm.Utils;
+import com.doo360.crm.http.FunctionEntry;
+import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpRequestBox;
+import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.provider.CrmDb;
 import com.doo360.crm.provider.ProviderOp;
 
@@ -144,7 +159,99 @@ public class AddressItemDetailListFragment extends ListFragment implements
 	}
 
 	private void setDefault() {
-		// TODO
+		showDialog(PostChangeDialogFragment.TYPE_SET_DEFAULT);
+		new AsyncTask<String, Void, Integer>() {
+			@Override
+			protected Integer doInBackground(String... params) {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					//
+				}
+				// TODO
+				int status = -1;
+				InputStream is = null;
+				try {
+					HttpPost post = new HttpPost(
+							FunctionEntry.fixUrl(params[0]));
+					post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+							.formatRequestParams(params[1], setRequestParams(),
+									setRequestParamValues())));
+					HttpResponse resp = HttpRequestBox.getInstance(mAct)
+							.sendRequest(post);
+					if (resp == null) {
+						return status;
+					}
+					int statusCode = resp.getStatusLine().getStatusCode();
+					Log.d(TAG, "statusCode : " + statusCode);
+					if (statusCode != HttpStatus.SC_OK) {
+						return status;
+					}
+					is = resp.getEntity().getContent();
+					if (HTTPUtils.testResponse(is)) {
+						return status;
+					}
+					XmlPullParserFactory factory = XmlPullParserFactory
+							.newInstance();
+					factory.setNamespaceAware(true);
+					XmlPullParser parser = factory.newPullParser();
+					parser.setInput(is, HTTP.UTF_8);
+					int eventType = parser.getEventType();
+					String tag = "";
+					while (eventType != XmlPullParser.END_DOCUMENT) {
+						if (eventType == XmlPullParser.START_TAG) {
+							tag = parser.getName();
+							if (TextUtils.equals(tag, HTTPUtils.STATUS)) {
+								parser.next();
+								status = Integer.valueOf(parser.getText());
+								break;
+							}
+						}
+						eventType = parser.next();
+					}// ?end while
+
+				} catch (Exception e) {
+					Log.e(TAG, "Exception", e);
+					return status;
+				} finally {
+					if (is != null) {
+						try {
+							is.close();
+						} catch (IOException e) {
+							//
+						}
+					}
+				}
+				return status;
+			}
+
+			protected void onPostExecute(Integer result) {
+				handleDialogResult(result);
+				if (result != -1) {
+					ProviderOp
+							.setDefaultAddr(mAct.getContentResolver(), mRowId);
+					mAct.finish();
+				}
+			};
+
+			private List<String> setRequestParams() {
+				List<String> list = new ArrayList<String>();
+				list.add(HTTPUtils.USERID);
+				list.add(HTTPUtils.IMEI);
+				list.add(HTTPUtils.CHANNELID);
+				list.add(HTTPUtils.ADDRESSID);
+				return list;
+			}
+
+			private List<String> setRequestParamValues() {
+				List<String> list = new ArrayList<String>();
+				list.add(Utils.getIMEI(mAct));
+				list.add(Utils.getIMEI(mAct));
+				list.add(Utils.getChannelId(mAct));
+				list.add(String.valueOf(mRowId));
+				return list;
+			}
+		}.execute(FunctionEntry.ADDRESS_ENTRY, InstConstants.ADDRESS_DEFAULT);
 	}
 
 	private void saveChange() {
@@ -185,29 +292,95 @@ public class AddressItemDetailListFragment extends ListFragment implements
 			return;
 		}
 		value.put(CrmDb.Address.POSTCODE, postcode);
-		// TODO post data to server
+		// post data to server
 		showDialog(PostChangeDialogFragment.TYPE_SAVE_CHANGE);
-		new AsyncTask<Void, Void, Boolean>() {
+		new AsyncTask<String, Void, Integer>() {
 
 			@Override
-			protected Boolean doInBackground(Void... params) {
+			protected Integer doInBackground(String... params) {
+				// TODO
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					//
 				}
-				// TODO
-				return true;
+				int rowId = -1;
+				InputStream is = null;
+				try {
+					HttpPost post = new HttpPost(
+							FunctionEntry.fixUrl(params[0]));
+					post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+							.formatRequestParams(params[1], setRequestParams(),
+									setRequestParamValues(value))));
+					HttpResponse resp = HttpRequestBox.getInstance(mAct)
+							.sendRequest(post);
+					if (resp == null) {
+						return rowId;
+					}
+					int status = resp.getStatusLine().getStatusCode();
+					Log.d(TAG, "status : " + status);
+					if (status != HttpStatus.SC_OK) {
+						return rowId;
+					}
+					is = resp.getEntity().getContent();
+					if (HTTPUtils.testResponse(is)) {
+						return rowId;
+					}
+					XmlPullParserFactory factory = XmlPullParserFactory
+							.newInstance();
+					factory.setNamespaceAware(true);
+					XmlPullParser parser = factory.newPullParser();
+					parser.setInput(is, HTTP.UTF_8);
+					int eventType = parser.getEventType();
+					String tag = "";
+					while (eventType != XmlPullParser.END_DOCUMENT) {
+						if (eventType == XmlPullParser.START_TAG) {
+							tag = parser.getName();
+							if (TextUtils.equals(tag, HTTPUtils.SERVICERESULT)) {
+								parser.next();
+								int serviceResult = Integer.parseInt(parser
+										.getText());
+								if (serviceResult != 0) {
+									return rowId;
+								}
+							} else if (TextUtils.equals(tag,
+									HTTPUtils.ADDRESSID)) {
+								parser.next();
+								rowId = Integer.parseInt(parser.getText());
+								break;
+							}
+						}
+						eventType = parser.next();
+					}// ?end while
+				} catch (IOException e) {
+					Log.e(TAG, "IOException", e);
+					return rowId;
+				} catch (IllegalStateException e) {
+					Log.e(TAG, "IllegalStateException", e);
+					return rowId;
+				} catch (XmlPullParserException e) {
+					Log.e(TAG, "XmlPullParserException", e);
+					return rowId;
+				} finally {
+					if (is != null) {
+						try {
+							is.close();
+						} catch (IOException e) {
+							//
+						}
+					}
+				}
+				return rowId;
 			}
 
 			@Override
-			protected void onPostExecute(Boolean result) {
-				// TODO
+			protected void onPostExecute(Integer result) {
 				super.onPostExecute(result);
 				handleDialogResult(result);
-				if (result) {
+				if (result != -1) {
 					int tempId = -1;
 					if (mRowId == -1) {
+						value.put(CrmDb.Address._ID, result);
 						tempId = ProviderOp.addAddr(mAct.getContentResolver(),
 								value);
 					} else {
@@ -226,32 +399,115 @@ public class AddressItemDetailListFragment extends ListFragment implements
 				}
 			}
 
-		}.execute();
+			private List<String> setRequestParams() {
+				List<String> list = new ArrayList<String>();
+				list.add(HTTPUtils.USERID);
+				list.add(HTTPUtils.IMEI);
+				list.add(HTTPUtils.CHANNELID);
+				list.add(CrmDb.Address.ID);
+				list.add(CrmDb.Address.PROVINCE);
+				list.add(CrmDb.Address.CITY);
+				list.add(CrmDb.Address.DISTRICT);
+				list.add(CrmDb.Address.DETAIL);
+				list.add(CrmDb.Address.NAME);
+				list.add(CrmDb.Address.PHONE);
+				list.add(CrmDb.Address.POSTCODE);
+				return list;
+			}
+
+			private List<String> setRequestParamValues(ContentValues value) {
+				List<String> list = new ArrayList<String>();
+				list.add(Utils.getIMEI(mAct));
+				list.add(Utils.getIMEI(mAct));
+				list.add(Utils.getChannelId(mAct));
+				list.add(String.valueOf(mRowId));
+				list.add(value.getAsString(CrmDb.Address.PROVINCE));
+				list.add(value.getAsString(CrmDb.Address.CITY));
+				list.add(value.getAsString(CrmDb.Address.DISTRICT));
+				list.add(value.getAsString(CrmDb.Address.DETAIL));
+				list.add(value.getAsString(CrmDb.Address.NAME));
+				list.add(value.getAsString(CrmDb.Address.PHONE));
+				list.add(value.getAsString(CrmDb.Address.POSTCODE));
+				return list;
+			}
+
+		}.execute(FunctionEntry.ADDRESS_ENTRY, InstConstants.ADDRESS_SAVE);
 
 	}
 
 	private void deleteAddr() {
-		// TODO post request to server
+		// post request to server
 		showDialog(PostChangeDialogFragment.TYPE_DELETE);
-		new AsyncTask<Void, Void, Boolean>() {
+		new AsyncTask<String, Void, Integer>() {
 
 			@Override
-			protected Boolean doInBackground(Void... params) {
+			protected Integer doInBackground(String... params) {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					//
 				}
 				// TODO
-				return true;
+				int status = -1;
+				InputStream is = null;
+				try {
+					HttpPost post = new HttpPost(
+							FunctionEntry.fixUrl(params[0]));
+					post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+							.formatRequestParams(params[1], setRequestParams(),
+									setRequestParamValues())));
+					HttpResponse resp = HttpRequestBox.getInstance(mAct)
+							.sendRequest(post);
+					if (resp == null) {
+						return status;
+					}
+					int statusCode = resp.getStatusLine().getStatusCode();
+					Log.d(TAG, "statusCode : " + statusCode);
+					if (statusCode != HttpStatus.SC_OK) {
+						return status;
+					}
+					is = resp.getEntity().getContent();
+					if (HTTPUtils.testResponse(is)) {
+						return status;
+					}
+					XmlPullParserFactory factory = XmlPullParserFactory
+							.newInstance();
+					factory.setNamespaceAware(true);
+					XmlPullParser parser = factory.newPullParser();
+					parser.setInput(is, HTTP.UTF_8);
+					int eventType = parser.getEventType();
+					String tag = "";
+					while (eventType != XmlPullParser.END_DOCUMENT) {
+						if (eventType == XmlPullParser.START_TAG) {
+							tag = parser.getName();
+							if (TextUtils.equals(tag, HTTPUtils.STATUS)) {
+								parser.next();
+								status = Integer.parseInt(parser.getText());
+								break;
+							}
+						}
+						eventType = parser.next();
+					}// ?end while
+				} catch (Exception e) {
+					Log.e(TAG, "Exception", e);
+					return status;
+				} finally {
+					if (is != null) {
+						try {
+							is.close();
+						} catch (IOException e) {
+							//
+						}
+					}
+				}
+				return status;
 			}
 
 			@Override
-			protected void onPostExecute(Boolean result) {
-				// TODO
+			protected void onPostExecute(Integer result) {
 				super.onPostExecute(result);
 				handleDialogResult(result);
-				if (result) {
+				if (result != -1) {
 					ProviderOp.deleteAddr(mAct.getContentResolver(), mRowId);
 					mAct.setResult(Constants.ACTIVITY_RESULT_ADDR_DELETE,
 							new Intent().putExtra(
@@ -261,7 +517,25 @@ public class AddressItemDetailListFragment extends ListFragment implements
 				}
 			}
 
-		}.execute();
+			private List<String> setRequestParams() {
+				List<String> list = new ArrayList<String>();
+				list.add(HTTPUtils.USERID);
+				list.add(HTTPUtils.IMEI);
+				list.add(HTTPUtils.CHANNELID);
+				list.add(CrmDb.Address.ID);
+				return list;
+			}
+
+			private List<String> setRequestParamValues() {
+				List<String> list = new ArrayList<String>();
+				list.add(Utils.getIMEI(mAct));
+				list.add(Utils.getIMEI(mAct));
+				list.add(Utils.getChannelId(mAct));
+				list.add(String.valueOf(mRowId));
+				return list;
+			}
+
+		}.execute(FunctionEntry.ADDRESS_ENTRY, InstConstants.ADDRESS_DELETE);
 	}
 
 	private void showDialog(int type) {
@@ -279,8 +553,7 @@ public class AddressItemDetailListFragment extends ListFragment implements
 		dialog.show(mFragMgr, "dialog");
 	}
 
-	private void handleDialogResult(boolean result) {
-		// TODO
+	private void handleDialogResult(int result) {
 		PostChangeDialogFragment dialog = (PostChangeDialogFragment) mFragMgr
 				.findFragmentByTag("dialog");
 		if (dialog != null) {
@@ -322,11 +595,7 @@ public class AddressItemDetailListFragment extends ListFragment implements
 			return v;
 		}
 
-		public void updateDilog(boolean result) {
-			if (result) {
-				dismiss();
-				return;
-			}
+		public void updateDilog(Integer result) {
 			switch (mType) {
 			case TYPE_SET_DEFAULT:
 				Toast.makeText(mAct, R.string.set_default_fail_toast,
@@ -341,6 +610,7 @@ public class AddressItemDetailListFragment extends ListFragment implements
 						Toast.LENGTH_SHORT).show();
 				break;
 			}
+			dismiss();
 		}
 	}
 

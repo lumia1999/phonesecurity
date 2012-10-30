@@ -3,7 +3,11 @@ package com.doo360.crm.view;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -11,6 +15,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -26,15 +31,21 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.doo360.crm.FileHelper;
 import com.doo360.crm.R;
 import com.doo360.crm.SoftwareItem;
 import com.doo360.crm.Utils;
+import com.doo360.crm.http.FunctionEntry;
+import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpRequestBox;
+import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.service.DownloadApkService;
+import com.doo360.crm.tsk.DownloadIconTask;
+import com.doo360.crm.tsk.DownloadIconTask.OnIconDownloadedListener;
 
 public class SoftwareListFragment extends ListFragment implements
-		OnClickListener {
+		OnClickListener, OnIconDownloadedListener {
 	private static final String TAG = "SoftwareListFragment";
 	// title
 	private ImageView mPrevImage;
@@ -53,6 +64,9 @@ public class SoftwareListFragment extends ListFragment implements
 	// loading
 	private ProgressBar mLoadingProgressbar;
 	private Activity mAct;
+
+	// icon
+	private DownloadIconTask mIconTsk = null;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -78,7 +92,7 @@ public class SoftwareListFragment extends ListFragment implements
 		super.onResume();
 		if (!mExist) {
 			Log.d(TAG, "[after],mExit : " + mExist);
-			new FetchDataTask().execute();
+			// new FetchDataTask().execute();
 		}
 	}
 
@@ -93,6 +107,15 @@ public class SoftwareListFragment extends ListFragment implements
 	public void onDestroy() {
 		Log.d(TAG, "onDestroy");
 		super.onDestroy();
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		Log.d(TAG, "onDetach");
+		if (mIconTsk != null) {
+			mIconTsk.cancel(true);
+		}
 	}
 
 	@Override
@@ -112,6 +135,14 @@ public class SoftwareListFragment extends ListFragment implements
 		mRetryText.setOnClickListener(this);
 		mBannerText.setText(R.string.front_page_software_desc);
 		return v;
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		Log.d(TAG, "onActivityCreated");
+		super.onActivityCreated(savedInstanceState);
+		new FetchDataTask().execute(FunctionEntry.SOFTWARE_ENTRY,
+				InstConstants.SOFTWARE);
 	}
 
 	@Override
@@ -140,10 +171,10 @@ public class SoftwareListFragment extends ListFragment implements
 	}
 
 	private void retry() {
-		Toast.makeText(mAct, "Retry", Toast.LENGTH_SHORT).show();
 		mLoadingProgressbar.setVisibility(View.VISIBLE);
 		mRetryText.setVisibility(View.GONE);
-		new FetchDataTask().execute();
+		new FetchDataTask().execute(FunctionEntry.SOFTWARE_ENTRY,
+				InstConstants.SOFTWARE);
 	}
 
 	private class FetchDataTask extends AsyncTask<String, Void, Boolean> {
@@ -156,8 +187,27 @@ public class SoftwareListFragment extends ListFragment implements
 			} else {
 				mDataList = new ArrayList<SoftwareItem>();
 			}
+			InputStream is = null;
 			try {
-				InputStream is = mAct.getAssets().open("software.xml");
+				// is = mAct.getAssets().open("software.xml");
+				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
+				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+						.formatRequestParams(params[1], setRequestParams(),
+								setRequestParamValues())));
+				HttpResponse resp = HttpRequestBox.getInstance(mAct)
+						.sendRequest(post);
+				if (resp == null) {
+					return false;
+				}
+				int statusCode = resp.getStatusLine().getStatusCode();
+				Log.d(TAG, "statusCode : " + statusCode);
+				if (statusCode != HttpStatus.SC_OK) {
+					return false;
+				}
+				is = resp.getEntity().getContent();
+				// if (HTTPUtils.testResponse(is)) {
+				// return false;
+				// }
 				XmlPullParserFactory factory = XmlPullParserFactory
 						.newInstance();
 				factory.setNamespaceAware(true);
@@ -187,6 +237,9 @@ public class SoftwareListFragment extends ListFragment implements
 								SoftwareItem.PACKAGENAME)) {
 							parser.next();
 							item.setPackagename(parser.getText());
+						} else if (TextUtils.equals(tag, SoftwareItem.VERSION)) {
+							parser.next();
+							item.setVersion(parser.getText());
 						} else if (TextUtils.equals(tag,
 								SoftwareItem.DOWNLOADURL)) {
 							parser.next();
@@ -195,7 +248,9 @@ public class SoftwareListFragment extends ListFragment implements
 					} else if (eventType == XmlPullParser.END_TAG) {
 						tag = parser.getName();
 						if (TextUtils.equals(tag, SoftwareItem.ITEM)) {
-							// TODO check if item icon cached
+							// check if item icon cached
+							item.setIconCachePath(FileHelper.getIconCachePath(
+									mAct, item.getIconurl(), true));
 							item.setStatus(Utils.checkItemStatus(
 									mAct.getPackageManager(),
 									item.getPackagename(), item.getVersion()));
@@ -210,6 +265,14 @@ public class SoftwareListFragment extends ListFragment implements
 			} catch (XmlPullParserException e) {
 				Log.e(TAG, "XmlPullParserException", e);
 				return false;
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						//
+					}
+				}
 			}
 			return true;
 		}
@@ -223,21 +286,91 @@ public class SoftwareListFragment extends ListFragment implements
 				notifyError();
 			}
 		}
+
+		private List<String> setRequestParams() {
+			List<String> list = new ArrayList<String>();
+			list.add(HTTPUtils.USERID);
+			list.add(HTTPUtils.IMEI);
+			list.add(HTTPUtils.CHANNELID);
+			return list;
+		}
+
+		private List<String> setRequestParamValues() {
+			List<String> list = new ArrayList<String>();
+			list.add(Utils.getIMEI(mAct));
+			list.add(Utils.getIMEI(mAct));
+			list.add(Utils.getChannelId(mAct));
+			return list;
+		}
 	}
 
 	private void fillData() {
-		Log.d(TAG, "fillData");
+		// Log.d(TAG, "fillData");
 		mAdapter = new SoftwareAdapter();
 		mListView.setAdapter(mAdapter);
 		mLoadingProgressbar.setVisibility(View.GONE);
 		mRetryText.setVisibility(View.GONE);
 		mListView.setVisibility(View.VISIBLE);
+		downloadIcons();
+	}
+
+	@SuppressWarnings("deprecation")
+	private void updateItemIcon(String... params) {
+		Log.d(TAG, "iconurl : " + params[0] + ",iconCachePath : " + params[1]);
+		int count = mDataList.size();
+		SoftwareItem item = null;
+		for (int i = 0; i < count; i++) {
+			item = mDataList.get(i);
+			if (TextUtils.equals(item.getIconurl(), params[0])) {
+				item.setIconCachePath(params[1]);
+				// TODO
+				((ViewHolder) mListView.getChildAt(i).getTag()).icon
+						.setBackgroundDrawable(new BitmapDrawable(
+								FileHelper
+										.decodeIconFile(
+												mAct,
+												params[1],
+												FileHelper
+														.getIconDefaultSize(mAct)/**/,
+												FileHelper
+														.getIconDefaultSize(mAct)/**/)));
+				break;
+			}
+		}
 	}
 
 	private void notifyError() {
 		mLoadingProgressbar.setVisibility(View.GONE);
 		mListView.setVisibility(View.GONE);
 		mRetryText.setVisibility(View.VISIBLE);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void downloadIcons() {
+		List<String> iconUrls = new ArrayList<String>();
+		int size = mDataList.size();
+		SoftwareItem item = null;
+		for (int i = 0; i < size; i++) {
+			item = mDataList.get(i);
+			if (item.getIconCachePath() == null) {
+				iconUrls.add(item.getIconurl());
+			}
+		}
+		if (iconUrls.size() > 0) {
+			// there are icons needed to download
+			mIconTsk = new DownloadIconTask(mAct, this);
+			mIconTsk.execute(iconUrls);
+		}
+	}
+
+	@Override
+	public void iconDownloaded(String... params) {
+		updateItemIcon(params);
+	}
+
+	@Override
+	public void iconDownloadFail(String... params) {
+		// nothing
 	}
 
 	private class SoftwareAdapter extends BaseAdapter {
@@ -294,46 +427,13 @@ public class SoftwareListFragment extends ListFragment implements
 
 				break;
 			}
-			// DEMO
-			switch (position) {
-			case 0:
-				viewHolder.icon.setBackgroundResource(R.drawable.soft_icon_0);
-				break;
-			case 1:
-				viewHolder.icon.setBackgroundResource(R.drawable.soft_icon_1);
-				break;
-			case 2:
-				viewHolder.icon.setBackgroundResource(R.drawable.soft_icon_2);
-				break;
-			case 3:
-				viewHolder.icon.setBackgroundResource(R.drawable.soft_icon_3);
-				break;
-			case 4:
-				viewHolder.icon.setBackgroundResource(R.drawable.soft_icon_4);
-				break;
-			}
-			if (position == 1) {
-				viewHolder.download.setText(R.string.software_installed);
-				viewHolder.download
-						.setBackgroundResource(R.drawable.soft_item_bg_pressed);
-			} else if (position == 3) {
-				viewHolder.download.setText(R.string.software_update);
-				viewHolder.download
-						.setBackgroundResource(R.drawable.soft_item_bg_update_selector);
-			} else {
-				viewHolder.download.setText(R.string.software_download);
-				viewHolder.download
-						.setBackgroundResource(R.drawable.soft_item_bg_install_selector);
-			}
-			if (position != 1) {
-				viewHolder.download.setOnClickListener(new OnClickListener() {
+			viewHolder.download.setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						handleItemClick(item);
-					}
-				});
-			}
+				@Override
+				public void onClick(View v) {
+					handleItemClick(item);
+				}
+			});
 			return convertView;
 		}
 
@@ -345,7 +445,7 @@ public class SoftwareListFragment extends ListFragment implements
 				i.putExtra(DownloadApkService.EXTRA_APK_NAME, item.getName());
 				mAct.startService(i);
 			} else {
-				// TODO nothing happens
+				// nothing happens
 			}
 		}
 	}

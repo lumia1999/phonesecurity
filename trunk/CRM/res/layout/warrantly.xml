@@ -4,46 +4,54 @@
     android:layout_height="match_parent"
     android:background="@drawable/light_grey" >
 
-    <include layout="@layout/banner" />
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/banner" />
 
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/banner_layout" >
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="match_parent" >
 
             <include
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 layout="@layout/warrantly_top" />
 
-            <FrameLayout
+            <include
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_below="@+id/warrantly_top_layout"
-                android:gravity="center"
-                android:paddingTop="10dip" >
-
-                <include
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    layout="@layout/warrantly_bottom_actived" />
-
-                <include
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    layout="@layout/warrantly_bottom_nonactived" />
-            </FrameLayout>
+                android:layout_centerVertical="true"
+                android:layout_marginTop="10dip"
+                layout="@layout/warrantly_bottom_actived" />
 
             <include
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                layout="@layout/loading" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/warrantly_top_layout"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="10dip"
+                layout="@layout/warrantly_bottom_nonactived" />
         </RelativeLayout>
     </ScrollView>
+
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        layout="@layout/retry" />
+
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        layout="@layout/loading" />
 
 </RelativeLayout>

@@ -6,8 +6,9 @@ public class ProductConfirmDetailItem {
 	public static final int INDEX_COUNT = 1;
 	public static final int INDEX_COLOR = 2;
 	public static final int INDEX_TRANSPORT = 3;
-	public static final int INDEX_PRICE = 4;
-	public static final int INDEX_COMMENT = 5;
+	public static final int INDEX_PAYMENTTYPE = 4;
+	public static final int INDEX_PRICE = 5;
+	public static final int INDEX_COMMENT = 6;
 
 	private int index;
 	private String title;

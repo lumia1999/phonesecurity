@@ -66,18 +66,17 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/evaluate_owner_phone"
                     android:layout_centerVertical="true"
-                    android:text="@string/evaluate_total_grade_tip_txt"
+                    android:text="@string/evaluate_grade_tip_txt"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
                 <RatingBar
                     android:id="@+id/evaluate_total_ratingbar"
-                    style="@style/RatingBar"
+                    style="@style/RatingBarLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/evaluate_total_grade_tip"
-                    android:isIndicator="true" />
+                    android:layout_toRightOf="@id/evaluate_total_grade_tip" />
             </RelativeLayout>
 
             <TextView

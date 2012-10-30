@@ -22,6 +22,8 @@ import android.widget.TextView;
 import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 import com.doo360.crm.Utils;
+import com.doo360.crm.http.FunctionEntry;
+import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.provider.CrmDb;
 import com.doo360.crm.tsk.FetchAddressListTask;
 import com.doo360.crm.tsk.FetchAddressListTask.OnAddressListBackListener;
@@ -88,8 +90,8 @@ public class AddressListFragment extends ListFragment implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.retry:
-			// TODO
 			retry(v);
+			break;
 		case R.id.add_new_address:
 			viewAddressInfo(null);
 			break;
@@ -100,7 +102,8 @@ public class AddressListFragment extends ListFragment implements
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		Log.d(TAG, "onActivityCreated");
-		new FetchAddressListTask(mAct, this, false).execute();
+		new FetchAddressListTask(mAct, this, false).execute(
+				FunctionEntry.ADDRESS_ENTRY, InstConstants.ADDRESS_LIST);
 	}
 
 	public void setShowType(int type) {
@@ -142,37 +145,34 @@ public class AddressListFragment extends ListFragment implements
 	}
 
 	private void notifyError(int errorType) {
-		// TODO
 		mLoadingProgressbar.setVisibility(View.GONE);
 		mListView.setVisibility(View.GONE);
 		mRetryText.setVisibility(View.VISIBLE);
-		mRetryText.setText(R.string.add_new_address);
-		mAddAddressBtn.setVisibility(View.GONE);
+		switch (errorType) {
+		case GET_ADDR_FAIL:
+			mRetryText.setText(R.string.invalid_network);
+			mAddAddressBtn.setVisibility(View.GONE);
+			break;
+		case GET_ADDR_NO_COUNT:
+			mRetryText.setText(R.string.add_new_address);
+			mRetryText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+			mAddAddressBtn.setVisibility(View.VISIBLE);
+			break;
+		}
 	}
 
 	private void retry(View v) {
 		String viewText = mRetryText.getText().toString();
 		if (TextUtils.equals(getString(R.string.invalid_network), viewText)) {
-			new FetchAddressListTask(mAct, this, false).execute();
-		} else if (TextUtils.equals(getString(R.string.add_new_address),
-				viewText)) {
-			viewAddressInfo(null);
+			new FetchAddressListTask(mAct, this, false).execute(
+					FunctionEntry.ADDRESS_ENTRY, InstConstants.ADDRESS_LIST);
 		}
 	}
 
 	private void viewAddressInfo(ContentValues value) {
-		// TODO
 		startActivityForResult(
-				new Intent(mAct, AddressItemListActivity.class/*
-															 * DetailAddressActivity
-															 * .class
-															 */).putExtra(
-						AddressItemListActivity.EXTRA_ADDR_INFO, value/*
-																	 * DetailAddressActivity
-																	 * .
-																	 * EXTRA_ROWID
-																	 * , rowId
-																	 */),
+				new Intent(mAct, AddressItemListActivity.class).putExtra(
+						AddressItemListActivity.EXTRA_ADDR_INFO, value),
 				REQ_CODE_NEW_ADDRESS);
 	}
 
@@ -188,23 +188,39 @@ public class AddressListFragment extends ListFragment implements
 	private void updateAddrsForChange(ContentValues value) {
 		Integer rowId = value.getAsInteger(CrmDb.Address._ID);
 		if (rowId != null) {
-			int size = mDataList.size();
-			boolean exist = false;
-			for (int i = 0; i < size; i++) {
-				if (mDataList.get(i).getAsInteger(CrmDb.Address._ID) == rowId) {
-					mDataList.remove(i);
-					mDataList.add(i, value);
-					exist = true;
-					break;
+			if (mDataList == null) {
+				mDataList = new ArrayList<ContentValues>();
+				mDataList.add(value);
+			} else {
+				int size = mDataList.size();
+				boolean exist = false;
+				for (int i = 0; i < size; i++) {
+					if (mDataList.get(i).getAsInteger(CrmDb.Address._ID) == rowId) {
+						mDataList.remove(i);
+						mDataList.add(i, value);
+						exist = true;
+						break;
+					}
+				}
+				if (!exist) {
+					mDataList.add(value);
 				}
 			}
-			if (!exist) {
-				mDataList.add(value);
-			}
+
 		} else {
 			mDataList.add(value);
 		}
-		mAdapter.notifyDataSetChanged();
+		if (mAdapter != null) {
+			mAdapter.notifyDataSetChanged();
+			if (mRetryText.getVisibility() != View.GONE) {
+				mRetryText.setVisibility(View.GONE);
+			}
+		} else {
+			mAdapter = new AddressAdapter();
+			mListView.setAdapter(mAdapter);
+			mRetryText.setVisibility(View.GONE);
+			mListView.setVisibility(View.VISIBLE);
+		}
 	}
 
 	private void updateAddrsForDel(int rowId) {
@@ -213,6 +229,12 @@ public class AddressListFragment extends ListFragment implements
 			if (mDataList.get(i).getAsInteger(CrmDb.Address._ID) == rowId) {
 				mDataList.remove(i);
 				mAdapter.notifyDataSetChanged();
+				if (mDataList.size() <= 0) {
+					mRetryText.setVisibility(View.VISIBLE);
+					mRetryText.setText(R.string.add_new_address);
+					mRetryText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0,
+							0);
+				}
 				break;
 			}
 		}

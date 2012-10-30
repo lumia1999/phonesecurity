@@ -7,7 +7,7 @@
     android:background="@drawable/personal_address_btn_bg_selector"
     android:gravity="center"
     android:padding="5dip"
-    android:text="@string/add_new_address"
+    android:text="@string/add_new_address_btx_txt"
     android:textAppearance="?android:attr/textAppearanceMedium" >
 
 </TextView>

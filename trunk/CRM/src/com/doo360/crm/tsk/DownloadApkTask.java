@@ -37,6 +37,7 @@ public class DownloadApkTask extends AsyncTask<String, Void, Result> {
 		this.name = params[1];
 		File f = new File(FileHelper.getApkTempDirPath(mCtx), this.name
 				+ Constants.APK_MASK);
+		Log.e(TAG, "path : " + f.getAbsolutePath());
 		this.dest = f.getAbsolutePath();
 		FileHelper.createFile(f);
 		InputStream is = null;

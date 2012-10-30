@@ -3,17 +3,17 @@ package com.doo360.crm.view;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.doo360.crm.ProductCommentItem;
-import com.doo360.crm.R;
-
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -25,20 +25,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AbsListView.LayoutParams;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.doo360.crm.ProductCommentItem;
+import com.doo360.crm.R;
+import com.doo360.crm.Utils;
+import com.doo360.crm.http.FunctionEntry;
+import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpRequestBox;
+import com.doo360.crm.http.InstConstants;
+
 public class ProductCommentListFragment extends ListFragment implements
-		OnClickListener {
+		OnClickListener, OnScrollListener {
 	private static final String TAG = "ProductCommentListFragment";
 	private Activity mAct;
-
-	private View mHeader;
-	private TextView mCommentText;
 
 	private CommentAdapter mAdapter;
 	private ArrayList<ProductCommentItem> mDataList;
@@ -46,33 +55,55 @@ public class ProductCommentListFragment extends ListFragment implements
 	private TextView mRetryText;
 	private ProgressBar mLoadingProgressbar;
 
-	private static final int REQ_CODE_COMMENT = 1;
+	// for data loading
+	private int mItemTotalCount;/* total comments that made by user */
+	private int mPageIndex = 1;
+	private int mCurReadCount;/* comments that displayed */
+	private ArrayList<ProductCommentItem> mLoadingData;
+	private boolean mIsLoading;
+
+	private LinearLayout mFooter;
+	private RelativeLayout mMoreIconLayout;
+	private ImageView mMoreIconImage;
+	private ProgressBar mMoreLoadingPb;
+	private TextView mMoreTipTxt;
+
+	private OnDataLoadedListener mOnDataLoadedListener;
+
+	public interface OnDataLoadedListener {
+		public void onDataLoaded(boolean showCommentAction);
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate");
 		super.onCreate(savedInstanceState);
+		mPageIndex = 1;// init value
+		mCurReadCount = 0;// init value
+		mDataList = new ArrayList<ProductCommentItem>();
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		mAct = activity;
+		mOnDataLoadedListener = (OnDataLoadedListener) activity;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		mHeader = inflater.inflate(R.layout.op, null);
-		mCommentText = (TextView) mHeader.findViewById(R.id.confirm);
-		mCommentText.setText(R.string.product_comment_txt);
-		mCommentText.setOnClickListener(this);
-		mHeader.findViewById(R.id.neuter).setVisibility(View.GONE);
-		mHeader.findViewById(R.id.cancel).setVisibility(View.GONE);
+		mFooter = (LinearLayout) inflater.inflate(R.layout.more, null);
+		mMoreIconLayout = (RelativeLayout) mFooter
+				.findViewById(R.id.more_icon_layout);
+		mMoreIconImage = (ImageView) mFooter.findViewById(R.id.more_icon);
+		mMoreLoadingPb = (ProgressBar) mFooter.findViewById(R.id.more_progress);
+		mMoreTipTxt = (TextView) mFooter.findViewById(R.id.more_tip);
+		mFooter.setOnClickListener(this);
+		resetMore();
 
 		View v = inflater.inflate(R.layout.product_comment_fragment, container,
 				false);
-
 		mListView = (ListView) v.findViewById(android.R.id.list);
 		mListView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 		mRetryText = (TextView) v.findViewById(R.id.retry);
@@ -86,45 +117,59 @@ public class ProductCommentListFragment extends ListFragment implements
 	public void onActivityCreated(Bundle savedInstanceState) {
 		Log.d(TAG, "onActivityCreated");
 		super.onActivityCreated(savedInstanceState);
-		new FetchDataTask().execute();
+		new FetchDataTask().execute(FunctionEntry.EVALUATE_ENTRY,
+				InstConstants.GET_EVALUATION);
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.confirm:
-			evaluate();
-			break;
 		case R.id.retry:
 			retry();
 			break;
-		}
-
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (requestCode) {
-		case REQ_CODE_COMMENT:
-			if (resultCode == Activity.RESULT_OK) {
-				mAct.setResult(Activity.RESULT_OK);
-				mAct.finish();
-				mAct.overridePendingTransition(0, 0);
-			}
+		case R.id.more_layout:
+			loadMore();
 			break;
 		}
-		super.onActivityResult(requestCode, resultCode, data);
-	}
 
-	private void evaluate() {
-		startActivityForResult(new Intent(mAct, EvaluateActivity.class),
-				REQ_CODE_COMMENT);
 	}
 
 	private void retry() {
 		mLoadingProgressbar.setVisibility(View.VISIBLE);
 		mRetryText.setVisibility(View.GONE);
-		new FetchDataTask().execute();
+		new FetchDataTask().execute(FunctionEntry.EVALUATE_ENTRY,
+				InstConstants.GET_EVALUATION);
+	}
+
+	private void resetMore() {
+		mIsLoading = false;
+		mMoreIconLayout.setVisibility(View.GONE);
+		mMoreTipTxt.setText(R.string.more_tip_txt);
+	}
+
+	private void loadMore() {
+		if (!mIsLoading) {
+			mIsLoading = true;
+			mMoreIconLayout.setVisibility(View.VISIBLE);
+			mMoreIconImage.setVisibility(View.GONE);
+			mMoreLoadingPb.setVisibility(View.VISIBLE);
+			if (TextUtils.equals(getString(R.string.more_tip_txt),
+					mMoreTipTxt.getText())) {
+				mPageIndex++;
+			} else {
+				// nothing
+			}
+			mMoreTipTxt.setText(R.string.more_loading_tip_txt);
+			new FetchDataTask().execute(FunctionEntry.EVALUATE_ENTRY,
+					InstConstants.GET_EVALUATION);
+		}
+	}
+
+	private void LoadMoreFailed() {
+		mIsLoading = false;
+		mMoreIconImage.setVisibility(View.VISIBLE);
+		mMoreLoadingPb.setVisibility(View.GONE);
+		mMoreTipTxt.setText(R.string.more_fail_tip_txt);
 	}
 
 	private class FetchDataTask extends AsyncTask<String, Void, Boolean> {
@@ -132,14 +177,32 @@ public class ProductCommentListFragment extends ListFragment implements
 		@Override
 		protected Boolean doInBackground(String... params) {
 			Log.d(TAG, "doInBackground");
-			if (mDataList != null && !mDataList.isEmpty()) {
-				mDataList.clear();
+			if (mLoadingData != null && !mLoadingData.isEmpty()) {
+				mLoadingData.clear();
 			} else {
-				mDataList = new ArrayList<ProductCommentItem>();
+				mLoadingData = new ArrayList<ProductCommentItem>();
 			}
 			InputStream is = null;
 			try {
-				is = mAct.getAssets().open("product_comments.xml");
+				// is = mAct.getAssets().open("product_comments.xml");
+				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
+				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+						.formatRequestParams(params[1], setRequestParams(),
+								setRequestParamValues())));
+				HttpResponse resp = HttpRequestBox.getInstance(mAct)
+						.sendRequest(post);
+				if (resp == null) {
+					return false;
+				}
+				int statusCode = resp.getStatusLine().getStatusCode();
+				Log.d(TAG, "statusCode : " + statusCode);
+				if (statusCode != HttpStatus.SC_OK) {
+					return false;
+				}
+				is = resp.getEntity().getContent();
+				// if (HTTPUtils.testResponse(is)) {
+				// return false;
+				// }
 				XmlPullParserFactory factory = XmlPullParserFactory
 						.newInstance();
 				factory.setNamespaceAware(true);
@@ -151,6 +214,10 @@ public class ProductCommentListFragment extends ListFragment implements
 				while (eventType != XmlPullParser.END_DOCUMENT) {
 					if (eventType == XmlPullParser.START_TAG) {
 						tag = parser.getName();
+						if (TextUtils.equals(tag, HTTPUtils.COUNT)) {
+							parser.next();
+							mItemTotalCount = Integer.valueOf(parser.getText());
+						}
 						if (TextUtils.equals(tag, ProductCommentItem.COMMENT)) {
 							item = new ProductCommentItem();
 						} else if (TextUtils.equals(tag,
@@ -169,7 +236,7 @@ public class ProductCommentListFragment extends ListFragment implements
 					} else if (eventType == XmlPullParser.END_TAG) {
 						tag = parser.getName();
 						if (TextUtils.equals(tag, ProductCommentItem.COMMENT)) {
-							mDataList.add(item);
+							mLoadingData.add(item);
 						}
 					}
 					eventType = parser.next();
@@ -189,6 +256,8 @@ public class ProductCommentListFragment extends ListFragment implements
 					}
 				}
 			}
+			Log.e(TAG, "mItemTotalCount : " + mItemTotalCount);
+			mDataList.addAll(mLoadingData);
 			return true;
 		}
 
@@ -200,22 +269,63 @@ public class ProductCommentListFragment extends ListFragment implements
 			} else {
 				notifyError();
 			}
+			mOnDataLoadedListener.onDataLoaded(result);
+		}
+
+		private List<String> setRequestParams() {
+			List<String> list = new ArrayList<String>();
+			list.add(HTTPUtils.USERID);
+			list.add(HTTPUtils.IMEI);
+			list.add(HTTPUtils.CHANNELID);
+			list.add(HTTPUtils.PRODUCTID);
+			list.add(HTTPUtils.PAGEINDEX);
+			list.add(HTTPUtils.PAGESIZE);
+			return list;
+		}
+
+		private List<String> setRequestParamValues() {
+			List<String> list = new ArrayList<String>();
+			list.add(Utils.getIMEI(mAct));
+			list.add(Utils.getIMEI(mAct));
+			list.add(Utils.getChannelId(mAct));
+			list.add(((ProductCommentListActivity) mAct).getPId());
+			list.add(String.valueOf(mPageIndex));
+			list.add(String.valueOf(HTTPUtils.DEF_PAGE_SIZE));
+			return list;
 		}
 	}
 
 	private void fillData() {
-		mLoadingProgressbar.setVisibility(View.GONE);
-		mRetryText.setVisibility(View.GONE);
-		mListView.setVisibility(View.VISIBLE);
-		mListView.addHeaderView(mHeader);
-		mAdapter = new CommentAdapter();
-		mListView.setAdapter(mAdapter);
+		// Log.e(TAG, "fillData,mPageIndex : " + mPageIndex);
+		if (mPageIndex == 1) {// first request
+			mLoadingProgressbar.setVisibility(View.GONE);
+			mRetryText.setVisibility(View.GONE);
+			mListView.setVisibility(View.VISIBLE);
+			if (mItemTotalCount > mDataList.size()) {
+				mListView.addFooterView(mFooter);
+			}
+			// TODO
+			// mListView.addFooterView(mFooter);
+			mAdapter = new CommentAdapter();
+			mListView.setAdapter(mAdapter);
+			mListView.setOnScrollListener(this);
+		} else {
+			mAdapter.notifyDataSetChanged();
+			resetMore();
+			if (mItemTotalCount == mDataList.size()) {
+				mListView.removeFooterView(mFooter);
+			}
+		}
 	}
 
 	private void notifyError() {
-		mLoadingProgressbar.setVisibility(View.GONE);
-		mRetryText.setVisibility(View.VISIBLE);
-		mListView.setVisibility(View.GONE);
+		if (mPageIndex == 1) {
+			mLoadingProgressbar.setVisibility(View.GONE);
+			mRetryText.setVisibility(View.VISIBLE);
+			mListView.setVisibility(View.GONE);
+		} else {
+			LoadMoreFailed();
+		}
 	}
 
 	private class CommentAdapter extends BaseAdapter {
@@ -264,5 +374,20 @@ public class ProductCommentListFragment extends ListFragment implements
 		private TextView userid;
 		private RatingBar ratingbar;
 		private TextView content;
+	}
+
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+		// TODO Auto-generated method stub
+		// Log.e(TAG, "onScroll,firstVisibleItem : " + firstVisibleItem
+		// + ",visibleItemCount : " + visibleItemCount
+		// + ",totalItemCount : " + totalItemCount);
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		// TODO Auto-generated method stub
+		// Log.e(TAG, "scrollState : " + scrollState);
 	}
 }

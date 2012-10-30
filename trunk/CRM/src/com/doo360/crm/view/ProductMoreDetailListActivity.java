@@ -3,6 +3,7 @@ package com.doo360.crm.view;
 import com.doo360.crm.R;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -15,6 +16,10 @@ public class ProductMoreDetailListActivity extends FragmentActivity implements
 		OnClickListener {
 	private static final String TAG = "ProductMoreDetailListActivity";
 
+	public static final String EXTRA_PRODUCTID = "extra_pId";
+
+	private String mPId;
+
 	// title
 	private ImageView mPrevImage;
 	private TextView mTitleText;
@@ -25,6 +30,11 @@ public class ProductMoreDetailListActivity extends FragmentActivity implements
 		Log.d(TAG, "onCreate");
 		super.onCreate(bundle);
 		setContentView(R.layout.product_more_detail);
+		Intent i = getIntent();
+		if (i != null) {
+			mPId = i.getStringExtra(EXTRA_PRODUCTID);
+		}
+		// Log.d(TAG, "mPId : " + mPId);
 		initUI();
 	}
 
@@ -58,5 +68,9 @@ public class ProductMoreDetailListActivity extends FragmentActivity implements
 		setResult(Activity.RESULT_OK);
 		finish();
 		overridePendingTransition(0, 0);
+	}
+
+	public String getPId() {
+		return mPId;
 	}
 }

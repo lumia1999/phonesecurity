@@ -2,6 +2,8 @@ package com.doo360.crm;
 
 public class ShopItemContent extends ShopItem {
 
+	private String channleid;
+	private String shopid;
 	private String title;
 	private String address;
 	private String telephone;
@@ -10,6 +12,22 @@ public class ShopItemContent extends ShopItem {
 
 	public ShopItemContent() {
 
+	}
+
+	public String getChannleid() {
+		return channleid;
+	}
+
+	public void setChannleid(String channleid) {
+		this.channleid = channleid;
+	}
+
+	public String getShopid() {
+		return shopid;
+	}
+
+	public void setShopid(String shopid) {
+		this.shopid = shopid;
 	}
 
 	public String getTitle() {

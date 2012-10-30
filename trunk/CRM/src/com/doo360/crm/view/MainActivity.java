@@ -2,6 +2,7 @@ package com.doo360.crm.view;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,8 +22,13 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		initUI();
-		// Log.e(TAG, "model : " + Utils.getDevModel());
 		Utils.copyRawDb(this);
+		test();
+	}
+
+	private void test() {
+		String ch = Utils.getChannelId(this);
+		Log.e(TAG, "ch : " + ch);
 	}
 
 	private void initUI() {
@@ -31,5 +37,6 @@ public class MainActivity extends FragmentActivity {
 		mSearchEdit = (EditText) findViewById(R.id.global_search);
 		mSearchGoText = (TextView) findViewById(R.id.global_search_confirm);
 		mAdView = (ImageView) findViewById(R.id.ad);
+		mAdView.setVisibility(View.GONE);
 	}
 }

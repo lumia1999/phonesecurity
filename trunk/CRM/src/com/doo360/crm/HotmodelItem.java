@@ -3,6 +3,7 @@ package com.doo360.crm;
 public class HotmodelItem {
 	public static final String ITEM = "item";
 	public static final String ID = "id";
+	public static final String NAME = "name";
 	public static final String ICONURL = "iconurl";
 	public static final String ICONCACHEPATH = "iconcachepath";
 	public static final String BREF = "bref";
@@ -12,7 +13,9 @@ public class HotmodelItem {
 	public static final String DETAILURL = "detailurl";
 
 	private String id;
+	private String name;
 	private String iconurl;
+	private String iconCachePath;
 	private String bref;
 	private String sold;
 	private String comments;
@@ -31,12 +34,28 @@ public class HotmodelItem {
 		this.id = id;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getIconurl() {
 		return iconurl;
 	}
 
 	public void setIconurl(String iconurl) {
 		this.iconurl = iconurl;
+	}
+
+	public String getIconCachePath() {
+		return iconCachePath;
+	}
+
+	public void setIconCachePath(String iconCachePath) {
+		this.iconCachePath = iconCachePath;
 	}
 
 	public String getBref() {

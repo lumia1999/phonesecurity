@@ -12,14 +12,13 @@
     <string name="front_page_topfree_desc">特惠机型</string>
     <string name="front_page_personalcenter_desc">个人中心</string>
     <string name="banner_title">客户服务</string>
-    <string name="menu_search">"搜索"</string>
     <string name="search_confirm_txt">Go</string>
     <string name="search_hint">搜索</string>
 
     <!-- warrantly string -->
     <string name="product_evaluate_btn_text">评价</string>
     <string name="product_warrantly_nonactived_tip_txt">您的质保卡尚未激活</string>
-    <string name="product_warrantly_nonactived_secondary_tip_txt">请点击按钮马上激活\n激活后将享受到XXX（卖场名称）\n为您提供的尊贵质保服务</string>
+    <string name="product_warrantly_nonactived_secondary_tip_txt">请点击按钮马上激活\n激活后将享受到{?}\n为您提供的尊贵质保服务</string>
     <string name="product_active_txt">马上激活</string>
     <string name="product_warrantly_active_ongoing_tip">正在激活。。。</string>
     <string name="product_warrantly_active_result_tip">恭喜您，您的质保卡已激活，可享受XXX提供的尊贵质保服务***天</string>
@@ -28,15 +27,19 @@
     <string name="product_warrantly_actived_expire_date_txt">您的保修到期时间：{?}</string>
     <string name="product_warrantly_actived_effective_time_left_txt">您还有{?}天免费保修服务</string>
     <string name="product_warrantly_actived_guarantee_tip_txt">您的保修记录</string>
+    <string name="product_act_warranty_fail_toast">激活失败，请稍后再试</string>
 
     <!-- evaluate string -->
     <string name="evaluate_title_txt">评价</string>
     <string name="evaluate_welcome_tip_txt">您好！欢迎您的评论！</string>
     <string name="evaluate_total_grade_tip_txt">总体评价：</string>
+    <string name="evaluate_grade_tip_txt">请评分：</string>
     <string name="evaluate_content_tip_txt">评价内容：</string>
     <string name="evaluate_post_txt">提交评价</string>
     <string name="evaluate_posting_txt">正在提交评价。。。</string>
     <string name="evaluate_success_txt">恭喜，您已评价成功！</string>
+    <string name="evaluate_incomplete_data_toast">尚未评分或无评价内容</string>
+    <string name="evaluate_post_fail_toast">提交评论失败，请稍后再试</string>
 
     <!-- software string -->
     <string name="software_download">下载</string>
@@ -64,18 +67,26 @@
 
     <!-- order detail string -->
     <string name="order_detail_title_txt">订单详情</string>
+    <string name="order_detail_number">订单编号：{?}</string>
+    <string name="order_detail_status">订单状态：{?}</string>
+    <string name="order_detail_amount">订单金额：￥{?}元</string>
+    <string name="order_detail_msg">用户留言：{?}</string>
+    <!-- product item string -->
     <string name="order_detail_color">机身颜色：{?}</string>
     <string name="order_detail_count">数量：{?}</string>
-    <string name="order_detail_number">订单编号：{?}</string>
+    <string name="order_detail_price">单价：￥{?1}元*{?2}</string>
+    <string name="order_detail_anchor">下单时间：{?}</string>
+    <!-- address info string -->
+    <string name="order_address_tip_txt">收货地址信息</string>
+    <string name="order_detail_address">收货地址：{?}</string>
     <string name="order_detail_name">收货人：{?}</string>
     <string name="order_detail_phone">电话：{?}</string>
-    <string name="order_detail_address">收货地址：{?}</string>
-    <string name="order_detail_price">实付金额：￥{?}</string>
-    <string name="order_detail_anchor">下单时间：{?}</string>
-    <string name="order_detail_status">订单状态：{?}</string>
+    <string name="order_detail_postcode">邮编：{?}</string>
+    <string name="order_count_error_toast">请选择正确的购买数量</string>
 
     <!-- address string -->
-    <string name="add_new_address">添加新地址</string>
+    <string name="add_new_address">您还没有设置收货地址</string>
+    <string name="add_new_address_btx_txt">添加新地址</string>
     <string name="province_txt">省</string>
     <string name="city_txt">市</string>
     <string name="district_txt">区</string>
@@ -117,11 +128,13 @@
     <string name="purchase_confirm_workflow_tip_txt">购机流程：</string>
     <string name="transport_no_charge">免运费</string>
     <string name="post_order_txt">提交订单</string>
+    <string name="purchase_item_price_txt">{?}元*{?1}</string>
     <string name="purchase_count_txt">{?}件</string>
     <string name="purchase_color_txt">{?}</string>
-    <string name="purchase_comment_txt">可以写您对我们商品或服务的特殊要求，如：派送时间等</string>
+    <string name="purchase_comment_txt">可以写您对我们商品或服务的特殊要求，如：派送时间等</string>
     <string name="post_order_ongoing_txt">正在提交订单。。。</string>
     <string name="post_order_success_txt">订单提交成功，查看您的订单列表？</string>
+    <string name="post_order_fail_toast">提交订单失败</string>
     <string name="post_order_success_view_txt">查看列表</string>
     <string name="dlg_msg_leave_title_txt">给我们留言：</string>
     <string name="no_address_exist">请先填写收货地址！</string>
@@ -156,7 +169,11 @@
     <string name="price_query_tip_txt">正在询价。。。</string>
     <string name="price_query_result_tip_txt">您的私人尊享包邮价为：{?}元\n（本价仅供参考，最终成交价以实际订单显示价格为准）</string>
     <string name="product_comment_tip_txt">{?}条</string>
-
+    <string name="product_price_query_fail_toast">暂时无法查到价格，请稍后再试</string>
+    <!-- more string -->
+    <string name="more_tip_txt">查看更多</string>
+    <string name="more_loading_tip_txt">正在加载。。。</string>
+    <string name="more_fail_tip_txt">加载失败，请重试</string>
     <!-- product parameter string -->
     <string name="product_param_title_txt">规格参数</string>
 
@@ -168,9 +185,7 @@
     <string name="btn_confirm">确定</string>
     <string name="btn_cancel">取消</string>
 
-    <!-- demo string -->
-    <string name="product_detail_name">三星I9300 Galaxy S|||</string>
-    <string name="product_detail_txt">外观设计：直板\n屏幕尺寸：4.8英寸\n分辨率：1280*720像素\n触控方式：电容屏（多点触控）\n像素：800万像素\n操作系统：Android OS 4.0\n内存：1GB RAM\n机身容量：16GB/32GB/64GB\n电池类型：锂电池，2100mAh\n重量：132.0g</string>
-    <string name="product_detail_param">产品名称:Samsung/三星I9300 Galaxy S|||;品牌:Samsung/三星;三星型号:I9300 GALAXY S|||;手机价格区间:4000元以上;上市时间:2012年;上市月份:6月;网络类型:联通3G GSM/WCDMA(3G);外观样式:直板;主屏尺寸:4.8英寸;机身颜色:青玉蓝纯净版 云石白纯净版;摄像头:800万 ;是否智能手机:是;操作系统:Android/安卓;高级功能:WIFI上网 高清视频;宝贝成色:全新;售后服务:全国联保;触摸屏:电容式触摸屏;手机CPU:四核1.5G;运行内存RAM:1G;机身内存ROM:16G;键盘类型:虚拟触屏键盘;厚度:超薄(小于9mm);主屏分辨率:1280X720像素</string>
-
-</resources>
+    <!-- floating ad string -->
+    <string name="tips">提示</string>
+    <string name="floating_ad_download_tip_txt">确定要下载{?}吗？</string>
+</resources>

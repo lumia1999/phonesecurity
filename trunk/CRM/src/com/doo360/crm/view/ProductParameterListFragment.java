@@ -1,23 +1,39 @@
 package com.doo360.crm.view;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
-import com.doo360.crm.Constants;
-import com.doo360.crm.R;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.protocol.HTTP;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.doo360.crm.Constants;
+import com.doo360.crm.R;
+import com.doo360.crm.Utils;
+import com.doo360.crm.http.FunctionEntry;
+import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpRequestBox;
+import com.doo360.crm.http.InstConstants;
 
 public class ProductParameterListFragment extends ListFragment implements
 		OnClickListener {
@@ -45,7 +61,8 @@ public class ProductParameterListFragment extends ListFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		new FetchDataTask().execute();
+		new FetchDataTask().execute(FunctionEntry.PRODUCT_ENTRY,
+				InstConstants.PRODUCT_PARAMS);
 	}
 
 	@Override
@@ -54,6 +71,7 @@ public class ProductParameterListFragment extends ListFragment implements
 		View v = inflater.inflate(R.layout.content, container, false);
 		mListView = (ListView) v.findViewById(android.R.id.list);
 		mRetryText = (TextView) v.findViewById(R.id.retry);
+		mRetryText.setOnClickListener(this);
 		mLoadingProgressbar = (ProgressBar) v
 				.findViewById(android.R.id.progress);
 		return v;
@@ -71,7 +89,8 @@ public class ProductParameterListFragment extends ListFragment implements
 	private void retry() {
 		mLoadingProgressbar.setVisibility(View.VISIBLE);
 		mRetryText.setVisibility(View.GONE);
-		new FetchDataTask().execute();
+		new FetchDataTask().execute(FunctionEntry.PRODUCT_ENTRY,
+				InstConstants.PRODUCT_PARAMS);
 	}
 
 	private void fillData() {
@@ -98,11 +117,60 @@ public class ProductParameterListFragment extends ListFragment implements
 			} else {
 				mDataList = new ArrayList<String>();
 			}
-			String[] data = getString(R.string.product_detail_param).split(
-					Constants.SEMICOLON);
-			int length = data.length;
-			for (int i = 0; i < length; i++) {
-				mDataList.add(data[i]);
+			InputStream is = null;
+			try {
+				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
+				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+						.formatRequestParams(params[1], setRequestParams(),
+								setRequestParamValues())));
+				HttpResponse resp = HttpRequestBox.getInstance(mAct)
+						.sendRequest(post);
+				if (resp == null) {
+					return false;
+				}
+				int statusCode = resp.getStatusLine().getStatusCode();
+				Log.d(TAG, "statusCode : " + statusCode);
+				if (statusCode != HttpStatus.SC_OK) {
+					return false;
+				}
+				is = resp.getEntity().getContent();
+				// if (HTTPUtils.testResponse(is)) {
+				// return false;
+				// }
+				XmlPullParserFactory factory = XmlPullParserFactory
+						.newInstance();
+				factory.setNamespaceAware(true);
+				XmlPullParser parser = factory.newPullParser();
+				parser.setInput(is, HTTP.UTF_8);
+				int eventType = parser.getEventType();
+				String tag = "";
+				while (eventType != XmlPullParser.END_DOCUMENT) {
+					if (eventType == XmlPullParser.START_TAG) {
+						tag = parser.getName();
+						if (TextUtils.equals(tag, HTTPUtils.PARAMS)) {
+							parser.next();
+							String[] data = parser.getText().split(
+									Constants.SEMICOLON);
+							int length = data.length;
+							for (int i = 0; i < length; i++) {
+								mDataList.add(data[i]);
+							}
+							break;
+						}
+					}
+					eventType = parser.next();
+				}// ?end while
+			} catch (Exception e) {
+				Log.e(TAG, "Exception", e);
+				return false;
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						//
+					}
+				}
 			}
 			return true;
 		}
@@ -115,6 +183,24 @@ public class ProductParameterListFragment extends ListFragment implements
 			} else {
 				notifyError();
 			}
+		}
+
+		private List<String> setRequestParams() {
+			List<String> list = new ArrayList<String>();
+			list.add(HTTPUtils.USERID);
+			list.add(HTTPUtils.IMEI);
+			list.add(HTTPUtils.CHANNELID);
+			list.add(HTTPUtils.PRODUCTID);
+			return list;
+		}
+
+		private List<String> setRequestParamValues() {
+			List<String> list = new ArrayList<String>();
+			list.add(Utils.getIMEI(mAct));
+			list.add(Utils.getIMEI(mAct));
+			list.add(Utils.getChannelId(mAct));
+			list.add(((ProductParameterListActivity) mAct).getPId());
+			return list;
 		}
 	}
 

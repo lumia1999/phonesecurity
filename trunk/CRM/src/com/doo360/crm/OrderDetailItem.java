@@ -1,165 +1,233 @@
 package com.doo360.crm;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import android.content.Context;
+
 public class OrderDetailItem {
 	public static final String DETAIL = "detail";
-	public static final String TITLE = "title";
-	public static final String COLOR = "color";
-	public static final String COUNT = "count";
+
+	// serviceresult
+	public static final String SERVICERESULT = "serviceresult";
+
+	// channelid
+	public static final String CHANNELID = "channelid";
+	public static final String SHOPID = "shopid";
+
+	// common info
+	public static final String COMMON = "common";
 	public static final String NUMBER = "number";
-	public static final String PRICE = "price";
-	public static final String ANCHOR = "anchor";
 	public static final String STATUS = "status";
-	public static final String ADDRESSNAME = "addressname";
-	public static final String ADDRESSPHONE = "addressphone";
-	public static final String ADDRESSDETAIL = "addressdetail";
-	public static final String COMMENTURL = "commenturl";
+	public static final String AMOUNT = "amount";
+	public static final String MSG = "message";
+
+	// product info
+	public static final String ITEMS = "items";
+	public static final String ITEM = "item";
+	public static final String PRODUCTID = "productid";
+	public static final String ICONURL = "iconurl";
+	public static final String ICONCACHEPATH = "iconCachePath";
+	public static final String NAME = "name";
+	public static final String COLOR = "color";
+	public static final String PRICE = "price";
+	public static final String COUNT = "count";
+	public static final String ANCHOR = "anchor";
+
+	// address info
+	public static final String ADDRESS = "address";
+	public static final String ADDRESSDETAIL = "detail";
+	public static final String ADDRESSNAME = "name";
+	public static final String ADDRESSPHONE = "phone";
+	public static final String POSTCODE = "postcode";
+
+	// user behavior
 	public static final String COMMENTED = "commented";
 
 	public static final int COMMENT_UNDONE = 0;
 	public static final int COMMENT_DONE = 1;
 
-	public static final int INDEX_NUMBER = 0;
-	public static final int INDEX_ADDRESSNAME = 1;
-	public static final int INDEX_ADDRESSPHONE = 2;
-	public static final int INDEX_ADDRESSDETAIL = 3;
-	public static final int INDEX_PRICE = 4;
-	public static final int INDEX_ANCHOR = 5;
-	public static final int INDEX_STATUS = 6;
+	private int mServiceResult;
+	private String mChannelId;
+	private String mShopId;
 
-	private static final int UNUSED_SIZE = 5;
+	private Map<String, String> mCommonInfo;
+	private List<DetailItem> mPInfo;
+	private Map<String, String> mAddrInfo;
+	private int mCommented;
 
-	private String title;
-	private String color;
-	private String count;
-	private String number;
-	private String price;
-	private String anchor;
-	private String status;
-	private String addressname;
-	private String addressphone;
-	private String addressdetail;
-	private String commenturl;
-	private String commented;
-
-	private int mSize;
-
-	public OrderDetailItem() {
-		//
+	public int getServiceResult() {
+		return mServiceResult;
 	}
 
-	public String getTitle() {
-		return title;
+	public void setServiceResult(int mServiceResult) {
+		this.mServiceResult = mServiceResult;
 	}
 
-	public void setTitle(String title) {
-		mSize++;
-		this.title = title;
+	public String getShopId() {
+		return mShopId;
 	}
 
-	public String getColor() {
-		return color;
+	public void setShopId(String mShopId) {
+		this.mShopId = mShopId;
 	}
 
-	public void setColor(String color) {
-		mSize++;
-		this.color = color;
+	public String getChannelId() {
+		return this.mChannelId;
 	}
 
-	public String getCount() {
-		return count;
+	public void setChannelId(String channelId) {
+		this.mChannelId = channelId;
 	}
 
-	public void setCount(String count) {
-		mSize++;
-		this.count = count;
+	public Map<String, String> getCommonInfo() {
+		return mCommonInfo;
 	}
 
-	public String getNumber() {
-		return number;
+	public void setCommonInfo(Map<String, String> mCommonInfo) {
+		this.mCommonInfo = mCommonInfo;
 	}
 
-	public void setNumber(String number) {
-		mSize++;
-		this.number = number;
+	public List<DetailItem> getPInfo() {
+		return mPInfo;
 	}
 
-	public String getAddressname() {
-		return addressname;
+	public void setPInfo(List<DetailItem> mPInfo) {
+		this.mPInfo = mPInfo;
 	}
 
-	public void setAddressname(String addressname) {
-		mSize++;
-		this.addressname = addressname;
+	public Map<String, String> getAddrInfo() {
+		return mAddrInfo;
 	}
 
-	public String getAddressphone() {
-		return addressphone;
+	public void setAddrInfo(Map<String, String> mAddrInfo) {
+		this.mAddrInfo = mAddrInfo;
 	}
 
-	public void setAddressphone(String addressphone) {
-		mSize++;
-		this.addressphone = addressphone;
+	public int getCommented() {
+		return mCommented;
 	}
 
-	public String getAddressdetail() {
-		return addressdetail;
+	public void setCommented(int mCommented) {
+		this.mCommented = mCommented;
 	}
 
-	public void setAddressdetail(String addressdetail) {
-		mSize++;
-		this.addressdetail = addressdetail;
-	}
-
-	public String getPrice() {
-		return price;
-	}
-
-	public void setPrice(String price) {
-		mSize++;
-		this.price = price;
-	}
-
-	public String getAnchor() {
-		return anchor;
-	}
-
-	public void setAnchor(String anchor) {
-		mSize++;
-		this.anchor = anchor;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		mSize++;
-		this.status = status;
-	}
-
-	public String getCommenturl() {
-		return commenturl;
-	}
-
-	public void setCommenturl(String commenturl) {
-		mSize++;
-		this.commenturl = commenturl;
-	}
-
-	public String getCommented() {
-		return commented;
-	}
-
-	public void setCommented(String commented) {
-		mSize++;
-		this.commented = commented;
-	}
-
-	public int getSize() {
-		if (mSize > UNUSED_SIZE) {
-			return mSize - UNUSED_SIZE;
+	public String formatCommonInfo() {
+		StringBuilder sb = new StringBuilder();
+		Set<String> keys = mCommonInfo.keySet();
+		Iterator<String> it = keys.iterator();
+		while (it.hasNext()) {
+			sb.append(mCommonInfo.get(it.next()));
+			sb.append("\n");
 		}
-		return -1;
+		sb.replace(sb.lastIndexOf("\n"), sb.length(), "");
+		return sb.toString();
 	}
 
+	public String formatAddrInfo() {
+		StringBuilder sb = new StringBuilder();
+		Set<String> keys = mAddrInfo.keySet();
+		Iterator<String> it = keys.iterator();
+		while (it.hasNext()) {
+			sb.append(mAddrInfo.get(it.next()));
+			sb.append("\n");
+		}
+		sb.replace(sb.lastIndexOf("\n"), sb.length(), "");
+		return sb.toString();
+	}
+
+	public static class DetailItem {
+		private String productid;
+		private String iconurl;
+		private String iconCachePath;
+		private String name;
+		private String color;
+		private String count;
+		private String price;
+		private String anchor;
+
+		public String getProductid() {
+			return productid;
+		}
+
+		public void setProductid(String productid) {
+			this.productid = productid;
+		}
+
+		public String getIconurl() {
+			return iconurl;
+		}
+
+		public void setIconurl(String iconurl) {
+			this.iconurl = iconurl;
+		}
+
+		public String getIconCachePath() {
+			return iconCachePath;
+		}
+
+		public void setIconCachePath(String iconCachePath) {
+			this.iconCachePath = iconCachePath;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getColor() {
+			return color;
+		}
+
+		public void setColor(String color) {
+			this.color = color;
+		}
+
+		public String getCount() {
+			return count;
+		}
+
+		public void setCount(String count) {
+			this.count = count;
+		}
+
+		public String getPrice() {
+			return price;
+		}
+
+		public void setPrice(String price) {
+			this.price = price;
+		}
+
+		public String getAnchor() {
+			return anchor;
+		}
+
+		public void setAnchor(String anchor) {
+			this.anchor = anchor;
+		}
+
+		public String formatOther(Context ctx) {
+			StringBuilder sb = new StringBuilder();
+			if (price != null && count != null) {
+				sb.append(ctx.getString(R.string.order_detail_price)
+						.replace("{?1}", price).replace("{?2}", count));
+				sb.append("\n");
+			}
+			if (color != null) {
+				sb.append(ctx.getString(R.string.order_detail_color).replace(
+						"{?}", color));
+				sb.append("\n");
+			}
+			if (anchor != null) {
+				sb.append(anchor);
+			}
+			return sb.toString();
+		}
+	}
 }

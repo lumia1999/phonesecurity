@@ -6,90 +6,75 @@
 
     <include layout="@layout/banner" />
 
-    <RelativeLayout
-        android:id="@+id/content_layout"
+    <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/banner_layout" >
 
         <RelativeLayout
-            android:id="@+id/top_layout"
+            android:id="@+id/content_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/order_detail_top_bg"
-            android:gravity="center_vertical"
-            android:padding="5dip" >
-
-            <ImageView
-                android:id="@+id/icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:background="@drawable/hotmodel_icon_holder"
-                android:padding="5dip"
-                android:scaleType="centerCrop" />
+            android:visibility="visible" >
 
             <TextView
-                android:id="@+id/p_title"
+                android:id="@+id/o_top_common"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/icon"
-                android:paddingLeft="5dip"
-                android:paddingRight="5dip"
+                android:background="@drawable/order_detail_layout_bg_top"
+                android:lineSpacingMultiplier="1.2"
+                android:padding="5dip"
+                android:text="@string/order_detail_number"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <com.doo360.crm.view.LinearLayoutForListView
+                android:id="@+id/middle_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/o_top_common"
+                android:orientation="vertical" >
+            </com.doo360.crm.view.LinearLayoutForListView>
+
+            <TextView
+                android:id="@+id/o_address_tip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/middle_layout"
+                android:background="@drawable/order_detail_layout_bg_bottom"
+                android:padding="5dip"
+                android:singleLine="true"
+                android:text="@string/order_address_tip_txt"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/o_bottom_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/o_address_tip"
+                android:background="@drawable/order_detail_layout_bg_middle"
+                android:lineSpacingMultiplier="1.2"
+                android:padding="5dip"
                 android:text="ddd"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/p_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/p_title"
-                android:layout_toRightOf="@id/icon"
-                android:padding="5dip"
-                android:singleLine="true"
-                android:text="@string/order_detail_color"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/p_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/p_title"
-                android:padding="5dip"
-                android:singleLine="true"
-                android:text="@string/order_detail_count"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
         </RelativeLayout>
+    </ScrollView>
 
-        <ListView
-            android:id="@android:id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/comment"
-            android:layout_below="@id/top_layout"
-            android:cacheColorHint="@null"
-            android:divider="@null"
-            android:fadingEdge="none" />
-
-        <TextView
-            android:id="@+id/comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="5dip"
-            android:background="@drawable/personal_address_btn_bg_selector"
-            android:gravity="center"
-            android:paddingBottom="5dip"
-            android:paddingLeft="25dip"
-            android:paddingRight="25dip"
-            android:paddingTop="5dip"
-            android:text="@string/product_evaluate_btn_text"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dip"
+        android:background="@drawable/personal_address_btn_bg_selector"
+        android:gravity="center"
+        android:paddingBottom="5dip"
+        android:paddingLeft="25dip"
+        android:paddingRight="25dip"
+        android:paddingTop="5dip"
+        android:text="@string/product_evaluate_btn_text"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <RelativeLayout
         android:layout_width="match_parent"

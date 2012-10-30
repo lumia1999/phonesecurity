@@ -9,11 +9,17 @@
         android:layout_height="wrap_content"
         layout="@layout/banner" />
 
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banner_layout"
+        layout="@layout/op" />
+
     <fragment
         android:id="@+id/product_comment_fragment"
         android:name="com.doo360.crm.view.ProductCommentListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/banner_layout" />
+        android:layout_below="@id/op_layout" />
 
 </RelativeLayout>

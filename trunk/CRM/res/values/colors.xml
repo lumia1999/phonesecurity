@@ -16,9 +16,15 @@
     <drawable name="orange">#FF6600</drawable>
     <drawable name="black">#000000</drawable>
     <drawable name="light_grey">#eaeaea</drawable>
+    <drawable name="red">#FF0000</drawable>
 
     <!-- temp useage -->
     <drawable name="list_item_pressed">#87c6d5</drawable>
     <drawable name="transparent">#00000000</drawable>
+
+    <!-- for floating ad -->
+    <color name="floatting_transparent">#00ffffff</color>
+
+    <drawable name="floatting_transparent">#00000000</drawable>
 
 </resources>

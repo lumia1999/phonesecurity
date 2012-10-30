@@ -110,8 +110,7 @@ public class FrontPageFragment extends Fragment {
 		int tag = item.tag;
 		switch (tag) {
 		case TAG_WARRANTLY:
-			startActivity(new Intent(mAct, WarrantlyActivity.class));
-			mAct.overridePendingTransition(0, 0);
+			showWarranty();
 			break;
 		case TAG_SOFTWARE:
 			showSoftware();
@@ -130,6 +129,11 @@ public class FrontPageFragment extends Fragment {
 			showPersonalCenter();
 			break;
 		}
+	}
+
+	private void showWarranty() {
+		startActivity(new Intent(mAct, WarrantlyActivity.class));
+		mAct.overridePendingTransition(0, 0);
 	}
 
 	private void showSoftware() {
