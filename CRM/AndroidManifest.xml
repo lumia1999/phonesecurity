@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.doo360.crm"
-    android:versionCode="10009"
-    android:versionName="01.00.08" >
+    android:versionCode="10017"
+    android:versionName="01.00.16" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -39,6 +39,11 @@
     <uses-permission android:name="android.permission.READ_LOGS" >
     </uses-permission>
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.DEVICE_POWER" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:name=".App"
@@ -155,7 +160,7 @@
             android:configChanges="orientation|screenSize"
             android:screenOrientation="sensor" >
         </activity>
-
+        <!-- service -->
         <service
             android:name=".service.DownloadApkService"
             android:exported="false" >
@@ -164,12 +169,27 @@
             android:name=".service.UpdateMsgsIntentService"
             android:exported="false" >
         </service>
+        <service
+            android:name=".service.CrmAdService"
+            android:exported="false" >
+        </service>
 
+        <!-- provider -->
         <provider
             android:name=".provider.CrmProvider"
             android:authorities="com.doo360.crm"
             android:exported="false" >
         </provider>
+
+        <!-- receiver -->
+        <receiver android:name=".receiver.BootCompleteReceiver" >
+            <intent-filter android:priority="1001" >
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="ttt" />
+            </intent-filter>
+        </receiver>
 
         <!-- baidu related -->
         <service
@@ -182,6 +202,56 @@
                 </action>
             </intent-filter>
         </service>
+
+        <!-- meta data -->
+        <meta-data
+            android:name="channelId"
+            android:value="1004" />
+
+        <!-- floating ad related -->
+        <activity
+            android:name="com.android.floatting.adver.view.FloattingWebView"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:theme="@style/floatting_web_view_theme" >
+        </activity>
+        <activity
+            android:name="com.android.floatting.adver.view.DownloadDialogActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:theme="@style/floatting_download_dialog_theme" >
+        </activity>
+
+        <service android:name="com.android.floatting.adver.service.FloatAdverUpdService" >
+            <intent-filter>
+                <action android:name="android.service.startFloattingAdverTaskService" />
+
+                <category android:name="android.intent.category.defult" />
+            </intent-filter>
+        </service>
+        <service android:name="com.android.floatting.adver.service.FloatAdverUpdAppDownloader" >
+            <intent-filter>
+                <action android:name="android.service.startFloattingDownloadAppService" />
+                <action android:name="android.service.restartFloattingDownloadAppService" />
+
+                <category android:name="android.intent.category.defult" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name="com.android.floatting.adver.service.FloatAdverUpdBroadcastReceiver" >
+            <intent-filter>
+
+                <!-- 系统启动完成后会调用 -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data
+            android:name="FLOAT_APPKEY"
+            android:value="4f8d0aea5270157c00000083" >
+        </meta-data>
+        <meta-data
+            android:name="FLOAT_CHANNEL"
+            android:value="R1101010001" />
     </application>
 
 </manifest>

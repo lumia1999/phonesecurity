@@ -66,6 +66,7 @@ public class AddressItemListActivity extends FragmentActivity implements
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Log.e(TAG, "mOpType : " + mOpType);
 			if (mOpType == OpType.AREA) {
 				AreaChooseListFragment fragment = (AreaChooseListFragment) mFragMgr
 						.findFragmentByTag(AREA_FRAGMENT_TAG);

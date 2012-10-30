@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/more_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/light_grey"
+    android:gravity="center"
+    android:minHeight="?android:attr/listPreferredItemHeight" >
+
+    <RelativeLayout
+        android:id="@+id/more_icon_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/more_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_retry" />
+
+        <ProgressBar
+            android:id="@+id/more_progress"
+            style="?android:attr/progressBarStyleSmallInverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateOnly="true" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/more_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dip"
+        android:singleLine="true"
+        android:text="ddd"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</LinearLayout>

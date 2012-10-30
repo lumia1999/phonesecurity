@@ -10,6 +10,7 @@
         layout="@layout/banner" />
 
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/banner_layout" >
@@ -28,7 +29,7 @@
                     android:id="@+id/icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/product_detail_icon"
+                    android:background="@drawable/icon_holder_large"
                     android:scaleType="centerCrop" />
 
                 <TextView
@@ -36,6 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/icon"
+                    android:paddingLeft="5dip"
                     android:paddingTop="5dip"
                     android:singleLine="true"
                     android:text="ddd"
@@ -48,6 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/name"
                     android:layout_toRightOf="@id/icon"
+                    android:paddingLeft="5dip"
                     android:paddingTop="5dip"
                     android:text="desc"
                     android:textAppearance="?android:attr/textAppearanceSmall"
@@ -91,7 +94,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/product_color_grid"
                     android:layout_marginTop="-15dip"
-                    android:gravity="center_vertical" >
+                    android:gravity="center_vertical"
+                    android:paddingBottom="5dip"
+                    android:paddingTop="5dip" >
 
                     <TextView
                         android:id="@+id/product_purchase_tip"
@@ -112,7 +117,8 @@
                         android:inputType="number"
                         android:maxLength="2"
                         android:singleLine="true"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColorHint="@color/light_grey" />
 
                     <TextView
                         android:id="@+id/product_stock"
@@ -144,7 +150,8 @@
                         android:paddingBottom="3dip"
                         android:paddingTop="3dip"
                         android:text="@string/product_price_query_txt"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/black" />
 
                     <TextView
                         android:id="@+id/purchase"
@@ -158,7 +165,8 @@
                         android:paddingBottom="3dip"
                         android:paddingTop="3dip"
                         android:text="@string/product_purchase_txt"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/black" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -211,6 +219,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             layout="@layout/loading" />
+
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/retry" />
     </RelativeLayout>
 
 </RelativeLayout>

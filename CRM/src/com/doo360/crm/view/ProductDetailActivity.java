@@ -1,17 +1,29 @@
 package com.doo360.crm.view;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.protocol.HTTP;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -27,18 +39,33 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doo360.crm.BetterPopupWindow;
+import com.doo360.crm.Constants;
+import com.doo360.crm.FileHelper;
+import com.doo360.crm.ProductDetail;
+import com.doo360.crm.ProductDetail.ProductDetailColor;
 import com.doo360.crm.R;
+import com.doo360.crm.Utils;
+import com.doo360.crm.http.FunctionEntry;
+import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpRequestBox;
+import com.doo360.crm.http.InstConstants;
+import com.doo360.crm.tsk.DownloadIconTask;
+import com.doo360.crm.tsk.DownloadIconTask.OnIconDownloadedListener;
 
 public class ProductDetailActivity extends FragmentActivity implements
-		OnClickListener {
+		OnClickListener, OnIconDownloadedListener {
 	private static final String TAG = "ProductDetailActivity";
 
 	// demo
-	public static final String EXTRA_POS = "extra_pos";
-	private int mPos;
+	public static final String EXTRA_PID = "extra_pid";
+	public static final String EXTRA_ICONURL = "extra_iconurl";
+	private String mPId;
+	private String mPIconUrl;
 	private int mType;
 
 	// title
@@ -51,7 +78,6 @@ public class ProductDetailActivity extends FragmentActivity implements
 	private TextView mDescText;
 
 	private GridView mColorGridView;
-	private ArrayList<ColorItem> mDataList;
 	private ColorGridAdapter mColorAdapter;
 
 	private EditText mPurchaseCountEdit;
@@ -66,35 +92,20 @@ public class ProductDetailActivity extends FragmentActivity implements
 	// loading
 	private ProgressBar mLoadingProgressbar;
 
+	private TextView mRetryText;
+	private ScrollView mScrollView;
+	private ProductDetail mProductDetailData = null;
+	private Context mCtx;
+	private int mColorIdSelected;
+
 	private PriceQueryPopupWindow mPriceWindow;
+
+	private DownloadIconTask mIconTsk = null;
 
 	private static final int REQ_CODE_PURCHASE_CONFIRM = 1;
 	private static final int REQ_CODE_COMMENT = 2;
 	private static final int REQ_CODE_PARAM = 3;
 	private static final int REQ_CODE_MORE_DETAIL = 4;
-
-	private static final int MSG_SHOW_PRICE = 1;
-
-	private Handler mHandler = new Handler() {
-
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case MSG_SHOW_PRICE:
-				showPrice();
-				break;
-			}
-			super.handleMessage(msg);
-		}
-
-	};
-
-	private void showPrice() {
-		if (mPriceWindow != null) {
-			mPriceWindow.updatePrice();
-			mPriceWindow.setOutsiceCancelable(true);
-		}
-	}
 
 	@Override
 	protected void onCreate(Bundle bundle) {
@@ -102,7 +113,13 @@ public class ProductDetailActivity extends FragmentActivity implements
 		super.onCreate(bundle);
 		setContentView(R.layout.product_detail);
 		initUI();
-		demo();
+		Intent i = getIntent();
+		mType = i.getIntExtra(HotmodelListActivity.EXTRA_TYPE, -1);
+		mPId = i.getStringExtra(EXTRA_PID);
+		mPIconUrl = i.getStringExtra(EXTRA_ICONURL);
+		Log.d(TAG, "mPId : " + mPId);
+		new FetchDataTask().execute(FunctionEntry.PRODUCT_ENTRY,
+				InstConstants.PRODUCT_INFO);
 	}
 
 	@Override
@@ -155,6 +172,14 @@ public class ProductDetailActivity extends FragmentActivity implements
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
+	@Override
+	protected void onDestroy() {
+		if (mIconTsk != null) {
+			mIconTsk.cancel(true);
+		}
+		super.onDestroy();
+	}
+
 	private void initUI() {
 		mLayoutInflater = getLayoutInflater();
 		// title
@@ -180,6 +205,11 @@ public class ProductDetailActivity extends FragmentActivity implements
 
 		// loading
 		mLoadingProgressbar = (ProgressBar) findViewById(android.R.id.progress);
+		mScrollView = (ScrollView) findViewById(R.id.scroll_view);
+		mScrollView.setVisibility(View.GONE);
+		mRetryText = (TextView) findViewById(R.id.retry);
+		mRetryText.setOnClickListener(this);
+		mCtx = this;
 	}
 
 	@Override
@@ -197,6 +227,9 @@ public class ProductDetailActivity extends FragmentActivity implements
 		case R.id.purchase:
 			purchase();
 			break;
+		case R.id.retry:
+			retry();
+			break;
 		}
 	}
 
@@ -212,76 +245,332 @@ public class ProductDetailActivity extends FragmentActivity implements
 	}
 
 	private void priceQuery(View v) {
-		// TODO
 		if (mPriceWindow == null) {
 			mPriceWindow = new PriceQueryPopupWindow(v);
 			mPriceWindow.setOutsiceCancelable(false);
 		}
 		mPriceWindow.showLikeQuickAction(-70, 0);
-		Message msg = mHandler.obtainMessage();
-		msg.what = MSG_SHOW_PRICE;
-		mHandler.sendMessageDelayed(msg, 2000);
+		if (mPriceWindow.getQuerySuccess()) {
+			mPriceWindow.updatePrice(mProductDetailData.getColorList()
+					.get(mColorIdSelected).getPrice());
+			return;
+		}
+		new AsyncTask<String, Void, Integer>() {
+
+			@Override
+			protected Integer doInBackground(String... params) {
+				InputStream is = null;
+				try {
+					HttpPost post = new HttpPost(
+							FunctionEntry.fixUrl(params[0]));
+					post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+							.formatRequestParams(params[1], setRequestParams(),
+									setRequestParamValues())));
+					HttpResponse resp = HttpRequestBox.getInstance(mCtx)
+							.sendRequest(post);
+					if (resp == null) {
+						return null;
+					}
+					int statusCode = resp.getStatusLine().getStatusCode();
+					Log.d(TAG, "statusCode : " + statusCode);
+					if (statusCode != HttpStatus.SC_OK) {
+						return null;
+					}
+					is = resp.getEntity().getContent();
+					// if (HTTPUtils.testResponse(is)) {
+					// return null;
+					// }
+					XmlPullParserFactory factory = XmlPullParserFactory
+							.newInstance();
+					factory.setNamespaceAware(true);
+					XmlPullParser parser = factory.newPullParser();
+					parser.setInput(is, HTTP.UTF_8);
+					int eventType = parser.getEventType();
+					String tag = "";
+					while (eventType != XmlPullParser.END_DOCUMENT) {
+						if (eventType == XmlPullParser.START_TAG) {
+							tag = parser.getName();
+							if (TextUtils.equals(tag,
+									ProductDetail.SERVICERESULT)) {
+								parser.next();
+								return Integer.valueOf(parser.getText());
+							}
+						}
+						eventType = parser.next();
+					}// ?end while
+				} catch (Exception e) {
+					Log.e(TAG, "Exception", e);
+					return null;
+				} finally {
+					if (is != null) {
+						try {
+							is.close();
+						} catch (IOException e) {
+							//
+						}
+					}
+				}
+				return null;
+			}
+
+			protected void onPostExecute(Integer result) {
+				showPrice(result);
+			};
+
+			private List<String> setRequestParams() {
+				List<String> list = new ArrayList<String>();
+				list.add(HTTPUtils.USERID);
+				list.add(HTTPUtils.IMEI);
+				list.add(HTTPUtils.CHANNELID);
+				list.add(HTTPUtils.PRODUCTID);
+				list.add(HTTPUtils.COLOR);
+				return list;
+			}
+
+			private List<String> setRequestParamValues() {
+				List<String> list = new ArrayList<String>();
+				list.add(Utils.getIMEI(mCtx));
+				list.add(Utils.getIMEI(mCtx));
+				list.add(Utils.getChannelId(mCtx));
+				list.add(mPId);
+				list.add(mProductDetailData.getColorList()
+						.get(mColorIdSelected).getName());
+				return list;
+			}
+
+		}.execute(FunctionEntry.PRICE_ENTRY, InstConstants.PRICE_QUERY);
+	}
+
+	private void showPrice(int status) {
+		if (status != 0) {
+			if (mPriceWindow != null) {
+				mPriceWindow.dismiss();
+			}
+			Toast.makeText(mCtx, R.string.product_price_query_fail_toast,
+					Toast.LENGTH_SHORT).show();
+		} else {
+			if (mPriceWindow != null) {
+				mPriceWindow.updatePrice(mProductDetailData.getColorList()
+						.get(mColorIdSelected).getPrice());
+				mPriceWindow.setOutsiceCancelable(true);
+			}
+		}
 	}
 
 	private void purchase() {
-		// TODO
-		startActivityForResult(new Intent(this, PurchaseConfirmActivity.class),
-				REQ_CODE_PURCHASE_CONFIRM);
+		String count = mPurchaseCountEdit.getText().toString();
+		if (!TextUtils.equals(count.trim(), "")
+				&& (Integer.valueOf(count) <= 0 || Integer.valueOf(count) > Integer
+						.valueOf(mProductDetailData.getColorList()
+								.get(mColorIdSelected).getStock()))) {
+			Toast.makeText(mCtx, R.string.order_count_error_toast,
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+		Intent i = new Intent(this, PurchaseConfirmActivity.class);
+		ContentValues value = new ContentValues();
+		value.put(Constants.P_ID, mProductDetailData.getId());
+		value.put(Constants.P_ICONURL, mPIconUrl);
+		value.put(Constants.P_NAME, mProductDetailData.getName());
+		value.put(Constants.P_PRICE,
+				mProductDetailData.getColorList().get(mColorIdSelected)
+						.getPrice());
+		if (count == null || TextUtils.equals("", count)) {
+			count = getString(R.string.product_purchase_default_count);
+		}
+		value.put(Constants.P_COUNT, count);
+		value.put(Constants.P_COLOR,
+				mProductDetailData.getColorList().get(mColorIdSelected)
+						.getName());
+		i.putExtra(PurchaseConfirmActivity.EXTRA_DATA, value);
+		startActivityForResult(i, REQ_CODE_PURCHASE_CONFIRM);
 	}
 
-	private void demo() {
-		mLoadingProgressbar.setVisibility(View.GONE);
+	private void retry() {
+		mLoadingProgressbar.setVisibility(View.VISIBLE);
+		mScrollView.setVisibility(View.GONE);
+		mRetryText.setVisibility(View.GONE);
+		new FetchDataTask().execute(FunctionEntry.PRODUCT_ENTRY,
+				InstConstants.PRODUCT_INFO);
+	}
 
-		// TODO
-		Intent i = getIntent();
-		mType = i.getIntExtra(HotmodelListActivity.EXTRA_TYPE, -1);
-		mPos = i.getIntExtra(EXTRA_POS, -1);
-		switch (mPos) {
-		case 0:
-			if (mType == HotmodelListActivity.TYPE_HOTMODEL) {
-				mIconImage
-						.setBackgroundResource(R.drawable.product_detail_icon);
-				mNameText.setText(getResources().getStringArray(
-						R.array.hotmodel_product_name)[0]);
-				mDescText.setText(getResources().getStringArray(
-						R.array.hotmodel_product_desc)[0]);
-			} else {
-				mIconImage
-						.setBackgroundResource(R.drawable.topfree_detail_icon);
-				mNameText.setText(getResources().getStringArray(
-						R.array.topfree_product_name)[0]);
+	private class FetchDataTask extends AsyncTask<String, Void, Boolean> {
 
-				mDescText.setText(getResources().getStringArray(
-						R.array.hotmodel_product_desc)[0]);
+		@Override
+		protected Boolean doInBackground(String... params) {
+			Log.d(TAG, "doInBackground");
+			mProductDetailData = new ProductDetail();
+			InputStream is = null;
+			try {
+				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
+				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+						.formatRequestParams(params[1], setRequestParams(),
+								setRequestParamValues())));
+				HttpResponse resp = HttpRequestBox.getInstance(mCtx)
+						.sendRequest(post);
+				if (resp == null) {
+					return false;
+				}
+				int statusCode = resp.getStatusLine().getStatusCode();
+				Log.d(TAG, "statusCode : " + statusCode);
+				if (statusCode != HttpStatus.SC_OK) {
+					return false;
+				}
+				is = resp.getEntity().getContent();
+				// if (HTTPUtils.testResponse(is)) {
+				// return false;
+				// }
+				XmlPullParserFactory factory = XmlPullParserFactory
+						.newInstance();
+				factory.setNamespaceAware(true);
+				XmlPullParser parser = factory.newPullParser();
+				parser.setInput(is, HTTP.UTF_8);
+				int eventType = parser.getEventType();
+				String tag = "";
+				List<ProductDetailColor> pColorList = null;
+				ProductDetailColor pColor = null;
+				while (eventType != XmlPullParser.END_DOCUMENT) {
+					if (eventType == XmlPullParser.START_TAG) {
+						tag = parser.getName();
+						if (TextUtils.equals(tag, ProductDetail.COLORLIST)) {
+							pColorList = new ArrayList<ProductDetailColor>();
+						} else if (TextUtils.equals(tag, ProductDetail.COLOR)) {
+							pColor = new ProductDetailColor();
+						} else if (TextUtils.equals(tag,
+								ProductDetail.SERVICERESULT)) {
+							parser.next();
+							mProductDetailData.setServiceresult(parser
+									.getText());
+						} else if (TextUtils.equals(tag, ProductDetail.ID)) {
+							parser.next();
+							mProductDetailData.setId(parser.getText());
+						} else if (TextUtils.equals(tag, ProductDetail.ICONURL)) {
+							parser.next();
+							mProductDetailData.setIconurl(parser.getText());
+						} else if (TextUtils.equals(tag, ProductDetail.NAME)) {
+							parser.next();
+							int depth = parser.getDepth();
+							// Log.e(TAG, "depth : " + depth);
+							if (depth == 2) {
+								// product name
+								mProductDetailData.setName(parser.getText());
+							} else {
+								pColor.setName(parser.getText());
+							}
+							// Log.e(TAG, "dfsafasds name : " +
+							// parser.getText());
+						} else if (TextUtils.equals(tag, ProductDetail.DESC)) {
+							parser.next();
+							mProductDetailData.setDesc(parser.getText());
+						} else if (TextUtils.equals(tag, ProductDetail.STOCK)) {
+							parser.next();
+							int depth = parser.getDepth();
+							if (depth == 2) {
+								// product stock
+								mProductDetailData.setStock(parser.getText());
+							} else {
+								pColor.setStock(parser.getText());
+							}
+
+						} else if (TextUtils.equals(tag,
+								ProductDetail.COMMENTCOUNT)) {
+							parser.next();
+							mProductDetailData
+									.setCommentcount(parser.getText());
+						} else if (TextUtils.equals(tag, ProductDetail.PRICE)) {
+							parser.next();
+							pColor.setPrice(parser.getText());
+						}
+					} else if (eventType == XmlPullParser.END_TAG) {
+						tag = parser.getName();
+						if (TextUtils.equals(tag, ProductDetail.COLOR)) {
+							pColor.setChecked(false);// init state
+							pColorList.add(pColor);
+						} else if (TextUtils.equals(tag,
+								ProductDetail.COLORLIST)) {
+							mProductDetailData.setColorList(pColorList);
+						} else if (TextUtils.equals(tag, ProductDetail.DETAIL)) {
+							// check icon cache
+							mProductDetailData.setIconCachePath(FileHelper
+									.getIconCachePath(mCtx,
+											mProductDetailData.getIconurl(),
+											true));
+						}
+					}
+					eventType = parser.next();
+				}// ?end while
+			} catch (Exception e) {
+				Log.e(TAG, "Exception", e);
+				return false;
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						//
+					}
+				}
 			}
-			break;
-		case 1:
-			if (mType == HotmodelListActivity.TYPE_HOTMODEL) {
-				mIconImage
-						.setBackgroundResource(R.drawable.product_detail_icon_1);
-				mNameText.setText(getResources().getStringArray(
-						R.array.hotmodel_product_name)[1]);
-				mDescText.setText(getResources().getStringArray(
-						R.array.hotmodel_product_desc)[1]);
-			} else {
-				mIconImage
-						.setBackgroundResource(R.drawable.topfree_detail_icon_1);
-				mNameText.setText(getResources().getStringArray(
-						R.array.topfree_product_name)[1]);
-				mDescText.setText(getResources().getStringArray(
-						R.array.hotmodel_product_desc)[1]);
-			}
-			break;
+			return true;
 		}
 
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if (result) {
+				fillData();
+			} else {
+				notifyError();
+			}
+		}
+
+		private List<String> setRequestParams() {
+			List<String> list = new ArrayList<String>();
+			list.add(HTTPUtils.USERID);
+			list.add(HTTPUtils.IMEI);
+			list.add(HTTPUtils.CHANNELID);
+			list.add(HTTPUtils.PRODUCTID);
+			return list;
+		}
+
+		private List<String> setRequestParamValues() {
+			List<String> list = new ArrayList<String>();
+			list.add(Utils.getIMEI(mCtx));
+			list.add(Utils.getIMEI(mCtx));
+			list.add(Utils.getChannelId(mCtx));
+			list.add(mPId);
+			return list;
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	private void fillData() {
+		mLoadingProgressbar.setVisibility(View.GONE);
+		mScrollView.setVisibility(View.VISIBLE);
+		if (mProductDetailData.getIconCachePath() != null) {
+			mIconImage.setBackgroundDrawable(new BitmapDrawable(FileHelper
+					.decodeIconFile(mCtx,
+							mProductDetailData.getIconCachePath(),
+							Utils.getIconSize(mCtx, Constants.ICON_SIZE_122),
+							Utils.getIconSize(mCtx, Constants.ICON_SIZE_228))));
+		} else {
+			downlaodIcon();
+		}
+		mNameText.setText(mProductDetailData.getName());
+		mDescText.setText(mProductDetailData.getDesc());
 		mStockText.setText(getString(R.string.product_sock_txt).replace("{?}",
-				"100"));
-		mDataList = new ArrayList<ColorItem>();
-		mDataList.add(new ColorItem("白色"));
-		mDataList.add(new ColorItem("黑色"));
+				mProductDetailData.getStock()));
 		mColorAdapter = new ColorGridAdapter();
 		mColorGridView.setAdapter(mColorAdapter);
+		mPriceQueryText.setEnabled(false);
+		mPurchaseText.setEnabled(false);
 		fillParamUI();
+	}
+
+	private void notifyError() {
+		mLoadingProgressbar.setVisibility(View.GONE);
+		mScrollView.setVisibility(View.GONE);
+		mRetryText.setVisibility(View.VISIBLE);
 	}
 
 	private void fillParamUI() {
@@ -297,7 +586,7 @@ public class ProductDetailActivity extends FragmentActivity implements
 			if (i == params.length - 1) {
 				tip.setVisibility(View.VISIBLE);
 				tip.setText(getString(R.string.product_comment_tip_txt)
-						.replace("{?}", "356"));
+						.replace("{?}", mProductDetailData.getCommentcount()));
 			} else {
 				tip.setVisibility(View.GONE);
 			}
@@ -306,29 +595,30 @@ public class ProductDetailActivity extends FragmentActivity implements
 
 				@Override
 				public void onClick(View v) {
-					// TODO
-					// Log.d(TAG, "index : " + index);
 					switch (index) {
 					case 0:
 						// product detail
 						startActivityForResult(new Intent(
 								getApplicationContext(),
-								ProductMoreDetailListActivity.class),
-								REQ_CODE_MORE_DETAIL);
+								ProductMoreDetailListActivity.class).putExtra(
+								ProductMoreDetailListActivity.EXTRA_PRODUCTID,
+								mPId), REQ_CODE_MORE_DETAIL);
 						break;
 					case 1:
 						// product parameter
 						startActivityForResult(new Intent(
 								getApplicationContext(),
-								ProductParameterListActivity.class),
-								REQ_CODE_PARAM);
+								ProductParameterListActivity.class).putExtra(
+								ProductParameterListActivity.EXTRA_PRODUCTID,
+								mPId), REQ_CODE_PARAM);
 						break;
 					case 2:
 						// product comment
 						startActivityForResult(new Intent(
 								getApplicationContext(),
-								ProductCommentListActivity.class),
-								REQ_CODE_COMMENT);
+								ProductCommentListActivity.class).putExtra(
+								ProductCommentListActivity.EXTRA_PRODUCTID,
+								mPId), REQ_CODE_COMMENT);
 						break;
 					}
 				}
@@ -337,35 +627,40 @@ public class ProductDetailActivity extends FragmentActivity implements
 		}
 	}
 
-	private class ColorItem {
-		private String color;
-		private boolean state;
+	@SuppressWarnings("unchecked")
+	private void downlaodIcon() {
+		List<String> iconUrls = new ArrayList<String>();
+		iconUrls.add(FunctionEntry.fixUrl(mProductDetailData.getIconurl()));
+		mIconTsk = new DownloadIconTask(mCtx, this);
+		mIconTsk.execute(iconUrls);
+	}
 
-		public ColorItem(String color) {
-			this.color = color;
-			state = false;
-		}
+	@SuppressWarnings("deprecation")
+	@Override
+	public void iconDownloaded(String... params) {
+		Log.d(TAG, "iconurl : " + params[0] + ",iconcachepath : " + params[1]);
+		mProductDetailData.setIconCachePath(params[1]);
+		mIconImage.setBackgroundDrawable(new BitmapDrawable(FileHelper
+				.decodeIconFile(mCtx, params[1],
+						Utils.getIconSize(mCtx, Constants.ICON_SIZE_70),
+						Utils.getIconSize(mCtx, Constants.ICON_SIZE_70))));
+	}
 
-		public boolean isState() {
-			return state;
-		}
-
-		public void setState(boolean state) {
-			this.state = state;
-		}
-
+	@Override
+	public void iconDownloadFail(String... params) {
+		// nothing
 	}
 
 	private class ColorGridAdapter extends BaseAdapter {
 
 		@Override
 		public int getCount() {
-			return mDataList.size();
+			return mProductDetailData.getColorList().size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			return mDataList.get(position);
+			return mProductDetailData.getColorList().get(position);
 		}
 
 		@Override
@@ -379,9 +674,10 @@ public class ProductDetailActivity extends FragmentActivity implements
 				convertView = getLayoutInflater().inflate(
 						R.layout.product_color_grid_item, null);
 			}
-			ColorItem item = mDataList.get(position);
-			((TextView) convertView).setText(item.color);
-			if (item.state) {
+			ProductDetailColor item = mProductDetailData.getColorList().get(
+					position);
+			((TextView) convertView).setText(item.getName());
+			if (item.isChecked()) {
 				convertView
 						.setBackgroundResource(R.drawable.product_color_selected);
 			} else {
@@ -401,17 +697,28 @@ public class ProductDetailActivity extends FragmentActivity implements
 	}
 
 	private void updateColorGridUI(int position) {
-		int size = mDataList.size();
-		ColorItem item = null;
+		int size = mProductDetailData.getColorList().size();
+		ProductDetailColor item = null;
+		int oldColorId = mColorIdSelected;
 		for (int i = 0; i < size; i++) {
-			item = mDataList.get(i);
+			item = mProductDetailData.getColorList().get(i);
 			if (i == position) {
-				item.state = true;
+				mColorIdSelected = position;
+				item.setChecked(true);
+				mStockText.setText(getString(R.string.product_sock_txt)
+						.replace("{?}", item.getStock()));
 			} else {
-				item.state = false;
+				item.setChecked(false);
 			}
 		}
 		mColorAdapter.notifyDataSetChanged();
+		if (mPriceWindow != null && oldColorId != mColorIdSelected) {
+			// reset its state
+			mPriceWindow.setOutsiceCancelable(false);
+			mPriceWindow.setQueryState(false);
+		}
+		mPriceQueryText.setEnabled(true);
+		mPurchaseText.setEnabled(true);
 	}
 
 	private class PriceQueryPopupWindow extends BetterPopupWindow {
@@ -421,9 +728,11 @@ public class ProductDetailActivity extends FragmentActivity implements
 
 		private RelativeLayout mResultLayout;
 		private TextView mResultTipText;
+		private boolean mQuerySuccess;
 
 		public PriceQueryPopupWindow(View anchor) {
 			super(anchor);
+			mQuerySuccess = false;
 		}
 
 		@Override
@@ -463,11 +772,20 @@ public class ProductDetailActivity extends FragmentActivity implements
 			setContentView(root);
 		}
 
-		public void updatePrice() {
+		public void updatePrice(String price) {
 			mOngoingLayout.setVisibility(View.GONE);
 			mResultLayout.setVisibility(View.VISIBLE);
 			mResultTipText.setText(formatPriceString(
-					getString(R.string.price_query_result_tip_txt), "3999"));
+					getString(R.string.price_query_result_tip_txt), price));
+			this.mQuerySuccess = true;
+		}
+
+		public boolean getQuerySuccess() {
+			return this.mQuerySuccess;
+		}
+
+		public void setQueryState(boolean state) {
+			this.mQuerySuccess = state;
 		}
 
 		private CharSequence formatPriceString(String orgStr, String repStr) {

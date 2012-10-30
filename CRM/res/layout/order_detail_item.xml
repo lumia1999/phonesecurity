@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_desc"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/order_detail_item_bg"
-    android:gravity="center_vertical"
-    android:minHeight="30dip"
-    android:paddingLeft="5dip"
-    android:text="ddd"
-    android:textAppearance="?android:attr/textAppearanceSmall" />
+    android:background="@drawable/order_detail_layout_bg_middle"
+    android:minHeight="?android:attr/listPreferredItemHeight" >
+
+    <ImageView
+        android:id="@+id/item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dip"
+        android:background="@drawable/icon_holder_small"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/item_icon"
+        android:gravity="center_vertical"
+        android:padding="5dip"
+        android:text="ddd"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/item_others"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_name"
+        android:layout_toRightOf="@id/item_icon"
+        android:lineSpacingMultiplier="1.2"
+        android:paddingBottom="5dip"
+        android:paddingTop="5dip"
+        android:text="dsfsdfs"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>

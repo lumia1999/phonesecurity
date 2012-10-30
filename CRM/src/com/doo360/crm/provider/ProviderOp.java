@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 public class ProviderOp {
 	private static final String TAG = "ProviderOp";
@@ -34,6 +35,21 @@ public class ProviderOp {
 
 	public static Cursor getAllAddress(ContentResolver cr) {
 		return cr.query(CrmDb.Address.CONTENT_URI, null, null, null, null);
+	}
+
+	public static int setDefaultAddr(ContentResolver cr, int rowId) {
+		ContentValues value = new ContentValues(1);
+		value.put(CrmDb.Address.DEFAULT, CrmDb.AddressDefault.DEFAULT);
+		int count = 0;
+		count = cr.update(
+				Uri.withAppendedPath(CrmDb.Address.CONTENT_URI,
+						String.valueOf(rowId)), value, null, null);
+		Log.d(TAG, "first,count : " + count);
+		value.put(CrmDb.Address.DEFAULT, CrmDb.AddressDefault.NODEFAULT);
+		count += cr.update(CrmDb.Address.CONTENT_URI, value, "_id != " + "'"
+				+ rowId + "'", null);
+		Log.d(TAG, "second,count : " + count);
+		return count;
 	}
 
 	/**

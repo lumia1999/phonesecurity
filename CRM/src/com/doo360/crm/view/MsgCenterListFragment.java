@@ -190,7 +190,6 @@ public class MsgCenterListFragment extends ListFragment {
 
 				@Override
 				public void onClick(View v) {
-					Log.e(TAG, "onClick");
 					updateListUI(pos);
 				}
 			});

@@ -3,18 +3,21 @@ package com.doo360.crm.view;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -30,20 +33,33 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doo360.crm.Constants;
+import com.doo360.crm.FileHelper;
 import com.doo360.crm.R;
+import com.doo360.crm.Utils;
 import com.doo360.crm.WarrantyInfo;
+import com.doo360.crm.http.FunctionEntry;
+import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpRequestBox;
+import com.doo360.crm.http.InstConstants;
+import com.doo360.crm.tsk.DownloadIconTask;
+import com.doo360.crm.tsk.DownloadIconTask.OnIconDownloadedListener;
 
 public class WarrantlyActivity extends FragmentActivity implements
-		OnClickListener {
+		OnClickListener, OnIconDownloadedListener {
 	private static final String TAG = "WarrantlyActivity";
 
 	// title
 	private ImageView mPrevImage;
 	private TextView mTitleText;
 	private ImageView mHomeImage;
+
+	private ScrollView mScrollView;
+	private TextView mRetryText;
 
 	// top
 	private RelativeLayout mTopLayout;
@@ -74,25 +90,9 @@ public class WarrantlyActivity extends FragmentActivity implements
 	private ProgressBar mLoadingProgressbar;
 
 	private FragmentManager mFragMgr;
+	private Context mCtx;
 
 	private static final int REQ_CODE_EVALUATE = 1;
-
-	private static final int MSG_DISMISS_ACTIVE_DIALOG = 1;
-
-	private Handler mHandler = new Handler() {
-
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case MSG_DISMISS_ACTIVE_DIALOG:
-				updateUIForActive();
-				updateActiveDialog();
-				break;
-			}
-			super.handleMessage(msg);
-		}
-
-	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +100,8 @@ public class WarrantlyActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.warrantly);
 		initUI();
-		demo();
+		new WarrantyTask().execute(new Params(FunctionEntry.WARRANTY_ENTRY,
+				InstConstants.GET_WARRANTY_INFO));
 	}
 
 	public boolean onKeyDown(int keyCode, android.view.KeyEvent event) {
@@ -113,7 +114,6 @@ public class WarrantlyActivity extends FragmentActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO
 		switch (requestCode) {
 		case REQ_CODE_EVALUATE:
 			if (resultCode == Activity.RESULT_OK) {
@@ -135,6 +135,11 @@ public class WarrantlyActivity extends FragmentActivity implements
 		mPrevImage.setOnClickListener(this);
 		mTitleText.setText(R.string.front_page_warranty_desc);
 		mHomeImage.setOnClickListener(this);
+
+		mScrollView = (ScrollView) findViewById(R.id.scroll_view);
+		mScrollView.setVisibility(View.GONE);
+		mRetryText = (TextView) findViewById(R.id.retry);
+		mRetryText.setOnClickListener(this);
 		// top
 		mTopLayout = (RelativeLayout) findViewById(R.id.warrantly_top_layout);
 		mProductIconImage = (ImageView) findViewById(R.id.warrantly_top_icon);
@@ -160,6 +165,7 @@ public class WarrantlyActivity extends FragmentActivity implements
 		// loading
 		mLoadingProgressbar = (ProgressBar) findViewById(android.R.id.progress);
 		mFragMgr = getSupportFragmentManager();
+		mCtx = this;
 	}
 
 	@Override
@@ -171,11 +177,82 @@ public class WarrantlyActivity extends FragmentActivity implements
 		case R.id.home:
 			goHome();
 			break;
+		case R.id.retry:
+			retry();
+			break;
 		case R.id.warrantly_top_evaluate:
 			evaluate();
 			break;
 		case R.id.warrantly_bottom_nonactived_active:
 			active();
+			break;
+		}
+	}
+
+	private void fillTopData() {
+		if (mWarrantyInfo.getIconcachepath() != null) {
+			mProductIconImage
+					.setBackgroundResource(R.drawable.icon_holder_large);
+		} else {
+			startGetIcon();
+		}
+		mProductNameText.setText(mWarrantyInfo.getName());
+		mProductDetailText.setText(mWarrantyInfo.getBrefintro());
+		if (Integer.valueOf(mWarrantyInfo.getCommented()) == WarrantyInfo.P_COMMENTED) {
+			mProductEvaluateText.setVisibility(View.GONE);
+		} else {
+			mProductEvaluateText.setVisibility(View.VISIBLE);
+		}
+	}
+
+	private void fillBottomData() {
+		if (Integer.valueOf(mWarrantyInfo.getActived()) != WarrantyInfo.P_ACTIVED) {
+			mBottomActivedLayout.setVisibility(View.VISIBLE);
+			mBottomNonactivedLayout.setVisibility(View.GONE);
+			mProductPurchaseDateText.setText(getString(
+					R.string.product_warrantly_actived_purchase_date_txt)
+					.replace("{?}", mWarrantyInfo.getPurchaseanchor()));
+			mProductExpireDateText.setText(getString(
+					R.string.product_warrantly_actived_expire_date_txt)
+					.replace("{?}", mWarrantyInfo.getExpireanchor()));
+			mPrductEffectiveTimeLeftText.setText(getString(
+					R.string.product_warrantly_actived_effective_time_left_txt)
+					.replace("{?}", mWarrantyInfo.getValidspan()));
+			mAdapter = new WarrantyRecordAdapter(this, mWarrantyInfo);
+			mProductRecordsLayout.setAdapter(mAdapter);
+			mProductRecordsLayout.bindViews();
+		} else {
+			mBottomActivedLayout.setVisibility(View.GONE);
+			mBottomNonactivedLayout.setVisibility(View.VISIBLE);
+			mProductNonactivedSecondaryTipText.setText(getString(
+					R.string.product_warrantly_nonactived_secondary_tip_txt)
+					.replace("{?}", mWarrantyInfo.getChannelname()));
+		}
+	}
+
+	private void fillData(int code) {
+		mLoadingProgressbar.setVisibility(View.GONE);
+		switch (code) {
+		case Result.CODE_GET_INFO_SUCCESS:
+			mScrollView.setVisibility(View.VISIBLE);
+			fillTopData();
+			fillBottomData();
+			break;
+		case Result.CODE_GET_INFO_FAIL:
+			mRetryText.setVisibility(View.VISIBLE);
+			break;
+		}
+	}
+
+	private void updateActUI(int code) {
+		updateActiveDialog(code);
+		switch (code) {
+		case Result.CODE_ACT_SUCCESS:
+			updateUIForActive();
+			break;
+		case Result.CODE_ACT_FAIL:
+			Toast.makeText(mCtx, R.string.product_act_warranty_fail_toast,
+					Toast.LENGTH_SHORT).show();
 			break;
 		}
 	}
@@ -189,14 +266,19 @@ public class WarrantlyActivity extends FragmentActivity implements
 		movePrev();
 	}
 
+	private void retry() {
+		mLoadingProgressbar.setVisibility(View.VISIBLE);
+		mRetryText.setVisibility(View.GONE);
+		new WarrantyTask().execute(new Params(FunctionEntry.WARRANTY_ENTRY,
+				InstConstants.GET_WARRANTY_INFO));
+	}
+
 	private void evaluate() {
-		// TODO
 		startActivityForResult(new Intent(this, EvaluateActivity.class),
 				REQ_CODE_EVALUATE);
 	}
 
 	private void active() {
-		// TODO
 		FragmentTransaction ft = mFragMgr.beginTransaction();
 		Fragment prev = mFragMgr.findFragmentByTag("dialog");
 		if (prev != null) {
@@ -207,12 +289,8 @@ public class WarrantlyActivity extends FragmentActivity implements
 		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
 		dialog.show(ft, "dialog");
 
-		new ActiveRequestTask().execute();
-
-		// start to active
-		Message msg = mHandler.obtainMessage();
-		msg.what = MSG_DISMISS_ACTIVE_DIALOG;
-		mHandler.sendMessageDelayed(msg, 2000);
+		new WarrantyTask().execute(new Params(FunctionEntry.WARRANTY_ENTRY,
+				InstConstants.ACT_WARRANTY));
 	}
 
 	private void updateUIForActive() {
@@ -237,17 +315,12 @@ public class WarrantlyActivity extends FragmentActivity implements
 		mProductRecordsLayout.bindViews();
 	}
 
-	private void updateActiveDialog() {
+	private void updateActiveDialog(int code) {
 		ActiveDialogFragment d = (ActiveDialogFragment) mFragMgr
 				.findFragmentByTag("dialog");
 		if (d != null) {
-			d.showResult();
+			d.showResult(code);
 		}
-	}
-
-	private void demo() {
-		mLoadingProgressbar.setVisibility(View.GONE);
-		mBottomActivedLayout.setVisibility(View.GONE);
 	}
 
 	private class ActiveDialogFragment extends DialogFragment implements
@@ -286,21 +359,50 @@ public class WarrantlyActivity extends FragmentActivity implements
 			this.dismiss();
 		}
 
-		public void showResult() {
-			mActiveLayout.setVisibility(View.GONE);
-			mActiveResultLayout.setVisibility(View.VISIBLE);
+		public void showResult(int code) {
+			switch (code) {
+			case Result.CODE_ACT_SUCCESS:
+				mActiveLayout.setVisibility(View.GONE);
+				mActiveResultLayout.setVisibility(View.VISIBLE);
+				break;
+			case Result.CODE_ACT_FAIL:
+				this.dismiss();
+				break;
+			}
 		}
 	}
 
-	private class ActiveRequestTask extends AsyncTask<String, Void, Boolean> {
+	private class WarrantyTask extends AsyncTask<Params, Void, Result> {
 
 		@Override
-		protected Boolean doInBackground(String... params) {
-			Log.d(TAG, "doInBackground");
+		protected Result doInBackground(Params... params) {
+			Log.d(TAG, "doInBackground,params : " + params);
 			mWarrantyInfo = new WarrantyInfo();
 			InputStream is = null;
 			try {
-				is = getAssets().open("warranty_info.xml");
+				// is = getAssets().open("warranty_info.xml");
+				HttpPost post = new HttpPost(
+						FunctionEntry.fixUrl(params[0].url));
+				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+						.formatRequestParams(params[0].inst,
+								setRequestParams(), setRequestParamValues())));
+				HttpResponse resp = HttpRequestBox.getInstance(
+						getApplicationContext()).sendRequest(post);
+				if (resp == null) {
+					mWarrantyInfo = null;
+					return setFailResult(params);
+				}
+				int statusCode = resp.getStatusLine().getStatusCode();
+				Log.e(TAG, "statusCode : " + statusCode);
+				if (statusCode != HttpStatus.SC_OK) {
+					mWarrantyInfo = null;
+					return setFailResult(params);
+				}
+				is = resp.getEntity().getContent();
+				// FOR TEST
+				if (HTTPUtils.testResponse(is)) {
+					return setFailResult(params);
+				}
 				XmlPullParserFactory factory = XmlPullParserFactory
 						.newInstance();
 				factory.setNamespaceAware(true);
@@ -326,6 +428,10 @@ public class WarrantlyActivity extends FragmentActivity implements
 						} else if (TextUtils.equals(tag, WarrantyInfo.ACTIVED)) {
 							parser.next();
 							mWarrantyInfo.setActived(parser.getText());
+						} else if (TextUtils
+								.equals(tag, WarrantyInfo.COMMENTED)) {
+							parser.next();
+							mWarrantyInfo.setCommented(parser.getText());
 						} else if (TextUtils.equals(tag,
 								WarrantyInfo.PURCHASEANCHOR)) {
 							parser.next();
@@ -338,6 +444,17 @@ public class WarrantlyActivity extends FragmentActivity implements
 								.equals(tag, WarrantyInfo.VALIDSPAN)) {
 							parser.next();
 							mWarrantyInfo.setValidspan(parser.getText());
+						} else if (TextUtils
+								.equals(tag, WarrantyInfo.CHANNELID)) {
+							parser.next();
+							mWarrantyInfo.setChannelid(parser.getText());
+						} else if (TextUtils.equals(tag,
+								WarrantyInfo.CHANNELNAME)) {
+							parser.next();
+							mWarrantyInfo.setChannelname(parser.getText());
+						} else if (TextUtils.equals(tag, WarrantyInfo.SHOPID)) {
+							parser.next();
+							mWarrantyInfo.setShopid(parser.getText());
 						} else if (TextUtils.equals(tag, WarrantyInfo.RECORD)) {
 							record = new WarrantyInfo.Record();
 						} else if (TextUtils.equals(tag, WarrantyInfo.ANCHOR)) {
@@ -345,7 +462,11 @@ public class WarrantlyActivity extends FragmentActivity implements
 							record.setAnchor(parser.getText());
 						} else if (TextUtils.equals(tag, WarrantyInfo.SHOPNAME)) {
 							parser.next();
-							record.setShopname(parser.getText());
+							if (parser.getDepth() == 2) {
+								mWarrantyInfo.setShopname(parser.getText());
+							} else {
+								record.setShopname(parser.getText());
+							}
 						} else if (TextUtils.equals(tag, WarrantyInfo.SERVICE)) {
 							parser.next();
 							record.setServie(parser.getText());
@@ -354,19 +475,24 @@ public class WarrantlyActivity extends FragmentActivity implements
 						tag = parser.getName();
 						if (TextUtils.equals(tag, WarrantyInfo.RECORD)) {
 							records.add(record);
+						} else if (TextUtils.equals(TAG,
+								WarrantyInfo.WARRANTYINFO)) {
+							String iconCachePath = FileHelper.getIconCachePath(
+									mCtx, mWarrantyInfo.getIconurl(), true);
+							mWarrantyInfo.setIconcachepath(iconCachePath);
 						}
 					}
 					eventType = parser.next();
 				}// ?end while
 				Log.d(TAG, "record size : " + records.size());
 				mWarrantyInfo.setRecordData(records);
-				return true;
+				return setSuccessResult(params);
 			} catch (IOException e) {
 				Log.e(TAG, "IOException", e);
-				return false;
+				return setFailResult(params);
 			} catch (XmlPullParserException e) {
 				Log.e(TAG, "XmlPullParserException", e);
-				return false;
+				return setFailResult(params);
 			} finally {
 				if (is != null) {
 					try {
@@ -379,9 +505,99 @@ public class WarrantlyActivity extends FragmentActivity implements
 		}
 
 		@Override
-		protected void onPostExecute(Boolean result) {
-			// TODO Auto-generated method stub
+		protected void onPostExecute(Result result) {
 			super.onPostExecute(result);
+			switch (result.mResCode) {
+			case Result.CODE_GET_INFO_SUCCESS:
+			case Result.CODE_GET_INFO_FAIL:
+				fillData(result.mResCode);
+				break;
+			case Result.CODE_ACT_SUCCESS:
+			case Result.CODE_ACT_FAIL:
+				updateActUI(result.mResCode);
+				break;
+			}
 		}
+
+		private List<String> setRequestParams() {
+			ArrayList<String> list = new ArrayList<String>();
+			list.add(HTTPUtils.USERID);
+			list.add(HTTPUtils.IMEI);
+			list.add(HTTPUtils.MODEL);
+			return list;
+		}
+
+		private List<String> setRequestParamValues() {
+			ArrayList<String> list = new ArrayList<String>();
+			list.add(Utils.getIMEI(mCtx));
+			list.add(Utils.getIMEI(mCtx));
+			list.add(Utils.getDevModel());
+			return list;
+		}
+
+		private Result setFailResult(Params... params) {
+			Result ret = null;
+			String inst = params[0].inst;
+			if (TextUtils.equals(inst, InstConstants.GET_WARRANTY_INFO)) {
+				ret = new Result(Result.CODE_GET_INFO_FAIL);
+			} else {
+				ret = new Result(Result.CODE_ACT_FAIL);
+			}
+			return ret;
+		}
+
+		private Result setSuccessResult(Params... params) {
+			Result ret = null;
+			String inst = params[0].inst;
+			if (TextUtils.equals(inst, InstConstants.GET_WARRANTY_INFO)) {
+				ret = new Result(Result.CODE_GET_INFO_SUCCESS);
+			} else {
+				ret = new Result(Result.CODE_ACT_SUCCESS);
+			}
+			return ret;
+		}
+	}
+
+	private class Params {
+		private String url;
+		private String inst;
+
+		public Params(String url, String inst) {
+			this.url = url;
+			this.inst = inst;
+		}
+	}
+
+	private class Result {
+		private static final int CODE_GET_INFO_SUCCESS = 1;
+		private static final int CODE_GET_INFO_FAIL = 2;
+		private static final int CODE_ACT_SUCCESS = 3;
+		private static final int CODE_ACT_FAIL = 4;
+		private int mResCode;
+
+		public Result(int code) {
+			this.mResCode = code;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void startGetIcon() {
+		DownloadIconTask tsk = new DownloadIconTask(mCtx, this);
+		List<String> param = new ArrayList<String>();
+		Log.e(TAG, "icon url : " + mWarrantyInfo.getIconurl());
+		param.add(mWarrantyInfo.getIconurl());
+		tsk.execute(param);
+	}
+
+	@Override
+	public void iconDownloaded(String... params) {
+		// TODO
+		Log.d(TAG, "iconurl : " + params[0] + ",cachepath : " + params[1]);
+		// mProductIconImage.setBackgroundResource(-1);
+	}
+
+	@Override
+	public void iconDownloadFail(String... params) {
+		// nothing
 	}
 }

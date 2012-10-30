@@ -53,6 +53,8 @@ public class Positioning implements MKSearchListener, LocationListener {
 
 	public interface OnMyLocPositionListener {
 		public void reportMyLocation(Location location);
+
+		public void reportMyCity(String city);
 	}
 
 	public interface OnRouteFoundListener {
@@ -177,6 +179,9 @@ public class Positioning implements MKSearchListener, LocationListener {
 		if (iError == 0 && mAutoListener != null) {
 			mAutoListener.reportLocation(result.addressComponents);
 		}
+		if (iError == 0 && mMyLocListener != null) {
+			mMyLocListener.reportMyCity(result.addressComponents.city);
+		}
 	}
 
 	@Override
@@ -235,9 +240,12 @@ public class Positioning implements MKSearchListener, LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		Log.e(TAG, "onLocationChanged");
+		Log.d(TAG, "onLocationChanged");
 		if (location != null) {
 			mMyLocListener.reportMyLocation(location);
 		}
+		mGeoPoint = new GeoPoint((int) (1000000 * location.getLatitude()),
+				(int) (1000000 * location.getLongitude()));
+		mMapSearch.reverseGeocode(mGeoPoint);
 	}
 }

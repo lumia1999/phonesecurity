@@ -2,6 +2,8 @@ package com.doo360.crm;
 
 public abstract class ShopItem {
 	public static final String ITEM = "item";
+	public static final String CHANNELID = "channelid";
+	public static final String SHOPID = "shopid";
 	public static final String DISTRICT = "district";
 	public static final String TITLE = "title";
 	public static final String ADDRESS = "address";

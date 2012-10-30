@@ -7,6 +7,7 @@ package com.doo360.crm.tsk;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
@@ -20,6 +21,8 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.doo360.crm.Utils;
+import com.doo360.crm.http.HTTPUtils;
 import com.doo360.crm.provider.CrmDb;
 import com.doo360.crm.provider.ProviderOp;
 
@@ -73,6 +76,7 @@ public class FetchAddressListTask extends
 					item = convertDbItem(c);
 					dataList.add(item);
 				} while (c.moveToNext());
+				c.close();
 				return dataList;
 			} else {
 				// from server
@@ -118,6 +122,24 @@ public class FetchAddressListTask extends
 		InputStream is = null;
 		try {
 			is = mCtx.getAssets().open("address.xml");
+			// TODO
+			// HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
+			// post.setEntity(HTTPUtils.fillEntity(HTTPUtils.formatRequestParams(
+			// params[1], setRequestParams(), setRequestParamValues())));
+			// HttpResponse resp = HttpRequestBox.getInstance(mCtx).sendRequest(
+			// post);
+			// if (resp == null) {
+			// return null;
+			// }
+			// int statusCode = resp.getStatusLine().getStatusCode();
+			// Log.d(TAG, "statusCode : " + statusCode);
+			// if (statusCode != HttpStatus.SC_OK) {
+			// return null;
+			// }
+			// is = resp.getEntity().getContent();
+			// if (HTTPUtils.testResponse(is)) {
+			// return null;
+			// }
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			factory.setNamespaceAware(true);
 			XmlPullParser parser = factory.newPullParser();
@@ -175,6 +197,14 @@ public class FetchAddressListTask extends
 		} catch (XmlPullParserException e) {
 			Log.e(TAG, "XmlPullParserException", e);
 			return null;
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					//
+				}
+			}
 		}
 		// save address into db
 		if (dataList.size() > 0) {
@@ -191,4 +221,19 @@ public class FetchAddressListTask extends
 		}
 	}
 
+	private List<String> setRequestParams() {
+		List<String> list = new ArrayList<String>();
+		list.add(HTTPUtils.USERID);
+		list.add(HTTPUtils.IMEI);
+		list.add(HTTPUtils.CHANNELID);
+		return list;
+	}
+
+	private List<String> setRequestParamValues() {
+		List<String> list = new ArrayList<String>();
+		list.add(Utils.getIMEI(mCtx));
+		list.add(Utils.getIMEI(mCtx));
+		list.add(Utils.getChannelId(mCtx));
+		return list;
+	}
 }

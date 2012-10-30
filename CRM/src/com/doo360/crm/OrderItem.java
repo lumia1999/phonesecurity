@@ -1,22 +1,21 @@
 package com.doo360.crm;
 
+import java.util.List;
+
 public class OrderItem {
 	public static final String ORDER = "order";
 	public static final String NUMBER = "number";
+	public static final String ITEMS = "items";
+
+	public static final String ITEM = "item";
 	public static final String ICONURL = "iconurl";
 	public static final String ICONCACHEPATH = "iconcachepath";
 	public static final String NAME = "name";
 	public static final String PRICE = "price";
 	public static final String COUNT = "count";
-	public static final String DETAILURL = "detailurl";
 
 	private String number;
-	private String iconurl;
-	private String iconCachePath;
-	private String name;
-	private String price;
-	private String count;
-	private String detailurl;
+	private List<OrderLittleItem> item;
 
 	public OrderItem() {
 		//
@@ -30,52 +29,63 @@ public class OrderItem {
 		this.number = number;
 	}
 
-	public String getIconurl() {
-		return iconurl;
+	public List<OrderLittleItem> getItem() {
+		return item;
 	}
 
-	public void setIconurl(String iconurl) {
-		this.iconurl = iconurl;
+	public void setItem(List<OrderLittleItem> item) {
+		this.item = item;
 	}
 
-	public String getIconCachePath() {
-		return iconCachePath;
-	}
+	public static class OrderLittleItem {
+		private String iconurl;
+		private String iconCachePath;
+		private String name;
+		private String price;
+		private String count;
 
-	public void setIconCachePath(String iconCachePath) {
-		this.iconCachePath = iconCachePath;
-	}
+		public OrderLittleItem() {
+			//
+		}
 
-	public String getName() {
-		return name;
-	}
+		public String getIconurl() {
+			return iconurl;
+		}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+		public void setIconurl(String iconurl) {
+			this.iconurl = iconurl;
+		}
 
-	public String getPrice() {
-		return price;
-	}
+		public String getIconCachePath() {
+			return iconCachePath;
+		}
 
-	public void setPrice(String price) {
-		this.price = price;
-	}
+		public void setIconCachePath(String iconCachePath) {
+			this.iconCachePath = iconCachePath;
+		}
 
-	public String getCount() {
-		return count;
-	}
+		public String getName() {
+			return name;
+		}
 
-	public void setCount(String count) {
-		this.count = count;
-	}
+		public void setName(String name) {
+			this.name = name;
+		}
 
-	public String getDetailurl() {
-		return detailurl;
-	}
+		public String getPrice() {
+			return price;
+		}
 
-	public void setDetailurl(String detailurl) {
-		this.detailurl = detailurl;
-	}
+		public void setPrice(String price) {
+			this.price = price;
+		}
 
+		public String getCount() {
+			return count;
+		}
+
+		public void setCount(String count) {
+			this.count = count;
+		}
+	}
 }

@@ -3,7 +3,11 @@ package com.doo360.crm.view;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -43,6 +47,10 @@ import com.doo360.crm.ShopItem;
 import com.doo360.crm.ShopItemContent;
 import com.doo360.crm.ShopItemHeader;
 import com.doo360.crm.Utils;
+import com.doo360.crm.http.FunctionEntry;
+import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpRequestBox;
+import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.loc.Positioning;
 import com.doo360.crm.loc.Positioning.OnMyLocPositionListener;
 
@@ -58,11 +66,14 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 	private MapView mBaiduMap;
 	private Positioning p;
+	private boolean mLocObtained = false;
 	private GeoPoint mMyPoint = null;
 	// the user selected shop
 	private ShopItemContent mSelectedShop;
 
-	private MapOpLayout mMapOpLayout;
+	// map op
+	private RelativeLayout mMapOpLayout;
+	private MapOp mMapOp;
 
 	// content
 	private boolean mDataLoaded = false;
@@ -74,11 +85,12 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 	private TextView mRetryText;
 	private ProgressBar mLoadingProgressbar;
 	private boolean mExist = false;
+	private Context mCtx;
 
 	private static final int REQ_CODE_CITY = 1;
 	private static final int REQ_CODE_ROUTEING = 2;
 
-	private class MapOpLayout {
+	private class MapOp {
 		private TextView distance;
 		private TextView routing;
 		private TextView title;
@@ -97,7 +109,9 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 	}
 
 	private void initUI() {
+		mLocObtained = false;
 		mExist = false;
+		mCtx = this;
 		mPrevImage = (ImageView) findViewById(R.id.prev);
 		mCityBtn = (Button) findViewById(R.id.city_select);
 		mTitleText = (TextView) findViewById(R.id.title);
@@ -109,16 +123,18 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 		mTitleText.setText(R.string.front_page_shop_desc);
 		mHomeImage.setOnClickListener(this);
 
-		mMapOpLayout = new MapOpLayout();
-		mMapOpLayout.distance = (TextView) findViewById(R.id.map_op_distance);
-		mMapOpLayout.routing = (TextView) findViewById(R.id.map_op_routing);
-		mMapOpLayout.title = (TextView) findViewById(R.id.item_title);
-		mMapOpLayout.address = (TextView) findViewById(R.id.item_address);
-		mMapOpLayout.telephone = (TextView) findViewById(R.id.item_telephone);
+		// map op
+		mMapOpLayout = (RelativeLayout) findViewById(R.id.map_op_layout);
+		mMapOp = new MapOp();
+		mMapOp.distance = (TextView) findViewById(R.id.map_op_distance);
+		mMapOp.routing = (TextView) findViewById(R.id.map_op_routing);
+		mMapOp.title = (TextView) findViewById(R.id.item_title);
+		mMapOp.address = (TextView) findViewById(R.id.item_address);
+		mMapOp.telephone = (TextView) findViewById(R.id.item_telephone);
 		findViewById(R.id.item_route).setVisibility(View.GONE);
 		findViewById(R.id.map_op_address_layout).setBackgroundDrawable(
 				new ColorDrawable(Color.TRANSPARENT));
-		mMapOpLayout.routing.setOnClickListener(this);
+		mMapOp.routing.setOnClickListener(this);
 
 		mBaiduMap = (MapView) findViewById(R.id.baidumap);
 		int[] defaultPoint = Prefs.getMyLocation(this);
@@ -144,10 +160,6 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 		super.onResume();
 		if (p != null) {
 			p.start();
-		}
-		if (!mExist) {
-			mExist = !mExist;
-			new FetchDataTask().execute();
 		}
 	}
 
@@ -198,12 +210,14 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 	private void retry() {
 		mLoadingProgressbar.setVisibility(View.VISIBLE);
+		mMapOpLayout.setVisibility(View.GONE);
+		mListView.setVisibility(View.GONE);
 		mRetryText.setVisibility(View.GONE);
-		new FetchDataTask().execute();
+		new FetchDataTask().execute(FunctionEntry.SHOP_ENTRY,
+				InstConstants.SHOP);
 	}
 
 	private void routeing(View v) {
-		// TODO
 		DemoPopupWindow dw = new DemoPopupWindow(v);
 		dw.setOutsiceCancelable(true);
 		dw.showLikeQuickAction();
@@ -222,10 +236,14 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 		switch (requestCode) {
 		case REQ_CODE_CITY:
 			if (resultCode == Activity.RESULT_OK) {
-				// 刷新title TODO
+				// 刷新title
 				// 请求新城市的位置信息
 				mCityBtn.setText(Prefs.getCurrentCityName(this));
-
+				mLoadingProgressbar.setVisibility(View.VISIBLE);
+				mMapOpLayout.setVisibility(View.GONE);
+				mListView.setVisibility(View.GONE);
+				new FetchDataTask().execute(FunctionEntry.SHOP_ENTRY,
+						InstConstants.SHOP);
 			}
 			break;
 		case REQ_CODE_ROUTEING:
@@ -238,19 +256,38 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 	@Override
 	protected boolean isRouteDisplayed() {
-		// TODO
 		return false;
 	}
 
 	@Override
 	public void reportMyLocation(Location location) {
-		// TODO
 		Log.d(TAG, "reportMyLocation");
 		Prefs.setMyLocation(this, (int) (location.getLatitude() * 1E6),
 				(int) (location.getLongitude() * 1E6));
 		mBaiduMap.getController().setZoom(18);
 		moveToMyPosition(location);
 	};
+
+	@Override
+	public void reportMyCity(String city) {
+		if (!mLocObtained) {
+			mLocObtained = !mLocObtained;
+			String orgCity = mCityBtn.getText().toString();
+			if (!TextUtils.equals(orgCity, city)) {
+				mCityBtn.setText(city);
+				Prefs.setCurrentCityName(mCtx, city);
+				// TODO if city code needed , read cityproto data to find it
+			}
+			if (!mExist) {
+				mExist = !mExist;
+				mLoadingProgressbar.setVisibility(View.VISIBLE);
+				mMapOpLayout.setVisibility(View.GONE);
+				mListView.setVisibility(View.GONE);
+				new FetchDataTask().execute(FunctionEntry.SHOP_ENTRY,
+						InstConstants.SHOP);
+			}
+		}
+	}
 
 	private void moveToMyPosition(Location location) {
 		synchronized (mMyPoint) {
@@ -267,7 +304,6 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			// TODO
 			Log.d(TAG, "doInBackground");
 			if (mDataList != null && !mDataList.isEmpty()) {
 				mDataList.clear();
@@ -286,7 +322,25 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 			}
 			InputStream is = null;
 			try {
-				is = getAssets().open("shop.xml");
+				// is = getAssets().open("shop.xml");
+				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
+				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+						.formatRequestParams(params[1], setRequestParams(),
+								setRequestParamValues())));
+				HttpResponse resp = HttpRequestBox.getInstance(mCtx)
+						.sendRequest(post);
+				if (resp == null) {
+					return false;
+				}
+				int statusCode = resp.getStatusLine().getStatusCode();
+				Log.d(TAG, "statusCode : " + statusCode);
+				if (statusCode != HttpStatus.SC_OK) {
+					return false;
+				}
+				is = resp.getEntity().getContent();
+				// if (HTTPUtils.testResponse(is)) {
+				// return false;
+				// }
 				XmlPullParserFactory factory = XmlPullParserFactory
 						.newInstance();
 				factory.setNamespaceAware(true);
@@ -304,6 +358,12 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 							header.setType(ShopItem.TYPE_HEADER);
 							content = new ShopItemContent();
 							content.setType(ShopItem.TYPE_CONTENT);
+						} else if (TextUtils.equals(tag, ShopItem.CHANNELID)) {
+							parser.next();
+							content.setChannleid(parser.getText());
+						} else if (TextUtils.equals(tag, ShopItem.SHOPID)) {
+							parser.next();
+							content.setShopid(parser.getText());
 						} else if (TextUtils.equals(tag, ShopItem.DISTRICT)) {
 							parser.next();
 							header.setDistrict(parser.getText());
@@ -350,6 +410,24 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 				notifyError();
 			}
 		};
+
+		private List<String> setRequestParams() {
+			ArrayList<String> list = new ArrayList<String>();
+			list.add(HTTPUtils.USERID);
+			list.add(HTTPUtils.IMEI);
+			list.add(HTTPUtils.CHANNELID);
+			list.add(HTTPUtils.CITY);
+			return list;
+		}
+
+		private List<String> setRequestParamValues() {
+			ArrayList<String> list = new ArrayList<String>();
+			list.add(Utils.getIMEI(mCtx));
+			list.add(Utils.getIMEI(mCtx));
+			list.add(Utils.getChannelId(mCtx));
+			list.add(Prefs.getCurrentCityName(mCtx));
+			return list;
+		}
 	}
 
 	/**
@@ -384,6 +462,7 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 	private void dataFormat() {
 		int size = mGroupList.size();
+		Log.e(TAG, "size : " + size);
 		for (int i = 0; i < size; i++) {
 			mDataList.add(mGroupList.get(i));
 			mDataList.addAll(mChildrenList.get(i));
@@ -411,7 +490,7 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 									.getLongtitude()),
 							Double.parseDouble(((ShopItemContent) item)
 									.getLatitude()));
-					Log.d(TAG, "dis : " + dis);
+					// Log.d(TAG, "dis : " + dis);
 					if (distance == -1 || distance > dis) {
 						mSelectedShop = (ShopItemContent) item;
 						distance = dis;
@@ -419,15 +498,20 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 				}
 			}
 		}
-		mMapOpLayout.distance.setText((int) distance
-				+ getString(R.string.unit_meter));
-		mMapOpLayout.title.setText(mSelectedShop.getTitle());
-		mMapOpLayout.address.setText(mSelectedShop.getAddress());
-		mMapOpLayout.telephone.setText(mSelectedShop.getTelephone());
+		if (mSelectedShop != null) {
+			mMapOp.distance.setText((int) distance
+					+ getString(R.string.unit_meter));
+			mMapOp.title.setText(mSelectedShop.getTitle());
+			mMapOp.address.setText(mSelectedShop.getAddress());
+			mMapOp.telephone.setText(mSelectedShop.getTelephone());
+		}
 	}
 
 	private void fillData() {
 		mLoadingProgressbar.setVisibility(View.GONE);
+		if (mDataList != null && mDataList.size() > 0) {
+			mMapOpLayout.setVisibility(View.VISIBLE);
+		}
 		mListView.setVisibility(View.VISIBLE);
 		mRetryText.setVisibility(View.GONE);
 		mAdapter = new ShopAdapter();
@@ -527,8 +611,6 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 							@Override
 							public void onClick(View v) {
-								// TODO
-								Log.d(TAG, "routeing");
 								mSelectedShop = (ShopItemContent) item;
 								updateNearestShop(true);
 							}

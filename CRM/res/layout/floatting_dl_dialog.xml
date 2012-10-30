@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    android:orientation="vertical" 
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+  	xmlns:android="http://schemas.android.com/apk/res/android">
+  	<LinearLayout 
+  	    android:gravity="center_vertical" 
+  	    android:id="@+id/floatting_titleVG" 
+  	    android:background="@drawable/floatting_alertdlg_title_bg" 
+  	    android:layout_width="fill_parent" 
+  	    android:layout_height="wrap_content" 
+  	    android:layout_marginLeft="10.0dip" 
+  	    android:layout_marginRight="10.0dip">
+  	     <TextView 
+  	         android:textSize="18.0sp" 
+  	         android:textColor="#ffffffff" 
+  	         android:id="@+id/floatting_title" 
+  	         android:layout_width="fill_parent" 
+  	         android:layout_height="wrap_content" 
+  	         android:layout_marginLeft="9.0dip" 
+  	         android:text="提示" />
+  	</LinearLayout>
+  	<LinearLayout 
+  	    android:gravity="center" 
+  	    android:orientation="vertical" 
+  	    android:id="@+id/floatting_bodyVG" 
+  	    android:background="@drawable/floatting_alertdlg_content_bg" 
+  	    android:layout_width="fill_parent" 
+  	    android:layout_height="wrap_content" 
+  	    android:layout_marginLeft="10.0dip" 
+  	    android:layout_marginRight="10.0dip" 
+  	    android:layout_weight="1.0">
+  	    <TextView 
+  	        android:textSize="18.0sp" 
+  	        android:textColor="#ff3e5162" 
+  	        android:gravity="center" 
+  	        android:id="@+id/floatting_download_dialog_content" 
+  	        android:layout_width="fill_parent" 
+  	        android:layout_height="wrap_content" 
+  	        android:layout_marginLeft="5.0dip" 
+  	        android:layout_marginTop="31.0dip" 
+  	        android:layout_marginRight="3.0dip" 
+  	        android:layout_marginBottom="30.0dip" />
+  	</LinearLayout>
+  	<LinearLayout 
+  	    android:gravity="center_horizontal" 
+  	    android:orientation="horizontal" 
+  	    android:id="@+id/floatting_buttonVG" 
+  	    android:background="@drawable/floatting_alertdlg_bottom_bg" 
+  	    android:visibility="visible" 
+  	    android:layout_width="fill_parent" 
+  	    android:layout_height="wrap_content" 
+  	    android:layout_marginLeft="10.0dip" 
+  	    android:layout_marginRight="10.0dip">
+  	    <LinearLayout 
+  	        android:id="@+id/floatting_leftSpacer" 
+  	        android:layout_width="wrap_content" 
+  	        android:layout_height="wrap_content" 
+  	        android:layout_weight="0.5" />
+  	    <Button 
+  	        android:textSize="18.0sp" 
+  	        android:textColor="#ff323232" 
+  	        android:gravity="center" 
+  	        android:id="@+id/floatting_download_dialog_certain_btn" 
+  	        android:background="@drawable/floatting_button_bg" 
+  	        android:layout_width="100dip" 
+  	        android:layout_height="wrap_content" 
+  	        android:layout_marginLeft="10.0dip" 
+  	        android:layout_marginTop="10.0dip" 
+  	        android:layout_marginRight="15.0dip" 
+  	        android:layout_marginBottom="10.0dip"
+  	        android:text="确定" 
+  	        android:singleLine="true" />
+        <Button android:textSize="18.0sp" 
+            android:textColor="#ff323232" 
+            android:gravity="center" 
+            android:id="@+id/floatting_download_dialog_cancel_btn" 
+            android:background="@drawable/floatting_button_bg" 
+            android:layout_width="100dip" 
+            android:layout_height="wrap_content" 
+            android:layout_marginTop="10.0dip" 
+            android:layout_marginRight="10.0dip" 
+            android:layout_marginBottom="10.0dip"
+            android:text="取消" 
+            android:singleLine="true" />
+  	    <LinearLayout 
+  	        android:id="@+id/floatting_rightSpacer" 
+  	        android:layout_width="wrap_content" 
+  	        android:layout_height="wrap_content" 
+  	        android:layout_weight="0.5" />
+  	</LinearLayout>
+  	
+</LinearLayout>

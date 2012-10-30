@@ -16,7 +16,7 @@ public class SoftwareItem {
 	public static final int STATUS_UPDATE = 2;
 
 	private String iconurl;
-	private String iconUrlCachePath;
+	private String iconCachePath;
 	private String author;
 	private String name;
 	private String rank;
@@ -53,12 +53,12 @@ public class SoftwareItem {
 		this.iconurl = iconurl;
 	}
 
-	public String getIconUrlCachePath() {
-		return iconUrlCachePath;
+	public String getIconCachePath() {
+		return iconCachePath;
 	}
 
-	public void setIconUrlCachePath(String iconUrlCachePath) {
-		this.iconUrlCachePath = iconUrlCachePath;
+	public void setIconCachePath(String iconCachePath) {
+		this.iconCachePath = iconCachePath;
 	}
 
 	public String getAuthor() {

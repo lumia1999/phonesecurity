@@ -13,6 +13,7 @@ public class Prefs {
 
 	private static final String ITEM_MY_LOC_LATITUDE = "item_my_loc_latitude";
 	private static final String ITEM_MY_LOC_LONGTITUDE = "item_my_loc_longtitude";
+	private static final String ITEM_LOC_FINISH = "item_loc_finish";
 
 	// for message alarm
 	private static final String ITEM_MSG_ALARM_BASE_ANCHOR = "item_msg_alarm_base_alarm";
@@ -68,7 +69,14 @@ public class Prefs {
 		Editor editor = pref.edit();
 		editor.putInt(ITEM_MY_LOC_LATITUDE, latitude);
 		editor.putInt(ITEM_MY_LOC_LONGTITUDE, longtitude);
+		editor.putBoolean(ITEM_LOC_FINISH, true);
 		editor.commit();
+	}
+
+	// default value is 'false'
+	public static boolean isLocFinish(Context ctx) {
+		SharedPreferences pref = get(ctx);
+		return pref.getBoolean(ITEM_LOC_FINISH, false);
 	}
 
 	public static long getMsgAlarmBaseAnchor(Context ctx) {

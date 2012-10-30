@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <detail>
-	<title><![CDATA[三星I9300 Galaxy S|||双核超薄安卓智能3G手机]]></title>
-	<color><![CDATA[黑色]]></color>
-	<count>1</count>
-	<number>34568793456</number>
-	<price>3399.00</price>
-	<anchor>2012-08-20 22:59:00</anchor>
-	<status>1</status>
-	<addressname><![CDATA[紫紫]]></addressname>
-	<addressphone>13510605815</addressphone>
-	<addressdetail><![CDATA[深圳市南山区科技园长虹大厦]]></addressdetail>
-	<commented>0</commented>
+	<serviceresult>0</serviceresult>
+	<common>
+		<number>34568793456</number>
+		<status><![CDATA[交易成功]]></status>
+		<amount>3399.00</amount>
+		<message><![CDATA[你好，请慎重打包，谢谢]]></message>
+		<channelid>1001</channelid>
+		<shopid>1001001</shopid>
+	</common>
+	<items>
+		<item>
+			<productid>1</productid>
+			<iconurl>http://ddd/aads.action</iconurl>
+			<name><![CDATA[三星I9300 Galaxy S|||双核超薄安卓智能3G手机]]></name>
+			<color><![CDATA[黑色]]></color>
+			<count>1</count>
+			<price>3399.00</price>
+			<anchor>2012-08-20 22:59:00</anchor>
+		</item>
+	</items>
+	<address>
+		<id>1</id>
+		<name><![CDATA[紫紫]]></name>
+		<phone>13510605815</phone>
+		<detail><![CDATA[深圳市南山区科技园长虹大厦]]></detail>
+		<postcode>518057</postcode>
+	</address>
+	<commented>1</commented>
 </detail>

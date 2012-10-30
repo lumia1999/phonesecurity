@@ -19,7 +19,7 @@ public class HotmodelListActivity extends FragmentActivity implements
 	public static final String EXTRA_TYPE = "extra_type";
 	public static final int TYPE_HOTMODEL = 1;
 	public static final int TYPE_TOPFREE = 2;
-	public int mType;
+	private int mType;
 
 	// title
 	private ImageView mPrevImage;
@@ -31,7 +31,6 @@ public class HotmodelListActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		// TODO
 		super.onCreate(bundle);
 		initType();
 		setContentView(R.layout.hotmodel);
@@ -43,6 +42,10 @@ public class HotmodelListActivity extends FragmentActivity implements
 		mType = i.getIntExtra(EXTRA_TYPE, -1);
 	}
 
+	public int getType() {
+		return mType;
+	}
+
 	private void initUI() {
 		mPrevImage = (ImageView) findViewById(R.id.prev);
 		mTitleText = (TextView) findViewById(R.id.title);
@@ -51,7 +54,7 @@ public class HotmodelListActivity extends FragmentActivity implements
 		mPrevImage.setOnClickListener(this);
 		mTitleText.setText(R.string.front_page_hotmodel_desc);
 		mHomeImage.setOnClickListener(this);
-		mAdView.setBackgroundResource(R.drawable.ad_holder_top);
+		mAdView.setVisibility(View.GONE);
 	}
 
 	@Override

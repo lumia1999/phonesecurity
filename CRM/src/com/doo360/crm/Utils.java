@@ -7,17 +7,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources.NotFoundException;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.doo360.crm.provider.CrmDb;
+import com.doo360.crm.service.UpdateMsgsIntentService;
 
 public class Utils {
 	private static final String TAG = "CRM.Utils";
@@ -168,4 +178,60 @@ public class Utils {
 		return sb.toString();
 	}
 
+	public static String getChannelId(Context ctx) {
+		ApplicationInfo aInfo = null;
+		try {
+			aInfo = ctx.getPackageManager().getApplicationInfo(
+					ctx.getPackageName(), PackageManager.GET_META_DATA);
+			return String.valueOf(aInfo.metaData.getInt(Constants.CHANNEL_ID));
+		} catch (NameNotFoundException e) {
+			// This will NEVER happen
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static String formatRes(Context ctx, int resId, String replaceStr) {
+		return ctx.getString(resId).replace("{?}", replaceStr);
+	}
+
+	private static final long MSG_ALARM_SPAN = 1 * 60 * 1000L; // 1minute
+
+	public static void setMsgAlarm(Context ctx) {
+		if (!Prefs.isMsgAlarmBaseAnchorSetted(ctx)) {
+			Prefs.setMsgAlarmBaseAnchor(ctx);
+		}
+		AlarmManager am = (AlarmManager) ctx
+				.getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(ctx, UpdateMsgsIntentService.class);
+		PendingIntent pi = PendingIntent.getService(ctx, 0, intent, 0);
+		long initAnchor = Prefs.getMsgAlarmBaseAnchor(ctx);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, initAnchor + MSG_ALARM_SPAN,
+				MSG_ALARM_SPAN, pi);
+		// Log.e(TAG, "&&&&&********setMsgAlarm&&&****&*&*(&*");
+	}
+
+	public static boolean isNetworkActived(Context ctx) {
+		ConnectivityManager cm = (ConnectivityManager) ctx
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo ni = cm.getActiveNetworkInfo();
+		if (ni != null && ni.isConnected()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static int getDevDensity(Context ctx) {
+		WindowManager wm = (WindowManager) ctx
+				.getSystemService(Context.WINDOW_SERVICE);
+		Display disp = wm.getDefaultDisplay();
+		DisplayMetrics dm = new DisplayMetrics();
+		disp.getMetrics(dm);
+		return dm.densityDpi;
+	}
+
+	public static float getIconSize(Context ctx, int dp) {
+		return dp * (getDevDensity(ctx) * 1.0f / 160);
+	}
 }
