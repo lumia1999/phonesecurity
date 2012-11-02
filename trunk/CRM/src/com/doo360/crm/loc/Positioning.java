@@ -21,6 +21,7 @@ import com.baidu.mapapi.MKSuggestionResult;
 import com.baidu.mapapi.MKTransitRouteResult;
 import com.baidu.mapapi.MKWalkingRouteResult;
 import com.doo360.crm.App;
+import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 import com.doo360.crm.view.RouteingActivity;
 
@@ -175,7 +176,9 @@ public class Positioning implements MKSearchListener, LocationListener {
 
 	@Override
 	public void onGetAddrResult(MKAddrInfo result, int iError) {
-		Log.d(TAG, "onGetAddrResult,result : " + result);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onGetAddrResult,result : " + result);
+		}
 		if (iError == 0 && mAutoListener != null) {
 			mAutoListener.reportLocation(result.addressComponents);
 		}
@@ -191,7 +194,9 @@ public class Positioning implements MKSearchListener, LocationListener {
 
 	@Override
 	public void onGetDrivingRouteResult(MKDrivingRouteResult result, int iError) {
-		Log.d(TAG, "onGetDrivingRouteResult");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onGetDrivingRouteResult");
+		}
 		if (mRouteFoundListener != null) {
 			if (iError != 0 || result == null) {
 				Toast.makeText(mAct, R.string.get_driving_route_failed,
@@ -214,7 +219,9 @@ public class Positioning implements MKSearchListener, LocationListener {
 
 	@Override
 	public void onGetTransitRouteResult(MKTransitRouteResult result, int iError) {
-		Log.d(TAG, "onGetTransitRouteResult");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onGetTransitRouteResult");
+		}
 		if (mRouteFoundListener != null) {
 			if (iError != 0 || result == null) {
 				Toast.makeText(mAct, R.string.get_transit_route_failed,
@@ -227,7 +234,9 @@ public class Positioning implements MKSearchListener, LocationListener {
 
 	@Override
 	public void onGetWalkingRouteResult(MKWalkingRouteResult result, int iError) {
-		Log.d(TAG, "onGetWalkingRouteResult");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onGetWalkingRouteResult");
+		}
 		if (mRouteFoundListener != null) {
 			if (iError != 0 || result == null) {
 				Toast.makeText(mAct, R.string.get_walking_route_failed,

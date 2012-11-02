@@ -21,7 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/item_tip"
         android:paddingLeft="5dip"
-        android:singleLine="true"
         android:text="dfsfsd"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 

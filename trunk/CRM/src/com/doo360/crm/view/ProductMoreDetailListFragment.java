@@ -37,6 +37,7 @@ import com.doo360.crm.R;
 import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.tsk.DownloadIconTask;
@@ -58,13 +59,17 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
-		Log.d(TAG, "onAttach");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onAttach");
+		}
 		mAct = activity;
 		super.onAttach(activity);
 	}
@@ -127,14 +132,16 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
 				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 						.formatRequestParams(params[1], setRequestParams(),
-								setRequestParamValues())));
+								setRequestParamValues(), false)));
 				HttpResponse resp = HttpRequestBox.getInstance(mAct)
 						.sendRequest(post);
 				if (resp == null) {
 					return false;
 				}
 				int statusCode = resp.getStatusLine().getStatusCode();
-				Log.d(TAG, "statusCode : " + statusCode);
+				if (Constants.DEBUG) {
+					Log.d(TAG, "statusCode : " + statusCode);
+				}
 				if (statusCode != HttpStatus.SC_OK) {
 					return false;
 				}
@@ -198,12 +205,13 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 			return list;
 		}
 
-		private List<String> setRequestParamValues() {
-			List<String> list = new ArrayList<String>();
-			list.add(Utils.getIMEI(mAct));
-			list.add(Utils.getIMEI(mAct));
-			list.add(Utils.getChannelId(mAct));
-			list.add(((ProductMoreDetailListActivity) mAct).getPId());
+		private List<HttpParam> setRequestParamValues() {
+			List<HttpParam> list = new ArrayList<HttpParam>();
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getChannelId(mAct)));
+			list.add(new HttpParam(false,
+					((ProductMoreDetailListActivity) mAct).getPId()));
 			return list;
 		}
 	}
@@ -230,7 +238,7 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 		for (int i = 0; i < size; i++) {
 			item = mDataList.get(i);
 			if (item.getIconurl() != null && item.getIconCachePath() == null) {
-				iconUrls.add(FunctionEntry.fixUrl(item.getIconurl()));
+				iconUrls.add(item.getIconurl());
 			}
 		}
 		if (iconUrls.size() > 0) {
@@ -251,7 +259,10 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 
 	@SuppressWarnings("deprecation")
 	private void updateItemIcon(String... params) {
-		Log.d(TAG, "iconurl : " + params[0] + ",iconCachePath : " + params[1]);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "iconurl : " + params[0] + ",iconCachePath : "
+					+ params[1]);
+		}
 		int count = mDataList.size();
 		ProductMoreDetailItem item = null;
 		for (int i = 0; i < count; i++) {

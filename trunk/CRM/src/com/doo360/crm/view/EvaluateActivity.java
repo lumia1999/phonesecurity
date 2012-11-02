@@ -17,8 +17,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -45,9 +43,10 @@ import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
+import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
-import com.doo360.crm.http.HTTPUtils;
 
 public class EvaluateActivity extends FragmentActivity implements
 		OnClickListener {
@@ -75,7 +74,9 @@ public class EvaluateActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.evaluate);
 		initUI();
@@ -176,7 +177,7 @@ public class EvaluateActivity extends FragmentActivity implements
 							FunctionEntry.fixUrl(params[0]));
 					post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 							.formatRequestParams(params[1], setRequestParams(),
-									setRequestParamValues())));
+									setRequestParamValues(), false)));
 					HttpResponse resp = HttpRequestBox.getInstance(mCtx)
 							.sendRequest(post);
 					if (resp == null) {
@@ -202,7 +203,10 @@ public class EvaluateActivity extends FragmentActivity implements
 								parser.next();
 								serviceResult = Integer.valueOf(parser
 										.getText());
-								Log.d(TAG, "serviceResult : " + serviceResult);
+								if (Constants.DEBUG) {
+									Log.d(TAG, "serviceResult : "
+											+ serviceResult);
+								}
 								break;
 							}
 						}
@@ -231,13 +235,14 @@ public class EvaluateActivity extends FragmentActivity implements
 				return list;
 			}
 
-			private List<String> setRequestParamValues() {
-				ArrayList<String> list = new ArrayList<String>();
-				list.add(Utils.getChannelId(mCtx));
-				list.add(Utils.getIMEI(mCtx));
-				list.add(Utils.getDevModel());
-				list.add(String.valueOf(mRatingBar.getRating()));
-				list.add(mContentEdit.getText().toString());
+			private List<HttpParam> setRequestParamValues() {
+				ArrayList<HttpParam> list = new ArrayList<HttpParam>();
+				list.add(new HttpParam(false, Utils.getChannelId(mCtx)));
+				list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+				list.add(new HttpParam(false, Utils.getDevModel()));
+				list.add(new HttpParam(false, String.valueOf(mRatingBar
+						.getRating())));
+				list.add(new HttpParam(false, mContentEdit.getText().toString()));
 				return list;
 			}
 
@@ -245,7 +250,9 @@ public class EvaluateActivity extends FragmentActivity implements
 	}
 
 	private void showPostResult(int code) {
-		Log.e(TAG, "code : " + code);
+		if (Constants.DEBUG) {
+			Log.e(TAG, "code : " + code);
+		}
 		EvaluateDialogFragment dialog = (EvaluateDialogFragment) mFragMgr
 				.findFragmentByTag("dialog");
 		if (dialog != null) {

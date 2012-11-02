@@ -130,9 +130,13 @@ public class Utils {
 		File dbPath = ctx.getDatabasePath("allcitydata.db");
 		boolean copyed = Prefs.isRawDbCopyed(ctx);
 		if (copyed) {
-			Log.d(TAG, "db exist");
+			if (Constants.DEBUG) {
+				Log.d(TAG, "db exist");
+			}
 		} else {
-			Log.e(TAG, "db has not been copyed");
+			if (Constants.DEBUG) {
+				Log.e(TAG, "db has not been copyed");
+			}
 			InputStream is = null;
 			try {
 				is = ctx.getResources().openRawResource(R.raw.allcitydata);

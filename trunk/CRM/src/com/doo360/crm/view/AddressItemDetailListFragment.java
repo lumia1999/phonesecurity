@@ -47,6 +47,7 @@ import com.doo360.crm.R;
 import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.provider.CrmDb;
@@ -96,13 +97,17 @@ public class AddressItemDetailListFragment extends ListFragment implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
-		Log.d(TAG, "onAttach");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onAttach");
+		}
 		super.onAttach(activity);
 		mAct = activity;
 		mOnChooseAreaClickListener = (OnChooseAreaClickListener) activity;
@@ -137,7 +142,9 @@ public class AddressItemDetailListFragment extends ListFragment implements
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		Log.d(TAG, "onActivityCreated");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onActivityCreated");
+		}
 		super.onActivityCreated(savedInstanceState);
 		initData();
 		fillData();
@@ -163,12 +170,6 @@ public class AddressItemDetailListFragment extends ListFragment implements
 		new AsyncTask<String, Void, Integer>() {
 			@Override
 			protected Integer doInBackground(String... params) {
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					//
-				}
-				// TODO
 				int status = -1;
 				InputStream is = null;
 				try {
@@ -176,21 +177,23 @@ public class AddressItemDetailListFragment extends ListFragment implements
 							FunctionEntry.fixUrl(params[0]));
 					post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 							.formatRequestParams(params[1], setRequestParams(),
-									setRequestParamValues())));
+									setRequestParamValues(), false)));
 					HttpResponse resp = HttpRequestBox.getInstance(mAct)
 							.sendRequest(post);
 					if (resp == null) {
 						return status;
 					}
 					int statusCode = resp.getStatusLine().getStatusCode();
-					Log.d(TAG, "statusCode : " + statusCode);
+					if (Constants.DEBUG) {
+						Log.d(TAG, "statusCode : " + statusCode);
+					}
 					if (statusCode != HttpStatus.SC_OK) {
 						return status;
 					}
 					is = resp.getEntity().getContent();
-					if (HTTPUtils.testResponse(is)) {
-						return status;
-					}
+					// if (HTTPUtils.testResponse(is)) {
+					// return status;
+					// }
 					XmlPullParserFactory factory = XmlPullParserFactory
 							.newInstance();
 					factory.setNamespaceAware(true);
@@ -243,12 +246,12 @@ public class AddressItemDetailListFragment extends ListFragment implements
 				return list;
 			}
 
-			private List<String> setRequestParamValues() {
-				List<String> list = new ArrayList<String>();
-				list.add(Utils.getIMEI(mAct));
-				list.add(Utils.getIMEI(mAct));
-				list.add(Utils.getChannelId(mAct));
-				list.add(String.valueOf(mRowId));
+			private List<HttpParam> setRequestParamValues() {
+				List<HttpParam> list = new ArrayList<HttpParam>();
+				list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+				list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+				list.add(new HttpParam(false, Utils.getChannelId(mAct)));
+				list.add(new HttpParam(false, String.valueOf(mRowId)));
 				return list;
 			}
 		}.execute(FunctionEntry.ADDRESS_ENTRY, InstConstants.ADDRESS_DEFAULT);
@@ -298,12 +301,6 @@ public class AddressItemDetailListFragment extends ListFragment implements
 
 			@Override
 			protected Integer doInBackground(String... params) {
-				// TODO
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					//
-				}
 				int rowId = -1;
 				InputStream is = null;
 				try {
@@ -311,21 +308,24 @@ public class AddressItemDetailListFragment extends ListFragment implements
 							FunctionEntry.fixUrl(params[0]));
 					post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 							.formatRequestParams(params[1], setRequestParams(),
-									setRequestParamValues(value))));
+									setRequestParamValues(value), false)));
 					HttpResponse resp = HttpRequestBox.getInstance(mAct)
 							.sendRequest(post);
 					if (resp == null) {
 						return rowId;
 					}
 					int status = resp.getStatusLine().getStatusCode();
-					Log.d(TAG, "status : " + status);
+					if (Constants.DEBUG) {
+						Log.d(TAG, "status : " + status);
+					}
 					if (status != HttpStatus.SC_OK) {
 						return rowId;
 					}
 					is = resp.getEntity().getContent();
-					if (HTTPUtils.testResponse(is)) {
-						return rowId;
-					}
+					// TODO
+					// if (HTTPUtils.testResponse(is)) {
+					// return rowId;
+					// }
 					XmlPullParserFactory factory = XmlPullParserFactory
 							.newInstance();
 					factory.setNamespaceAware(true);
@@ -415,19 +415,26 @@ public class AddressItemDetailListFragment extends ListFragment implements
 				return list;
 			}
 
-			private List<String> setRequestParamValues(ContentValues value) {
-				List<String> list = new ArrayList<String>();
-				list.add(Utils.getIMEI(mAct));
-				list.add(Utils.getIMEI(mAct));
-				list.add(Utils.getChannelId(mAct));
-				list.add(String.valueOf(mRowId));
-				list.add(value.getAsString(CrmDb.Address.PROVINCE));
-				list.add(value.getAsString(CrmDb.Address.CITY));
-				list.add(value.getAsString(CrmDb.Address.DISTRICT));
-				list.add(value.getAsString(CrmDb.Address.DETAIL));
-				list.add(value.getAsString(CrmDb.Address.NAME));
-				list.add(value.getAsString(CrmDb.Address.PHONE));
-				list.add(value.getAsString(CrmDb.Address.POSTCODE));
+			private List<HttpParam> setRequestParamValues(ContentValues value) {
+				List<HttpParam> list = new ArrayList<HttpParam>();
+				list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+				list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+				list.add(new HttpParam(false, Utils.getChannelId(mAct)));
+				list.add(new HttpParam(false, String.valueOf(mRowId)));
+				list.add(new HttpParam(false, value
+						.getAsString(CrmDb.Address.PROVINCE)));
+				list.add(new HttpParam(false, value
+						.getAsString(CrmDb.Address.CITY)));
+				list.add(new HttpParam(false, value
+						.getAsString(CrmDb.Address.DISTRICT)));
+				list.add(new HttpParam(false, value
+						.getAsString(CrmDb.Address.DETAIL)));
+				list.add(new HttpParam(false, value
+						.getAsString(CrmDb.Address.NAME)));
+				list.add(new HttpParam(false, value
+						.getAsString(CrmDb.Address.PHONE)));
+				list.add(new HttpParam(false, value
+						.getAsString(CrmDb.Address.POSTCODE)));
 				return list;
 			}
 
@@ -442,12 +449,6 @@ public class AddressItemDetailListFragment extends ListFragment implements
 
 			@Override
 			protected Integer doInBackground(String... params) {
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					//
-				}
-				// TODO
 				int status = -1;
 				InputStream is = null;
 				try {
@@ -455,21 +456,24 @@ public class AddressItemDetailListFragment extends ListFragment implements
 							FunctionEntry.fixUrl(params[0]));
 					post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 							.formatRequestParams(params[1], setRequestParams(),
-									setRequestParamValues())));
+									setRequestParamValues(), false)));
 					HttpResponse resp = HttpRequestBox.getInstance(mAct)
 							.sendRequest(post);
 					if (resp == null) {
 						return status;
 					}
 					int statusCode = resp.getStatusLine().getStatusCode();
-					Log.d(TAG, "statusCode : " + statusCode);
+					if (Constants.DEBUG) {
+						Log.d(TAG, "statusCode : " + statusCode);
+					}
 					if (statusCode != HttpStatus.SC_OK) {
 						return status;
 					}
 					is = resp.getEntity().getContent();
-					if (HTTPUtils.testResponse(is)) {
-						return status;
-					}
+					// TODO
+					// if (HTTPUtils.testResponse(is)) {
+					// return status;
+					// }
 					XmlPullParserFactory factory = XmlPullParserFactory
 							.newInstance();
 					factory.setNamespaceAware(true);
@@ -526,12 +530,12 @@ public class AddressItemDetailListFragment extends ListFragment implements
 				return list;
 			}
 
-			private List<String> setRequestParamValues() {
-				List<String> list = new ArrayList<String>();
-				list.add(Utils.getIMEI(mAct));
-				list.add(Utils.getIMEI(mAct));
-				list.add(Utils.getChannelId(mAct));
-				list.add(String.valueOf(mRowId));
+			private List<HttpParam> setRequestParamValues() {
+				List<HttpParam> list = new ArrayList<HttpParam>();
+				list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+				list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+				list.add(new HttpParam(false, Utils.getChannelId(mAct)));
+				list.add(new HttpParam(false, String.valueOf(mRowId)));
 				return list;
 			}
 
@@ -596,19 +600,21 @@ public class AddressItemDetailListFragment extends ListFragment implements
 		}
 
 		public void updateDilog(Integer result) {
-			switch (mType) {
-			case TYPE_SET_DEFAULT:
-				Toast.makeText(mAct, R.string.set_default_fail_toast,
-						Toast.LENGTH_SHORT).show();
-				break;
-			case TYPE_SAVE_CHANGE:
-				Toast.makeText(mAct, R.string.save_change_fail_toast,
-						Toast.LENGTH_SHORT).show();
-				break;
-			case TYPE_DELETE:
-				Toast.makeText(mAct, R.string.delete_fail_toast,
-						Toast.LENGTH_SHORT).show();
-				break;
+			if (result == -1) {
+				switch (mType) {
+				case TYPE_SET_DEFAULT:
+					Toast.makeText(mAct, R.string.set_default_fail_toast,
+							Toast.LENGTH_SHORT).show();
+					break;
+				case TYPE_SAVE_CHANGE:
+					Toast.makeText(mAct, R.string.save_change_fail_toast,
+							Toast.LENGTH_SHORT).show();
+					break;
+				case TYPE_DELETE:
+					Toast.makeText(mAct, R.string.delete_fail_toast,
+							Toast.LENGTH_SHORT).show();
+					break;
+				}
 			}
 			dismiss();
 		}

@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
+import com.doo360.crm.Constants;
+
 public class ProviderOp {
 	private static final String TAG = "ProviderOp";
 
@@ -38,18 +40,62 @@ public class ProviderOp {
 	}
 
 	public static int setDefaultAddr(ContentResolver cr, int rowId) {
-		ContentValues value = new ContentValues(1);
-		value.put(CrmDb.Address.DEFAULT, CrmDb.AddressDefault.DEFAULT);
 		int count = 0;
-		count = cr.update(
-				Uri.withAppendedPath(CrmDb.Address.CONTENT_URI,
-						String.valueOf(rowId)), value, null, null);
-		Log.d(TAG, "first,count : " + count);
-		value.put(CrmDb.Address.DEFAULT, CrmDb.AddressDefault.NODEFAULT);
-		count += cr.update(CrmDb.Address.CONTENT_URI, value, "_id != " + "'"
+		if (Constants.DEBUG) {
+			Log.d(TAG, "rowId : " + rowId);
+			populateAddrList(cr);
+		}
+		ContentValues value = new ContentValues();
+		value.put(CrmDb.Address.ISDEFAULT, CrmDb.AddressDefault.DEFAULT);
+		count = cr.update(CrmDb.Address.CONTENT_URI, value, "_id=" + "'"
 				+ rowId + "'", null);
-		Log.d(TAG, "second,count : " + count);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "first,count : " + count);
+			populateAddrList(cr);
+		}
+		value.put(CrmDb.Address.ISDEFAULT, CrmDb.AddressDefault.NODEFAULT);
+		count += cr.update(CrmDb.Address.CONTENT_URI, value, "_id" + "<>" + "'"
+				+ rowId + "'", null);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "second,count : " + count);
+			populateAddrList(cr);
+		}
 		return count;
+	}
+
+	public static void populateAddrList(ContentResolver cr) {
+		Cursor c = cr.query(CrmDb.Address.CONTENT_URI, null, null, null, null);
+		if (c != null && c.moveToFirst()) {
+			String[] names = c.getColumnNames();
+			StringBuilder sb = new StringBuilder();
+			for (String name : names) {
+				sb.append(name + "\t");
+			}
+			Log.d(TAG, sb.toString());
+			int id;
+			String name, phone, province, city, district, detail, postcode;
+			int isDefault;
+			do {
+				id = c.getInt(c.getColumnIndex(CrmDb.Address._ID));
+				name = c.getString(c.getColumnIndex(CrmDb.Address.NAME));
+				phone = c.getString(c.getColumnIndex(CrmDb.Address.PHONE));
+				province = c
+						.getString(c.getColumnIndex(CrmDb.Address.PROVINCE));
+				city = c.getString(c.getColumnIndex(CrmDb.Address.CITY));
+				district = c
+						.getString(c.getColumnIndex(CrmDb.Address.DISTRICT));
+				detail = c.getString(c.getColumnIndex(CrmDb.Address.DETAIL));
+				postcode = c
+						.getString(c.getColumnIndex(CrmDb.Address.POSTCODE));
+				isDefault = c.getInt(c.getColumnIndex(CrmDb.Address.ISDEFAULT));
+				Log.d(TAG, id + "\t" + name + "\t" + phone + "\t" + province
+						+ "\t" + city + "\t" + district + "\t" + detail + "\t"
+						+ postcode + "\t" + isDefault);
+			} while (c.moveToNext());
+			c.close();
+		} else {
+			Log.e(TAG, "No Addr added");
+		}
 	}
 
 	/**
@@ -59,10 +105,11 @@ public class ProviderOp {
 	 */
 	public static Cursor getDefaultAddress(ContentResolver cr) {
 		StringBuilder where = new StringBuilder();
-		where.append(CrmDb.Address.DEFAULT).append("'")
+		where.append(CrmDb.Address.ISDEFAULT).append("'")
 				.append(CrmDb.AddressDefault.DEFAULT).append("'");
-		Cursor c = cr.query(CrmDb.Address.CONTENT_URI, null, "_id=1", null,
-				null);
+		Cursor c = cr.query(CrmDb.Address.CONTENT_URI, null,
+				CrmDb.Address.ISDEFAULT + "=" + "'"
+						+ CrmDb.AddressDefault.DEFAULT + "'", null, null);
 		if (c == null || c.getCount() < 1) {
 			c = cr.query(CrmDb.Address.CONTENT_URI, null, null, null, "_id asc");
 			return c;

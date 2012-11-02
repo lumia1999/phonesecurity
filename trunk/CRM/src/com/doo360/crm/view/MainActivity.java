@@ -2,7 +2,6 @@ package com.doo360.crm.view;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 
 import com.doo360.crm.R;
 import com.doo360.crm.Utils;
+import com.doo360.crm.provider.ProviderOp;
 
 public class MainActivity extends FragmentActivity {
 	private static final String TAG = "MainActivity";
@@ -23,12 +23,6 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.activity_main);
 		initUI();
 		Utils.copyRawDb(this);
-		test();
-	}
-
-	private void test() {
-		String ch = Utils.getChannelId(this);
-		Log.e(TAG, "ch : " + ch);
 	}
 
 	private void initUI() {

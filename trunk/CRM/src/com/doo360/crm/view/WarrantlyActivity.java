@@ -44,6 +44,7 @@ import com.doo360.crm.Utils;
 import com.doo360.crm.WarrantyInfo;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.tsk.DownloadIconTask;
@@ -96,7 +97,9 @@ public class WarrantlyActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.warrantly);
 		initUI();
@@ -376,7 +379,9 @@ public class WarrantlyActivity extends FragmentActivity implements
 
 		@Override
 		protected Result doInBackground(Params... params) {
-			Log.d(TAG, "doInBackground,params : " + params);
+			if (Constants.DEBUG) {
+				Log.d(TAG, "doInBackground,params : " + params);
+			}
 			mWarrantyInfo = new WarrantyInfo();
 			InputStream is = null;
 			try {
@@ -385,7 +390,8 @@ public class WarrantlyActivity extends FragmentActivity implements
 						FunctionEntry.fixUrl(params[0].url));
 				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 						.formatRequestParams(params[0].inst,
-								setRequestParams(), setRequestParamValues())));
+								setRequestParams(), setRequestParamValues(),
+								false)));
 				HttpResponse resp = HttpRequestBox.getInstance(
 						getApplicationContext()).sendRequest(post);
 				if (resp == null) {
@@ -393,7 +399,9 @@ public class WarrantlyActivity extends FragmentActivity implements
 					return setFailResult(params);
 				}
 				int statusCode = resp.getStatusLine().getStatusCode();
-				Log.e(TAG, "statusCode : " + statusCode);
+				if (Constants.DEBUG) {
+					Log.e(TAG, "statusCode : " + statusCode);
+				}
 				if (statusCode != HttpStatus.SC_OK) {
 					mWarrantyInfo = null;
 					return setFailResult(params);
@@ -484,7 +492,9 @@ public class WarrantlyActivity extends FragmentActivity implements
 					}
 					eventType = parser.next();
 				}// ?end while
-				Log.d(TAG, "record size : " + records.size());
+				if (Constants.DEBUG) {
+					Log.d(TAG, "record size : " + records.size());
+				}
 				mWarrantyInfo.setRecordData(records);
 				return setSuccessResult(params);
 			} catch (IOException e) {
@@ -527,11 +537,11 @@ public class WarrantlyActivity extends FragmentActivity implements
 			return list;
 		}
 
-		private List<String> setRequestParamValues() {
-			ArrayList<String> list = new ArrayList<String>();
-			list.add(Utils.getIMEI(mCtx));
-			list.add(Utils.getIMEI(mCtx));
-			list.add(Utils.getDevModel());
+		private List<HttpParam> setRequestParamValues() {
+			ArrayList<HttpParam> list = new ArrayList<HttpParam>();
+			list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+			list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+			list.add(new HttpParam(false, Utils.getDevModel()));
 			return list;
 		}
 
@@ -584,7 +594,9 @@ public class WarrantlyActivity extends FragmentActivity implements
 	private void startGetIcon() {
 		DownloadIconTask tsk = new DownloadIconTask(mCtx, this);
 		List<String> param = new ArrayList<String>();
-		Log.e(TAG, "icon url : " + mWarrantyInfo.getIconurl());
+		if (Constants.DEBUG) {
+			Log.e(TAG, "icon url : " + mWarrantyInfo.getIconurl());
+		}
 		param.add(mWarrantyInfo.getIconurl());
 		tsk.execute(param);
 	}
@@ -592,7 +604,9 @@ public class WarrantlyActivity extends FragmentActivity implements
 	@Override
 	public void iconDownloaded(String... params) {
 		// TODO
-		Log.d(TAG, "iconurl : " + params[0] + ",cachepath : " + params[1]);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "iconurl : " + params[0] + ",cachepath : " + params[1]);
+		}
 		// mProductIconImage.setBackgroundResource(-1);
 	}
 

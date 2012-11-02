@@ -40,8 +40,7 @@ public class CrmDb {
 		public static final String DISTRICT = "district";
 		public static final String DETAIL = "detail";
 		public static final String POSTCODE = "postcode";
-		public static final String DEFAULT = "is_default";
-		public static final String ANCHOR = "anchor";
+		public static final String ISDEFAULT = "isdefault";
 	}
 
 	public interface AddressDefault {

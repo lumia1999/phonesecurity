@@ -29,12 +29,12 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.GeoPoint;
 import com.baidu.mapapi.MKGeocoderAddressComponent;
+import com.doo360.crm.Constants;
 import com.doo360.crm.Prefs;
 import com.doo360.crm.R;
 import com.doo360.crm.loc.Positioning;
 import com.doo360.crm.loc.Positioning.OnAutoPositionListener;
 import com.doo360.crm.model.CityListProto.City;
-import com.doo360.crm.provider.RawDbHelper;
 import com.doo360.crm.view.CityListFragment.OnCitySelectedListener;
 
 public class CityListActivity extends FragmentActivity implements
@@ -58,7 +58,9 @@ public class CityListActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle bunlde) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(bunlde);
 		setContentView(R.layout.city);
 		Intent i = getIntent();
@@ -98,7 +100,9 @@ public class CityListActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		Log.d(TAG, "onDestroy");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onDestroy");
+		}
 		mLocClient.registerLocationListener(null);
 		mLocClient = null;
 		super.onDestroy();
@@ -267,7 +271,6 @@ public class CityListActivity extends FragmentActivity implements
 
 	@Override
 	public void onCitySelect(City c) {
-		// TODO
 		if (!TextUtils.equals(mCurCityName, c.getName())) {
 			setResult(Activity.RESULT_OK);
 			Prefs.setCurrentCityName(mCtx, c.getName());

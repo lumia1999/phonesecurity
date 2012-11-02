@@ -41,6 +41,7 @@ import com.doo360.crm.R;
 import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.tsk.DownloadIconTask;
@@ -106,7 +107,9 @@ public class HotmodelListFragment extends ListFragment implements
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		mAct = activity;
-		Log.d(TAG, "type : " + ((HotmodelListActivity) mAct).getType());
+		if (Constants.DEBUG) {
+			Log.d(TAG, "type : " + ((HotmodelListActivity) mAct).getType());
+		}
 	}
 
 	@Override
@@ -131,9 +134,10 @@ public class HotmodelListFragment extends ListFragment implements
 
 	@Override
 	public void onResume() {
-		Log.d(TAG, "onResume");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onResume");
+		}
 		super.onResume();
-		Log.d(TAG, "onResume, mAdapter : " + mAdapter);
 		if (mAdapter != null) {
 			checkIconsForResume();
 		}
@@ -216,15 +220,16 @@ public class HotmodelListFragment extends ListFragment implements
 				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
 				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 						.formatRequestParams(inst, setRequestParams(),
-								setRequestParamValues())));
+								setRequestParamValues(), false)));
 				HttpResponse resp = HttpRequestBox.getInstance(mAct)
 						.sendRequest(post);
 				if (resp == null) {
-					Log.d(TAG, "resp is null");
 					return false;
 				}
 				int statusCode = resp.getStatusLine().getStatusCode();
-				Log.d(TAG, "statusCode : " + statusCode);
+				if (Constants.DEBUG) {
+					Log.d(TAG, "statusCode : " + statusCode);
+				}
 				if (statusCode != HttpStatus.SC_OK) {
 					return false;
 				}
@@ -321,13 +326,14 @@ public class HotmodelListFragment extends ListFragment implements
 			return list;
 		}
 
-		private List<String> setRequestParamValues() {
-			List<String> list = new ArrayList<String>();
-			list.add(Utils.getIMEI(mAct));
-			list.add(Utils.getIMEI(mAct));
-			list.add(Utils.getChannelId(mAct));
-			list.add(String.valueOf(mPageIndex));
-			list.add(String.valueOf(HTTPUtils.DEF_PAGE_SIZE));
+		private List<HttpParam> setRequestParamValues() {
+			List<HttpParam> list = new ArrayList<HttpParam>();
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getChannelId(mAct)));
+			list.add(new HttpParam(false, String.valueOf(mPageIndex)));
+			list.add(new HttpParam(false, String
+					.valueOf(HTTPUtils.DEF_PAGE_SIZE)));
 			return list;
 		}
 	}
@@ -402,8 +408,9 @@ public class HotmodelListFragment extends ListFragment implements
 		int firstPos = mListView.getFirstVisiblePosition();
 
 		int endPos = mListView.getLastVisiblePosition();
-
-		Log.e(TAG, "firstPos : " + firstPos + ",endPos : " + endPos);
+		if (Constants.DEBUG) {
+			Log.e(TAG, "firstPos : " + firstPos + ",endPos : " + endPos);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -414,7 +421,7 @@ public class HotmodelListFragment extends ListFragment implements
 		for (int i = 0; i < size; i++) {
 			item = mLoadingData.get(i);
 			if (item.getIconCachePath() == null) {
-				iconUrls.add(FunctionEntry.fixUrl(item.getIconurl()));
+				iconUrls.add(item.getIconurl());
 			}
 		}
 		if (iconUrls.size() > 0) {
@@ -453,7 +460,10 @@ public class HotmodelListFragment extends ListFragment implements
 
 	@SuppressWarnings("deprecation")
 	private void updateItemIcon(String... params) {
-		Log.d(TAG, "iconurl : " + params[0] + ",iconCachePath : " + params[1]);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "iconurl : " + params[0] + ",iconCachePath : "
+					+ params[1]);
+		}
 		int count = mDataList.size();
 		HotmodelItem item = null;
 		for (int i = 0; i < count; i++) {

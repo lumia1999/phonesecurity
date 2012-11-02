@@ -1,5 +1,6 @@
 package com.doo360.crm.view;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+import org.xmlpull.v1.XmlSerializer;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -29,6 +31,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Xml;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +52,7 @@ import com.doo360.crm.R;
 import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.provider.CrmDb;
@@ -101,14 +105,18 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(bundle);
 		setContentView(R.layout.purchase_confirm);
 		Intent i = getIntent();
 		if (i != null) {
 			mPData = i.getParcelableExtra(EXTRA_DATA);
 		}
-		Log.d(TAG, "mPData : " + mPData);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "mPData : " + mPData);
+		}
 		initUI();
 		new FetchAddressListTask(this, this, true).execute(
 				FunctionEntry.ADDRESS_ENTRY, InstConstants.ADDRESS_LIST);
@@ -134,8 +142,10 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG, "requestCode : " + requestCode + ",resultCode : "
-				+ resultCode);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "requestCode : " + requestCode + ",resultCode : "
+					+ resultCode);
+		}
 		switch (requestCode) {
 		case REQ_CODE_ORDER_LIST:
 			if (resultCode == Activity.RESULT_OK) {
@@ -160,8 +170,15 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 			}
 			break;
 		case REQ_CODE_ADD_ADDR:
-			if (resultCode == Constants.ACTIVITY_RESULT_ADD_ADDR) {
+			// Log.e(TAG, "resultCode : " + resultCode);
+			if (resultCode == Constants.ACTIVITY_RESULT_ADDR_EDIT) {
 				// update address info
+				mAddressSelected = data
+						.getParcelableExtra(AddressListFragment.EXTRA_NEW_ADDR);
+				if (Constants.DEBUG) {
+					Log.d(TAG, "mAddressSelected : " + mAddressSelected);
+				}
+				updateSelectedAddr();
 			} else if (resultCode == Activity.RESULT_OK) {
 				setResult(Activity.RESULT_OK);
 				finish();
@@ -265,13 +282,25 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 
 	private void updateUserMessage(String msg) {
 		TextView desc = (TextView) mDetailInfoLayout.getChildAt(
-				mDetailInfoLayout.getChildCount() - 1).findViewById(
+				ProductConfirmDetailItem.INDEX_COMMENT).findViewById(
 				R.id.item_desc);
 		if (msg == null || TextUtils.equals(msg.trim(), "")) {
 			desc.setText(R.string.purchase_comment_txt);
 		} else {
 			desc.setText(msg);
 		}
+	}
+
+	private void updateSelectedAddr() {
+		// TODO
+		TextView desc = (TextView) mDetailInfoLayout.getChildAt(
+				ProductConfirmDetailItem.INDEX_ADDR).findViewById(
+				R.id.item_desc);
+		Log.e(TAG, "desc : " + desc);
+		desc.setVisibility(View.VISIBLE);
+		desc.setText(mAddressSelected.getAsString(CrmDb.Address.NAME) + " "
+				+ Utils.getAddressArea(mAddressSelected)
+				+ mAddressSelected.getAsString(CrmDb.Address.DETAIL));
 	}
 
 	private void showAddAddrDialog() {
@@ -333,7 +362,7 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 		String[] titles = getResources().getStringArray(
 				R.array.purchase_confirm_details);
 		// address
-		if (result == null) {
+		if (result.size() < 1) {
 			mAddressSelected = null;
 			detailItem = new ProductConfirmDetailItem(
 					ProductConfirmDetailItem.INDEX_ADDR, titles[0], null, null,
@@ -392,13 +421,15 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 		mAdapter = new ProductConfirmAdapter(this, dataList, mFragMgr);
 		mDetailInfoLayout.setAdapter(mAdapter);
 		mDetailInfoLayout.bindViews();
+		if (mAddressSelected == null) {
+			showAddAddrDialog();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private void downloadIcon() {
 		List<String> iconUrls = new ArrayList<String>();
-		iconUrls.add(FunctionEntry.fixUrl(mPData
-				.getAsString(Constants.P_ICONURL)));
+		iconUrls.add(mPData.getAsString(Constants.P_ICONURL));
 		DownloadIconTask tsk = new DownloadIconTask(mCtx, this);
 		tsk.execute(iconUrls);
 	}
@@ -406,7 +437,9 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 	@SuppressWarnings("deprecation")
 	@Override
 	public void iconDownloaded(String... params) {
-		Log.d(TAG, "iconDownloaded ,cache path : " + params[1]);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "iconDownloaded ,cache path : " + params[1]);
+		}
 		mIconImage.setBackgroundDrawable(new BitmapDrawable(FileHelper
 				.decodeIconFile(mCtx, params[1],
 						Utils.getIconSize(mCtx, Constants.ICON_SIZE_70),
@@ -477,7 +510,6 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 
 		@Override
 		public void onClick(View v) {
-			// TODO
 			this.dismiss();
 			switch (v.getId()) {
 			case R.id.dlg_result_confirm:
@@ -582,7 +614,6 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 					String msg = mContentEdit.getText().toString();
 					updateUserMessage(msg);
 				} else if (mType == TYPE_ADD_ADDR) {
-					// TODO
 					PurchaseConfirmActivity.this.startActivityForResult(
 							new Intent(getApplicationContext(),
 									AddressItemListActivity.class),
@@ -602,22 +633,30 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 
 	private class PostOrderTask extends AsyncTask<String, Void, Integer> {
 
+		private String mPlaceHolder = "**place_hoder**";
+
 		@Override
 		protected Integer doInBackground(String... params) {
 			int ret = -1;
 			InputStream is = null;
 			try {
 				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
-				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
-						.formatRequestParams(params[1], setRequestParams(),
-								setRequestParamValues())));
+				String tt = HTTPUtils.formatRequestParams(params[1],
+						setRequestParams(), setRequestParamValues(), true);
+				Log.e(TAG, tt);
+				tt = tt.replace(mPlaceHolder, serializeItemData());
+				Log.e(TAG, tt);
+				post.setEntity(HTTPUtils.fillEntity(HTTPUtils.Base64It(tt
+						.getBytes())));
 				HttpResponse resp = HttpRequestBox.getInstance(mCtx)
 						.sendRequest(post);
 				if (resp == null) {
 					return ret;
 				}
 				int statusCode = resp.getStatusLine().getStatusCode();
-				Log.d(TAG, "statusCode : " + statusCode);
+				if (Constants.DEBUG) {
+					Log.d(TAG, "statusCode : " + statusCode);
+				}
 				if (statusCode != HttpStatus.SC_OK) {
 					return ret;
 				}
@@ -664,7 +703,9 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 		@Override
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
-			Log.d(TAG, "result : " + result);
+			if (Constants.DEBUG) {
+				Log.d(TAG, "result : " + result);
+			}
 			updateDialog(result);
 		}
 
@@ -682,53 +723,91 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 			return list;
 		}
 
-		private List<String> setRequestParamValues() {
-			List<String> list = new ArrayList<String>();
-			list.add(Utils.getIMEI(mCtx));
-			list.add(Utils.getIMEI(mCtx));
-			list.add(Utils.getChannelId(mCtx));
-			list.add(mAddressSelected.getAsString(CrmDb.Address._ID));
-			list.add(((ProductConfirmDetailItemViewHolder) mDetailInfoLayout
+		private List<HttpParam> setRequestParamValues() {
+			List<HttpParam> list = new ArrayList<HttpParam>();
+			list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+			list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+			list.add(new HttpParam(false, Utils.getChannelId(mCtx)));
+			list.add(new HttpParam(false, mAddressSelected
+					.getAsString(CrmDb.Address._ID)));
+			String transport = ((ProductConfirmDetailItemViewHolder) mDetailInfoLayout
 					.getChildAt(ProductConfirmDetailItem.INDEX_TRANSPORT)
-					.getTag()).getTip().getText().toString());
-			list.add(((ProductConfirmDetailItemViewHolder) mDetailInfoLayout
+					.getTag()).getTip().getText().toString();
+			String price = ((ProductConfirmDetailItemViewHolder) mDetailInfoLayout
 					.getChildAt(ProductConfirmDetailItem.INDEX_PRICE).getTag())
-					.getTip().getText().toString());
-			list.add(((ProductConfirmDetailItemViewHolder) mDetailInfoLayout
+					.getTip().getText().toString();
+			String paymenttype = ((ProductConfirmDetailItemViewHolder) mDetailInfoLayout
 					.getChildAt(ProductConfirmDetailItem.INDEX_PAYMENTTYPE)
-					.getTag()).getTip().getText().toString());
-			list.add(((ProductConfirmDetailItemViewHolder) mDetailInfoLayout
+					.getTag()).getTip().getText().toString();
+			String comment = ((ProductConfirmDetailItemViewHolder) mDetailInfoLayout
 					.getChildAt(ProductConfirmDetailItem.INDEX_COMMENT)
-					.getTag()).getDesc().getText().toString());
-			list.add(formatOrderItemData());
+					.getTag()).getDesc().getText().toString();
+			list.add(new HttpParam(false, transport));
+			/*
+			 * TODO temporarily it is free of charge
+			 */
+			list.add(new HttpParam(false, "0"));
+			list.add(new HttpParam(false, paymenttype));
+			if (TextUtils.equals(comment,
+					getString(R.string.purchase_comment_txt))) {
+				list.add(new HttpParam(true, ""));
+			} else {
+				list.add(new HttpParam(true, comment));
+			}
+			if (Constants.DEBUG) {
+				Log.e(TAG, "transport : " + transport + ",price : " + price
+						+ ",paymenttype : " + paymenttype + ",comment : "
+						+ comment);
+			}
+			list.add(new HttpParam(false, mPlaceHolder));
 			return list;
 		}
 
-		private String formatOrderItemData() {
-			StringBuilder sb = new StringBuilder();
-			sb.append(Constants.ITEM_START);
-			// product id
-			sb.append(Constants.PRODUCTID_START)
-					.append(mPData.getAsString(Constants.P_ID))
-					.append(Constants.PRODUCTID_END);
-			// product name
-			sb.append(Constants.PRODUCTNAME_START)
-					.append(mPData.getAsString(Constants.P_NAME))
-					.append(Constants.PRODUCTNAME_END);
-			// product element name
-			sb.append(Constants.PRICEELEMENTNAME_START)
-					.append(mPData.getAsString(Constants.P_COLOR))
-					.append(Constants.PRICEELEMENTNAME_END);
-			// price
-			sb.append(Constants.PRICE_START)
-					.append(mPData.getAsString(Constants.P_PRICE))
-					.append(Constants.PRICE_END);
-			// count
-			sb.append(Constants.COUNT_START)
-					.append(mPData.getAsString(Constants.P_COUNT))
-					.append(Constants.COUNT_END);
-			sb.append(Constants.ITEM_END);
-			return sb.toString();
+		private String serializeItemData() {
+			XmlSerializer serializer = Xml.newSerializer();
+			ByteArrayOutputStream os = null;
+			try {
+				os = new ByteArrayOutputStream();
+				serializer.setOutput(os, HTTP.UTF_8);
+				serializer.startDocument(HTTP.UTF_8, null);
+				serializer.startTag("", HTTPUtils.ITEM);
+				// product id
+				serializer.startTag("", HTTPUtils.PRODUCTID);
+				serializer.text(mPData.getAsString(Constants.P_ID));
+				serializer.endTag("", HTTPUtils.PRODUCTID);
+				// product name
+				serializer.startTag("", HTTPUtils.PRODUCTNAME);
+				serializer.text(mPData.getAsString(Constants.P_NAME));
+				serializer.endTag("", HTTPUtils.PRODUCTNAME);
+				// product element name
+				serializer.startTag("", HTTPUtils.PRICEELEMENTNAME);
+				serializer.text(mPData.getAsString(Constants.P_COLOR));
+				serializer.endTag("", HTTPUtils.PRICEELEMENTNAME);
+				// price
+				serializer.startTag("", HTTPUtils.PRICE);
+				serializer.text(mPData.getAsString(Constants.P_PRICE));
+				serializer.endTag("", HTTPUtils.PRICE);
+				// count
+				serializer.startTag("", HTTPUtils.COUNT);
+				serializer.text(mPData.getAsString(Constants.P_COUNT));
+				serializer.endTag("", HTTPUtils.COUNT);
+				// end
+				serializer.endTag("", HTTPUtils.ITEM);
+				serializer.endDocument();
+				return os.toString().replace(
+						"<?xml version='1.0' encoding='UTF-8' ?>", "");
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			} finally {
+				if (os != null) {
+					try {
+						os.close();
+					} catch (IOException e) {
+						//
+					}
+				}
+			}
 		}
 	}
 }

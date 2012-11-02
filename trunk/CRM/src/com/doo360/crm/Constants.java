@@ -1,6 +1,7 @@
 package com.doo360.crm;
 
 public class Constants {
+	public static final boolean DEBUG = true;
 	public static final String APK_MASK = ".apk";
 	public static final String APK_MIME = "application/vnd.android.package-archive";
 	public static final String SEMICOLON = ";";
@@ -9,7 +10,6 @@ public class Constants {
 
 	public static final int ACTIVITY_RESULT_EVALUATE = 101;
 	public static final int ACTIVITY_RESULT_ADDR_SELECT = 102;
-	public static final int ACTIVITY_RESULT_ADD_ADDR = 103;
 	public static final int ACTIVITY_RESULT_ADDR_EDIT = 104;
 	public static final int ACTIVITY_RESULT_ADDR_DELETE = 105;
 
@@ -17,6 +17,7 @@ public class Constants {
 	public static final String CHANNEL_ID = "channelId";
 
 	// icon size
+	public static final int ICON_SIZE_48 = 48;
 	public static final int ICON_SIZE_70 = 70;
 	public static final int ICON_SIZE_122 = 122;
 	public static final int ICON_SIZE_228 = 228;
@@ -30,16 +31,8 @@ public class Constants {
 	public static final String P_COUNT = "count";
 	public static final String P_COLOR = "color";
 
-	public static final String ITEM_START = "<item>";
-	public static final String ITEM_END = "</item>";
-	public static final String PRODUCTID_START = "<productid>";
-	public static final String PRODUCTID_END = "</productid>";
-	public static final String PRODUCTNAME_START = "<productname>";
-	public static final String PRODUCTNAME_END = "</productname>";
-	public static final String PRICEELEMENTNAME_START = "<priceelementname>";
-	public static final String PRICEELEMENTNAME_END = "</priceelementname>";
-	public static final String PRICE_START = "<price>";
-	public static final String PRICE_END = "</price>";
-	public static final String COUNT_START = "<count>";
-	public static final String COUNT_END = "</count>";
+	// order comment related
+	public static final int COMMENTED_DONE = 1;
+	public static final int COMMENT_UNDONE = 0;
+
 }

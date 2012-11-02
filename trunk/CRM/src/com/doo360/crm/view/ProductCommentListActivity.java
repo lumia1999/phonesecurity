@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 import com.doo360.crm.view.ProductCommentListFragment.OnDataLoadedListener;
 
@@ -35,7 +36,9 @@ public class ProductCommentListActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(bundle);
 		setContentView(R.layout.product_comment);
 		Intent i = getIntent();

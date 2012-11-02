@@ -19,6 +19,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 
 public class FrontPageFragment extends Fragment {
@@ -44,7 +45,9 @@ public class FrontPageFragment extends Fragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 		initData();
 	}
@@ -57,7 +60,9 @@ public class FrontPageFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-		Log.d(TAG, "onResume");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onResume");
+		}
 		super.onResume();
 		fillData();
 	}
@@ -65,7 +70,9 @@ public class FrontPageFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d(TAG, "onCreateView");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreateView");
+		}
 		View v = inflater.inflate(R.layout.front_page_grid, container, false);
 		mGridView = (GridView) v.findViewById(R.id.front_pagge_grid);
 		mGridView.setSelector(new ColorDrawable(Color.TRANSPARENT));

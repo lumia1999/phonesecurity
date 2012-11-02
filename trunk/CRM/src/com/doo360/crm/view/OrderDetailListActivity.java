@@ -3,10 +3,11 @@ package com.doo360.crm.view;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -33,11 +34,12 @@ import android.widget.TextView;
 import com.doo360.crm.Constants;
 import com.doo360.crm.FileHelper;
 import com.doo360.crm.OrderDetailItem;
-import com.doo360.crm.OrderDetailItem.DetailItem;
 import com.doo360.crm.R;
 import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
+import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.tsk.DownloadIconTask;
 import com.doo360.crm.tsk.DownloadIconTask.OnIconDownloadedListener;
@@ -85,7 +87,9 @@ public class OrderDetailListActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(bundle);
 		setContentView(R.layout.order_detail);
 		Intent i = getIntent();
@@ -99,7 +103,9 @@ public class OrderDetailListActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		Log.d(TAG, "onDestroy");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onDestroy");
+		}
 		super.onDestroy();
 		if (mIconTsk != null) {
 			mIconTsk.cancel(true);
@@ -207,24 +213,25 @@ public class OrderDetailListActivity extends FragmentActivity implements
 			}
 			InputStream is = null;
 			try {
-				is = getAssets().open("order_detail.xml");
+				// is = getAssets().open("order_detail.xml");
+				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
+				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+						.formatRequestParams(params[1], setRequestParams(),
+								setRequestParamValues(), false)));
+				HttpResponse resp = HttpRequestBox.getInstance(mCtx)
+						.sendRequest(post);
+				if (resp == null) {
+					return false;
+				}
+				int statusCode = resp.getStatusLine().getStatusCode();
+				if (Constants.DEBUG) {
+					Log.d(TAG, "statusCode : " + statusCode);
+				}
+				if (statusCode != HttpStatus.SC_OK) {
+					return false;
+				}
+				is = resp.getEntity().getContent();
 				// TODO
-				// HttpPost post = new
-				// HttpPost(FunctionEntry.fixUrl(params[0]));
-				// post.setEntity(HTTPUtils.fillEntity(HTTPUtils
-				// .formatRequestParams(params[1], setRequestParams(),
-				// setRequestParamValues())));
-				// HttpResponse resp = HttpRequestBox.getInstance(mCtx)
-				// .sendRequest(post);
-				// if (resp == null) {
-				// return false;
-				// }
-				// int statusCode = resp.getStatusLine().getStatusCode();
-				// Log.d(TAG, "statusCode : " + statusCode);
-				// if (statusCode != HttpStatus.SC_OK) {
-				// return false;
-				// }
-				// is = resp.getEntity().getContent();
 				// if (HTTPUtils.testResponse(is)) {
 				// return false;
 				// }
@@ -235,145 +242,144 @@ public class OrderDetailListActivity extends FragmentActivity implements
 				parser.setInput(is, HTTP.UTF_8);
 				String tag = null;
 				int eventType = parser.getEventType();
-				Map<String, String> commonInfo = null;
-				List<DetailItem> pInfo = null;
-				DetailItem detailItem = null;
-				Map<String, String> addrInfo = null;
+				OrderDetailItem.Common oCommon = null;
+				OrderDetailItem.Address oAddress = null;
+				OrderDetailItem.Item oItem = null;
+				List<OrderDetailItem.Item> oItemList = null;
 				while (eventType != XmlPullParser.END_DOCUMENT) {
 					if (eventType == XmlPullParser.START_TAG) {
 						tag = parser.getName();
-						if (TextUtils.equals(tag, OrderDetailItem.DETAIL)) {
-							int depth = parser.getDepth();
-							if (depth == 1) {
-								// for start
-								mOrderDetailData = new OrderDetailItem();
-							} else if (depth == 3) {
-								// for address detail
-								parser.next();
-								addrInfo.put(OrderDetailItem.DETAIL, Utils
-										.formatRes(mCtx,
-												R.string.order_detail_address,
-												parser.getText()));
-							}
+						if (TextUtils.equals(tag, OrderDetailItem.ORDER)) {
+							mOrderDetailData = new OrderDetailItem();
 						} else if (TextUtils
 								.equals(tag, OrderDetailItem.COMMON)) {
-							commonInfo = new LinkedHashMap<String, String>();
-						} else if (TextUtils.equals(tag, OrderDetailItem.ITEMS)) {
-							pInfo = new ArrayList<DetailItem>();
-						} else if (TextUtils.equals(tag, OrderDetailItem.ITEM)) {
-							detailItem = new DetailItem();
+							oCommon = new OrderDetailItem.Common();
 						} else if (TextUtils.equals(tag,
 								OrderDetailItem.ADDRESS)) {
-							addrInfo = new LinkedHashMap<String, String>();
+							oAddress = new OrderDetailItem.Address();
+						} else if (TextUtils.equals(tag, OrderDetailItem.ITEMS)) {
+							oItemList = new ArrayList<OrderDetailItem.Item>();
+						} else if (TextUtils.equals(tag, OrderDetailItem.ITEM)) {
+							oItem = new OrderDetailItem.Item();
 						} else if (TextUtils
 								.equals(tag, OrderDetailItem.NUMBER)) {
 							parser.next();
-							commonInfo.put(OrderDetailItem.NUMBER, Utils
-									.formatRes(mCtx,
-											R.string.order_detail_number,
-											parser.getText()));
-						} else if (TextUtils
-								.equals(tag, OrderDetailItem.STATUS)) {
+							oCommon.setNumber(parser.getText());
+						} else if (TextUtils.equals(tag, OrderDetailItem.COUNT)) {
+							int depth = parser.getDepth();
 							parser.next();
-							commonInfo.put(OrderDetailItem.STATUS, Utils
-									.formatRes(mCtx,
-											R.string.order_detail_status,
-											parser.getText()));
+							if (depth == 4) {
+								// common
+								oCommon.setCount(parser.getText());
+							} else {
+								oItem.setCount(parser.getText());
+							}
 						} else if (TextUtils
 								.equals(tag, OrderDetailItem.AMOUNT)) {
 							parser.next();
-							commonInfo.put(OrderDetailItem.AMOUNT, Utils
-									.formatRes(mCtx,
-											R.string.order_detail_amount,
-											parser.getText()));
-						} else if (TextUtils.equals(tag, OrderDetailItem.MSG)) {
-							parser.next();
-							commonInfo.put(OrderDetailItem.MSG, Utils
-									.formatRes(mCtx, R.string.order_detail_msg,
-											parser.getText()));
+							oCommon.setAmount(parser.getText());
 						} else if (TextUtils.equals(tag,
 								OrderDetailItem.CHANNELID)) {
 							parser.next();
-							mOrderDetailData.setChannelId(parser.getText());
+							oCommon.setChannelid(parser.getText());
 						} else if (TextUtils
 								.equals(tag, OrderDetailItem.SHOPID)) {
 							parser.next();
-							mOrderDetailData.setShopId(parser.getText());
+							oCommon.setShopid(parser.getText());
 						} else if (TextUtils.equals(tag,
-								OrderDetailItem.PRODUCTID)) {
+								OrderDetailItem.TRANSPORT)) {
 							parser.next();
-							detailItem.setProductid(parser.getText());
+							oCommon.setTransport(parser.getText());
 						} else if (TextUtils.equals(tag,
-								OrderDetailItem.ICONURL)) {
+								OrderDetailItem.DELIVERYCOSTS)) {
 							parser.next();
-							detailItem.setIconurl(parser.getText());
-						} else if (TextUtils.equals(tag, OrderDetailItem.NAME)) {
+							oCommon.setDeliverycosts(parser.getText());
+						} else if (TextUtils.equals(tag,
+								OrderDetailItem.PAYMENTTYPE)) {
 							parser.next();
+							oCommon.setPaymenttype(parser.getText());
+						} else if (TextUtils.equals(tag,
+								OrderDetailItem.USERMESSAGE)) {
+							parser.next();
+							oCommon.setUsermessage(parser.getText());
+						} else if (TextUtils.equals(tag, OrderDetailItem.STATE)) {
+							parser.next();
+							oCommon.setState(parser.getText());
+						} else if (TextUtils.equals(tag,
+								OrderDetailItem.COMMENTED)) {
 							int depth = parser.getDepth();
-							// Log.e(TAG, "depth : " + depth);
-							if (depth == 3) {
-								// for address name
-								addrInfo.put(OrderDetailItem.NAME, Utils
-										.formatRes(mCtx,
-												R.string.order_detail_name,
-												parser.getText()));
-							} else if (depth == 4) {
-								// for product name
-								detailItem.setName(parser.getText());
+							parser.next();
+							if (depth == 4) {
+								// common
+								oCommon.setCommented(parser.getText());
+							} else {
+								oItem.setCommented(parser.getText());
 							}
-						} else if (TextUtils.equals(tag, OrderDetailItem.COLOR)) {
-							parser.next();
-							detailItem.setColor(parser.getText());
-						} else if (TextUtils.equals(tag, OrderDetailItem.COUNT)) {
-							parser.next();
-							detailItem.setCount(parser.getText());
-						} else if (TextUtils.equals(tag, OrderDetailItem.PRICE)) {
-							parser.next();
-							detailItem.setPrice(parser.getText());
-						} else if (TextUtils
-								.equals(tag, OrderDetailItem.ANCHOR)) {
-							parser.next();
-							detailItem.setAnchor(parser.getText());
 						} else if (TextUtils.equals(tag,
-								OrderDetailItem.ADDRESSPHONE)) {
+								OrderDetailItem.ORDERDATE)) {
 							parser.next();
-							addrInfo.put(OrderDetailItem.ADDRESSPHONE, Utils
-									.formatRes(mCtx,
-											R.string.order_detail_phone,
-											parser.getText()));
+							oCommon.setDate(parser.getText());
+						} else if (TextUtils.equals(tag, OrderDetailItem.ID)) {
+							parser.next();
+							oAddress.setId(parser.getText());
+						} else if (TextUtils.equals(tag, OrderDetailItem.NAME)) {
+							int depth = parser.getDepth();
+							parser.next();
+							if (depth == 4) {
+								// address
+								oAddress.setName(parser.getText());
+							} else {
+								oItem.setName(parser.getText());
+							}
+						} else if (TextUtils.equals(tag, OrderDetailItem.PHONE)) {
+							parser.next();
+							oAddress.setPhone(parser.getText());
+						} else if (TextUtils
+								.equals(tag, OrderDetailItem.DETAIL)) {
+							parser.next();
+							oAddress.setDetail(parser.getText());
 						} else if (TextUtils.equals(tag,
 								OrderDetailItem.POSTCODE)) {
 							parser.next();
-							addrInfo.put(OrderDetailItem.POSTCODE, Utils
-									.formatRes(mCtx,
-											R.string.order_detail_postcode,
-											parser.getText()));
+							oAddress.setPostcode(parser.getText());
 						} else if (TextUtils.equals(tag,
-								OrderDetailItem.COMMENTED)) {
+								OrderDetailItem.PRODUCTID)) {
 							parser.next();
-							mOrderDetailData.setCommented(Integer
-									.parseInt(parser.getText()));
+							oItem.setProductid(parser.getText());
+						} else if (TextUtils.equals(tag,
+								OrderDetailItem.ICONURL)) {
+							parser.next();
+							oItem.setIconurl(parser.getText());
+						} else if (TextUtils.equals(tag, OrderDetailItem.COLOR)) {
+							parser.next();
+							oItem.setColor(parser.getText());
+						} else if (TextUtils.equals(tag, OrderDetailItem.PRICE)) {
+							parser.next();
+							oItem.setPrice(parser.getText());
 						}
 					} else if (eventType == XmlPullParser.END_TAG) {
 						tag = parser.getName();
-						if (TextUtils.equals(tag, OrderDetailItem.COMMON)) {
-							mOrderDetailData.setCommonInfo(commonInfo);
-						} else if (TextUtils.equals(tag, OrderDetailItem.ITEM)) {
-							// check icon cache path
-							detailItem.setIconCachePath(FileHelper
-									.getIconCachePath(mCtx,
-											detailItem.getIconurl(), true));
-							pInfo.add(detailItem);
+						if (TextUtils.equals(tag, OrderDetailItem.ITEM)) {
+							String iconCachePath = FileHelper.getIconCachePath(
+									mCtx, oItem.getIconurl(), true);
+							oItem.setIconCachePath(iconCachePath);
+							oItem.setDate(oCommon.getDate());
+							oItemList.add(oItem);
+						} else if (TextUtils.equals(tag, OrderDetailItem.ITEMS)) {
+							mOrderDetailData.setItem(oItemList);
 						} else if (TextUtils.equals(tag,
 								OrderDetailItem.ADDRESS)) {
-							mOrderDetailData.setAddrInfo(addrInfo);
-						} else if (TextUtils.equals(tag, OrderDetailItem.ITEMS)) {
-							mOrderDetailData.setPInfo(pInfo);
+							mOrderDetailData.setAddress(oAddress);
+						} else if (TextUtils
+								.equals(tag, OrderDetailItem.COMMON)) {
+							mOrderDetailData.setCommon(oCommon);
 						}
 					}
 					eventType = parser.next();
 				}// ?end while
-				Log.e(TAG, "mOrderDetailData : " + mOrderDetailData);
+				if (Constants.DEBUG) {
+					Log.e(TAG, "mOrderDetailData : " + mOrderDetailData);
+				}
 				if (mOrderDetailData != null) {
 					return true;
 				}
@@ -406,12 +412,12 @@ public class OrderDetailListActivity extends FragmentActivity implements
 			return list;
 		}
 
-		private List<String> setRequestParamValues() {
-			List<String> list = new ArrayList<String>();
-			list.add(Utils.getIMEI(mCtx));
-			list.add(Utils.getIMEI(mCtx));
-			list.add(Utils.getChannelId(mCtx));
-			list.add(mOrderNumber);
+		private List<HttpParam> setRequestParamValues() {
+			List<HttpParam> list = new ArrayList<HttpParam>();
+			list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+			list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+			list.add(new HttpParam(false, Utils.getChannelId(mCtx)));
+			list.add(new HttpParam(false, mOrderNumber));
 			return list;
 		}
 	}
@@ -419,9 +425,9 @@ public class OrderDetailListActivity extends FragmentActivity implements
 	@SuppressWarnings("unchecked")
 	private void downloadIcons() {
 		List<String> iconUrls = new ArrayList<String>();
-		List<DetailItem> pInfo = mOrderDetailData.getPInfo();
+		List<OrderDetailItem.Item> pInfo = mOrderDetailData.getItem();
 		int size = pInfo.size();
-		DetailItem item = null;
+		OrderDetailItem.Item item = null;
 		for (int i = 0; i < size; i++) {
 			item = pInfo.get(i);
 			if (item.getIconCachePath() == null) {
@@ -448,11 +454,14 @@ public class OrderDetailListActivity extends FragmentActivity implements
 
 	@SuppressWarnings("deprecation")
 	private void updateItemIcon(String... params) {
-		Log.d(TAG, "iconurl : " + params[0] + ",iconCachePath : " + params[1]);
-		int size = mOrderDetailData.getPInfo().size();
-		DetailItem item = null;
+		if (Constants.DEBUG) {
+			Log.d(TAG, "iconurl : " + params[0] + ",iconCachePath : "
+					+ params[1]);
+		}
+		int size = mOrderDetailData.getItem().size();
+		OrderDetailItem.Item item = null;
 		for (int i = 0; i < size; i++) {
-			item = mOrderDetailData.getPInfo().get(i);
+			item = mOrderDetailData.getItem().get(i);
 			if (TextUtils.equals(item.getIconurl(), params[0])) {
 				item.setIconCachePath(params[1]);
 				// TODO
@@ -468,26 +477,26 @@ public class OrderDetailListActivity extends FragmentActivity implements
 		mRetryText.setVisibility(View.GONE);
 		mContentLayout.setVisibility(View.VISIBLE);
 
-		mCommonText.setText(mOrderDetailData.formatCommonInfo());
-		mAddressText.setText(mOrderDetailData.formatAddrInfo());
+		mCommonText.setText(mOrderDetailData.getCommon().toString(mCtx));
+		mAddressText.setText(mOrderDetailData.getAddress().toString(mCtx));
 		mAdapter = new OrderDetailAdapter();
 		mMiddleLayout.setAdapter(mAdapter);
 		mMiddleLayout.bindViews();
 		String[] statusArr = getResources()
 				.getStringArray(R.array.order_status);
-		String status = mOrderDetailData.getCommonInfo().get(
-				OrderDetailItem.STATUS);
+		String status = mOrderDetailData.getCommon().getState();
 		// Log.e(TAG, "status : " + status + ",sss : "
 		// + statusArr[statusArr.length - 2]);
 		if (TextUtils.equals(status, statusArr[statusArr.length - 2])) {
 			mCommentText.setVisibility(View.VISIBLE);
 		} else {
-			if (mOrderDetailData.getCommented() != OrderDetailItem.COMMENT_DONE) {
+			if (Integer.valueOf(mOrderDetailData.getCommon().getCommented()) != Constants.COMMENTED_DONE) {
 				mCommentText.setVisibility(View.VISIBLE);
 			} else {
 				mCommentText.setVisibility(View.GONE);
 			}
 		}
+		downloadIcons();
 	}
 
 	private void notifyError() {
@@ -500,7 +509,7 @@ public class OrderDetailListActivity extends FragmentActivity implements
 
 		@Override
 		public int getCount() {
-			return mOrderDetailData.getPInfo().size();
+			return mOrderDetailData.getItem().size();
 		}
 
 		@Override
@@ -531,14 +540,15 @@ public class OrderDetailListActivity extends FragmentActivity implements
 			} else {
 				viewHodler = (ViewHolder) convertView.getTag();
 			}
-			DetailItem item = mOrderDetailData.getPInfo().get(position);
+			OrderDetailItem.Item item = mOrderDetailData.getItem()
+					.get(position);
 			if (item.getIconCachePath() != null) {
 				viewHodler.icon.setBackgroundDrawable(new BitmapDrawable(
 						FileHelper.decodeIconFile(mCtx,
 								item.getIconCachePath(), 70, 70)));
 			}
 			viewHodler.name.setText(item.getName());
-			viewHodler.others.setText(item.formatOther(mCtx));
+			viewHodler.others.setText(item.toString(mCtx));
 			return convertView;
 		}
 	}

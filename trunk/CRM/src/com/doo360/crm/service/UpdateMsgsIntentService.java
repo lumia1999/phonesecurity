@@ -24,6 +24,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.NotificationIdGen;
 import com.doo360.crm.R;
 import com.doo360.crm.http.FunctionEntry;
@@ -48,13 +49,17 @@ public class UpdateMsgsIntentService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		Log.d(TAG, "onHandleIntent");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onHandleIntent");
+		}
 		fetchMsgs();
 	}
 
 	@Override
 	public void onDestroy() {
-		Log.d(TAG, "onDestroy");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onDestroy");
+		}
 		super.onDestroy();
 	}
 
@@ -65,7 +70,9 @@ public class UpdateMsgsIntentService extends IntentService {
 			return;
 		}
 		int statusCode = response.getStatusLine().getStatusCode();
-		// Log.d(TAG, "statusCode : " + statusCode);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "statusCode : " + statusCode);
+		}
 		if (statusCode != HttpStatus.SC_OK) {
 			return;
 		}

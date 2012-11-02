@@ -16,12 +16,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlSerializer;
 
+import com.doo360.crm.Constants;
+
 import android.util.Base64;
 import android.util.Log;
 import android.util.Xml;
 
 public class HTTPUtils {
-	private static final String TAG = "RequestUtils";
+	private static final String TAG = "HTTPUtils";
 
 	public static final String COMMAND = "command";
 	public static final String REQ = "req";
@@ -47,6 +49,12 @@ public class HTTPUtils {
 
 	public static final String PRODUCTID = "productid";
 
+	public static final String PRODUCTNAME = "productname";
+
+	public static final String PRICEELEMENTNAME = "priceelementname";
+
+	public static final String PRICE = "price";
+
 	public static final String COLOR = "color";
 
 	public static final String COUNT = "count";
@@ -57,13 +65,14 @@ public class HTTPUtils {
 	public static final int DEF_PAGE_SIZE = 20;
 
 	public static final String ITEMS = "items";
+	public static final String ITEM = "item";
 	public static final String TRANSPORT = "transport";
 	public static final String DELIVERCOSTS = "deliverycosts";
 	public static final String PAYMENTTYPE = "paymenttype";
 	public static final String USERMESSSAGE = "usermessage";
 
 	public static String formatRequestParams(String inst, List<String> params,
-			List<String> values) {
+			List<HttpParam> values, boolean original) {
 		XmlSerializer serializer = Xml.newSerializer();
 		ByteArrayOutputStream os = null;
 		try {
@@ -79,17 +88,29 @@ public class HTTPUtils {
 			serializer.startTag("", PARAMS);
 			if (params != null) {
 				int size = params.size();
+				HttpParam param = null;
 				for (int i = 0; i < size; i++) {
 					serializer.startTag("", params.get(i));
-					serializer.text(values.get(i));
+					param = values.get(i);
+					if (param.isCdsect()) {
+						serializer.cdsect(param.getContent());
+					} else {
+						serializer.text(param.getContent());
+					}
 					serializer.endTag("", params.get(i));
 				}
 			}
 			serializer.endTag("", PARAMS);
 			serializer.endTag("", REQ);
 			serializer.endDocument();
-			// return os.toString();
-			return Base64It(os.toByteArray());
+			if (Constants.DEBUG) {
+				Log.d(TAG, "post data : " + os.toString());
+			}
+			if (original) {
+				return os.toString();
+			} else {
+				return Base64It(os.toByteArray());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -110,7 +131,7 @@ public class HTTPUtils {
 	 * @param params
 	 * @return
 	 */
-	private static String Base64It(byte[] bytes) {
+	public static String Base64It(byte[] bytes) {
 		return Base64.encodeToString(bytes, Base64.DEFAULT);
 	}
 
@@ -134,7 +155,9 @@ public class HTTPUtils {
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
 			}
-			Log.d(TAG, sb.toString());
+			if (Constants.DEBUG) {
+				Log.d(TAG, sb.toString());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

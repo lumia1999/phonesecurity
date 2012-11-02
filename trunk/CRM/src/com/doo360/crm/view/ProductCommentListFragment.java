@@ -36,11 +36,13 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.ProductCommentItem;
 import com.doo360.crm.R;
 import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
 
@@ -76,7 +78,9 @@ public class ProductCommentListFragment extends ListFragment implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 		mPageIndex = 1;// init value
 		mCurReadCount = 0;// init value
@@ -115,7 +119,9 @@ public class ProductCommentListFragment extends ListFragment implements
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		Log.d(TAG, "onActivityCreated");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onActivityCreated");
+		}
 		super.onActivityCreated(savedInstanceState);
 		new FetchDataTask().execute(FunctionEntry.EVALUATE_ENTRY,
 				InstConstants.GET_EVALUATION);
@@ -176,7 +182,9 @@ public class ProductCommentListFragment extends ListFragment implements
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			Log.d(TAG, "doInBackground");
+			if (Constants.DEBUG) {
+				Log.d(TAG, "doInBackground");
+			}
 			if (mLoadingData != null && !mLoadingData.isEmpty()) {
 				mLoadingData.clear();
 			} else {
@@ -188,14 +196,16 @@ public class ProductCommentListFragment extends ListFragment implements
 				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
 				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 						.formatRequestParams(params[1], setRequestParams(),
-								setRequestParamValues())));
+								setRequestParamValues(), false)));
 				HttpResponse resp = HttpRequestBox.getInstance(mAct)
 						.sendRequest(post);
 				if (resp == null) {
 					return false;
 				}
 				int statusCode = resp.getStatusLine().getStatusCode();
-				Log.d(TAG, "statusCode : " + statusCode);
+				if (Constants.DEBUG) {
+					Log.d(TAG, "statusCode : " + statusCode);
+				}
 				if (statusCode != HttpStatus.SC_OK) {
 					return false;
 				}
@@ -256,7 +266,9 @@ public class ProductCommentListFragment extends ListFragment implements
 					}
 				}
 			}
-			Log.e(TAG, "mItemTotalCount : " + mItemTotalCount);
+			if (Constants.DEBUG) {
+				Log.e(TAG, "mItemTotalCount : " + mItemTotalCount);
+			}
 			mDataList.addAll(mLoadingData);
 			return true;
 		}
@@ -283,14 +295,16 @@ public class ProductCommentListFragment extends ListFragment implements
 			return list;
 		}
 
-		private List<String> setRequestParamValues() {
-			List<String> list = new ArrayList<String>();
-			list.add(Utils.getIMEI(mAct));
-			list.add(Utils.getIMEI(mAct));
-			list.add(Utils.getChannelId(mAct));
-			list.add(((ProductCommentListActivity) mAct).getPId());
-			list.add(String.valueOf(mPageIndex));
-			list.add(String.valueOf(HTTPUtils.DEF_PAGE_SIZE));
+		private List<HttpParam> setRequestParamValues() {
+			List<HttpParam> list = new ArrayList<HttpParam>();
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getChannelId(mAct)));
+			list.add(new HttpParam(false, ((ProductCommentListActivity) mAct)
+					.getPId()));
+			list.add(new HttpParam(false, String.valueOf(mPageIndex)));
+			list.add(new HttpParam(false, String
+					.valueOf(HTTPUtils.DEF_PAGE_SIZE)));
 			return list;
 		}
 	}
@@ -304,7 +318,6 @@ public class ProductCommentListFragment extends ListFragment implements
 			if (mItemTotalCount > mDataList.size()) {
 				mListView.addFooterView(mFooter);
 			}
-			// TODO
 			// mListView.addFooterView(mFooter);
 			mAdapter = new CommentAdapter();
 			mListView.setAdapter(mAdapter);

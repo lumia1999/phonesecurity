@@ -1,5 +1,7 @@
 package com.doo360.crm.provider;
 
+import com.doo360.crm.Constants;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -34,7 +36,9 @@ public class RawDbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		db.execSQL("CREATE TABLE " + TABLE_PROVINCE + " (" + ProvinceColumn._ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + ProvinceColumn.NAME
 				+ " TEXT NOT NULL," + ProvinceColumn.SORT + " INTEGER,"

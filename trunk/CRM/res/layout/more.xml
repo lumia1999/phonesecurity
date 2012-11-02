@@ -3,7 +3,7 @@
     android:id="@+id/more_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/light_grey"
+    android:background="@drawable/list_item_selector"
     android:gravity="center"
     android:minHeight="?android:attr/listPreferredItemHeight" >
 

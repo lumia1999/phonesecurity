@@ -52,6 +52,7 @@ import com.doo360.crm.R;
 import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.tsk.DownloadIconTask;
@@ -109,7 +110,9 @@ public class ProductDetailActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(bundle);
 		setContentView(R.layout.product_detail);
 		initUI();
@@ -117,7 +120,9 @@ public class ProductDetailActivity extends FragmentActivity implements
 		mType = i.getIntExtra(HotmodelListActivity.EXTRA_TYPE, -1);
 		mPId = i.getStringExtra(EXTRA_PID);
 		mPIconUrl = i.getStringExtra(EXTRA_ICONURL);
-		Log.d(TAG, "mPId : " + mPId);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "mPId : " + mPId);
+		}
 		new FetchDataTask().execute(FunctionEntry.PRODUCT_ENTRY,
 				InstConstants.PRODUCT_INFO);
 	}
@@ -133,8 +138,10 @@ public class ProductDetailActivity extends FragmentActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG, "requestCode : " + requestCode + ",resultCode : "
-				+ resultCode);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "requestCode : " + requestCode + ",resultCode : "
+					+ resultCode);
+		}
 		switch (requestCode) {
 		case REQ_CODE_PURCHASE_CONFIRM:
 			if (resultCode == Activity.RESULT_OK) {
@@ -265,14 +272,16 @@ public class ProductDetailActivity extends FragmentActivity implements
 							FunctionEntry.fixUrl(params[0]));
 					post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 							.formatRequestParams(params[1], setRequestParams(),
-									setRequestParamValues())));
+									setRequestParamValues(), false)));
 					HttpResponse resp = HttpRequestBox.getInstance(mCtx)
 							.sendRequest(post);
 					if (resp == null) {
 						return null;
 					}
 					int statusCode = resp.getStatusLine().getStatusCode();
-					Log.d(TAG, "statusCode : " + statusCode);
+					if (Constants.DEBUG) {
+						Log.d(TAG, "statusCode : " + statusCode);
+					}
 					if (statusCode != HttpStatus.SC_OK) {
 						return null;
 					}
@@ -327,14 +336,14 @@ public class ProductDetailActivity extends FragmentActivity implements
 				return list;
 			}
 
-			private List<String> setRequestParamValues() {
-				List<String> list = new ArrayList<String>();
-				list.add(Utils.getIMEI(mCtx));
-				list.add(Utils.getIMEI(mCtx));
-				list.add(Utils.getChannelId(mCtx));
-				list.add(mPId);
-				list.add(mProductDetailData.getColorList()
-						.get(mColorIdSelected).getName());
+			private List<HttpParam> setRequestParamValues() {
+				List<HttpParam> list = new ArrayList<HttpParam>();
+				list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+				list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+				list.add(new HttpParam(false, Utils.getChannelId(mCtx)));
+				list.add(new HttpParam(false, mPId));
+				list.add(new HttpParam(false, mProductDetailData.getColorList()
+						.get(mColorIdSelected).getName()));
 				return list;
 			}
 
@@ -405,14 +414,16 @@ public class ProductDetailActivity extends FragmentActivity implements
 				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
 				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 						.formatRequestParams(params[1], setRequestParams(),
-								setRequestParamValues())));
+								setRequestParamValues(), false)));
 				HttpResponse resp = HttpRequestBox.getInstance(mCtx)
 						.sendRequest(post);
 				if (resp == null) {
 					return false;
 				}
 				int statusCode = resp.getStatusLine().getStatusCode();
-				Log.d(TAG, "statusCode : " + statusCode);
+				if (Constants.DEBUG) {
+					Log.d(TAG, "statusCode : " + statusCode);
+				}
 				if (statusCode != HttpStatus.SC_OK) {
 					return false;
 				}
@@ -533,12 +544,12 @@ public class ProductDetailActivity extends FragmentActivity implements
 			return list;
 		}
 
-		private List<String> setRequestParamValues() {
-			List<String> list = new ArrayList<String>();
-			list.add(Utils.getIMEI(mCtx));
-			list.add(Utils.getIMEI(mCtx));
-			list.add(Utils.getChannelId(mCtx));
-			list.add(mPId);
+		private List<HttpParam> setRequestParamValues() {
+			List<HttpParam> list = new ArrayList<HttpParam>();
+			list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+			list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+			list.add(new HttpParam(false, Utils.getChannelId(mCtx)));
+			list.add(new HttpParam(false, mPId));
 			return list;
 		}
 	}
@@ -630,7 +641,7 @@ public class ProductDetailActivity extends FragmentActivity implements
 	@SuppressWarnings("unchecked")
 	private void downlaodIcon() {
 		List<String> iconUrls = new ArrayList<String>();
-		iconUrls.add(FunctionEntry.fixUrl(mProductDetailData.getIconurl()));
+		iconUrls.add(mProductDetailData.getIconurl());
 		mIconTsk = new DownloadIconTask(mCtx, this);
 		mIconTsk.execute(iconUrls);
 	}
@@ -638,7 +649,10 @@ public class ProductDetailActivity extends FragmentActivity implements
 	@SuppressWarnings("deprecation")
 	@Override
 	public void iconDownloaded(String... params) {
-		Log.d(TAG, "iconurl : " + params[0] + ",iconcachepath : " + params[1]);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "iconurl : " + params[0] + ",iconcachepath : "
+					+ params[1]);
+		}
 		mProductDetailData.setIconCachePath(params[1]);
 		mIconImage.setBackgroundDrawable(new BitmapDrawable(FileHelper
 				.decodeIconFile(mCtx, params[1],

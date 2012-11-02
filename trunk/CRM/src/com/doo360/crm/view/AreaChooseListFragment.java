@@ -65,13 +65,17 @@ public class AreaChooseListFragment extends ListFragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
-		Log.d(TAG, "onAttach");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onAttach");
+		}
 		super.onAttach(activity);
 		mAct = activity;
 		mOnAreaChooseFinishListener = (OnAreaChooseFinishListener) activity;
@@ -92,7 +96,9 @@ public class AreaChooseListFragment extends ListFragment {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		Log.d(TAG, "onActivityCreated");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onActivityCreated");
+		}
 		super.onActivityCreated(savedInstanceState);
 		getProvinceData();
 	}
@@ -104,7 +110,9 @@ public class AreaChooseListFragment extends ListFragment {
 
 			@Override
 			protected Cursor doInBackground(Void... params) {
-				Log.d(TAG, "getProvinceData");
+				if (Constants.DEBUG) {
+					Log.d(TAG, "getProvinceData");
+				}
 				Cursor c = mRawDbHelper.getProvinceList();
 				return c;
 			}
@@ -134,7 +142,9 @@ public class AreaChooseListFragment extends ListFragment {
 
 			@Override
 			protected Cursor doInBackground(Integer... params) {
-				Log.d(TAG, "getCityData");
+				if (Constants.DEBUG) {
+					Log.d(TAG, "getCityData");
+				}
 				Cursor c = mRawDbHelper.getCityListByPId(params[0]);
 				return c;
 			}
@@ -163,7 +173,9 @@ public class AreaChooseListFragment extends ListFragment {
 
 			@Override
 			protected Cursor doInBackground(Integer... params) {
-				Log.d(TAG, "getDistrictData");
+				if (Constants.DEBUG) {
+					Log.d(TAG, "getDistrictData");
+				}
 				Cursor c = mRawDbHelper.getDistrictByCId(params[0]);
 				return c;
 			}

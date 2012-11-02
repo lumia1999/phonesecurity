@@ -2,6 +2,7 @@ package com.doo360.crm;
 
 public class SoftwareItem {
 	public static final String ITEM = "item";
+	public static final String ID = "id";
 	public static final String ICONURL = "iconurl";
 	public static final String ICONCACHEPATH = "iconcachepath";
 	public static final String AUTHOR = "author";
@@ -15,6 +16,7 @@ public class SoftwareItem {
 	public static final int STATUS_INSTALLED = 1;
 	public static final int STATUS_UPDATE = 2;
 
+	private String id;
 	private String iconurl;
 	private String iconCachePath;
 	private String author;
@@ -27,6 +29,14 @@ public class SoftwareItem {
 
 	public SoftwareItem() {
 		// default
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getPackagename() {

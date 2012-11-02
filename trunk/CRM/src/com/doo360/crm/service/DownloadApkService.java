@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.NotificationIdGen;
 import com.doo360.crm.R;
 import com.doo360.crm.tsk.DownloadApkTask;
@@ -108,7 +109,9 @@ public class DownloadApkService extends Service implements
 	@Override
 	public void onCreate() {
 		// TODO
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		mApks = new ArrayList<Apk>();
 		mNm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mCtx = this;
@@ -118,7 +121,9 @@ public class DownloadApkService extends Service implements
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO
-		Log.d(TAG, "onStartCommand");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onStartCommand");
+		}
 		if (intent == null) {
 			return START_STICKY;
 		}
@@ -140,7 +145,9 @@ public class DownloadApkService extends Service implements
 
 	@Override
 	public void onDestroy() {
-		Log.d(TAG, "onDestroy");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onDestroy");
+		}
 		super.onDestroy();
 		mApks = null;
 		mNBuilder = null;
@@ -154,7 +161,9 @@ public class DownloadApkService extends Service implements
 	@Override
 	public void onDownloadFinished(Result result) {
 		// TODO
-		Log.d(TAG, "result : " + result);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "result : " + result);
+		}
 		Apk apk = getAndRemoveApk(result.getUrl());
 		showTotalNotification();
 		showApkFinishedNotification(result, apk);

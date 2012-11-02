@@ -64,6 +64,7 @@
     <string name="order_price_txt">{?}元</string>
     <string name="order_count_tip_txt">数量：</string>
     <string name="order_view_detail_txt">查看订单</string>
+    <string name="order_no_item_txt">您还没有下过订单</string>
 
     <!-- order detail string -->
     <string name="order_detail_title_txt">订单详情</string>
@@ -188,4 +189,7 @@
     <!-- floating ad string -->
     <string name="tips">提示</string>
     <string name="floating_ad_download_tip_txt">确定要下载{?}吗？</string>
-</resources>
+    <string name="floating_ad_download_ongoing_toast">有任务正在下载中，稍后再试</string>
+    <string name="floating_ad_download_begin_tip_txt">开始下载:</string>
+
+</resources>

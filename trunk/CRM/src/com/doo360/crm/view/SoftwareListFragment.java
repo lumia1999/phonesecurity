@@ -32,12 +32,14 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.FileHelper;
 import com.doo360.crm.R;
 import com.doo360.crm.SoftwareItem;
 import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.service.DownloadApkService;
@@ -58,9 +60,6 @@ public class SoftwareListFragment extends ListFragment implements
 	private ListView mListView;
 	private TextView mRetryText;
 
-	private static final String EXIST = "exist";
-	private boolean mExist;
-
 	// loading
 	private ProgressBar mLoadingProgressbar;
 	private Activity mAct;
@@ -76,43 +75,40 @@ public class SoftwareListFragment extends ListFragment implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
-		if (savedInstanceState != null) {
-			mExist = savedInstanceState.getBoolean(EXIST, false);
-		} else {
-			mExist = false;
-		}
 	}
 
 	@Override
 	public void onResume() {
-		Log.d(TAG, "onResume,mExit : " + mExist);
 		super.onResume();
-		if (!mExist) {
-			Log.d(TAG, "[after],mExit : " + mExist);
-			// new FetchDataTask().execute();
-		}
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		Log.d(TAG, "onSaveInstanceState");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onSaveInstanceState");
+		}
 		super.onSaveInstanceState(outState);
-		outState.putBoolean(EXIST, true);
 	}
 
 	@Override
 	public void onDestroy() {
-		Log.d(TAG, "onDestroy");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onDestroy");
+		}
 		super.onDestroy();
 	}
 
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		Log.d(TAG, "onDetach");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onDetach");
+		}
 		if (mIconTsk != null) {
 			mIconTsk.cancel(true);
 		}
@@ -121,7 +117,9 @@ public class SoftwareListFragment extends ListFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d(TAG, "onCreateView");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreateView");
+		}
 		View v = inflater.inflate(R.layout.software_fragment, container, false);
 		mPrevImage = (ImageView) v.findViewById(R.id.prev);
 		mBannerText = (TextView) v.findViewById(R.id.title);
@@ -139,7 +137,9 @@ public class SoftwareListFragment extends ListFragment implements
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		Log.d(TAG, "onActivityCreated");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onActivityCreated");
+		}
 		super.onActivityCreated(savedInstanceState);
 		new FetchDataTask().execute(FunctionEntry.SOFTWARE_ENTRY,
 				InstConstants.SOFTWARE);
@@ -181,7 +181,9 @@ public class SoftwareListFragment extends ListFragment implements
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			Log.d(TAG, "doInBackground...");
+			if (Constants.DEBUG) {
+				Log.d(TAG, "doInBackground...");
+			}
 			if (mDataList != null && !mDataList.isEmpty()) {
 				mDataList.clear();
 			} else {
@@ -193,18 +195,21 @@ public class SoftwareListFragment extends ListFragment implements
 				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
 				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 						.formatRequestParams(params[1], setRequestParams(),
-								setRequestParamValues())));
+								setRequestParamValues(), false)));
 				HttpResponse resp = HttpRequestBox.getInstance(mAct)
 						.sendRequest(post);
 				if (resp == null) {
 					return false;
 				}
 				int statusCode = resp.getStatusLine().getStatusCode();
-				Log.d(TAG, "statusCode : " + statusCode);
+				if (Constants.DEBUG) {
+					Log.d(TAG, "statusCode : " + statusCode);
+				}
 				if (statusCode != HttpStatus.SC_OK) {
 					return false;
 				}
 				is = resp.getEntity().getContent();
+				// TODO
 				// if (HTTPUtils.testResponse(is)) {
 				// return false;
 				// }
@@ -221,6 +226,9 @@ public class SoftwareListFragment extends ListFragment implements
 						tag = parser.getName();
 						if (TextUtils.equals(tag, SoftwareItem.ITEM)) {
 							item = new SoftwareItem();
+						} else if (TextUtils.equals(tag, SoftwareItem.ID)) {
+							parser.next();
+							item.setId(parser.getText());
 						} else if (TextUtils.equals(tag, SoftwareItem.ICONURL)) {
 							parser.next();
 							item.setIconurl(parser.getText());
@@ -295,17 +303,16 @@ public class SoftwareListFragment extends ListFragment implements
 			return list;
 		}
 
-		private List<String> setRequestParamValues() {
-			List<String> list = new ArrayList<String>();
-			list.add(Utils.getIMEI(mAct));
-			list.add(Utils.getIMEI(mAct));
-			list.add(Utils.getChannelId(mAct));
+		private List<HttpParam> setRequestParamValues() {
+			List<HttpParam> list = new ArrayList<HttpParam>();
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getChannelId(mAct)));
 			return list;
 		}
 	}
 
 	private void fillData() {
-		// Log.d(TAG, "fillData");
 		mAdapter = new SoftwareAdapter();
 		mListView.setAdapter(mAdapter);
 		mLoadingProgressbar.setVisibility(View.GONE);
@@ -316,7 +323,10 @@ public class SoftwareListFragment extends ListFragment implements
 
 	@SuppressWarnings("deprecation")
 	private void updateItemIcon(String... params) {
-		Log.d(TAG, "iconurl : " + params[0] + ",iconCachePath : " + params[1]);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "iconurl : " + params[0] + ",iconCachePath : "
+					+ params[1]);
+		}
 		int count = mDataList.size();
 		SoftwareItem item = null;
 		for (int i = 0; i < count; i++) {
@@ -324,16 +334,16 @@ public class SoftwareListFragment extends ListFragment implements
 			if (TextUtils.equals(item.getIconurl(), params[0])) {
 				item.setIconCachePath(params[1]);
 				// TODO
-				((ViewHolder) mListView.getChildAt(i).getTag()).icon
-						.setBackgroundDrawable(new BitmapDrawable(
-								FileHelper
-										.decodeIconFile(
-												mAct,
-												params[1],
-												FileHelper
-														.getIconDefaultSize(mAct)/**/,
-												FileHelper
-														.getIconDefaultSize(mAct)/**/)));
+				View child = mListView.getChildAt(i);
+				if (child != null) {
+					((ViewHolder) child.getTag()).icon
+							.setBackgroundDrawable(new BitmapDrawable(
+									FileHelper.decodeIconFile(mAct, params[1],
+											Utils.getIconSize(mAct,
+													Constants.ICON_SIZE_48),
+											Utils.getIconSize(mAct,
+													Constants.ICON_SIZE_48))));
+				}
 				break;
 			}
 		}
@@ -360,6 +370,7 @@ public class SoftwareListFragment extends ListFragment implements
 			// there are icons needed to download
 			mIconTsk = new DownloadIconTask(mAct, this);
 			mIconTsk.execute(iconUrls);
+			Log.e(TAG, "dsfasdfdasfdsafsdfdsfdsffd");
 		}
 	}
 
@@ -390,6 +401,7 @@ public class SoftwareListFragment extends ListFragment implements
 			return position;
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder viewHolder = null;
@@ -412,19 +424,33 @@ public class SoftwareListFragment extends ListFragment implements
 				viewHolder = (ViewHolder) convertView.getTag();
 			}
 			final SoftwareItem item = mDataList.get(position);
+			if (item.getIconCachePath() != null) {
+				viewHolder.icon
+						.setBackgroundDrawable(new BitmapDrawable(
+								FileHelper.decodeIconFile(mAct, item
+										.getIconCachePath(), Utils.getIconSize(
+										mAct, Constants.ICON_SIZE_48), Utils
+										.getIconSize(mAct,
+												Constants.ICON_SIZE_48))));
+			}
 			viewHolder.author.setText(item.getAuthor());
 			viewHolder.name.setText(item.getName());
 			viewHolder.rate.setRating(Float.valueOf(item.getRank()));
-			// TODO
 			switch (item.getStatus()) {
 			case SoftwareItem.STATUS_DOWNLOAD:
-
+				viewHolder.download.setText(R.string.software_download);
+				viewHolder.download
+						.setBackgroundResource(R.drawable.soft_item_bg_install_selector);
 				break;
 			case SoftwareItem.STATUS_INSTALLED:
-
+				viewHolder.download.setText(R.string.software_installed);
+				viewHolder.download
+						.setBackgroundResource(R.drawable.soft_item_bg_pressed);
 				break;
 			case SoftwareItem.STATUS_UPDATE:
-
+				viewHolder.download.setText(R.string.software_update);
+				viewHolder.download
+						.setBackgroundResource(R.drawable.soft_item_bg_update);
 				break;
 			}
 			viewHolder.download.setOnClickListener(new OnClickListener() {
@@ -459,7 +485,9 @@ public class SoftwareListFragment extends ListFragment implements
 	}
 
 	public void updateItemStatus(String pkgName) {
-		Log.d(TAG, "updateItemStatus");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "updateItemStatus");
+		}
 		int size = mDataList.size();
 		SoftwareItem item = null;
 		boolean exist = false;
