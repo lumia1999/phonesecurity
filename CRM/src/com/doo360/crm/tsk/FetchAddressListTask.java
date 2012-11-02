@@ -9,6 +9,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -21,8 +24,12 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.Utils;
+import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
+import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.provider.CrmDb;
 import com.doo360.crm.provider.ProviderOp;
 
@@ -111,32 +118,36 @@ public class FetchAddressListTask extends
 				c.getString(c.getColumnIndex(CrmDb.Address.DETAIL)));
 		item.put(CrmDb.Address.POSTCODE,
 				c.getString(c.getColumnIndex(CrmDb.Address.POSTCODE)));
-		item.put(CrmDb.Address.ANCHOR,
-				c.getString(c.getColumnIndex(CrmDb.Address.ANCHOR)));
 		return item;
 	}
 
 	public ArrayList<ContentValues> getListFromServer(String... params) {
-		Log.d(TAG, "doInBackground");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "doInBackground");
+		}
 		ArrayList<ContentValues> dataList = new ArrayList<ContentValues>();
 		InputStream is = null;
 		try {
-			is = mCtx.getAssets().open("address.xml");
+			// is = mCtx.getAssets().open("address.xml");
 			// TODO
-			// HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
-			// post.setEntity(HTTPUtils.fillEntity(HTTPUtils.formatRequestParams(
-			// params[1], setRequestParams(), setRequestParamValues())));
-			// HttpResponse resp = HttpRequestBox.getInstance(mCtx).sendRequest(
-			// post);
-			// if (resp == null) {
-			// return null;
-			// }
-			// int statusCode = resp.getStatusLine().getStatusCode();
-			// Log.d(TAG, "statusCode : " + statusCode);
-			// if (statusCode != HttpStatus.SC_OK) {
-			// return null;
-			// }
-			// is = resp.getEntity().getContent();
+			HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
+			post.setEntity(HTTPUtils.fillEntity(HTTPUtils.formatRequestParams(
+					params[1], setRequestParams(), setRequestParamValues(),
+					false)));
+			HttpResponse resp = HttpRequestBox.getInstance(mCtx).sendRequest(
+					post);
+			if (resp == null) {
+				return null;
+			}
+			int statusCode = resp.getStatusLine().getStatusCode();
+			if (Constants.DEBUG) {
+				Log.d(TAG, "statusCode : " + statusCode);
+			}
+			if (statusCode != HttpStatus.SC_OK) {
+				return null;
+			}
+			is = resp.getEntity().getContent();
+			// TODO
 			// if (HTTPUtils.testResponse(is)) {
 			// return null;
 			// }
@@ -176,12 +187,10 @@ public class FetchAddressListTask extends
 					} else if (TextUtils.equals(tag, CrmDb.Address.POSTCODE)) {
 						parser.next();
 						item.put(CrmDb.Address.POSTCODE, parser.getText());
-					} else if (TextUtils.equals(tag, CrmDb.Address.DEFAULT)) {
+					} else if (TextUtils.equals(tag, CrmDb.Address.ISDEFAULT)) {
 						parser.next();
-						item.put(CrmDb.Address.DEFAULT, parser.getText());
-					} else if (TextUtils.equals(tag, CrmDb.Address.ANCHOR)) {
-						parser.next();
-						item.put(CrmDb.Address.ANCHOR, parser.getText());
+						item.put(CrmDb.Address.ISDEFAULT,
+								Integer.valueOf(parser.getText()));
 					}
 				} else if (eventType == XmlPullParser.END_TAG) {
 					tag = parser.getName();
@@ -229,11 +238,11 @@ public class FetchAddressListTask extends
 		return list;
 	}
 
-	private List<String> setRequestParamValues() {
-		List<String> list = new ArrayList<String>();
-		list.add(Utils.getIMEI(mCtx));
-		list.add(Utils.getIMEI(mCtx));
-		list.add(Utils.getChannelId(mCtx));
+	private List<HttpParam> setRequestParamValues() {
+		List<HttpParam> list = new ArrayList<HttpParam>();
+		list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+		list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+		list.add(new HttpParam(false, Utils.getChannelId(mCtx)));
 		return list;
 	}
 }

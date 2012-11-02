@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 
 public class MsgCenterListActivity extends FragmentActivity implements
@@ -23,7 +24,9 @@ public class MsgCenterListActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.msgcenter);
 		initUI();
@@ -41,7 +44,9 @@ public class MsgCenterListActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		Log.d(TAG, "onDestroy");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onDestroy");
+		}
 		super.onDestroy();
 	}
 

@@ -12,7 +12,9 @@ public class App extends Application {
 
 	@Override
 	public void onCreate() {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		mMapMgr = new BMapManager(this);
 		mMapMgr.init(BDMapKey, null);
 		Utils.setMsgAlarm(this);
@@ -21,7 +23,9 @@ public class App extends Application {
 
 	@Override
 	public void onTerminate() {
-		Log.d(TAG, "onTerminate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onTerminate");
+		}
 		if (mMapMgr != null) {
 			mMapMgr.destroy();
 			mMapMgr = null;

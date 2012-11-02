@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 
 public class AddressListActivity extends FragmentActivity implements
@@ -25,7 +26,9 @@ public class AddressListActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(bundle);
 		setContentView(R.layout.address);
 		initUI();

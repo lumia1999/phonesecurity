@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 
 public class SoftwareListActivity extends FragmentActivity {
@@ -47,14 +48,18 @@ public class SoftwareListActivity extends FragmentActivity {
 
 	@Override
 	protected void onDestroy() {
-		Log.d(TAG, "onDestroy");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onDestroy");
+		}
 		super.onDestroy();
 		unregisterReceiver();
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		Log.d(TAG, "onKeyDown,keyCode : " + keyCode);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onKeyDown,keyCode : " + keyCode);
+		}
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			finish();
 			overridePendingTransition(0, 0);

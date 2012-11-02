@@ -41,6 +41,7 @@ import com.baidu.mapapi.MapActivity;
 import com.baidu.mapapi.MapView;
 import com.baidu.mapapi.MyLocationOverlay;
 import com.doo360.crm.BetterPopupWindow;
+import com.doo360.crm.Constants;
 import com.doo360.crm.Prefs;
 import com.doo360.crm.R;
 import com.doo360.crm.ShopItem;
@@ -49,6 +50,7 @@ import com.doo360.crm.ShopItemHeader;
 import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.loc.Positioning;
@@ -100,7 +102,9 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(bundle);
 		setContentView(R.layout.shop);
 		p = new Positioning(this);
@@ -156,7 +160,9 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 	@Override
 	protected void onResume() {
-		Log.e(TAG, "onResume");
+		if (Constants.DEBUG) {
+			Log.e(TAG, "onResume");
+		}
 		super.onResume();
 		if (p != null) {
 			p.start();
@@ -165,7 +171,9 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 	@Override
 	protected void onPause() {
-		Log.e(TAG, "onPause");
+		if (Constants.DEBUG) {
+			Log.e(TAG, "onPause");
+		}
 		if (p != null) {
 			p.pause();
 		}
@@ -174,7 +182,9 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 	@Override
 	protected void onDestroy() {
-		Log.e(TAG, "onDestroy");
+		if (Constants.DEBUG) {
+			Log.e(TAG, "onDestroy");
+		}
 		super.onDestroy();
 	}
 
@@ -261,7 +271,9 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 	@Override
 	public void reportMyLocation(Location location) {
-		Log.d(TAG, "reportMyLocation");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "reportMyLocation");
+		}
 		Prefs.setMyLocation(this, (int) (location.getLatitude() * 1E6),
 				(int) (location.getLongitude() * 1E6));
 		mBaiduMap.getController().setZoom(18);
@@ -304,7 +316,9 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			Log.d(TAG, "doInBackground");
+			if (Constants.DEBUG) {
+				Log.d(TAG, "doInBackground");
+			}
 			if (mDataList != null && !mDataList.isEmpty()) {
 				mDataList.clear();
 			} else {
@@ -326,14 +340,16 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
 				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 						.formatRequestParams(params[1], setRequestParams(),
-								setRequestParamValues())));
+								setRequestParamValues(), false)));
 				HttpResponse resp = HttpRequestBox.getInstance(mCtx)
 						.sendRequest(post);
 				if (resp == null) {
 					return false;
 				}
 				int statusCode = resp.getStatusLine().getStatusCode();
-				Log.d(TAG, "statusCode : " + statusCode);
+				if (Constants.DEBUG) {
+					Log.d(TAG, "statusCode : " + statusCode);
+				}
 				if (statusCode != HttpStatus.SC_OK) {
 					return false;
 				}
@@ -420,12 +436,12 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 			return list;
 		}
 
-		private List<String> setRequestParamValues() {
-			ArrayList<String> list = new ArrayList<String>();
-			list.add(Utils.getIMEI(mCtx));
-			list.add(Utils.getIMEI(mCtx));
-			list.add(Utils.getChannelId(mCtx));
-			list.add(Prefs.getCurrentCityName(mCtx));
+		private List<HttpParam> setRequestParamValues() {
+			ArrayList<HttpParam> list = new ArrayList<HttpParam>();
+			list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+			list.add(new HttpParam(false, Utils.getIMEI(mCtx)));
+			list.add(new HttpParam(false, Utils.getChannelId(mCtx)));
+			list.add(new HttpParam(false, Prefs.getCurrentCityName(mCtx)));
 			return list;
 		}
 	}
@@ -462,7 +478,9 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 
 	private void dataFormat() {
 		int size = mGroupList.size();
-		Log.e(TAG, "size : " + size);
+		if (Constants.DEBUG) {
+			Log.e(TAG, "size : " + size);
+		}
 		for (int i = 0; i < size; i++) {
 			mDataList.add(mGroupList.get(i));
 			mDataList.addAll(mChildrenList.get(i));

@@ -18,6 +18,8 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 
+import com.doo360.crm.Constants;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -67,8 +69,10 @@ public class HttpRequestBox {
 		HttpResponse response = null;
 		for (int i = 0; i < DEFAULT_RETRY_TIMES; i++) {
 			try {
-				Log.d(TAG, "request url : "
-						+ request.getURI().toURL().toString());
+				if (Constants.DEBUG) {
+					Log.d(TAG, "request url : "
+							+ request.getURI().toURL().toString());
+				}
 				response = mHttpClient.execute(request);
 				break;
 			} catch (java.net.SocketException e) {

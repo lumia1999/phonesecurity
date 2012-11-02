@@ -13,7 +13,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.FileHelper;
+import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HttpRequestBox;
 
 public class DownloadIconTask extends AsyncTask<List<String>, String, Void> {
@@ -39,13 +41,15 @@ public class DownloadIconTask extends AsyncTask<List<String>, String, Void> {
 	protected Void doInBackground(List<String>... params) {
 		mIconUrls = params[0];
 		int size = mIconUrls.size();
-		Log.d(TAG, "doInBackground,iconUrls size : " + size);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "doInBackground,iconUrls size : " + size);
+		}
 		File f = null;
 		HttpGet get = null;
 		HttpResponse resp = null;
 		for (int i = 0; i < size; i++) {
 			try {
-				get = new HttpGet(mIconUrls.get(i));
+				get = new HttpGet(FunctionEntry.fixUrl(mIconUrls.get(i)));
 				resp = HttpRequestBox.getInstance(mCtx).sendRequest(get);
 				if (resp == null) {
 					if (isCancelled()) {
@@ -82,7 +86,9 @@ public class DownloadIconTask extends AsyncTask<List<String>, String, Void> {
 	@Override
 	protected void onCancelled() {
 		super.onCancelled();
-		Log.d(TAG, "onCancelled");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCancelled");
+		}
 	}
 
 	@Override

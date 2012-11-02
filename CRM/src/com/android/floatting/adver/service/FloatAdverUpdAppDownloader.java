@@ -10,19 +10,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.floatting.adver.network.AppDownloader;
-import com.android.floatting.adver.network.Statistik;
 import com.android.floatting.adver.network.AppDownloader.AppDownloaderListener;
+import com.android.floatting.adver.network.Statistik;
 import com.android.floatting.adver.utils.Config;
 import com.android.floatting.adver.utils.Tools;
 import com.android.floatting.adver.view.DownloadNotification;
+import com.doo360.crm.R;
 
-public class FloatAdverUpdAppDownloader extends Service implements AppDownloaderListener{
-	
-	//private static final String TAG = "BaiduAppDownloadService";
+public class FloatAdverUpdAppDownloader extends Service implements
+		AppDownloaderListener {
+
+	// private static final String TAG = "BaiduAppDownloadService";
 
 	public class FloattingDownloadAppServiceBinder extends Binder {
 		public FloatAdverUpdAppDownloader getMyService() {
@@ -35,9 +36,9 @@ public class FloatAdverUpdAppDownloader extends Service implements AppDownloader
 	private AppDownloader mAppDownloader = null;
 	private Thread mQuryThread = null;
 	private boolean mStopQury = false;
-	
+
 	private String mAppName = null;
-	
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -46,131 +47,135 @@ public class FloatAdverUpdAppDownloader extends Service implements AppDownloader
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
-		
+
 		Tools.log("onStart................");
-		
-		if(intent ==null ||intent.getAction() == null){
+
+		if (intent == null || intent.getAction() == null) {
 			Tools.log("onStart null");
 			return;
 		}
-		
+
 		Bundle bundle = intent.getExtras();
-		if(bundle == null){
+		if (bundle == null) {
 			return;
 		}
-		
+
 		mAppName = bundle.getString("app_name");
 		String downloadUrl = bundle.getString("app_url");
-		
-		Tools.log("appName: " + mAppName + " downloadUrl:"+downloadUrl);
-		
-		if (intent.getAction().equalsIgnoreCase( //dialog ÖÐ½øÈë
+
+		Tools.log("appName: " + mAppName + " downloadUrl:" + downloadUrl);
+
+		if (intent.getAction().equalsIgnoreCase( // dialog ï¿½Ð½ï¿½ï¿½ï¿½
 				"android.service.startFloattingDownloadAppService")) {
-			if(mAppDownloader == null || !mAppDownloader.isDownloading()){
+			if (mAppDownloader == null || !mAppDownloader.isDownloading()) {
 				startDownload(mAppName, downloadUrl);
-			}else{
-				Toast.makeText(this, "ÓÐÈÎÎñÕýÔÚÏÂÔØÖÐ£¬ÉÔºóÔÙÊÔ", 2000).show();
+			} else {
+				Toast.makeText(this,
+						R.string.floating_ad_download_ongoing_toast,
+						Toast.LENGTH_SHORT).show();
 			}
-			
-		}else if(intent.getAction().equalsIgnoreCase( //notify ÖÐ½øÈë
-				"android.service.restartFloattingDownloadAppService")){
-			if(mAppDownloader == null || !mAppDownloader.isDownloading()){
+
+		} else if (intent.getAction().equalsIgnoreCase( // notify ï¿½Ð½ï¿½ï¿½ï¿½
+				"android.service.restartFloattingDownloadAppService")) {
+			if (mAppDownloader == null || !mAppDownloader.isDownloading()) {
 				startDownload(mAppName, downloadUrl);
-			}else{
-				//Èç¹ûÓÐÈÎÎñÔÚÏÂÔØÖÐ£¬Ôò²»´¦Àí
+			} else {
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ò²»´ï¿½ï¿½ï¿½
 			}
-			
+
 		}
 	}
-	
-	private void startDownload(String appName, String downloadUrl){
-		String path = Config.APP_DOWNLOAD_DIR + File.separator+ appName+".apk";
+
+	private void startDownload(String appName, String downloadUrl) {
+		String path = Config.APP_DOWNLOAD_DIR + File.separator + appName
+				+ ".apk";
 		File f = new File(path);
-		if(f.exists()){
+		if (f.exists()) {
 			installApk(path);
 			return;
 		}
-		
-		mAppDownloader = new AppDownloader(downloadUrl, 
-				Config.APP_DOWNLOAD_DIR, appName+".apk", this, this);
+
+		mAppDownloader = new AppDownloader(downloadUrl,
+				Config.APP_DOWNLOAD_DIR, appName + ".apk", this, this);
 		mAppDownloader.startDownload();
-		
-		DownloadNotification.getInstance(this).setDownloadProgress(0, true, false);
-		DownloadNotification.getInstance(this).setTitle("¿ªÊ¼ÏÂÔØ:", false);
-		DownloadNotification.getInstance(this).showNotification(appName, downloadUrl);
+
+		DownloadNotification.getInstance(this).setDownloadProgress(0, true,
+				false);
+		DownloadNotification.getInstance(this).setTitle(
+				getString(R.string.floating_ad_download_begin_tip_txt), false);
+		DownloadNotification.getInstance(this).showNotification(appName,
+				downloadUrl);
 	}
-	
-	
-	private void quryData(){
+
+	private void quryData() {
 		if (mQuryThread != null && mQuryThread.isAlive() && !mStopQury) {
 			return;
 		}
 		mStopQury = false;
-		mQuryThread = new Thread(new Runnable(){
+		mQuryThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(true){
-					if(!mStopQury){
-						try{
+				while (true) {
+					if (!mStopQury) {
+						try {
 							Thread.sleep(800);
-						}catch(Exception e){
+						} catch (Exception e) {
 							return;
 						}
-						mHandler.sendEmptyMessage(0);	
-					}else{
+						mHandler.sendEmptyMessage(0);
+					} else {
 						break;
 					}
-				}	
+				}
 			}
-			
+
 		});
-		
+
 		mQuryThread.start();
 	}
-	
-	private void stopQury(){
-		if(mQuryThread != null && mQuryThread.isAlive()){
+
+	private void stopQury() {
+		if (mQuryThread != null && mQuryThread.isAlive()) {
 			mQuryThread.interrupt();
 			mStopQury = true;
 		}
 	}
-	
+
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message msg) {
-			
-			
-			if(mAppDownloader == null){
+
+			if (mAppDownloader == null) {
 				Tools.log("handleMessage return 11");
 				return;
 			}
-			
+
 			String filePath = mAppDownloader.getTmpFilePath();
 			File file = new File(filePath);
-			if(!file.exists()){
+			if (!file.exists()) {
 				Tools.log("handleMessage return 22");
 				return;
 			}
-			
+
 			int totalLen = mAppDownloader.getFileTotalSize();
-			if(totalLen == 0){
+			if (totalLen == 0) {
 				Tools.log("handleMessage return 33");
 				return;
 			}
-			
-			int percent = (int)(((float)file.length() /(float)totalLen) * 100f);
-			//Log.i(TAG, "handleMessage percent£º" + percent);
+
+			int percent = (int) (((float) file.length() / (float) totalLen) * 100f);
+			// Log.i(TAG, "handleMessage percentï¿½ï¿½" + percent);
 			DownloadNotification.getInstance(FloatAdverUpdAppDownloader.this)
 					.setDownloadProgress(percent, false, true);
 		}
 	};
-	
-	private void installApk(String apkFilePath){
+
+	private void installApk(String apkFilePath) {
 		File f = new File(apkFilePath);
-		Uri uri=Uri.fromFile(f);  
-        Intent intent=new Intent(Intent.ACTION_VIEW);  
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(uri, "application/vnd.android.package-archive");  
-        startActivity(intent);
+		Uri uri = Uri.fromFile(f);
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.setDataAndType(uri, "application/vnd.android.package-archive");
+		startActivity(intent);
 	}
 
 	@Override
@@ -192,10 +197,11 @@ public class FloatAdverUpdAppDownloader extends Service implements AppDownloader
 	@Override
 	public void onError(int msg, int value, String url, String err) {
 		Tools.log("download error.....");
-		DownloadNotification.getInstance(this).setTitle("ÏÂÔØ´íÎó:", true);
+		DownloadNotification.getInstance(this).setTitle("ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½:", true);
 		stopQury();
-		//MobclickAgent.onEvent(FloattingDownloadAppService.this, "derror",mAppName);//Í³¼ÆÏÂÔØÊ§°Ü´ÎÊý
-		Statistik stat = new Statistik(this,"ERROR",mAppName,err);
+		// MobclickAgent.onEvent(FloattingDownloadAppService.this,
+		// "derror",mAppName);//Í³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü´ï¿½ï¿½ï¿½
+		Statistik stat = new Statistik(this, "ERROR", mAppName, err);
 		stat.start();
 	}
 
@@ -208,18 +214,18 @@ public class FloatAdverUpdAppDownloader extends Service implements AppDownloader
 	@Override
 	public void onDownloadFinish(String url, String fileName) {
 		Tools.log("download Finish.....");
-//		DownloadNotification.getInstance(FloattingDownloadAppService.this)
-//		.setDownloadProgress(100, false, false);
-//		DownloadNotification.getInstance(this).setTitle("ÏÂÔØÍê³É:", true);
+		// DownloadNotification.getInstance(FloattingDownloadAppService.this)
+		// .setDownloadProgress(100, false, false);
+		// DownloadNotification.getInstance(this).setTitle("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:", true);
 		DownloadNotification.getInstance(this).cancelNotification();
-		
+
 		stopQury();
-		
-		
-		//MobclickAgent.onEvent(FloattingDownloadAppService.this, "dsuccess",mAppName);//Í³¼ÆÏÂÔØ³É¹¦´ÎÊý
-		Statistik stat = new Statistik(this,"APPSUC",mAppName,null);
+
+		// MobclickAgent.onEvent(FloattingDownloadAppService.this,
+		// "dsuccess",mAppName);//Í³ï¿½ï¿½ï¿½ï¿½ï¿½Ø³É¹ï¿½ï¿½ï¿½ï¿½ï¿½
+		Statistik stat = new Statistik(this, "APPSUC", mAppName, null);
 		stat.start();
-		
+
 		installApk(fileName);
 	}
 
@@ -227,13 +233,13 @@ public class FloatAdverUpdAppDownloader extends Service implements AppDownloader
 	public void OnUserCanceled(String url) {
 		Tools.log("download OnUserCanceled.....");
 		stopQury();
-		Statistik stat = new Statistik(this,"ERROR",mAppName,"USER CANCEL");
+		Statistik stat = new Statistik(this, "ERROR", mAppName, "USER CANCEL");
 		stat.start();
 	}
 
 	@Override
 	public void OnBufferUpdate(int downloadSize, String url) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

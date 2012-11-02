@@ -32,6 +32,7 @@ import com.doo360.crm.R;
 import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.http.InstConstants;
 
@@ -49,7 +50,9 @@ public class ProductParameterListFragment extends ListFragment implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 	}
 
@@ -111,7 +114,9 @@ public class ProductParameterListFragment extends ListFragment implements
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			Log.d(TAG, "doInBackground");
+			if (Constants.DEBUG) {
+				Log.d(TAG, "doInBackground");
+			}
 			if (mDataList != null && !mDataList.isEmpty()) {
 				mDataList.clear();
 			} else {
@@ -122,14 +127,16 @@ public class ProductParameterListFragment extends ListFragment implements
 				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
 				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 						.formatRequestParams(params[1], setRequestParams(),
-								setRequestParamValues())));
+								setRequestParamValues(), false)));
 				HttpResponse resp = HttpRequestBox.getInstance(mAct)
 						.sendRequest(post);
 				if (resp == null) {
 					return false;
 				}
 				int statusCode = resp.getStatusLine().getStatusCode();
-				Log.d(TAG, "statusCode : " + statusCode);
+				if (Constants.DEBUG) {
+					Log.d(TAG, "statusCode : " + statusCode);
+				}
 				if (statusCode != HttpStatus.SC_OK) {
 					return false;
 				}
@@ -194,12 +201,13 @@ public class ProductParameterListFragment extends ListFragment implements
 			return list;
 		}
 
-		private List<String> setRequestParamValues() {
-			List<String> list = new ArrayList<String>();
-			list.add(Utils.getIMEI(mAct));
-			list.add(Utils.getIMEI(mAct));
-			list.add(Utils.getChannelId(mAct));
-			list.add(((ProductParameterListActivity) mAct).getPId());
+		private List<HttpParam> setRequestParamValues() {
+			List<HttpParam> list = new ArrayList<HttpParam>();
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getChannelId(mAct)));
+			list.add(new HttpParam(false, ((ProductParameterListActivity) mAct)
+					.getPId()));
 			return list;
 		}
 	}

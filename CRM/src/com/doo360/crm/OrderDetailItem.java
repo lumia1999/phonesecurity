@@ -1,152 +1,278 @@
 package com.doo360.crm;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 public class OrderDetailItem {
-	public static final String DETAIL = "detail";
-
-	// serviceresult
-	public static final String SERVICERESULT = "serviceresult";
-
-	// channelid
-	public static final String CHANNELID = "channelid";
-	public static final String SHOPID = "shopid";
-
-	// common info
+	public static final String ORDER = "order";
 	public static final String COMMON = "common";
 	public static final String NUMBER = "number";
-	public static final String STATUS = "status";
+	public static final String COUNT = "count";
 	public static final String AMOUNT = "amount";
-	public static final String MSG = "message";
-
-	// product info
+	public static final String CHANNELID = "channelid";
+	public static final String SHOPID = "shopid";
+	public static final String TRANSPORT = "transport";
+	public static final String DELIVERYCOSTS = "deliverycosts";
+	public static final String PAYMENTTYPE = "paymenttype";
+	public static final String USERMESSAGE = "usermessage";
+	public static final String STATE = "state";
+	public static final String COMMENTED = "commented";
+	public static final String ORDERDATE = "orderdate";
+	public static final String ADDRESS = "address";
+	public static final String ID = "id";
+	public static final String NAME = "name";
+	public static final String PHONE = "phone";
+	public static final String DETAIL = "detail";
+	public static final String POSTCODE = "postcode";
 	public static final String ITEMS = "items";
 	public static final String ITEM = "item";
 	public static final String PRODUCTID = "productid";
 	public static final String ICONURL = "iconurl";
 	public static final String ICONCACHEPATH = "iconCachePath";
-	public static final String NAME = "name";
 	public static final String COLOR = "color";
 	public static final String PRICE = "price";
-	public static final String COUNT = "count";
-	public static final String ANCHOR = "anchor";
 
-	// address info
-	public static final String ADDRESS = "address";
-	public static final String ADDRESSDETAIL = "detail";
-	public static final String ADDRESSNAME = "name";
-	public static final String ADDRESSPHONE = "phone";
-	public static final String POSTCODE = "postcode";
+	private Common mCommon;
+	private Address mAddress;
+	private List<Item> mItemList;
 
-	// user behavior
-	public static final String COMMENTED = "commented";
-
-	public static final int COMMENT_UNDONE = 0;
-	public static final int COMMENT_DONE = 1;
-
-	private int mServiceResult;
-	private String mChannelId;
-	private String mShopId;
-
-	private Map<String, String> mCommonInfo;
-	private List<DetailItem> mPInfo;
-	private Map<String, String> mAddrInfo;
-	private int mCommented;
-
-	public int getServiceResult() {
-		return mServiceResult;
+	public Common getCommon() {
+		return mCommon;
 	}
 
-	public void setServiceResult(int mServiceResult) {
-		this.mServiceResult = mServiceResult;
+	public void setCommon(Common c) {
+		this.mCommon = c;
 	}
 
-	public String getShopId() {
-		return mShopId;
+	public Address getAddress() {
+		return mAddress;
 	}
 
-	public void setShopId(String mShopId) {
-		this.mShopId = mShopId;
+	public void setAddress(Address a) {
+		this.mAddress = a;
 	}
 
-	public String getChannelId() {
-		return this.mChannelId;
+	public List<Item> getItem() {
+		return this.mItemList;
 	}
 
-	public void setChannelId(String channelId) {
-		this.mChannelId = channelId;
+	public void setItem(List<Item> i) {
+		this.mItemList = i;
 	}
 
-	public Map<String, String> getCommonInfo() {
-		return mCommonInfo;
-	}
+	public static class Common {
+		private String number;
+		private String count;
+		private String amount;
+		private String channelid;
+		private String shopid;
+		private String transport;
+		private String deliverycosts;
+		private String paymenttype;
+		private String usermessage;
+		private String state;
+		private String commented;
+		private String date;
 
-	public void setCommonInfo(Map<String, String> mCommonInfo) {
-		this.mCommonInfo = mCommonInfo;
-	}
-
-	public List<DetailItem> getPInfo() {
-		return mPInfo;
-	}
-
-	public void setPInfo(List<DetailItem> mPInfo) {
-		this.mPInfo = mPInfo;
-	}
-
-	public Map<String, String> getAddrInfo() {
-		return mAddrInfo;
-	}
-
-	public void setAddrInfo(Map<String, String> mAddrInfo) {
-		this.mAddrInfo = mAddrInfo;
-	}
-
-	public int getCommented() {
-		return mCommented;
-	}
-
-	public void setCommented(int mCommented) {
-		this.mCommented = mCommented;
-	}
-
-	public String formatCommonInfo() {
-		StringBuilder sb = new StringBuilder();
-		Set<String> keys = mCommonInfo.keySet();
-		Iterator<String> it = keys.iterator();
-		while (it.hasNext()) {
-			sb.append(mCommonInfo.get(it.next()));
-			sb.append("\n");
+		public String getNumber() {
+			return number;
 		}
-		sb.replace(sb.lastIndexOf("\n"), sb.length(), "");
-		return sb.toString();
-	}
 
-	public String formatAddrInfo() {
-		StringBuilder sb = new StringBuilder();
-		Set<String> keys = mAddrInfo.keySet();
-		Iterator<String> it = keys.iterator();
-		while (it.hasNext()) {
-			sb.append(mAddrInfo.get(it.next()));
-			sb.append("\n");
+		public void setNumber(String number) {
+			this.number = number;
 		}
-		sb.replace(sb.lastIndexOf("\n"), sb.length(), "");
-		return sb.toString();
+
+		public String getCount() {
+			return count;
+		}
+
+		public void setCount(String count) {
+			this.count = count;
+		}
+
+		public String getAmount() {
+			return amount;
+		}
+
+		public void setAmount(String amount) {
+			this.amount = amount;
+		}
+
+		public String getChannelid() {
+			return channelid;
+		}
+
+		public void setChannelid(String channelid) {
+			this.channelid = channelid;
+		}
+
+		public String getShopid() {
+			return shopid;
+		}
+
+		public void setShopid(String shopid) {
+			this.shopid = shopid;
+		}
+
+		public String getTransport() {
+			return transport;
+		}
+
+		public void setTransport(String transport) {
+			this.transport = transport;
+		}
+
+		public String getDeliverycosts() {
+			return deliverycosts;
+		}
+
+		public void setDeliverycosts(String deliverycosts) {
+			this.deliverycosts = deliverycosts;
+		}
+
+		public String getPaymenttype() {
+			return paymenttype;
+		}
+
+		public void setPaymenttype(String paymenttype) {
+			this.paymenttype = paymenttype;
+		}
+
+		public String getUsermessage() {
+			return usermessage;
+		}
+
+		public void setUsermessage(String usermessage) {
+			this.usermessage = usermessage;
+		}
+
+		public String getState() {
+			return state;
+		}
+
+		public void setState(String state) {
+			this.state = state;
+		}
+
+		public String getCommented() {
+			return commented;
+		}
+
+		public void setCommented(String commented) {
+			this.commented = commented;
+		}
+
+		public String getDate() {
+			return date;
+		}
+
+		public void setDate(String date) {
+			this.date = date;
+		}
+
+		public String toString(Context ctx) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(
+					ctx.getString(R.string.order_detail_number).replace("{?}",
+							number)).append("\n");
+			sb.append(
+					ctx.getString(R.string.order_detail_status).replace("{?}",
+							state)).append("\n");
+			sb.append(ctx.getString(R.string.order_detail_amount).replace(
+					"{?}", amount));
+			if (usermessage != null && !TextUtils.equals(usermessage, "")) {
+				sb.append("\n");
+				sb.append(ctx.getString(R.string.order_detail_msg).replace(
+						"{?}", usermessage));
+			}
+			return sb.toString();
+		}
 	}
 
-	public static class DetailItem {
+	public static class Address {
+		private String id;
+		private String name;
+		private String phone;
+		private String detail;
+		private String postcode;
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getPhone() {
+			return phone;
+		}
+
+		public void setPhone(String phone) {
+			this.phone = phone;
+		}
+
+		public String getDetail() {
+			return detail;
+		}
+
+		public void setDetail(String detail) {
+			this.detail = detail;
+		}
+
+		public String getPostcode() {
+			return postcode;
+		}
+
+		public void setPostcode(String postcode) {
+			this.postcode = postcode;
+		}
+
+		public String toString(Context ctx) {
+			StringBuilder sb = new StringBuilder();
+			if (detail != null) {
+				sb.append(
+						ctx.getString(R.string.order_detail_address).replace(
+								"{?}", detail)).append("\n");
+			}
+			if (name != null) {
+				sb.append(
+						ctx.getString(R.string.order_detail_name).replace(
+								"{?}", name)).append("\n");
+			}
+			if (phone != null) {
+				sb.append(
+						ctx.getString(R.string.order_detail_phone).replace(
+								"{?}", phone)).append("\n");
+			}
+			if (postcode != null) {
+				sb.append(ctx.getString(R.string.order_detail_postcode)
+						.replace("{?}", postcode));
+			}
+			return sb.toString();
+		}
+	}
+
+	public static class Item {
 		private String productid;
 		private String iconurl;
 		private String iconCachePath;
 		private String name;
 		private String color;
-		private String count;
 		private String price;
-		private String anchor;
+		private String count;
+		private String commented;
+		private String date;
 
 		public String getProductid() {
 			return productid;
@@ -188,14 +314,6 @@ public class OrderDetailItem {
 			this.color = color;
 		}
 
-		public String getCount() {
-			return count;
-		}
-
-		public void setCount(String count) {
-			this.count = count;
-		}
-
 		public String getPrice() {
 			return price;
 		}
@@ -204,28 +322,46 @@ public class OrderDetailItem {
 			this.price = price;
 		}
 
-		public String getAnchor() {
-			return anchor;
+		public String getCount() {
+			return count;
 		}
 
-		public void setAnchor(String anchor) {
-			this.anchor = anchor;
+		public void setCount(String count) {
+			this.count = count;
 		}
 
-		public String formatOther(Context ctx) {
+		public String getCommented() {
+			return commented;
+		}
+
+		public void setCommented(String commented) {
+			this.commented = commented;
+		}
+
+		public String getDate() {
+			return date;
+		}
+
+		public void setDate(String date) {
+			this.date = date;
+		}
+
+		public String toString(Context ctx) {
 			StringBuilder sb = new StringBuilder();
 			if (price != null && count != null) {
-				sb.append(ctx.getString(R.string.order_detail_price)
-						.replace("{?1}", price).replace("{?2}", count));
-				sb.append("\n");
+				sb.append(
+						ctx.getString(R.string.order_detail_price)
+								.replace("{?1}", price).replace("{?2}", count))
+						.append("\n");
 			}
 			if (color != null) {
-				sb.append(ctx.getString(R.string.order_detail_color).replace(
-						"{?}", color));
-				sb.append("\n");
+				sb.append(
+						ctx.getString(R.string.order_detail_color).replace(
+								"{?}", color)).append("\n");
 			}
-			if (anchor != null) {
-				sb.append(anchor);
+			if (date != null) {
+				sb.append(ctx.getString(R.string.order_detail_anchor).replace(
+						"{?}", date));
 			}
 			return sb.toString();
 		}

@@ -18,6 +18,7 @@ import com.baidu.mapapi.MapView;
 import com.baidu.mapapi.MyLocationOverlay;
 import com.baidu.mapapi.RouteOverlay;
 import com.baidu.mapapi.TransitOverlay;
+import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 import com.doo360.crm.loc.Positioning;
 import com.doo360.crm.loc.Positioning.OnRouteFoundListener;
@@ -55,7 +56,9 @@ public class RouteingActivity extends MapActivity implements
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(bundle);
 		setContentView(R.layout.routeing);
 		initData();

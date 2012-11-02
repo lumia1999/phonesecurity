@@ -17,6 +17,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 import com.doo360.crm.model.CityListProto.City;
 import com.doo360.crm.model.CityListProto.CityList;
@@ -39,7 +40,9 @@ public class CityListFragment extends ListFragment implements OnScrollListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 	}
 
@@ -90,9 +93,10 @@ public class CityListFragment extends ListFragment implements OnScrollListener {
 					int position, long id) {
 				// TODO
 				City c = mDataList.get(position);
-				Log.d(TAG, "onItemClick,city name : " + c.getName()
-						+ ",city code : " + c.getCode());
-				Log.d(TAG, "mCitySelectedListener : " + mCitySelectedListener);
+				if (Constants.DEBUG) {
+					Log.d(TAG, "onItemClick,city name : " + c.getName()
+							+ ",city code : " + c.getCode());
+				}
 				mCitySelectedListener.onCitySelect(c);
 			}
 		});

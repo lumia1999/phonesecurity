@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.ProductConfirmDetailItem;
 import com.doo360.crm.R;
 
@@ -199,7 +200,9 @@ public class ProductConfirmAdapter extends BaseAdapter {
 		// } else {
 		// desc.setText(msg);
 		// }
-		Log.e(TAG, "updateUserMessage,msg : " + msg);
+		if (Constants.DEBUG) {
+			Log.e(TAG, "updateUserMessage,msg : " + msg);
+		}
 		ProductConfirmDetailItemViewHolder viewHolder = (ProductConfirmDetailItemViewHolder) getView(
 				ProductConfirmDetailItem.INDEX_COMMENT, null, null).getTag();
 		if (msg == null || TextUtils.equals(msg.trim(), "")) {

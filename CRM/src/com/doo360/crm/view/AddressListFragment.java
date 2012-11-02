@@ -60,7 +60,9 @@ public class AddressListFragment extends ListFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 	}
 
 	@Override
@@ -72,7 +74,9 @@ public class AddressListFragment extends ListFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d(TAG, "onCreateView");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreateView");
+		}
 		View v = inflater.inflate(R.layout.address_fragment, container, false);
 		mListView = (ListView) v.findViewById(android.R.id.list);
 		mRetryText = (TextView) v.findViewById(R.id.retry);
@@ -101,7 +105,9 @@ public class AddressListFragment extends ListFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		Log.d(TAG, "onActivityCreated");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onActivityCreated");
+		}
 		new FetchAddressListTask(mAct, this, false).execute(
 				FunctionEntry.ADDRESS_ENTRY, InstConstants.ADDRESS_LIST);
 	}
@@ -179,10 +185,20 @@ public class AddressListFragment extends ListFragment implements
 	private void chooseAddress(int rowId) {
 		Intent data = new Intent();
 		data.putExtra(AddressSelectListActivity.EXTRA_ADDRESS_SELECTED,
-				mDataList.get(rowId - 1));
+				obtainSelectedAddr(rowId));
 		mAct.setResult(Constants.ACTIVITY_RESULT_ADDR_SELECT, data);
 		mAct.finish();
 
+	}
+
+	private ContentValues obtainSelectedAddr(int rowId) {
+		int size = mDataList.size();
+		for (int i = 0; i < size; i++) {
+			if (mDataList.get(i).getAsInteger(CrmDb.Address._ID) == rowId) {
+				return mDataList.get(i);
+			}
+		}
+		return null;// this should never happen
 	}
 
 	private void updateAddrsForChange(ContentValues value) {

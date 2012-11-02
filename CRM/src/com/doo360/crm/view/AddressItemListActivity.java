@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 import com.doo360.crm.provider.CrmDb;
 import com.doo360.crm.provider.RawDbHelper;
@@ -49,29 +50,32 @@ public class AddressItemListActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(bundle);
 		mAddrInfo = getIntent().getParcelableExtra(EXTRA_ADDR_INFO);
 		setContentView(R.layout.address_item);
 		initUI();
 		if (mAddrInfo == null) {
 			mOpType = OpType.AREA;
-			setScreenContent();
 		} else {
 			mOpType = OpType.VIEW;
-			setScreenContent();
 		}
+		setScreenContent();
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Log.e(TAG, "mOpType : " + mOpType);
+			if (Constants.DEBUG) {
+				Log.d(TAG, "mOpType : " + mOpType);
+			}
 			if (mOpType == OpType.AREA) {
 				AreaChooseListFragment fragment = (AreaChooseListFragment) mFragMgr
 						.findFragmentByTag(AREA_FRAGMENT_TAG);
 				int curPos = fragment.getCurPos();
-				Log.d(TAG, "curPos : " + curPos);
+				// Log.d(TAG, "curPos : " + curPos);
 				switch (curPos) {
 				case AreaChooseListFragment.CUR_POS_PROVINCE:
 					AddressItemDetailListFragment detailFrag = (AddressItemDetailListFragment) mFragMgr
@@ -160,7 +164,11 @@ public class AddressItemListActivity extends FragmentActivity implements
 		ft.commit();
 	}
 
+	/**
+	 * @not used
+	 */
 	private void addAddr() {
+		// nothing
 	}
 
 	private void viewAddr() {

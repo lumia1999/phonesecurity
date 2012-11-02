@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 import com.doo360.crm.provider.CrmDb;
 import com.doo360.crm.provider.ProviderOp;
@@ -47,7 +48,9 @@ public class MsgCenterListFragment extends ListFragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
 		if (savedInstanceState != null) {
@@ -59,7 +62,9 @@ public class MsgCenterListFragment extends ListFragment {
 
 	@Override
 	public void onResume() {
-		Log.d(TAG, "onResume");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onResume");
+		}
 		super.onResume();
 		if (!mExist) {
 			new FetchDataTask().execute();
@@ -86,7 +91,6 @@ public class MsgCenterListFragment extends ListFragment {
 			@Override
 			public void onClick(View v) {
 				// TODO
-				Log.d(TAG, "retry....");
 			}
 		});
 		return v;
@@ -96,8 +100,9 @@ public class MsgCenterListFragment extends ListFragment {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			// TODO
-			Log.d(TAG, "doInBackground");
+			if (Constants.DEBUG) {
+				Log.d(TAG, "doInBackground");
+			}
 			if (mDataList != null && !mDataList.isEmpty()) {
 				mDataList.clear();
 			} else {

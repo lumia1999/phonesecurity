@@ -10,7 +10,7 @@
     android:paddingRight="10dip"
     android:paddingTop="5dip"
     android:text="ddd"
-    android:textAppearance="?android:attr/textAppearanceSmall"
+    android:textAppearance="?android:attr/textAppearanceMedium"
     android:textColor="@drawable/text_bg_selector" >
 
 </TextView>

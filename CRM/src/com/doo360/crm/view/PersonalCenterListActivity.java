@@ -19,6 +19,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.doo360.crm.Constants;
 import com.doo360.crm.R;
 import com.doo360.crm.provider.ProviderOp;
 
@@ -40,7 +41,9 @@ public class PersonalCenterListActivity extends ListActivity implements
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		super.onCreate(bundle);
 		setContentView(R.layout.personal);
 		initUI();

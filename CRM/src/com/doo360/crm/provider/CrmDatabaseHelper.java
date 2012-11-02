@@ -1,5 +1,7 @@
 package com.doo360.crm.provider;
 
+import com.doo360.crm.Constants;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -26,7 +28,9 @@ public class CrmDatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		Log.d(TAG, "onCreate");
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onCreate");
+		}
 		// msg
 		db.execSQL("CREATE TABLE " + CrmDb.TABLE_MSG_NAME + " ("
 				+ CrmDb.Msg._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -40,15 +44,16 @@ public class CrmDatabaseHelper extends SQLiteOpenHelper {
 				+ " TEXT," + CrmDb.Address.PROVINCE + " TEXT,"
 				+ CrmDb.Address.CITY + " TEXT," + CrmDb.Address.DISTRICT
 				+ " TEXT," + CrmDb.Address.DETAIL + " TEXT,"
-				+ CrmDb.Address.POSTCODE + " TEXT," + CrmDb.Address.DEFAULT
-				+ " INTEGER DEFAULT " + CrmDb.AddressDefault.NODEFAULT + ","
-				+ CrmDb.Address.ANCHOR + " LONG" + ")");
+				+ CrmDb.Address.POSTCODE + " TEXT," + CrmDb.Address.ISDEFAULT
+				+ " INTEGER DEFAULT " + CrmDb.AddressDefault.NODEFAULT + ")");
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.d(TAG, "onUpgrade,oldVersion : " + oldVersion + ",newVersion : "
-				+ newVersion);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onUpgrade,oldVersion : " + oldVersion
+					+ ",newVersion : " + newVersion);
+		}
 		if (newVersion > oldVersion) {
 			db.execSQL("DROP TABLE IF EXIST " + CrmDb.TABLE_MSG_NAME);
 			// TODO other database to drop
