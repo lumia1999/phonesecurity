@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<commentlist>
+	<count>120</count>
+	<comment>
+		<userid><![CDATA[123456781]]></userid>
+		<rating>4.5</rating>
+		<content><![CDATA[外观非常时尚]]></content>
+	</comment>
+	<comment>
+		<userid><![CDATA[123456782]]></userid>
+		<rating>4.5</rating>
+		<content><![CDATA[非常好用的手机，很不错]]></content>
+	</comment>
+	<comment>
+		<userid><![CDATA[123456783]]></userid>
+		<rating>5</rating>
+		<content><![CDATA[精品啊，价格实惠，帮朋友买的，很满意]]></content>
+	</comment>	
+	<comment>
+		<userid><![CDATA[123456784]]></userid>
+		<rating>4.5</rating>
+		<content><![CDATA[屏幕大，续航能力强，就是不一样的体现]]></content>
+	</comment>
+	<comment>
+		<userid><![CDATA[123456785]]></userid>
+		<rating>4.5</rating>
+		<content><![CDATA[操作流畅，屏幕绚丽]]></content>
+	</comment>
+</commentlist>

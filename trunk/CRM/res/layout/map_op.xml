@@ -41,11 +41,13 @@
         android:padding="5dip"
         android:text="@string/routing" />
 
-    <include
-        android:id="@+id/map_op_address_layout"
+    <TextView
+        android:id="@+id/map_shop_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/map_op_routing"
-        layout="@layout/shop_list_item_content" />
+        android:padding="5dip"
+        android:textAppearance="@android:attr/textAppearanceLarge"
+        android:textSize="20dp" />
 
 </RelativeLayout>

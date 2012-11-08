@@ -187,7 +187,8 @@ public class ProductConfirmAdapter extends BaseAdapter {
 		}
 		PopDialogFragment dialog = new PopDialogFragment(
 				PopDialogFragment.TYPE_LEAVE_MSG, orgContent);
-		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+		dialog.setStyle(DialogFragment.STYLE_NO_TITLE,
+				R.style.AppTheme_Dialog_NoFrame);
 		dialog.show(ft, "dialog_leave_msg");
 	}
 

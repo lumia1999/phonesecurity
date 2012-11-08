@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/price_query_layout"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginLeft="5dip"
     android:layout_marginRight="5dip"
@@ -10,8 +10,14 @@
     android:focusableInTouchMode="true"
     android:padding="5dip" >
 
-    <include layout="@layout/dialog_ongoning" />
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/dialog_ongoning" />
 
-    <include layout="@layout/dlg_result" />
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/dlg_result" />
 
 </LinearLayout>

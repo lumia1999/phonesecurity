@@ -12,6 +12,7 @@
         <item>评价详情</item>
     </string-array>
     <string-array name="order_status">
+        <item>未处理</item>
         <item>仓库配货中</item>
         <item>派送中</item>
         <item>交易成功</item>

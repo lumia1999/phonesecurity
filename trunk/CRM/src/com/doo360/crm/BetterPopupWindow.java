@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -61,6 +62,10 @@ public class BetterPopupWindow {
 		this.windowManager = (WindowManager) this.anchor.getContext()
 				.getSystemService(Context.WINDOW_SERVICE);
 		onCreate();
+	}
+
+	public PopupWindow getWindow() {
+		return this.window;
 	}
 
 	public void setOutsiceCancelable(boolean cancelable) {
@@ -180,7 +185,7 @@ public class BetterPopupWindow {
 	 * Displays like a QuickAction from the anchor view.
 	 */
 	public void showLikeQuickAction() {
-		this.showLikeQuickAction(0, 0);
+		this.showLikeQuickAction(0, 0, false);
 	}
 
 	/**
@@ -191,25 +196,33 @@ public class BetterPopupWindow {
 	 * @param yOffset
 	 *            offset in the Y direction
 	 */
-	public void showLikeQuickAction(int xOffset, int yOffset) {
+	public void showLikeQuickAction(int xOffset, int yOffset, boolean fromLeft) {
 		this.preShow();
 
 		this.window.setAnimationStyle(R.style.Animations_GrowFromBottom);
 
 		int[] location = new int[2];
 		this.anchor.getLocationOnScreen(location);
-
+		// Log.d(TAG, "x : " + location[0] + ",y : " + location[1]);
 		Rect anchorRect = new Rect(location[0], location[1], location[0]
 				+ this.anchor.getWidth(), location[1] + this.anchor.getHeight());
+		// Log.d(TAG, "left : " + anchorRect.left + ",top : " + anchorRect.top
+		// + ",right : " + anchorRect.right + ",bottom : "
+		// + anchorRect.bottom);
 		this.root.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
 		int rootWidth = this.root.getMeasuredWidth();
 		int rootHeight = this.root.getMeasuredHeight();
-
-		int screenWidth = this.windowManager.getDefaultDisplay().getWidth();
-		int screenHeight = this.windowManager.getDefaultDisplay().getHeight();
-
-		int xPos = ((screenWidth - rootWidth) / 2) + xOffset;
+		DisplayMetrics dm = new DisplayMetrics();
+		this.windowManager.getDefaultDisplay().getMetrics(dm);
+		int screenWidth = dm.widthPixels;
+		int screenHeight = dm.heightPixels;
+		int xPos;
+		if (fromLeft) {
+			xPos = (anchorRect.left) + xOffset;
+		} else {
+			xPos = ((screenWidth - rootWidth) / 2) + xOffset;
+		}
 		int yPos = anchorRect.top - rootHeight + yOffset;
 
 		// display on bottom

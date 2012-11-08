@@ -86,13 +86,6 @@ public class MsgCenterListFragment extends ListFragment {
 		mRetryText = (TextView) v.findViewById(R.id.retry);
 		mLoadingProgressbar = (ProgressBar) v
 				.findViewById(android.R.id.progress);
-		mRetryText.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO
-			}
-		});
 		return v;
 	}
 
@@ -153,6 +146,8 @@ public class MsgCenterListFragment extends ListFragment {
 		mLoadingProgressbar.setVisibility(View.GONE);
 		mListView.setVisibility(View.GONE);
 		mRetryText.setVisibility(View.VISIBLE);
+		mRetryText.setText(R.string.msg_no_item_txt);
+		mRetryText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 	}
 
 	private class MsgAdapter extends BaseAdapter {

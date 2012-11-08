@@ -254,9 +254,9 @@ public class ProductDetailActivity extends FragmentActivity implements
 	private void priceQuery(View v) {
 		if (mPriceWindow == null) {
 			mPriceWindow = new PriceQueryPopupWindow(v);
-			mPriceWindow.setOutsiceCancelable(false);
+			mPriceWindow.setOutsiceCancelable(true);
 		}
-		mPriceWindow.showLikeQuickAction(-70, 0);
+		mPriceWindow.showLikeQuickAction(0, 0, true);
 		if (mPriceWindow.getQuerySuccess()) {
 			mPriceWindow.updatePrice(mProductDetailData.getColorList()
 					.get(mColorIdSelected).getPrice());
@@ -728,7 +728,7 @@ public class ProductDetailActivity extends FragmentActivity implements
 		mColorAdapter.notifyDataSetChanged();
 		if (mPriceWindow != null && oldColorId != mColorIdSelected) {
 			// reset its state
-			mPriceWindow.setOutsiceCancelable(false);
+			mPriceWindow.setOutsiceCancelable(true);
 			mPriceWindow.setQueryState(false);
 		}
 		mPriceQueryText.setEnabled(true);
@@ -752,7 +752,6 @@ public class ProductDetailActivity extends FragmentActivity implements
 		@Override
 		protected void onCreate() {
 			super.onCreate();
-
 			LayoutInflater inflater = (LayoutInflater) this.anchor.getContext()
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			ViewGroup root = (ViewGroup) inflater.inflate(

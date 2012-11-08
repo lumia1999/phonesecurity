@@ -25,6 +25,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,7 +50,7 @@ import com.doo360.crm.tsk.DownloadIconTask;
 import com.doo360.crm.tsk.DownloadIconTask.OnIconDownloadedListener;
 
 public class HotmodelListFragment extends ListFragment implements
-		OnClickListener, OnIconDownloadedListener {
+		OnClickListener, OnIconDownloadedListener, OnScrollListener {
 	private static final String TAG = "HotmodelListFragment";
 
 	private Activity mAct;
@@ -58,9 +60,6 @@ public class HotmodelListFragment extends ListFragment implements
 	private ListView mListView;
 	private TextView mRetryText;
 	private ProgressBar mLoadingProgressbar;
-
-	private static final String EXIST = "exist";
-	private boolean mExist;
 
 	private ArrayList<DownloadIconTask> mIconTskList = null;
 	private ArrayList<String> mDownloadingIconUrls = null;
@@ -84,11 +83,6 @@ public class HotmodelListFragment extends ListFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
-		if (savedInstanceState != null) {
-			mExist = savedInstanceState.getBoolean(EXIST, false);
-		} else {
-			mExist = false;
-		}
 		// init
 		mIsLoading = false;
 		mPageIndex = 1;
@@ -100,7 +94,6 @@ public class HotmodelListFragment extends ListFragment implements
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putBoolean(EXIST, true);
 	}
 
 	@Override
@@ -139,7 +132,7 @@ public class HotmodelListFragment extends ListFragment implements
 		}
 		super.onResume();
 		if (mAdapter != null) {
-			checkIconsForResume();
+			checkIconsForDownload();
 		}
 	}
 
@@ -200,14 +193,6 @@ public class HotmodelListFragment extends ListFragment implements
 			}
 			InputStream is = null;
 			try {
-				// switch (((HotmodelListActivity) mAct).getType()) {
-				// case HotmodelListActivity.TYPE_HOTMODEL:
-				// is = mAct.getAssets().open("hotmodel.xml");
-				// break;
-				// case HotmodelListActivity.TYPE_TOPFREE:
-				// is = mAct.getAssets().open("topfree.xml");
-				// break;
-				// }
 				String inst = null;
 				switch (((HotmodelListActivity) mAct).getType()) {
 				case HotmodelListActivity.TYPE_HOTMODEL:
@@ -234,6 +219,7 @@ public class HotmodelListFragment extends ListFragment implements
 					return false;
 				}
 				is = resp.getEntity().getContent();
+				// TODO
 				// if (HTTPUtils.testResponse(is)) {
 				// return false;
 				// }
@@ -349,6 +335,7 @@ public class HotmodelListFragment extends ListFragment implements
 			}
 			// mListView.addFooterView(mFooter);// TODO
 			mListView.setAdapter(mAdapter);
+			mListView.setOnScrollListener(this);
 		} else {
 			mAdapter.notifyDataSetChanged();
 			resetMore();
@@ -403,13 +390,31 @@ public class HotmodelListFragment extends ListFragment implements
 		mMoreTipTxt.setText(R.string.more_fail_tip_txt);
 	}
 
-	private void checkIconsForResume() {
-		// TODO
+	@SuppressWarnings("unchecked")
+	private void checkIconsForDownload() {
 		int firstPos = mListView.getFirstVisiblePosition();
-
 		int endPos = mListView.getLastVisiblePosition();
 		if (Constants.DEBUG) {
-			Log.e(TAG, "firstPos : " + firstPos + ",endPos : " + endPos);
+			Log.d(TAG, "firstPos : " + firstPos + ",endPos : " + endPos);
+		}
+		synchronized (mIconUrlsLock) {
+			HotmodelItem item = null;
+			List<String> iconUrls = new ArrayList<String>();
+			for (int i = firstPos; i <= endPos; i++) {
+				item = mDataList.get(i);
+				if (item.getIconCachePath() == null) {
+					if (mDownloadingIconUrls.contains(item.getIconurl())) {
+						continue;
+					}
+					iconUrls.add(item.getIconurl());
+				}
+			}
+			if (iconUrls.size() > 0) {
+				mDownloadingIconUrls.addAll(iconUrls);
+				DownloadIconTask tsk = new DownloadIconTask(mAct, this);
+				mIconTskList.add(tsk);
+				tsk.execute(iconUrls);
+			}
 		}
 	}
 
@@ -471,13 +476,16 @@ public class HotmodelListFragment extends ListFragment implements
 			if (TextUtils.equals(item.getIconurl(), params[0])) {
 				item.setIconCachePath(params[1]);
 				// TODO
-				((ViewHolder) mListView.getChildAt(i).getTag()).icon
-						.setBackgroundDrawable(new BitmapDrawable(FileHelper
-								.decodeIconFile(mAct, params[1], Utils
-										.getIconSize(mAct,
-												Constants.ICON_SIZE_70), Utils
-										.getIconSize(mAct,
-												Constants.ICON_SIZE_70))));
+				View child = mListView.getChildAt(i);
+				if (child != null) {
+					((ViewHolder) child.getTag()).icon
+							.setBackgroundDrawable(new BitmapDrawable(
+									FileHelper.decodeIconFile(mAct, params[1],
+											Utils.getIconSize(mAct,
+													Constants.ICON_SIZE_70),
+											Utils.getIconSize(mAct,
+													Constants.ICON_SIZE_70))));
+				}
 				break;
 			}
 		}
@@ -533,7 +541,7 @@ public class HotmodelListFragment extends ListFragment implements
 										.getIconSize(mAct,
 												Constants.ICON_SIZE_70))));
 			}
-			viewHolder.bref.setText(item.getBref());
+			viewHolder.bref.setText(item.getName());
 			viewHolder.sold.setText(getString(R.string.product_sold_txt)
 					.replace("{?}", item.getSold()));
 			viewHolder.comments
@@ -568,6 +576,22 @@ public class HotmodelListFragment extends ListFragment implements
 		private TextView sold;
 		private TextView comments;
 		private RatingBar ratingbar;
+	}
+
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+		// nothing
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		if (Constants.DEBUG) {
+			Log.e(TAG, "onScrollStateChanged,scrollState : " + scrollState);
+		}
+		if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
+			checkIconsForDownload();
+		}
 	}
 
 }

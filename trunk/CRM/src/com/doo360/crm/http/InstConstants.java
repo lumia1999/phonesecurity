@@ -17,6 +17,7 @@ public class InstConstants {
 	public static final String ORDER_LIST = "getOrderList";
 	public static final String ORDER_DETAIL = "getOrderDetail";
 	public static final String ORDER_POST = "newOrder";
+	public static final String ORDER_CANCEL = "cancelOrder";
 
 	public static final String ADDRESS_LIST = "getDeliveryAddressList";
 	public static final String ADDRESS_SAVE = "saveDeliveryAddress";

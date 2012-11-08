@@ -14,7 +14,8 @@
         android:padding="5dip"
         android:singleLine="true"
         android:text="@string/dlg_msg_leave_title_txt"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black" />
 
     <EditText
         android:id="@+id/dlg_content"

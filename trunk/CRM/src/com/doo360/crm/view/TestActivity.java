@@ -29,13 +29,13 @@ public class TestActivity extends FragmentActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				DemoPopupWindow dw = new DemoPopupWindow(v);
-				dw.showLikeQuickAction(0, 30);
+				dw.showLikeQuickAction(0, 30, false);
 			}
 		});
-		
-		TextView tv = (TextView)findViewById(R.id.radiobtn);
+
+		TextView tv = (TextView) findViewById(R.id.radiobtn);
 		tv.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				//

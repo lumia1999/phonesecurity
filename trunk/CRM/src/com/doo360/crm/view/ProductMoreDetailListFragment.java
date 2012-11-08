@@ -146,6 +146,7 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 					return false;
 				}
 				is = resp.getEntity().getContent();
+				// TODO
 				// if (HTTPUtils.testResponse(is)) {
 				// return false;
 				// }
@@ -174,6 +175,13 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 					} else if (eventType == XmlPullParser.END_TAG) {
 						tag = parser.getName();
 						if (TextUtils.equals(tag, ProductMoreDetailItem.DETAIL)) {
+							// check icon cache
+							if (item.getIconurl() != null) {
+								String iconCachePath = FileHelper
+										.getIconCachePath(mAct,
+												item.getIconurl(), true);
+								item.setIconCachePath(iconCachePath);
+							}
 							mDataList.add(item);
 						}
 					}
@@ -270,13 +278,16 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 			if (TextUtils.equals(item.getIconurl(), params[0])) {
 				item.setIconCachePath(params[1]);
 				// TODO
-				((ViewHolder) mListView.getChildAt(i).getTag()).icon
-						.setBackgroundDrawable(new BitmapDrawable(FileHelper
-								.decodeIconFile(mAct, params[1], Utils
-										.getIconSize(mAct,
-												Constants.ICON_SIZE_200), Utils
-										.getIconSize(mAct,
-												Constants.ICON_SIZE_200))));
+				View child = mListView.getChildAt(i);
+				if (child != null) {
+					((ViewHolder) child.getTag()).icon
+							.setBackgroundDrawable(new BitmapDrawable(
+									FileHelper.decodeIconFile(mAct, params[1],
+											Utils.getIconSize(mAct,
+													Constants.ICON_SIZE_200),
+											Utils.getIconSize(mAct,
+													Constants.ICON_SIZE_200))));
+				}
 				break;
 			}
 		}
@@ -319,10 +330,14 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 			if (item.getIconurl() != null) {
 				viewHolder.icon.setVisibility(View.VISIBLE);
 				if (item.getIconCachePath() != null) {
-					viewHolder.icon.setBackgroundDrawable(new BitmapDrawable(
-							FileHelper.decodeIconFile(mAct,
-									item.getIconCachePath(), 1, 1)));
-					// TODO
+					viewHolder.icon
+							.setBackgroundDrawable(new BitmapDrawable(
+									FileHelper.decodeIconFile(mAct, item
+											.getIconCachePath(), Utils
+											.getIconSize(mAct,
+													Constants.ICON_SIZE_200),
+											Utils.getIconSize(mAct,
+													Constants.ICON_SIZE_200))));
 				}
 			} else {
 				viewHolder.icon.setVisibility(View.GONE);
