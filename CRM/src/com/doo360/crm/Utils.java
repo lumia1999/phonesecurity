@@ -238,4 +238,8 @@ public class Utils {
 	public static float getIconSize(Context ctx, int dp) {
 		return dp * (getDevDensity(ctx) * 1.0f / 160);
 	}
+
+	public static int calcPercent(Long... values) {
+		return (int) ((values[1] * 100.0) / values[0]);
+	}
 }

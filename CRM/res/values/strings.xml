@@ -49,10 +49,12 @@
     <!-- notification string -->
     <string name="total_noti_title">正在下载</string>
     <string name="total_noti_txt">您有{?}个任务正在进行中</string>
+    <string name="percent">({?}%)</string>
     <string name="total_noti_ticker">您添加了新的下载任务</string>
     <string name="apk_noti_title">下载完成</string>
     <string name="apk_noti_txt">{?}下载已完成，请安装</string>
     <string name="apk_noti_ticker">{?}下载已完成</string>
+    <string name="apk_download_fail_toast">下载应用（{?}）失败</string>
     <string name="new_msg_noti_title">来自CRM的新消息</string>
     <string name="new_msg_noti_content">您总共有{?}条未读新消息</string>
     <string name="new_msg_noti_ticker">您有新的消息，请查收</string>
@@ -65,6 +67,10 @@
     <string name="order_count_tip_txt">数量：</string>
     <string name="order_view_detail_txt">查看订单</string>
     <string name="order_no_item_txt">您还没有下过订单</string>
+    <string name="order_cancel_txt">取消订单</string>
+    <string name="order_cancel_dlg_ongoing_txt">正在取消订单。。。</string>
+    <string name="order_cancel_success_toast">成功取消订单</string>
+    <string name="order_cancel_fail_toast">取消失败，请稍后再试</string>
 
     <!-- order detail string -->
     <string name="order_detail_title_txt">订单详情</string>
@@ -157,6 +163,9 @@
     <string name="get_driving_route_failed">获取自驾路线失败</string>
     <string name="get_transit_route_failed">获取公交路线失败</string>
     <string name="get_walking_route_failed">获取步行路线失败</string>
+    <string name="selected_shop_title_txt">店名：{?}</string>
+    <string name="selected_shop_address_txt">地址：{?}</string>
+    <string name="selected_shop_telephone_txt">联系电话：{?}</string>
 
     <!-- product detail string -->
     <string name="product_detail_title_txt">商品详情</string>
@@ -185,6 +194,7 @@
     <string name="invalid_network">网络连接出错，请稍后重试</string>
     <string name="btn_confirm">确定</string>
     <string name="btn_cancel">取消</string>
+    <string name="msg_no_item_txt">您尚未收到任何消息</string>
 
     <!-- floating ad string -->
     <string name="tips">提示</string>

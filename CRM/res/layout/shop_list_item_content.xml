@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_item_selector"
+    android:background="@drawable/list_item_bg_normal"
     android:clickable="false"
     android:focusable="false"
     android:minHeight="?android:attr/listPreferredItemHeight" >
@@ -17,7 +17,8 @@
         android:paddingRight="5dip"
         android:paddingTop="1dip"
         android:text="ddd"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/item_route"
@@ -55,6 +56,6 @@
         android:paddingRight="5dip"
         android:paddingTop="1dip"
         android:text="telephone"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

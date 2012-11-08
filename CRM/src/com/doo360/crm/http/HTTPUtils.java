@@ -71,6 +71,8 @@ public class HTTPUtils {
 	public static final String PAYMENTTYPE = "paymenttype";
 	public static final String USERMESSSAGE = "usermessage";
 
+	public static final String CONTENTLENGTH = "Content-Length";
+
 	public static String formatRequestParams(String inst, List<String> params,
 			List<HttpParam> values, boolean original) {
 		XmlSerializer serializer = Xml.newSerializer();

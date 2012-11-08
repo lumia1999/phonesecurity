@@ -23,6 +23,7 @@
         android:layout_alignParentLeft="true"
         android:background="@null"
         android:text="City"
+        android:layout_centerVertical="true"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:visibility="gone" />
 

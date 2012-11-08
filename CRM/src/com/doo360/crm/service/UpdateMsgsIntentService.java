@@ -28,6 +28,7 @@ import com.doo360.crm.Constants;
 import com.doo360.crm.NotificationIdGen;
 import com.doo360.crm.R;
 import com.doo360.crm.http.FunctionEntry;
+import com.doo360.crm.http.HTTPUtils;
 import com.doo360.crm.http.HttpRequestBox;
 import com.doo360.crm.provider.CrmDb;
 import com.doo360.crm.provider.ProviderOp;
@@ -79,6 +80,10 @@ public class UpdateMsgsIntentService extends IntentService {
 		InputStream is = null;
 		try {
 			is = response.getEntity().getContent();
+			// TODO
+			// if (HTTPUtils.testResponse(is)) {
+			// return;
+			// }
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			factory.setNamespaceAware(true);
 			XmlPullParser parser = factory.newPullParser();
@@ -104,6 +109,9 @@ public class UpdateMsgsIntentService extends IntentService {
 				}
 				eventType = parser.next();
 			}// ?end while
+			if (Constants.DEBUG) {
+				Log.d(TAG, "message size : " + data.size());
+			}
 			if (data.size() > 0) {
 				int count = ProviderOp.batchInsertMsgs(getContentResolver(),
 						data);

@@ -163,7 +163,8 @@ public class EvaluateActivity extends FragmentActivity implements
 		}
 		ft.addToBackStack(null);
 		DialogFragment dialog = new EvaluateDialogFragment();
-		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+		dialog.setStyle(DialogFragment.STYLE_NO_TITLE,
+				R.style.AppTheme_Dialog_NoFrame);
 		dialog.show(mFragMgr, "dialog");
 
 		new AsyncTask<String, Void, Integer>() {

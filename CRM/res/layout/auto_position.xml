@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg" >
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,7 +27,8 @@
             android:paddingLeft="5dip"
             android:singleLine="true"
             android:text="@string/auto_position_ongoing"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -42,7 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="@string/locate_dlg_title"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black" />
 
         <TextView
             android:id="@+id/dlg_msg"
@@ -51,7 +54,8 @@
             android:layout_below="@id/dlg_title"
             android:padding="3dip"
             android:text="msg...."
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -248,7 +248,8 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 		}
 		ft.addToBackStack(null);
 		DialogFragment dialog = new PurchaseResultDialogFragment();
-		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+		dialog.setStyle(DialogFragment.STYLE_NO_TITLE,
+				R.style.AppTheme_Dialog_NoFrame);
 		dialog.show(ft, "dialog");
 		new PostOrderTask().execute(FunctionEntry.ORDER_ENTRY,
 				InstConstants.ORDER_POST);
@@ -276,7 +277,8 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 		}
 		PopDialogFragment dialog = new PopDialogFragment(
 				PopDialogFragment.TYPE_LEAVE_MSG, orgContent);
-		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+		dialog.setStyle(DialogFragment.STYLE_NO_TITLE,
+				R.style.AppTheme_Dialog_NoFrame);
 		dialog.show(ft, "dialog_leave_msg");
 	}
 
@@ -312,7 +314,8 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 		ft.addToBackStack(null);
 		PopDialogFragment dialog = new PopDialogFragment(
 				PopDialogFragment.TYPE_ADD_ADDR, null);
-		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+		dialog.setStyle(DialogFragment.STYLE_NO_TITLE,
+				R.style.AppTheme_Dialog_NoFrame);
 		dialog.show(ft, "dialog_add_addr");
 	}
 

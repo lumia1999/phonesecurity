@@ -5,6 +5,17 @@
         <item name="android:windowActionBar">true</item>
     </style>
 
+    <style name="AppTheme.Dialog.NoFrame" parent="android:Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+    </style>
+
     <style name="RatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:maxHeight">14.0dip</item>
         <item name="android:progressDrawable">@drawable/rating_star</item>

@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@android:id/progress"
+        android:paddingLeft="5dip"
         android:text="@string/product_warrantly_active_ongoing_tip"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/white" />

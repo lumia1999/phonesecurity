@@ -121,7 +121,8 @@ public class CityListActivity extends FragmentActivity implements
 		}
 		ft.addToBackStack(null);
 		DialogFragment dialog = new AutoPositionDialog();
-		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+		dialog.setStyle(DialogFragment.STYLE_NO_TITLE,
+				R.style.AppTheme_Dialog_NoFrame);
 		dialog.show(ft, "dialog");
 		startLocate();
 	}
@@ -261,12 +262,14 @@ public class CityListActivity extends FragmentActivity implements
 	}
 
 	private void finishAutoLocCity(String city) {
-		Fragment f = mFragMgr.findFragmentById(R.id.city_fragment);
-		City c = ((CityListFragment) f).getCityInfo(city);
-		AutoPositionDialog dlg = (AutoPositionDialog) mFragMgr
-				.findFragmentByTag("dialog");
-		mSelectedCity = c;
-		dlg.updateDlgByCity(c);
+		if (city != null) {
+			Fragment f = mFragMgr.findFragmentById(R.id.city_fragment);
+			City c = ((CityListFragment) f).getCityInfo(city);
+			AutoPositionDialog dlg = (AutoPositionDialog) mFragMgr
+					.findFragmentByTag("dialog");
+			mSelectedCity = c;
+			dlg.updateDlgByCity(c);
+		}
 	}
 
 	@Override

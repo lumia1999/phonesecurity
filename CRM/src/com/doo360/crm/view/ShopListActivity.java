@@ -16,8 +16,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -95,9 +93,7 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 	private class MapOp {
 		private TextView distance;
 		private TextView routing;
-		private TextView title;
-		private TextView address;
-		private TextView telephone;
+		private TextView shopDetail;
 	}
 
 	@Override
@@ -112,6 +108,7 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 		initUI();
 	}
 
+	@SuppressWarnings("deprecation")
 	private void initUI() {
 		mLocObtained = false;
 		mExist = false;
@@ -132,12 +129,9 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 		mMapOp = new MapOp();
 		mMapOp.distance = (TextView) findViewById(R.id.map_op_distance);
 		mMapOp.routing = (TextView) findViewById(R.id.map_op_routing);
-		mMapOp.title = (TextView) findViewById(R.id.item_title);
-		mMapOp.address = (TextView) findViewById(R.id.item_address);
-		mMapOp.telephone = (TextView) findViewById(R.id.item_telephone);
-		findViewById(R.id.item_route).setVisibility(View.GONE);
-		findViewById(R.id.map_op_address_layout).setBackgroundDrawable(
-				new ColorDrawable(Color.TRANSPARENT));
+		mMapOp.shopDetail = (TextView) findViewById(R.id.map_shop_detail);
+		mMapOp.shopDetail.setTextAppearance(mCtx,
+				android.R.style.TextAppearance_Small);
 		mMapOp.routing.setOnClickListener(this);
 
 		mBaiduMap = (MapView) findViewById(R.id.baidumap);
@@ -354,6 +348,7 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 					return false;
 				}
 				is = resp.getEntity().getContent();
+				// TODO
 				// if (HTTPUtils.testResponse(is)) {
 				// return false;
 				// }
@@ -395,7 +390,7 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 						} else if (TextUtils.equals(tag, ShopItem.LATITUDE)) {
 							parser.next();
 							content.setLatitude(parser.getText());
-						} else if (TextUtils.equals(tag, ShopItem.LONGTITUDE)) {
+						} else if (TextUtils.equals(tag, ShopItem.LONGITUDE)) {
 							parser.next();
 							content.setLongtitude(parser.getText());
 						}
@@ -519,10 +514,21 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 		if (mSelectedShop != null) {
 			mMapOp.distance.setText((int) distance
 					+ getString(R.string.unit_meter));
-			mMapOp.title.setText(mSelectedShop.getTitle());
-			mMapOp.address.setText(mSelectedShop.getAddress());
-			mMapOp.telephone.setText(mSelectedShop.getTelephone());
+			mMapOp.shopDetail.setText(formatSelectedShopDetail());
 		}
+	}
+
+	private String formatSelectedShopDetail() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getString(R.string.selected_shop_title_txt).replace("{?}",
+				mSelectedShop.getTitle()));
+		sb.append("\n");
+		sb.append(getString(R.string.selected_shop_address_txt).replace("{?}",
+				mSelectedShop.getAddress()));
+		sb.append("\n");
+		sb.append(getString(R.string.selected_shop_telephone_txt).replace(
+				"{?}", mSelectedShop.getTelephone()));
+		return sb.toString();
 	}
 
 	private void fillData() {

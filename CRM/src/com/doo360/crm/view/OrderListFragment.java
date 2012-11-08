@@ -14,18 +14,26 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +44,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doo360.crm.Constants;
 import com.doo360.crm.FileHelper;
@@ -60,6 +69,10 @@ public class OrderListFragment extends ListFragment implements
 	private ListView mListView;
 	private TextView mRetryText;
 	private ProgressBar mLoadingProgressbar;
+
+	private FragmentManager mFragMgr;
+
+	private CancelOrderTask mCancelOrderTsk = null;
 
 	// icon
 	private DownloadIconTask mIconTsk = null;
@@ -396,21 +409,24 @@ public class OrderListFragment extends ListFragment implements
 				item.getItem().setIconCachePath(params[1]);
 				// TODO
 				((ViewHolder) mListView.getChildAt(i).getTag()).icon
-						.setBackgroundDrawable(new BitmapDrawable(
-								FileHelper
-										.decodeIconFile(
-												mAct,
-												params[1],
-												FileHelper
-														.getIconDefaultSize(mAct)/**/,
-												FileHelper
-														.getIconDefaultSize(mAct)/**/)));
+						.setBackgroundDrawable(new BitmapDrawable(FileHelper
+								.decodeIconFile(mAct, params[1], Utils
+										.getIconSize(mAct,
+												Constants.ICON_SIZE_48), Utils
+										.getIconSize(mAct,
+												Constants.ICON_SIZE_48))));
 				break;
 			}
 		}
 	}
 
 	private class OrderAdapter extends BaseAdapter {
+		private String mOrderStateUnhandle;
+
+		public OrderAdapter() {
+			mOrderStateUnhandle = getResources().getStringArray(
+					R.array.order_status)[0];
+		}
 
 		@Override
 		public int getCount() {
@@ -454,6 +470,8 @@ public class OrderListFragment extends ListFragment implements
 						.findViewById(R.id.item_count);
 				viewHolder.mBelowLayout = (RelativeLayout) convertView
 						.findViewById(R.id.item_below_layout);
+				viewHolder.cancel = (ImageView) convertView
+						.findViewById(R.id.item_cancel);
 				convertView.setTag(viewHolder);
 			} else {
 				viewHolder = (ViewHolder) convertView.getTag();
@@ -478,6 +496,22 @@ public class OrderListFragment extends ListFragment implements
 							REQ_COCE_VIEW_ORDER);
 				}
 			});
+			if (TextUtils.equals(mOrderStateUnhandle, item.getCommon()
+					.getState())) {
+				viewHolder.cancel.setVisibility(View.VISIBLE);
+			} else {
+				viewHolder.cancel.setVisibility(View.GONE);
+			}
+			viewHolder.cancel.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO
+					Log.d(TAG, "cancel this order");
+					showCancelDialog();
+					cancelOrder(item.getCommon().getNumber());
+				}
+			});
 			return convertView;
 		}
 	}
@@ -489,5 +523,226 @@ public class OrderListFragment extends ListFragment implements
 		private TextView price;
 		private TextView count;
 		private RelativeLayout mBelowLayout;
+		private ImageView cancel;
+	}
+
+	private void cancelOrder(String orderNumber) {
+		mCancelOrderTsk = new CancelOrderTask(orderNumber);
+		mCancelOrderTsk.execute(FunctionEntry.ORDER_ENTRY,
+				InstConstants.ORDER_CANCEL);
+	}
+
+	private void showCancelDialog() {
+		if (mFragMgr == null) {
+			mFragMgr = ((FragmentActivity) mAct).getSupportFragmentManager();
+		}
+		FragmentTransaction ft = mFragMgr.beginTransaction();
+		Fragment prev = mFragMgr.findFragmentByTag("dialog");
+		if (prev != null) {
+			ft.remove(prev);
+		}
+		ft.addToBackStack(null);
+		DialogFragment dialog = new CancelOrderDialogFragment();
+		dialog.setStyle(DialogFragment.STYLE_NO_TITLE,
+				R.style.AppTheme_Dialog_NoFrame);
+		dialog.show(mFragMgr, "dialog");
+	}
+
+	private void handleCancelResult(CancelResult result) {
+		CancelOrderDialogFragment dialog = (CancelOrderDialogFragment) mFragMgr
+				.findFragmentByTag("dialog");
+		if (dialog != null) {
+			dialog.showResult(result.result);
+		}
+		if (result.result) {
+			// TODO remove the order item from ui
+			int size = mDataList.size();
+			boolean exist = false;
+			for (int i = 0; i < size; i++) {
+				if (TextUtils.equals(mDataList.get(i).getCommon().getNumber(),
+						result.orderNumber)) {
+					exist = true;
+					mDataList.remove(i);
+					break;
+				}
+			}
+			if (exist) {
+				mAdapter.notifyDataSetChanged();
+			}
+		}
+	}
+
+	private class CancelOrderDialogFragment extends DialogFragment {
+		private RelativeLayout mOngoingLayout;
+		private TextView mOngoingTipTxt;
+
+		private RelativeLayout mResultLayout;
+		private TextView mResultTipTxt;
+		private TextView mResultConfirmTxt;
+		private TextView mResultExitTxt;
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			getDialog().setCanceledOnTouchOutside(false);
+			getDialog().setOnKeyListener(new OnKeyListener() {
+
+				@Override
+				public boolean onKey(DialogInterface dialog, int keyCode,
+						KeyEvent event) {
+					if (keyCode == KeyEvent.KEYCODE_BACK) {
+						dismiss();
+						if (mCancelOrderTsk != null) {
+							mCancelOrderTsk.cancel(true);
+						}
+						return true;
+					}
+					return false;
+				}
+			});
+			View v = inflater.inflate(R.layout.fragment_dialog, container,
+					false);
+			mOngoingLayout = (RelativeLayout) v
+					.findViewById(R.id.dlg_onging_layout);
+			mOngoingTipTxt = (TextView) v.findViewById(R.id.dlg_ongoing_tip);
+			mResultLayout = (RelativeLayout) v
+					.findViewById(R.id.dlg_result_layout);
+			mResultTipTxt = (TextView) v.findViewById(R.id.dlg_result_tip);
+			mResultConfirmTxt = (TextView) v
+					.findViewById(R.id.dlg_result_confirm);
+			mResultExitTxt = (TextView) v.findViewById(R.id.dlg_result_exit);
+			mResultLayout.setVisibility(View.GONE);
+			mOngoingTipTxt.setText(R.string.order_cancel_dlg_ongoing_txt);
+			return v;
+		}
+
+		public void showResult(boolean result) {
+			if (result) {
+				Toast.makeText(mAct, R.string.order_cancel_success_toast,
+						Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(mAct, R.string.order_cancel_fail_toast,
+						Toast.LENGTH_SHORT).show();
+			}
+			this.dismiss();
+		}
+	}
+
+	private class CancelOrderTask extends AsyncTask<String, Void, CancelResult> {
+		private String mOrderNumber;
+
+		public CancelOrderTask(String orderNumber) {
+			this.mOrderNumber = orderNumber;
+		}
+
+		@Override
+		protected CancelResult doInBackground(String... params) {
+			if (Constants.DEBUG) {
+				Log.d(TAG, "doInBackground");
+			}
+			InputStream is = null;
+			try {
+				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
+				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
+						.formatRequestParams(params[1], setRequestParams(),
+								setRequestParamValues(), false)));
+				HttpResponse resp = HttpRequestBox.getInstance(mAct)
+						.sendRequest(post);
+				if (resp == null) {
+					return new CancelResult(false, mOrderNumber);
+				}
+				int statusCode = resp.getStatusLine().getStatusCode();
+				if (Constants.DEBUG) {
+					Log.d(TAG, "statusCode : " + statusCode);
+				}
+				if (statusCode != HttpStatus.SC_OK) {
+					return new CancelResult(false, mOrderNumber);
+				}
+				is = resp.getEntity().getContent();
+				// TODO
+				// if (HTTPUtils.testResponse(is)) {
+				// return false;
+				// }
+				XmlPullParserFactory factory = XmlPullParserFactory
+						.newInstance();
+				factory.setNamespaceAware(true);
+				XmlPullParser parser = factory.newPullParser();
+				parser.setInput(is, HTTP.UTF_8);
+				int eventType = parser.getEventType();
+				String tag = "";
+				int serviceResult = -1;
+				while (eventType != XmlPullParser.END_DOCUMENT) {
+					if (eventType == XmlPullParser.START_TAG) {
+						tag = parser.getName();
+						if (TextUtils.equals(tag, HTTPUtils.SERVICERESULT)) {
+							parser.next();
+							serviceResult = Integer.valueOf(parser.getText());
+							break;
+						}
+					}
+					eventType = parser.next();
+				}// ?end while
+				if (serviceResult == 0) {
+					return new CancelResult(true, mOrderNumber);
+				} else {
+					return new CancelResult(false, mOrderNumber);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, "IOException", e);
+				return new CancelResult(false, mOrderNumber);
+			} catch (IllegalStateException e) {
+				Log.e(TAG, "IllegalStateException", e);
+				return new CancelResult(false, mOrderNumber);
+			} catch (XmlPullParserException e) {
+				Log.e(TAG, "XmlPullParserException", e);
+				return new CancelResult(false, mOrderNumber);
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						//
+					}
+				}
+			}
+		}
+
+		@Override
+		protected void onPostExecute(CancelResult result) {
+			// TODO
+			if (Constants.DEBUG) {
+				Log.d(TAG, "onPostExecute, result : " + result);
+			}
+			super.onPostExecute(result);
+			handleCancelResult(result);
+		}
+
+		private List<String> setRequestParams() {
+			List<String> list = new ArrayList<String>();
+			list.add(HTTPUtils.USERID);
+			list.add(HTTPUtils.IMEI);
+			list.add(HTTPUtils.CHANNELID);
+			list.add(HTTPUtils.NUMBER);
+			return list;
+		}
+
+		private List<HttpParam> setRequestParamValues() {
+			List<HttpParam> list = new ArrayList<HttpParam>();
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getIMEI(mAct)));
+			list.add(new HttpParam(false, Utils.getChannelId(mAct)));
+			list.add(new HttpParam(false, mOrderNumber));
+			return list;
+		}
+	}
+
+	private class CancelResult {
+		private boolean result;
+		private String orderNumber;
+
+		public CancelResult(boolean result, String orderNumber) {
+			this.result = result;
+			this.orderNumber = orderNumber;
+		}
 	}
 }

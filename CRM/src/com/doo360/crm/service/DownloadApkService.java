@@ -12,10 +12,12 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.doo360.crm.Constants;
 import com.doo360.crm.NotificationIdGen;
 import com.doo360.crm.R;
+import com.doo360.crm.Utils;
 import com.doo360.crm.tsk.DownloadApkTask;
 import com.doo360.crm.tsk.DownloadApkTask.onDownloadApkListener;
 import com.doo360.crm.tsk.Result;
@@ -108,7 +110,6 @@ public class DownloadApkService extends Service implements
 
 	@Override
 	public void onCreate() {
-		// TODO
 		if (Constants.DEBUG) {
 			Log.d(TAG, "onCreate");
 		}
@@ -129,6 +130,9 @@ public class DownloadApkService extends Service implements
 		}
 		String url = intent.getStringExtra(EXTRA_APK_URL);
 		String name = intent.getStringExtra(EXTRA_APK_NAME);
+		if (Constants.DEBUG) {
+			Log.d(TAG, "url : " + url + ",name : " + name);
+		}
 		if (url == null || name == null) {
 			return START_STICKY;
 		}
@@ -139,7 +143,7 @@ public class DownloadApkService extends Service implements
 			// the first request
 			fireDownload();
 		}
-		// TODO update notification status
+		// update notification status
 		return START_STICKY;
 	}
 
@@ -159,14 +163,25 @@ public class DownloadApkService extends Service implements
 	}
 
 	@Override
+	public void onUpdateProgress(Long... values) {
+		showTotalNotification(values);
+	}
+
+	@Override
 	public void onDownloadFinished(Result result) {
-		// TODO
 		if (Constants.DEBUG) {
 			Log.d(TAG, "result : " + result);
 		}
 		Apk apk = getAndRemoveApk(result.getUrl());
 		showTotalNotification();
-		showApkFinishedNotification(result, apk);
+		if (result.isSuccess()) {
+			showApkFinishedNotification(result, apk);
+		} else {
+			Toast.makeText(
+					mCtx,
+					getString(R.string.apk_download_fail_toast).replace("{?}",
+							apk.name), Toast.LENGTH_SHORT).show();
+		}
 		if (mApks.size() == 0) {
 			stopSelf(mMaxStartId);
 		} else {
@@ -179,7 +194,7 @@ public class DownloadApkService extends Service implements
 	 * Notification
 	 */
 	// ///////////////////////////////////////////////////
-	private void showTotalNotification() {
+	private void showTotalNotification(Long... values) {
 		int size = 0;
 		synchronized (mLock) {
 			size = mApks.size();
@@ -196,8 +211,13 @@ public class DownloadApkService extends Service implements
 			mNBuilder.setTicker(getString(R.string.total_noti_ticker));
 
 		}
-		mNBuilder.setContentText(getString(R.string.total_noti_txt).replace(
-				"{?}", "" + size));
+		String content = getString(R.string.total_noti_txt).replace("{?}",
+				"" + size);
+		if (values != null && values.length > 0) {
+			content += getString(R.string.percent).replace("{?}",
+					Utils.calcPercent(values) + "");
+		}
+		mNBuilder.setContentText(content);
 		mNBuilder.setNumber(size);
 		mNm.notify(mTotalNotiId, mNBuilder.getNotification());
 	}
@@ -219,6 +239,5 @@ public class DownloadApkService extends Service implements
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		builder.setContentIntent(PendingIntent.getActivity(mCtx, 0, intent, 0));
 		mNm.notify(NotificationIdGen.genId(), builder.getNotification());
-
 	}
 }
