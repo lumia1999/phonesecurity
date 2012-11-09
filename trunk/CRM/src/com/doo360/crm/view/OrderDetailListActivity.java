@@ -213,7 +213,6 @@ public class OrderDetailListActivity extends FragmentActivity implements
 			}
 			InputStream is = null;
 			try {
-				// is = getAssets().open("order_detail.xml");
 				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
 				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
 						.formatRequestParams(params[1], setRequestParams(),
@@ -485,15 +484,17 @@ public class OrderDetailListActivity extends FragmentActivity implements
 		String[] statusArr = getResources()
 				.getStringArray(R.array.order_status);
 		String status = mOrderDetailData.getCommon().getState();
-		// Log.e(TAG, "status : " + status + ",sss : "
-		// + statusArr[statusArr.length - 2]);
+		Log.e(TAG, "status : " + status);
 		if (TextUtils.equals(status, statusArr[statusArr.length - 2])) {
+			// success
 			mCommentText.setVisibility(View.VISIBLE);
 		} else {
-			if (Integer.valueOf(mOrderDetailData.getCommon().getCommented()) != Constants.COMMENTED_DONE) {
-				mCommentText.setVisibility(View.VISIBLE);
-			} else {
+			String commented = mOrderDetailData.getCommon().getCommented();
+			Log.e(TAG, "commented : " + commented);
+			if (Integer.valueOf(commented) != Constants.COMMENTED_DONE) {
 				mCommentText.setVisibility(View.GONE);
+			} else {
+				mCommentText.setVisibility(View.VISIBLE);
 			}
 		}
 		downloadIcons();
@@ -543,9 +544,13 @@ public class OrderDetailListActivity extends FragmentActivity implements
 			OrderDetailItem.Item item = mOrderDetailData.getItem()
 					.get(position);
 			if (item.getIconCachePath() != null) {
-				viewHodler.icon.setBackgroundDrawable(new BitmapDrawable(
-						FileHelper.decodeIconFile(mCtx,
-								item.getIconCachePath(), 70, 70)));
+				viewHodler.icon
+						.setBackgroundDrawable(new BitmapDrawable(
+								FileHelper.decodeIconFile(mCtx, item
+										.getIconCachePath(), Utils.getIconSize(
+										mCtx, Constants.ICON_SIZE_70), Utils
+										.getIconSize(mCtx,
+												Constants.ICON_SIZE_70))));
 			}
 			viewHodler.name.setText(item.getName());
 			viewHodler.others.setText(item.toString(mCtx));

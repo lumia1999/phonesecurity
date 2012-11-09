@@ -121,7 +121,6 @@ public class DownloadApkService extends Service implements
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		// TODO
 		if (Constants.DEBUG) {
 			Log.d(TAG, "onStartCommand");
 		}
@@ -176,6 +175,9 @@ public class DownloadApkService extends Service implements
 		showTotalNotification();
 		if (result.isSuccess()) {
 			showApkFinishedNotification(result, apk);
+			Toast.makeText(mCtx,
+					getString(R.string.apk_noti_txt).replace("{?}", apk.name),
+					Toast.LENGTH_SHORT).show();
 		} else {
 			Toast.makeText(
 					mCtx,

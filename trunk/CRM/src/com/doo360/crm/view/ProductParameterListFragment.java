@@ -90,18 +90,28 @@ public class ProductParameterListFragment extends ListFragment implements
 	}
 
 	private void retry() {
-		mLoadingProgressbar.setVisibility(View.VISIBLE);
-		mRetryText.setVisibility(View.GONE);
-		new FetchDataTask().execute(FunctionEntry.PRODUCT_ENTRY,
-				InstConstants.PRODUCT_PARAMS);
+		if (TextUtils.equals(mRetryText.getText().toString(),
+				getString(R.string.invalid_network))) {
+			mLoadingProgressbar.setVisibility(View.VISIBLE);
+			mRetryText.setVisibility(View.GONE);
+			new FetchDataTask().execute(FunctionEntry.PRODUCT_ENTRY,
+					InstConstants.PRODUCT_PARAMS);
+		}
 	}
 
 	private void fillData() {
 		mLoadingProgressbar.setVisibility(View.GONE);
-		mRetryText.setVisibility(View.GONE);
-		mListView.setVisibility(View.VISIBLE);
-		mAdapter = new ParamAdapter();
-		mListView.setAdapter(mAdapter);
+		if (mDataList.size() > 0) {
+			mRetryText.setVisibility(View.GONE);
+			mListView.setVisibility(View.VISIBLE);
+			mAdapter = new ParamAdapter();
+			mListView.setAdapter(mAdapter);
+		} else {
+			mRetryText.setVisibility(View.VISIBLE);
+			mListView.setVisibility(View.GONE);
+			mRetryText.setText(R.string.product_param_no_item);
+			mRetryText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+		}
 	}
 
 	private void notifyError() {
@@ -141,6 +151,7 @@ public class ProductParameterListFragment extends ListFragment implements
 					return false;
 				}
 				is = resp.getEntity().getContent();
+				// TODO
 				// if (HTTPUtils.testResponse(is)) {
 				// return false;
 				// }
@@ -156,8 +167,12 @@ public class ProductParameterListFragment extends ListFragment implements
 						tag = parser.getName();
 						if (TextUtils.equals(tag, HTTPUtils.PARAMS)) {
 							parser.next();
-							String[] data = parser.getText().split(
-									Constants.SEMICOLON);
+							String pValues = parser.getText();
+							if (pValues == null
+									|| TextUtils.equals(pValues.trim(), "")) {
+								break;
+							}
+							String[] data = pValues.split(Constants.SEMICOLON);
 							int length = data.length;
 							for (int i = 0; i < length; i++) {
 								mDataList.add(data[i]);

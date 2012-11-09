@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/front_pagge_grid"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:listSelector="@null"
-    android:numColumns="2"
-    android:padding="5dip"
-    android:stretchMode="columnWidth" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center" >
+
+    <GridView
+        android:id="@+id/front_pagge_grid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:horizontalSpacing="10dip"
+        android:listSelector="@null"
+        android:numColumns="2"
+        android:padding="5dip"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dip" />
+
+</LinearLayout>

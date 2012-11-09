@@ -294,11 +294,9 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 	}
 
 	private void updateSelectedAddr() {
-		// TODO
 		TextView desc = (TextView) mDetailInfoLayout.getChildAt(
 				ProductConfirmDetailItem.INDEX_ADDR).findViewById(
 				R.id.item_desc);
-		Log.e(TAG, "desc : " + desc);
 		desc.setVisibility(View.VISIBLE);
 		desc.setText(mAddressSelected.getAsString(CrmDb.Address.NAME) + " "
 				+ Utils.getAddressArea(mAddressSelected)
@@ -646,9 +644,7 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 				HttpPost post = new HttpPost(FunctionEntry.fixUrl(params[0]));
 				String tt = HTTPUtils.formatRequestParams(params[1],
 						setRequestParams(), setRequestParamValues(), true);
-				Log.e(TAG, tt);
 				tt = tt.replace(mPlaceHolder, serializeItemData());
-				Log.e(TAG, tt);
 				post.setEntity(HTTPUtils.fillEntity(HTTPUtils.Base64It(tt
 						.getBytes())));
 				HttpResponse resp = HttpRequestBox.getInstance(mCtx)
@@ -758,7 +754,7 @@ public class PurchaseConfirmActivity extends FragmentActivity implements
 				list.add(new HttpParam(true, comment));
 			}
 			if (Constants.DEBUG) {
-				Log.e(TAG, "transport : " + transport + ",price : " + price
+				Log.d(TAG, "transport : " + transport + ",price : " + price
 						+ ",paymenttype : " + paymenttype + ",comment : "
 						+ comment);
 			}

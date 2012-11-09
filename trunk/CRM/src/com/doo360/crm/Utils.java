@@ -140,6 +140,7 @@ public class Utils {
 			InputStream is = null;
 			try {
 				is = ctx.getResources().openRawResource(R.raw.allcitydata);
+				dbPath.getParentFile().mkdirs();
 				FileOutputStream fos = new FileOutputStream(dbPath);
 				byte[] buf = new byte[8192];
 				int len = -1;
@@ -199,7 +200,8 @@ public class Utils {
 		return ctx.getString(resId).replace("{?}", replaceStr);
 	}
 
-	private static final long MSG_ALARM_SPAN = 1 * 60 * 1000L; // 1minute
+	// 60 minutes
+	private static final long MSG_ALARM_SPAN = 60 * 1 * 60 * 1000L;
 
 	public static void setMsgAlarm(Context ctx) {
 		if (!Prefs.isMsgAlarmBaseAnchorSetted(ctx)) {
@@ -212,7 +214,6 @@ public class Utils {
 		long initAnchor = Prefs.getMsgAlarmBaseAnchor(ctx);
 		am.setRepeating(AlarmManager.RTC_WAKEUP, initAnchor + MSG_ALARM_SPAN,
 				MSG_ALARM_SPAN, pi);
-		// Log.e(TAG, "&&&&&********setMsgAlarm&&&****&*&*(&*");
 	}
 
 	public static boolean isNetworkActived(Context ctx) {
@@ -236,7 +237,13 @@ public class Utils {
 	}
 
 	public static float getIconSize(Context ctx, int dp) {
-		return dp * (getDevDensity(ctx) * 1.0f / 160);
+		DisplayMetrics dm = ctx.getResources().getDisplayMetrics();
+		int screenWidth = dm.widthPixels;
+		float ret = dp * (getDevDensity(ctx) * 1.0f / 160);
+		if (screenWidth <= (int) ret) {
+			ret = screenWidth - 20;
+		}
+		return ret;
 	}
 
 	public static int calcPercent(Long... values) {

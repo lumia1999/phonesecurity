@@ -1,7 +1,5 @@
 package com.doo360.crm.provider;
 
-import com.doo360.crm.Constants;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
+
+import com.doo360.crm.Constants;
 
 public class RawDbHelper extends SQLiteOpenHelper {
 	private static final String TAG = "RawDbHelper";
@@ -93,8 +93,8 @@ public class RawDbHelper extends SQLiteOpenHelper {
 	}
 
 	public Cursor getProvinceList() {
-		Cursor c = mDb
-				.query(TABLE_PROVINCE, null, null, null, null, null, null);
+		Cursor c = mDb.query(TABLE_PROVINCE, null, null, null, null, null,
+				ProvinceColumn.SORT + " asc");
 		return c;
 	}
 

@@ -21,13 +21,14 @@
     <string name="product_warrantly_nonactived_secondary_tip_txt">请点击按钮马上激活\n激活后将享受到{?}\n为您提供的尊贵质保服务</string>
     <string name="product_active_txt">马上激活</string>
     <string name="product_warrantly_active_ongoing_tip">正在激活。。。</string>
-    <string name="product_warrantly_active_result_tip">恭喜您，您的质保卡已激活，可享受XXX提供的尊贵质保服务***天</string>
+    <string name="product_warrantly_active_result_tip">恭喜您，您的质保卡已激活，可享受{?1}提供的尊贵质保服务{?2}天</string>
     <string name="product_warrantly_active_exit_txt">关闭</string>
     <string name="product_warrantly_actived_purchase_date_txt">您的购机时间：{?}</string>
     <string name="product_warrantly_actived_expire_date_txt">您的保修到期时间：{?}</string>
     <string name="product_warrantly_actived_effective_time_left_txt">您还有{?}天免费保修服务</string>
     <string name="product_warrantly_actived_guarantee_tip_txt">您的保修记录</string>
     <string name="product_act_warranty_fail_toast">激活失败，请稍后再试</string>
+    <string name="product_warranty_no_info">没有查询到您的质保信息</string>
 
     <!-- evaluate string -->
     <string name="evaluate_title_txt">评价</string>
@@ -169,6 +170,7 @@
 
     <!-- product detail string -->
     <string name="product_detail_title_txt">商品详情</string>
+    <string name="product_detail_no_item">该产品暂时没有提供更进一步的详情介绍</string>
     <string name="product_color_tip_txt">机身颜色：</string>
     <string name="product_purchase_tip_txt">购买数量：</string>
     <string name="product_purchase_default_count">1</string>
@@ -186,6 +188,7 @@
     <string name="more_fail_tip_txt">加载失败，请重试</string>
     <!-- product parameter string -->
     <string name="product_param_title_txt">规格参数</string>
+    <string name="product_param_no_item">该产品暂时没有提供详细参数</string>
 
     <!-- product comment string -->
     <string name="product_comment_title_txt">评价详情</string>
