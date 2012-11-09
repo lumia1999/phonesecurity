@@ -112,10 +112,13 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 	}
 
 	private void retry() {
-		mLoadingProgressbar.setVisibility(View.VISIBLE);
-		mRetryText.setVisibility(View.GONE);
-		new FetchDataTask().execute(FunctionEntry.PRODUCT_ENTRY,
-				InstConstants.PRODUCT_MORE_INFO);
+		if (TextUtils.equals(mRetryText.getText().toString(),
+				getString(R.string.invalid_network))) {
+			mLoadingProgressbar.setVisibility(View.VISIBLE);
+			mRetryText.setVisibility(View.GONE);
+			new FetchDataTask().execute(FunctionEntry.PRODUCT_ENTRY,
+					InstConstants.PRODUCT_MORE_INFO);
+		}
 	}
 
 	private class FetchDataTask extends AsyncTask<String, Void, Boolean> {
@@ -226,11 +229,18 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 
 	private void fillData() {
 		mLoadingProgressbar.setVisibility(View.GONE);
-		mRetryText.setVisibility(View.GONE);
-		mListView.setVisibility(View.VISIBLE);
-		mAdapter = new DetailApapter();
-		mListView.setAdapter(mAdapter);
-		downloadIcons();
+		if (mDataList.size() > 0) {
+			mRetryText.setVisibility(View.GONE);
+			mListView.setVisibility(View.VISIBLE);
+			mAdapter = new DetailApapter();
+			mListView.setAdapter(mAdapter);
+			downloadIcons();
+		} else {
+			mRetryText.setVisibility(View.VISIBLE);
+			mListView.setVisibility(View.GONE);
+			mRetryText.setText(R.string.product_detail_no_item);
+			mRetryText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+		}
 	}
 
 	private void notifyError() {
@@ -284,9 +294,9 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 							.setBackgroundDrawable(new BitmapDrawable(
 									FileHelper.decodeIconFile(mAct, params[1],
 											Utils.getIconSize(mAct,
-													Constants.ICON_SIZE_200),
+													Constants.ICON_SIZE_400),
 											Utils.getIconSize(mAct,
-													Constants.ICON_SIZE_200))));
+													Constants.ICON_SIZE_400))));
 				}
 				break;
 			}
@@ -335,9 +345,9 @@ public class ProductMoreDetailListFragment extends ListFragment implements
 									FileHelper.decodeIconFile(mAct, item
 											.getIconCachePath(), Utils
 											.getIconSize(mAct,
-													Constants.ICON_SIZE_200),
+													Constants.ICON_SIZE_400),
 											Utils.getIconSize(mAct,
-													Constants.ICON_SIZE_200))));
+													Constants.ICON_SIZE_400))));
 				}
 			} else {
 				viewHolder.icon.setVisibility(View.GONE);

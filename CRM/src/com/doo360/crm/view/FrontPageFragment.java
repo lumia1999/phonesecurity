@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.doo360.crm.Constants;
 import com.doo360.crm.R;
+import com.doo360.crm.Utils;
 
 public class FrontPageFragment extends Fragment {
 	private static final String TAG = "FrontPageFragment";
@@ -29,11 +30,11 @@ public class FrontPageFragment extends Fragment {
 	private FrontPageAdapter mAdapter;
 
 	// item tag
-	private static final int TAG_WARRANTLY = 1;
-	private static final int TAG_SOFTWARE = 2;
+	private static final int TAG_HOTMODEL = 1;
+	private static final int TAG_TOPFREE = 2;
 	private static final int TAG_SHOP = 3;
-	private static final int TAG_TOPFREE = 4;
-	private static final int TAG_HOTMODEL = 5;
+	private static final int TAG_SOFTWARE = 4;
+	private static final int TAG_WARRANTY = 5;
 	private static final int TAG_PERSONALCENTER = 6;
 
 	// data
@@ -79,6 +80,11 @@ public class FrontPageFragment extends Fragment {
 		return v;
 	}
 
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+	}
+
 	private void initData() {
 		if (mDataList != null && !mDataList.isEmpty()) {
 			mDataList.clear();
@@ -94,7 +100,7 @@ public class FrontPageFragment extends Fragment {
 		mDataList.add(new Item(R.drawable.front_page_software_selector,
 				R.string.front_page_software_desc, TAG_SOFTWARE));
 		mDataList.add(new Item(R.drawable.front_page_warrantly_selector,
-				R.string.front_page_warranty_desc, TAG_WARRANTLY));
+				R.string.front_page_warranty_desc, TAG_WARRANTY));
 		mDataList.add(new Item(R.drawable.front_page_personalcenter_selector,
 				R.string.front_page_personalcenter_desc, TAG_PERSONALCENTER));
 	}
@@ -116,7 +122,7 @@ public class FrontPageFragment extends Fragment {
 		Item item = mDataList.get(position);
 		int tag = item.tag;
 		switch (tag) {
-		case TAG_WARRANTLY:
+		case TAG_WARRANTY:
 			showWarranty();
 			break;
 		case TAG_SOFTWARE:
@@ -208,6 +214,9 @@ public class FrontPageFragment extends Fragment {
 			if (convertView == null) {
 				convertView = mAct.getLayoutInflater().inflate(
 						R.layout.front_pagge_grid_item, null);
+				float size = Utils.getIconSize(mAct, Constants.ICON_SIZE_140);
+				convertView.setLayoutParams(new GridView.LayoutParams(
+						(int) size, (int) size));
 				viewHolder = new ViewHolder();
 				viewHolder.icon = (ImageView) convertView
 						.findViewById(R.id.grid_item_icon);

@@ -21,7 +21,8 @@ public class Constants {
 	public static final int ICON_SIZE_70 = 70;
 	public static final int ICON_SIZE_122 = 122;
 	public static final int ICON_SIZE_228 = 228;
-	public static final int ICON_SIZE_200 = 200;
+	public static final int ICON_SIZE_140 = 140;
+	public static final int ICON_SIZE_400 = 400;
 
 	// product order params
 	public static final String P_ID = "productid";

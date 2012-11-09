@@ -2,8 +2,6 @@ package com.doo360.crm.http;
 
 public class FunctionEntry {
 	public static final String HOST = "http://192.168.16.230:88";
-	// public static final String MSG_ENTRY =
-	// "http://120.193.10.237/online/mload/message.xml";
 	public static final String MSG_ENTRY = HOST
 			+ "/AppService.ashx?m=msg&channel=001";
 

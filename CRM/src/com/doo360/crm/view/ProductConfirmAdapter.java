@@ -202,7 +202,7 @@ public class ProductConfirmAdapter extends BaseAdapter {
 		// desc.setText(msg);
 		// }
 		if (Constants.DEBUG) {
-			Log.e(TAG, "updateUserMessage,msg : " + msg);
+			Log.d(TAG, "updateUserMessage,msg : " + msg);
 		}
 		ProductConfirmDetailItemViewHolder viewHolder = (ProductConfirmDetailItemViewHolder) getView(
 				ProductConfirmDetailItem.INDEX_COMMENT, null, null).getTag();

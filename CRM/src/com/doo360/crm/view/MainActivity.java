@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.doo360.crm.R;
 import com.doo360.crm.Utils;
-import com.doo360.crm.provider.ProviderOp;
 
 public class MainActivity extends FragmentActivity {
 	private static final String TAG = "MainActivity";

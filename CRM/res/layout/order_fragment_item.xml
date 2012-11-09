@@ -97,6 +97,7 @@
             android:layout_below="@id/item_count_tip"
             android:layout_marginTop="5dip"
             android:background="@drawable/order_item_below_bg_selector"
+            android:padding="5dip"
             android:paddingBottom="5dip"
             android:paddingTop="5dip" >
 
@@ -109,9 +110,9 @@
                 android:paddingLeft="10dip"
                 android:singleLine="true"
                 android:text="@string/order_view_detail_txt"
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@drawable/order_text_bg_selector" />
-
+
             <ImageView
                 android:id="@+id/item_view_detail_indicator"
                 android:layout_width="wrap_content"
@@ -121,6 +122,7 @@
                 android:layout_marginRight="5dip"
                 android:background="@drawable/order_view_detail_indicator"
                 android:scaleType="centerCrop" />
+
         </RelativeLayout>
     </RelativeLayout>
 

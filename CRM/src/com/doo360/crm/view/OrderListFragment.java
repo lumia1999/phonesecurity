@@ -506,8 +506,6 @@ public class OrderListFragment extends ListFragment implements
 
 				@Override
 				public void onClick(View v) {
-					// TODO
-					Log.d(TAG, "cancel this order");
 					showCancelDialog();
 					cancelOrder(item.getCommon().getNumber());
 				}
@@ -555,7 +553,7 @@ public class OrderListFragment extends ListFragment implements
 			dialog.showResult(result.result);
 		}
 		if (result.result) {
-			// TODO remove the order item from ui
+			// remove the order item from ui
 			int size = mDataList.size();
 			boolean exist = false;
 			for (int i = 0; i < size; i++) {
@@ -568,6 +566,13 @@ public class OrderListFragment extends ListFragment implements
 			}
 			if (exist) {
 				mAdapter.notifyDataSetChanged();
+				if (mDataList.size() < 1) {
+					mRetryText.setVisibility(View.VISIBLE);
+					mListView.setVisibility(View.GONE);
+					mRetryText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0,
+							0);
+					mRetryText.setText(R.string.order_no_item_txt);
+				}
 			}
 		}
 	}
@@ -709,7 +714,6 @@ public class OrderListFragment extends ListFragment implements
 
 		@Override
 		protected void onPostExecute(CancelResult result) {
-			// TODO
 			if (Constants.DEBUG) {
 				Log.d(TAG, "onPostExecute, result : " + result);
 			}

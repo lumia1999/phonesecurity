@@ -16,6 +16,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -192,44 +193,54 @@ public class WarrantlyActivity extends FragmentActivity implements
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private void fillTopData() {
 		if (mWarrantyInfo.getIconcachepath() != null) {
-			mProductIconImage
-					.setBackgroundResource(R.drawable.icon_holder_large);
+			mProductIconImage.setBackgroundDrawable(new BitmapDrawable(
+					FileHelper.decodeIconFile(mCtx,
+							mWarrantyInfo.getIconcachepath(),
+							Utils.getIconSize(mCtx, Constants.ICON_SIZE_228),
+							Utils.getIconSize(mCtx, Constants.ICON_SIZE_228))));
 		} else {
 			startGetIcon();
 		}
 		mProductNameText.setText(mWarrantyInfo.getName());
 		mProductDetailText.setText(mWarrantyInfo.getBrefintro());
-		if (Integer.valueOf(mWarrantyInfo.getCommented()) == WarrantyInfo.P_COMMENTED) {
-			mProductEvaluateText.setVisibility(View.GONE);
-		} else {
-			mProductEvaluateText.setVisibility(View.VISIBLE);
+		if (mWarrantyInfo.getCommented() != null) {
+			if (Integer.valueOf(mWarrantyInfo.getCommented()) == WarrantyInfo.P_COMMENTED) {
+				mProductEvaluateText.setVisibility(View.GONE);
+			} else {
+				mProductEvaluateText.setVisibility(View.VISIBLE);
+			}
 		}
 	}
 
 	private void fillBottomData() {
-		if (Integer.valueOf(mWarrantyInfo.getActived()) != WarrantyInfo.P_ACTIVED) {
-			mBottomActivedLayout.setVisibility(View.VISIBLE);
-			mBottomNonactivedLayout.setVisibility(View.GONE);
-			mProductPurchaseDateText.setText(getString(
-					R.string.product_warrantly_actived_purchase_date_txt)
-					.replace("{?}", mWarrantyInfo.getPurchaseanchor()));
-			mProductExpireDateText.setText(getString(
-					R.string.product_warrantly_actived_expire_date_txt)
-					.replace("{?}", mWarrantyInfo.getExpireanchor()));
-			mPrductEffectiveTimeLeftText.setText(getString(
-					R.string.product_warrantly_actived_effective_time_left_txt)
-					.replace("{?}", mWarrantyInfo.getValidspan()));
-			mAdapter = new WarrantyRecordAdapter(this, mWarrantyInfo);
-			mProductRecordsLayout.setAdapter(mAdapter);
-			mProductRecordsLayout.bindViews();
-		} else {
-			mBottomActivedLayout.setVisibility(View.GONE);
-			mBottomNonactivedLayout.setVisibility(View.VISIBLE);
-			mProductNonactivedSecondaryTipText.setText(getString(
-					R.string.product_warrantly_nonactived_secondary_tip_txt)
-					.replace("{?}", mWarrantyInfo.getChannelname()));
+		if (mWarrantyInfo.getActived() != null) {
+			if (Integer.valueOf(mWarrantyInfo.getActived()) == WarrantyInfo.P_ACTIVED) {
+				mBottomActivedLayout.setVisibility(View.VISIBLE);
+				mBottomNonactivedLayout.setVisibility(View.GONE);
+				mProductPurchaseDateText.setText(getString(
+						R.string.product_warrantly_actived_purchase_date_txt)
+						.replace("{?}", mWarrantyInfo.getPurchaseanchor()));
+				mProductExpireDateText.setText(getString(
+						R.string.product_warrantly_actived_expire_date_txt)
+						.replace("{?}", mWarrantyInfo.getExpireanchor()));
+				mPrductEffectiveTimeLeftText
+						.setText(getString(
+								R.string.product_warrantly_actived_effective_time_left_txt)
+								.replace("{?}", mWarrantyInfo.getValidspan()));
+				mAdapter = new WarrantyRecordAdapter(this, mWarrantyInfo);
+				mProductRecordsLayout.setAdapter(mAdapter);
+				mProductRecordsLayout.bindViews();
+			} else {
+				mBottomActivedLayout.setVisibility(View.GONE);
+				mBottomNonactivedLayout.setVisibility(View.VISIBLE);
+				mProductNonactivedSecondaryTipText
+						.setText(getString(
+								R.string.product_warrantly_nonactived_secondary_tip_txt)
+								.replace("{?}", mWarrantyInfo.getChannelname()));
+			}
 		}
 	}
 
@@ -237,9 +248,15 @@ public class WarrantlyActivity extends FragmentActivity implements
 		mLoadingProgressbar.setVisibility(View.GONE);
 		switch (code) {
 		case Result.CODE_GET_INFO_SUCCESS:
-			mScrollView.setVisibility(View.VISIBLE);
-			fillTopData();
-			fillBottomData();
+			if (mWarrantyInfo.getServiceresult() != 0) {
+				mRetryText.setVisibility(View.VISIBLE);
+				mRetryText.setText(R.string.product_warranty_no_info);
+				mRetryText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+			} else {
+				mScrollView.setVisibility(View.VISIBLE);
+				fillTopData();
+				fillBottomData();
+			}
 			break;
 		case Result.CODE_GET_INFO_FAIL:
 			mRetryText.setVisibility(View.VISIBLE);
@@ -270,10 +287,13 @@ public class WarrantlyActivity extends FragmentActivity implements
 	}
 
 	private void retry() {
-		mLoadingProgressbar.setVisibility(View.VISIBLE);
-		mRetryText.setVisibility(View.GONE);
-		new WarrantyTask().execute(new Params(FunctionEntry.WARRANTY_ENTRY,
-				InstConstants.GET_WARRANTY_INFO));
+		if (TextUtils.equals(mRetryText.getText().toString(),
+				getString(R.string.invalid_network))) {
+			mLoadingProgressbar.setVisibility(View.VISIBLE);
+			mRetryText.setVisibility(View.GONE);
+			new WarrantyTask().execute(new Params(FunctionEntry.WARRANTY_ENTRY,
+					InstConstants.GET_WARRANTY_INFO));
+		}
 	}
 
 	private void evaluate() {
@@ -368,6 +388,10 @@ public class WarrantlyActivity extends FragmentActivity implements
 			case Result.CODE_ACT_SUCCESS:
 				mActiveLayout.setVisibility(View.GONE);
 				mActiveResultLayout.setVisibility(View.VISIBLE);
+				mActiveResultTipText.setText(getString(
+						R.string.product_warrantly_active_result_tip).replace(
+						"{?1}", mWarrantyInfo.getChannelname()).replace("{?2}",
+						mWarrantyInfo.getValidspan()));
 				break;
 			case Result.CODE_ACT_FAIL:
 				this.dismiss();
@@ -386,7 +410,6 @@ public class WarrantlyActivity extends FragmentActivity implements
 			mWarrantyInfo = new WarrantyInfo();
 			InputStream is = null;
 			try {
-				// is = getAssets().open("warranty_info.xml");
 				HttpPost post = new HttpPost(
 						FunctionEntry.fixUrl(params[0].url));
 				post.setEntity(HTTPUtils.fillEntity(HTTPUtils
@@ -408,10 +431,10 @@ public class WarrantlyActivity extends FragmentActivity implements
 					return setFailResult(params);
 				}
 				is = resp.getEntity().getContent();
-				// FOR TEST
-				if (HTTPUtils.testResponse(is)) {
-					return setFailResult(params);
-				}
+				// TODO
+				// if (HTTPUtils.testResponse(is)) {
+				// return setFailResult(params);
+				// }
 				XmlPullParserFactory factory = XmlPullParserFactory
 						.newInstance();
 				factory.setNamespaceAware(true);
@@ -424,7 +447,23 @@ public class WarrantlyActivity extends FragmentActivity implements
 				while (eventType != XmlPullParser.END_DOCUMENT) {
 					if (eventType == XmlPullParser.START_TAG) {
 						tag = parser.getName();
-						if (TextUtils.equals(tag, WarrantyInfo.ICONURL)) {
+						if (TextUtils.equals(tag, HTTPUtils.SERVICERESULT)) {
+							parser.next();
+							int serviceResult = Integer.valueOf(parser
+									.getText());
+							mWarrantyInfo.setServiceresult(serviceResult);
+							if (serviceResult != 0) {
+								return setSuccessResult(params);
+							}
+						} else if (TextUtils.equals(tag,
+								WarrantyInfo.WARRANTYID)) {
+							parser.next();
+							mWarrantyInfo.setWarrantyid(parser.getText());
+						} else if (TextUtils.equals(tag,
+								WarrantyInfo.WARRANTYIMEI)) {
+							parser.next();
+							mWarrantyInfo.setWarrantyimei(parser.getText());
+						} else if (TextUtils.equals(tag, WarrantyInfo.ICONURL)) {
 							parser.next();
 							mWarrantyInfo.setIconurl(parser.getText());
 						} else if (TextUtils.equals(tag, WarrantyInfo.NAME)) {
@@ -595,20 +634,21 @@ public class WarrantlyActivity extends FragmentActivity implements
 	private void startGetIcon() {
 		DownloadIconTask tsk = new DownloadIconTask(mCtx, this);
 		List<String> param = new ArrayList<String>();
-		if (Constants.DEBUG) {
-			Log.e(TAG, "icon url : " + mWarrantyInfo.getIconurl());
-		}
 		param.add(mWarrantyInfo.getIconurl());
 		tsk.execute(param);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void iconDownloaded(String... params) {
-		// TODO
 		if (Constants.DEBUG) {
 			Log.d(TAG, "iconurl : " + params[0] + ",cachepath : " + params[1]);
 		}
-		// mProductIconImage.setBackgroundResource(-1);
+		mWarrantyInfo.setIconcachepath(params[1]);
+		mProductIconImage.setBackgroundDrawable(new BitmapDrawable(FileHelper
+				.decodeIconFile(mCtx, params[1],
+						Utils.getIconSize(mCtx, Constants.ICON_SIZE_228),
+						Utils.getIconSize(mCtx, Constants.ICON_SIZE_228))));
 	}
 
 	@Override

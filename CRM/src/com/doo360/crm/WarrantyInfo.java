@@ -8,7 +8,10 @@ public class WarrantyInfo {
 	public static final int P_NONCOMMENTED = 0;
 	public static final int P_COMMENTED = 1;
 
+	public static final String SERVICERESULT = "serviceresult";
 	public static final String WARRANTYINFO = "warrantyinfo";
+	public static final String WARRANTYID = "warrantyid";
+	public static final String WARRANTYIMEI = "warrantyimei";
 	public static final String ICONURL = "iconurl";
 	public static final String ICONCACHEPATH = "iconcachepath";
 	public static final String NAME = "name";
@@ -26,6 +29,9 @@ public class WarrantyInfo {
 	public static final String SHOPNAME = "shopname";
 	public static final String SERVICE = "service";
 
+	private int serviceresult;
+	private String warrantyid;
+	private String warrantyimei;
 	private String iconurl;
 	private String iconcachepath;
 	private String name;
@@ -40,6 +46,30 @@ public class WarrantyInfo {
 	private String shopid;
 	private String shopname;
 	private List<Record> recordData;
+
+	public int getServiceresult() {
+		return this.serviceresult;
+	}
+
+	public void setServiceresult(int serviceresult) {
+		this.serviceresult = serviceresult;
+	}
+
+	public String getWarrantyid() {
+		return this.warrantyid;
+	}
+
+	public void setWarrantyid(String warrantyid) {
+		this.warrantyid = warrantyid;
+	}
+
+	public String getWarrantyimei() {
+		return this.warrantyimei;
+	}
+
+	public void setWarrantyimei(String warrantyimei) {
+		this.warrantyimei = warrantyimei;
+	}
 
 	public String getIconurl() {
 		return iconurl;
@@ -185,6 +215,5 @@ public class WarrantyInfo {
 		public void setServie(String servie) {
 			this.servie = servie;
 		}
-
 	}
 }
