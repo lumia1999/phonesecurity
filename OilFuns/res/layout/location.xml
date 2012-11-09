@@ -1,0 +1,25 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/banner" />
+
+    <fragment
+        android:id="@+id/auto_position_fragment"
+        android:name="com.herry.oilfuns.view.AutoPositionFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banner_layout" />
+
+    <fragment
+        android:id="@+id/choose_area_fragment"
+        android:name="com.herry.oilfuns.view.ChooseAreaListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/auto_position_fragment" />
+
+</RelativeLayout>
