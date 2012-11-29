@@ -102,7 +102,16 @@ public class Utils {
 	public static String getIMEI(Context ctx) {
 		TelephonyManager tm = (TelephonyManager) ctx
 				.getSystemService(Context.TELEPHONY_SERVICE);
-		return tm.getDeviceId();
+		if (tm == null) {
+			return android.os.Build.SERIAL;
+		} else {
+			String devId = tm.getDeviceId();
+			if (devId == null) {
+				return android.os.Build.SERIAL;
+			} else {
+				return devId;
+			}
+		}
 	}
 
 	public static String getDevModel() {
@@ -201,7 +210,7 @@ public class Utils {
 	}
 
 	// 60 minutes
-	private static final long MSG_ALARM_SPAN = 60 * 1 * 60 * 1000L;
+	private static final long MSG_ALARM_SPAN = 4 * 60 * 60 * 1000L;// four hours
 
 	public static void setMsgAlarm(Context ctx) {
 		if (!Prefs.isMsgAlarmBaseAnchorSetted(ctx)) {

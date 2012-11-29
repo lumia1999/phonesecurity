@@ -241,5 +241,8 @@ public class DownloadApkService extends Service implements
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		builder.setContentIntent(PendingIntent.getActivity(mCtx, 0, intent, 0));
 		mNm.notify(NotificationIdGen.genId(), builder.getNotification());
+		Toast.makeText(mCtx,
+				getString(R.string.apk_noti_txt).replace("{?}", apk.name),
+				Toast.LENGTH_SHORT).show();
 	}
 }

@@ -3,10 +3,11 @@ package com.doo360.crm.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.protocol.HTTP;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -27,9 +28,12 @@ import android.util.Log;
 import com.doo360.crm.Constants;
 import com.doo360.crm.NotificationIdGen;
 import com.doo360.crm.R;
+import com.doo360.crm.Utils;
 import com.doo360.crm.http.FunctionEntry;
 import com.doo360.crm.http.HTTPUtils;
+import com.doo360.crm.http.HttpParam;
 import com.doo360.crm.http.HttpRequestBox;
+import com.doo360.crm.http.InstConstants;
 import com.doo360.crm.provider.CrmDb;
 import com.doo360.crm.provider.ProviderOp;
 import com.doo360.crm.view.MsgCenterListActivity;
@@ -64,9 +68,37 @@ public class UpdateMsgsIntentService extends IntentService {
 		super.onDestroy();
 	}
 
+	private List<String> setRequestParams() {
+		List<String> list = new ArrayList<String>();
+		list.add(HTTPUtils.USERID);
+		list.add(HTTPUtils.IMEI);
+		list.add(HTTPUtils.CHANNELID);
+		list.add(HTTPUtils.PAGEINDEX);
+		list.add(HTTPUtils.PAGESIZE);
+		return list;
+	}
+
+	public List<HttpParam> setRequestParamValues() {
+		Context ctx = getApplicationContext();
+		String pageIndex = "1";
+		String pageSize = "10";
+		List<HttpParam> list = new ArrayList<HttpParam>();
+		list.add(new HttpParam(false, Utils.getIMEI(ctx)));
+		list.add(new HttpParam(false, Utils.getIMEI(ctx)));
+		list.add(new HttpParam(false, Utils.getChannelId(ctx)));
+		list.add(new HttpParam(false, pageIndex));
+		list.add(new HttpParam(false, pageSize));
+		return list;
+	}
+
 	private void fetchMsgs() {
+		HttpPost post = new HttpPost(
+				FunctionEntry.fixUrl(FunctionEntry.MSG_ENTRY));
+		post.setEntity(HTTPUtils.fillEntity(HTTPUtils.formatRequestParams(
+				InstConstants.GET_MSG, setRequestParams(),
+				setRequestParamValues(), false)));
 		HttpResponse response = HttpRequestBox.getInstance(this).sendRequest(
-				new HttpGet(FunctionEntry.MSG_ENTRY));
+				post);
 		if (response == null) {
 			return;
 		}

@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -51,6 +52,9 @@ import com.doo360.crm.http.InstConstants;
 public class EvaluateActivity extends FragmentActivity implements
 		OnClickListener {
 	private static final String TAG = "EvaluateActivity";
+
+	public static final String EXTRA_RATING = "extra_rating";
+	public static final String EXTRA_COMMENT = "extra_comment";
 
 	// title
 	private ImageView mPrevImage;
@@ -315,7 +319,11 @@ public class EvaluateActivity extends FragmentActivity implements
 				this.dismiss();
 				// if evaluate success,ELSE just dismiss this dialog
 				if (mSuccess) {
-					setResult(Constants.ACTIVITY_RESULT_EVALUATE);
+					Intent data = new Intent();
+					data.putExtra(EXTRA_RATING, mRatingBar.getRating());
+					data.putExtra(EXTRA_COMMENT, mContentEdit.getText()
+							.toString());
+					setResult(Constants.ACTIVITY_RESULT_EVALUATE, data);
 					finish();
 				}
 				break;

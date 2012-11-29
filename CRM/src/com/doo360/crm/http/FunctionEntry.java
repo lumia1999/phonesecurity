@@ -2,9 +2,10 @@ package com.doo360.crm.http;
 
 public class FunctionEntry {
 	public static final String HOST = "http://192.168.16.230:88";
-	public static final String MSG_ENTRY = HOST
-			+ "/AppService.ashx?m=msg&channel=001";
-
+	// public static final String MSG_ENTRY = HOST
+	// + "/AppService.ashx?m=msg&channel=001";
+	// push entry
+	public static final String MSG_ENTRY = "/services/pushmessage.ashx";
 	// warranty entry
 	public static final String WARRANTY_ENTRY = "/services/warranty.ashx";
 	// evaluate entry

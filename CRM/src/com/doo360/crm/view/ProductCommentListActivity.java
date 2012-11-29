@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -50,12 +51,17 @@ public class ProductCommentListActivity extends FragmentActivity implements
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (Constants.DEBUG) {
+			Log.d(TAG, "onActivityResult,requestCode : " + requestCode
+					+ ",resultCode : " + resultCode);
+		}
 		switch (requestCode) {
 		case REQ_CODE_COMMENT:
-			if (resultCode == Activity.RESULT_OK) {
-				setResult(Activity.RESULT_OK);
-				finish();
-				overridePendingTransition(0, 0);
+			if (resultCode == Constants.ACTIVITY_RESULT_EVALUATE) {
+				// setResult(Activity.RESULT_OK);
+				// finish();
+				// overridePendingTransition(0, 0);
+				updateUserComment(data);
 			}
 			break;
 		}
@@ -108,6 +114,16 @@ public class ProductCommentListActivity extends FragmentActivity implements
 	private void evaluate() {
 		startActivityForResult(new Intent(this, EvaluateActivity.class),
 				REQ_CODE_COMMENT);
+	}
+
+	private void updateUserComment(Intent data) {
+		mOpLayout.setVisibility(View.GONE);
+		FragmentManager fm = getSupportFragmentManager();
+		ProductCommentListFragment fragment = (ProductCommentListFragment) fm
+				.findFragmentById(R.id.product_comment_fragment);
+		if (fragment != null) {
+			fragment.updateNewComment(data);
+		}
 	}
 
 	public String getPId() {
