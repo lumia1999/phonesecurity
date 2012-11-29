@@ -199,7 +199,7 @@ public class WarrantlyActivity extends FragmentActivity implements
 			mProductIconImage.setBackgroundDrawable(new BitmapDrawable(
 					FileHelper.decodeIconFile(mCtx,
 							mWarrantyInfo.getIconcachepath(),
-							Utils.getIconSize(mCtx, Constants.ICON_SIZE_228),
+							Utils.getIconSize(mCtx, Constants.ICON_SIZE_122),
 							Utils.getIconSize(mCtx, Constants.ICON_SIZE_228))));
 		} else {
 			startGetIcon();
@@ -647,7 +647,7 @@ public class WarrantlyActivity extends FragmentActivity implements
 		mWarrantyInfo.setIconcachepath(params[1]);
 		mProductIconImage.setBackgroundDrawable(new BitmapDrawable(FileHelper
 				.decodeIconFile(mCtx, params[1],
-						Utils.getIconSize(mCtx, Constants.ICON_SIZE_228),
+						Utils.getIconSize(mCtx, Constants.ICON_SIZE_122),
 						Utils.getIconSize(mCtx, Constants.ICON_SIZE_228))));
 	}
 

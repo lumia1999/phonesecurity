@@ -14,6 +14,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -402,5 +403,17 @@ public class ProductCommentListFragment extends ListFragment implements
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 		// TODO Auto-generated method stub
 		// Log.e(TAG, "scrollState : " + scrollState);
+	}
+
+	public void updateNewComment(Intent data) {
+		ProductCommentItem item = new ProductCommentItem();
+		item.setContent(data.getStringExtra(EvaluateActivity.EXTRA_COMMENT));
+		item.setRating(String.valueOf(data.getFloatExtra(
+				EvaluateActivity.EXTRA_RATING, 0.0f)));
+		// TODO set userId of this commendation
+		mDataList.add(0, item);
+		if (mAdapter != null) {
+			mAdapter.notifyDataSetChanged();
+		}
 	}
 }

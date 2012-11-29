@@ -4,6 +4,9 @@ public class InstConstants {
 	/**
 	 * define all instruction
 	 */
+
+	public static final String GET_MSG = "getPushMessageList";
+
 	public static final String GET_WARRANTY_INFO = "getWarrantyCardInfo";
 	public static final String ACT_WARRANTY = "activateWarrantyCard";
 
