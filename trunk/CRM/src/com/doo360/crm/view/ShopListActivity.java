@@ -155,7 +155,7 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 	@Override
 	protected void onResume() {
 		if (Constants.DEBUG) {
-			Log.e(TAG, "onResume");
+			Log.d(TAG, "onResume");
 		}
 		super.onResume();
 		if (p != null) {
@@ -166,7 +166,7 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 	@Override
 	protected void onPause() {
 		if (Constants.DEBUG) {
-			Log.e(TAG, "onPause");
+			Log.d(TAG, "onPause");
 		}
 		if (p != null) {
 			p.pause();
@@ -177,7 +177,7 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 	@Override
 	protected void onDestroy() {
 		if (Constants.DEBUG) {
-			Log.e(TAG, "onDestroy");
+			Log.d(TAG, "onDestroy");
 		}
 		super.onDestroy();
 	}
@@ -474,7 +474,7 @@ public class ShopListActivity extends MapActivity implements OnClickListener,
 	private void dataFormat() {
 		int size = mGroupList.size();
 		if (Constants.DEBUG) {
-			Log.e(TAG, "size : " + size);
+			Log.d(TAG, "size : " + size);
 		}
 		for (int i = 0; i < size; i++) {
 			mDataList.add(mGroupList.get(i));
