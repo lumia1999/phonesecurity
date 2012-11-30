@@ -1,6 +1,7 @@
 package com.doo360.crm;
 
 public class HotmodelItem {
+	public static final String COUNT = "count";
 	public static final String ITEM = "item";
 	public static final String ID = "id";
 	public static final String NAME = "name";

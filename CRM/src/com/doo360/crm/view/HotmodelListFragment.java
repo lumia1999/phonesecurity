@@ -234,7 +234,10 @@ public class HotmodelListFragment extends ListFragment implements
 				while (eventType != XmlPullParser.END_DOCUMENT) {
 					if (eventType == XmlPullParser.START_TAG) {
 						tag = parser.getName();
-						if (TextUtils.equals(tag, HotmodelItem.ITEM)) {
+						if (TextUtils.equals(tag, HotmodelItem.COUNT)) {
+							parser.next();
+							mItemTotalCount = Integer.valueOf(parser.getText());
+						} else if (TextUtils.equals(tag, HotmodelItem.ITEM)) {
 							item = new HotmodelItem();
 						} else if (TextUtils.equals(tag, HotmodelItem.ID)) {
 							parser.next();
@@ -400,7 +403,7 @@ public class HotmodelListFragment extends ListFragment implements
 		synchronized (mIconUrlsLock) {
 			HotmodelItem item = null;
 			List<String> iconUrls = new ArrayList<String>();
-			for (int i = firstPos; i <= endPos; i++) {
+			for (int i = firstPos; i < endPos; i++) {
 				item = mDataList.get(i);
 				if (item.getIconCachePath() == null) {
 					if (mDownloadingIconUrls.contains(item.getIconurl())) {
@@ -587,7 +590,7 @@ public class HotmodelListFragment extends ListFragment implements
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 		if (Constants.DEBUG) {
-			Log.e(TAG, "onScrollStateChanged,scrollState : " + scrollState);
+			Log.d(TAG, "onScrollStateChanged,scrollState : " + scrollState);
 		}
 		if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
 			checkIconsForDownload();
