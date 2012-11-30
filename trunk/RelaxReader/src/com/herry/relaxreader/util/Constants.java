@@ -44,7 +44,7 @@ public class Constants {
 
 	public static HashMap<Integer, String[]> mUpdates = new HashMap<Integer, String[]>();
 	public static final String[] mQiushibaikeUpdates = new String[] {
-			"2012-04", "2012-05" };
+			"2012-06", "2012-07", "2012-08", "2012-09" };
 	public static final String[] mTianyaUpdates = new String[] {
 			"我在成都火车站做小姐的日子", "818大学里和QQ上几个女人之间的那些混蛋事" };
 	public static final String[] mBbsReplyUpdates = new String[] {

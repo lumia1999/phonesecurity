@@ -74,6 +74,7 @@ public class FileHelper {
 	}
 
 	// default value is -1L
+	@SuppressWarnings("resource")
 	public static long getConsumeTS() {
 		File f = new File(getConsumePath());
 		BufferedReader br = null;
