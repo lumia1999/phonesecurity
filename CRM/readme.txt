@@ -4,8 +4,10 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-1.copy framework.aidl from 'sdkFolder/platform/android-16/' to '/sdkFolder/tools/lib/'
+1.copy framework.aidl from 'sdkFolder/platform/android-16/' to '/sdkFolder/tools/lib/'.
 
-2.copy android.jar from 'sdkFolder/platform/android-16/' to 'sdkForlder/'
+2.copy android.jar from 'sdkFolder/platform/android-16/' to 'sdkForlder/'.
 
 3. directory '/lib' providered ONLY for building usage.
+
+4.first clean old output by input 'ant clean' under prompt, then produce new version by input 'ant all'. 
