@@ -112,8 +112,10 @@ public class ProductCommentListActivity extends FragmentActivity implements
 	}
 
 	private void evaluate() {
-		startActivityForResult(new Intent(this, EvaluateActivity.class),
-				REQ_CODE_COMMENT);
+		Intent i = new Intent(this, EvaluateActivity.class);
+		i.putExtra(EvaluateActivity.EXTRA_TYPE, EvaluateActivity.TYPE_PRODUCT);
+		i.putExtra(EvaluateActivity.EXTRA_INFO, mPId);
+		startActivityForResult(i, REQ_CODE_COMMENT);
 	}
 
 	private void updateUserComment(Intent data) {

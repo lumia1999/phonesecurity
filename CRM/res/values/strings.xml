@@ -170,7 +170,7 @@
 
     <!-- product detail string -->
     <string name="product_detail_title_txt">商品详情</string>
-    <string name="product_detail_no_item">该产品暂时没有提供更进一步的详情介绍</string>
+    <string name="product_detail_no_item">该产品暂无更进一步的详情介绍</string>
     <string name="product_color_tip_txt">机身颜色：</string>
     <string name="product_purchase_tip_txt">购买数量：</string>
     <string name="product_purchase_default_count">1</string>

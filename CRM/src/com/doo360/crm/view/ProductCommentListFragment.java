@@ -211,6 +211,7 @@ public class ProductCommentListFragment extends ListFragment implements
 					return false;
 				}
 				is = resp.getEntity().getContent();
+				// TODO
 				// if (HTTPUtils.testResponse(is)) {
 				// return false;
 				// }

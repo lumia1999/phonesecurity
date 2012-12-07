@@ -297,8 +297,10 @@ public class WarrantlyActivity extends FragmentActivity implements
 	}
 
 	private void evaluate() {
-		startActivityForResult(new Intent(this, EvaluateActivity.class),
-				REQ_CODE_EVALUATE);
+		Intent i = new Intent(this, EvaluateActivity.class);
+		i.putExtra(EvaluateActivity.EXTRA_TYPE, EvaluateActivity.TYPE_WARRANTY);
+		i.putExtra(EvaluateActivity.EXTRA_INFO, mWarrantyInfo.getWarrantyid());
+		startActivityForResult(i, REQ_CODE_EVALUATE);
 	}
 
 	private void active() {
