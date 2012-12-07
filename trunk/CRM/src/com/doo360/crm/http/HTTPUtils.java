@@ -62,6 +62,8 @@ public class HTTPUtils {
 	public static final String PAGEINDEX = "pageindex";
 	public static final String PAGESIZE = "pagesize";
 
+	public static final String WARRANTYID = "warrantyid";
+
 	public static final int DEF_PAGE_SIZE = 20;
 
 	public static final String ITEMS = "items";

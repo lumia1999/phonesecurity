@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="CRM" default="dist">
+<project name="CRM" default="dist" basedir=".">
     <!-- ************************************************************************************* -->
     <!-- These settings were written by activitycreator.
          Do not change them unless you really know what you are doing. -->
@@ -9,7 +9,15 @@
     
     <!-- ************************************************************************************* -->
     <!-- No user servicable parts below. -->
-
+	
+	<!-- Tiger. Please copy ant-contrib-XXX.jar of this directory into "lib" directory of ant-->
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	
+	<propertyregex property="logo" input="${market-channel}" regexp="(.*)/" select="\1" />
+	<echo>gen logo for ${logo}</echo>
+	<propertyregex property="channel" input="${market-channel}" regexp="/(.*)" select="\1" />
+	<echo>gen channel for ${channel}</echo>
+	
     <property name="android-tools" value="${sdk-folder}/tools" />
 	<property name="android-platform-tools" value="${sdk-folder}/platform-tools"/>
     <property name="android-framework" value="${android-tools}/lib/framework.aidl" />
@@ -66,14 +74,14 @@
         <os family="windows"/>
     </condition>
 
-    <property name="out-unsigned-package" value="${outdir}/${ant.project.name}-${market-channel}-unsigned-${deployment.number}.apk"/>
+    <property name="out-unsigned-package" value="${outdir}/${ant.project.name}-${channel}-unsigned-${deployment.number}.apk"/>
     <condition property="out-unsigned-package-ospath"
             value="${basedir}\${out-unsigned-package}"
             else="${basedir}/${out-unsigned-package}" >
         <os family="windows"/>
     </condition>
     
-    <property name="out-package" value="${outdir}/${ant.project.name}-${market-channel}-${deployment.number}.apk" />
+    <property name="out-package" value="${outdir}/${ant.project.name}-${channel}-${deployment.number}.apk" />
     <condition property="out-package-ospath"
             value="${basedir}\${out-package}"
             else="${basedir}/${out-package}" >
@@ -103,8 +111,10 @@
 	
 	<!-- copy channel id into manifest.xml-->
 	<target name="channel-id">
-		<echo>market channel:${market-channel}</echo>
-		<replaceregexp byline='false' flags='g' file='AndroidManifest.xml' match='android:name="channelId" android:value="(.*)"' replace='android:name="channelId" android:value="${market-channel}"' />
+		<echo>market channel:${channel},logo:${logo},logodir:${logodir},resdir=${resdir}</echo>
+		<replaceregexp byline='false' flags='g' file='AndroidManifest.xml' match='android:name="channelId" android:value="(.*)"' replace='android:name="channelId" android:value="${channel}"' />
+		<delete file="${resdir}/drawable-hdpi/ic_launcher.png"/>
+		<copy file="${logodir}/${logo}/ic_launcher.png" todir="${resdir}/drawable-hdpi" />
 	</target>
 	
 	<!-- Generate the R.java file for this project's resources. -->
@@ -360,8 +370,8 @@
     
     <target name="dist" depends="sign">
     	<mkdir dir="${dist}"/>
-    	<move file="${outdir}/${ant.project.name}-${market-channel}-${deployment.number}.apk" todir="${dist}"/>
-    	<move file="${outdir}/${ant.project.name}-${market-channel}-unsigned-${deployment.number}.apk" todir="${dist}"/>
+    	<move file="${outdir}/${ant.project.name}-${channel}-${deployment.number}.apk" todir="${dist}"/>
+    	<move file="${outdir}/${ant.project.name}-${channel}-unsigned-${deployment.number}.apk" todir="${dist}"/>
     </target>
 	
 	<!-- Install the package on the default emulator -->

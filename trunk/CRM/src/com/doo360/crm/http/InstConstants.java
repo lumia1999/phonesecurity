@@ -11,7 +11,9 @@ public class InstConstants {
 	public static final String ACT_WARRANTY = "activateWarrantyCard";
 
 	public static final String GET_EVALUATION = "getProductComment";
-	public static final String EVALATE = "commentForProduct";
+	public static final String EVALATE_PRODUCT = "commentForProduct";
+	public static final String EVALUTE_WARRANTY = "commentForWarranty";
+	public static final String EVALUTE_ORDER = "commentForOrder";
 
 	public static final String SHOP = "getShopList";
 

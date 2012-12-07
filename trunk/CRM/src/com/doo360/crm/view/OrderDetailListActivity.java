@@ -165,8 +165,10 @@ public class OrderDetailListActivity extends FragmentActivity implements
 	}
 
 	private void comment() {
-		startActivityForResult(new Intent(this, EvaluateActivity.class),
-				REQ_CODE_EVALUATE);
+		Intent i = new Intent(this, EvaluateActivity.class);
+		i.putExtra(EvaluateActivity.EXTRA_TYPE, EvaluateActivity.TYPE_ORDER);
+		i.putExtra(EvaluateActivity.EXTRA_INFO, mOrderNumber);
+		startActivityForResult(i, REQ_CODE_EVALUATE);
 	}
 
 	private void initUI() {

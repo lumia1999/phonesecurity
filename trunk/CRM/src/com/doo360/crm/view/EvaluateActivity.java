@@ -56,6 +56,16 @@ public class EvaluateActivity extends FragmentActivity implements
 	public static final String EXTRA_RATING = "extra_rating";
 	public static final String EXTRA_COMMENT = "extra_comment";
 
+	public static final String EXTRA_TYPE = "extra_type";
+	public static final String EXTRA_INFO = "extra_info";
+	public static final int TYPE_WARRANTY = 1;
+	public static final int TYPE_PRODUCT = 2;
+	public static final int TYPE_ORDER = 3;
+
+	private int mEvaluateType;
+	private String mEvaluateInfo;
+	private String mEvalateInst;
+
 	// title
 	private ImageView mPrevImage;
 	private TextView mTitleText;
@@ -82,9 +92,24 @@ public class EvaluateActivity extends FragmentActivity implements
 			Log.d(TAG, "onCreate");
 		}
 		super.onCreate(savedInstanceState);
+		Intent i = getIntent();
+		if (i != null) {
+			mEvaluateType = i.getIntExtra(EXTRA_TYPE, TYPE_WARRANTY);
+			mEvaluateInfo = i.getStringExtra(EXTRA_INFO);
+			switch (mEvaluateType) {
+			case TYPE_PRODUCT:
+				mEvalateInst = InstConstants.EVALATE_PRODUCT;
+				break;
+			case TYPE_ORDER:
+				mEvalateInst = InstConstants.EVALUTE_ORDER;
+				break;
+			case TYPE_WARRANTY:
+				mEvalateInst = InstConstants.EVALUTE_WARRANTY;
+				break;
+			}
+		}
 		setContentView(R.layout.evaluate);
 		initUI();
-		// demo();
 	}
 
 	@Override
@@ -208,10 +233,6 @@ public class EvaluateActivity extends FragmentActivity implements
 								parser.next();
 								serviceResult = Integer.valueOf(parser
 										.getText());
-								if (Constants.DEBUG) {
-									Log.d(TAG, "serviceResult : "
-											+ serviceResult);
-								}
 								break;
 							}
 						}
@@ -237,6 +258,17 @@ public class EvaluateActivity extends FragmentActivity implements
 				list.add(HTTPUtils.MODEL);
 				list.add(HTTPUtils.RATING);
 				list.add(HTTPUtils.CONTENT);
+				switch (mEvaluateType) {
+				case TYPE_ORDER:
+					list.add(HTTPUtils.NUMBER);
+					break;
+				case TYPE_PRODUCT:
+					list.add(HTTPUtils.PRODUCTID);
+					break;
+				case TYPE_WARRANTY:
+					list.add(HTTPUtils.WARRANTYID);
+					break;
+				}
 				return list;
 			}
 
@@ -248,10 +280,11 @@ public class EvaluateActivity extends FragmentActivity implements
 				list.add(new HttpParam(false, String.valueOf(mRatingBar
 						.getRating())));
 				list.add(new HttpParam(false, mContentEdit.getText().toString()));
+				list.add(new HttpParam(false, mEvaluateInfo));
 				return list;
 			}
 
-		}.execute(FunctionEntry.EVALUATE_ENTRY, InstConstants.EVALATE);
+		}.execute(FunctionEntry.EVALUATE_ENTRY, mEvalateInst);
 	}
 
 	private void showPostResult(int code) {

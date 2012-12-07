@@ -15,7 +15,10 @@
 	<!-- The channel list file -->
 	<property file="channel.properties"/>
 	
-	    <!-- Output directories -->
+	<!-- The logo list file-->
+	<property file="logo.properties" />
+	
+	<!-- Output directories -->
     <property name="outdir-classes" value="${outdir}/classes" />
     <condition property="outdir-classes-ospath"
             value="${basedir}\${outdir-classes}"
