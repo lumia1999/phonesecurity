@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <it.sephiroth.android.library.imagezoom.ImageViewTouch
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/disp_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" >
+    </it.sephiroth.android.library.imagezoom.ImageViewTouch>
+
+    <ProgressBar
+        android:id="@android:id/progress"
+        style="@style/ProgressBar_Mini"
+        android:layout_width="100dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="20dip"
+        android:indeterminate="false"
+        android:progress="30"
+        android:progressDrawable="@drawable/progress_drawable" />
+
+</FrameLayout>

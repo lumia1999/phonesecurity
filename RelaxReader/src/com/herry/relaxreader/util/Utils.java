@@ -11,9 +11,21 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 public class Utils {
+
+	public static DisplayMetrics getDevInfo(Context ctx) {
+		WindowManager wm = (WindowManager) ctx
+				.getSystemService(Context.WINDOW_SERVICE);
+		Display disp = wm.getDefaultDisplay();
+		DisplayMetrics dm = new DisplayMetrics();
+		disp.getMetrics(dm);
+		return dm;
+	}
 
 	public static String getAppVersion(Context ctx) {
 		PackageManager pm = ctx.getPackageManager();
@@ -55,68 +67,4 @@ public class Utils {
 		return nInfo.isConnected();
 	}
 
-	public static void saveConsumeTimestamp(Context ctx) {
-		long ts = System.currentTimeMillis();
-		Prefs.saveConsumeTimestamp(ctx, ts);
-		FileHelper.saveConsumeTS(ts);
-	}
-
-	public static long getConsumeTimestamp(Context ctx) {
-		long prefTS = Prefs.getConsumeTimestamp(ctx);
-		long sdTS = FileHelper.getConsumeTS();
-		if (prefTS == -1L && sdTS == -1L) {
-			return -1L;
-		} else {
-			if (prefTS == -1L) {
-				Prefs.saveConsumeTimestamp(ctx, sdTS);
-				return sdTS;
-			} else if (sdTS == -1L) {
-				FileHelper.saveConsumeTS(prefTS);
-				return prefTS;
-			} else {
-				if (prefTS != sdTS) {
-					FileHelper.saveConsumeTS(prefTS);
-					return prefTS;
-				} else {
-					return prefTS;
-				}
-
-			}
-		}
-	}
-
-	public static boolean isConsumeActive(Context ctx) {
-		long savedTS = getConsumeTimestamp(ctx);
-		// Log.e("RelaxReader.Utils", "savedTS : " + savedTS);
-		if (savedTS == -1L) {
-			return false;
-		}
-		long now = System.currentTimeMillis();
-		if (Math.abs(now - savedTS) > Constants.CONSUME_ACTIVE_TIME_INTERVAL) {
-			return false;
-		}
-		return true;
-	}
-
-	public static String calcActiveTimeLeft(Context ctx, long span) {
-		long consumed = span / (Constants.ONE_DAY_TIME_INTERVAL);
-		return ctx.getString(R.string.app_offer_consume_active_lefttime) + " "
-				+ (Constants.OVERDUE_INTERVAL - consumed) + " "
-				+ ctx.getString(R.string.day);
-	}
-
-	public static boolean showOfferOption(Context ctx) {
-		if (Constants.NO_OFFER) {
-			long now = System.currentTimeMillis();
-			long installTS = Prefs.getInstallTimestamp(ctx);
-			long span = now - installTS;
-			if (Math.abs(span) > Constants.OFFER_MAX_TIMESTAMP) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return true;
-		}
-	}
 }
