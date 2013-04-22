@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.herry.relaxreader"
-    android:installLocation="preferExternal"
-    android:versionCode="9"
-    android:versionName="01.009" >
+    android:versionCode="10"
+    android:versionName="01.010" >
 
     <supports-screens
         android:anyDensity="true"
@@ -12,41 +11,29 @@
         android:resizeable="true"
         android:smallScreens="true" />
 
-    <uses-sdk android:minSdkVersion="7" />
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="12" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <!-- ad permission -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- ad offer permission -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
-        android:name=".RelaxReaderApp"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar" >
-        <activity
-            android:name=".RelaxReaderActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+        android:theme="@style/AppTheme" >
 
-            <!--
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </activity>
+        <!-- currently in use -->
         <activity
-            android:name=".RelaxReaderTableActivity"
+            android:name=".view.WelcomeActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,40 +42,46 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PageViewActivity"
+            android:name=".view.ContentPageActivity"
             android:configChanges="orientation|keyboardHidden"
             android:windowSoftInputMode="stateHidden|adjustPan" >
         </activity>
         <activity
-            android:name=".AppOfferTipActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:theme="@style/Theme.MyDialog"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
-        </activity>
-        <activity
-            android:name=".MonthSelectActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:theme="@style/Theme.MyDialog"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
-        </activity>
-        <activity
-            android:name=".AboutActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
-        </activity>
-        <!-- ad activity -->
-        <activity
-            android:name="net.youmi.android.AdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation" >
-        </activity>
-        <activity
-            android:name="net.youmi.android.appoffers.YoumiOffersActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation" >
+            android:name=".view.FullViewIconActivity"
+            android:configChanges="orientation|keyboardHidden" >
         </activity>
 
+        <!-- end currently in use -->
+
+
+        <!-- ad info -->
+
+        <activity
+            android:name="net.youmi.android.AdBrowser"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+
+        <service
+            android:name="net.youmi.android.AdService"
+            android:exported="false" >
+        </service>
+
+        <receiver android:name="net.youmi.android.AdReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+        <!-- ad info end -->
         <meta-data
             android:name="YOUMI_CHANNEL"
-            android:value="10010" />
+            android:value="10000" />
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5171090856240b4e890068bb" >
+        </meta-data>
     </application>
 
 </manifest>

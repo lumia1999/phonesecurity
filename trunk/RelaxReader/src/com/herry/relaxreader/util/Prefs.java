@@ -2,15 +2,17 @@ package com.herry.relaxreader.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.text.format.DateUtils;
+
+import com.herry.relaxreader.R;
 
 public class Prefs {
 	private static final String PREF_NAME = "com.herry.relaxreader_pref";
 	private static SharedPreferences mInstance = null;
 
-	private static final String ITEM_VERSION = "version";
-	private static final String ITEM_CONSUME_POINTS_TS = "consume_points_ts";
-	private static final String ITEM_INSTALL_TS = "install_ts";
-	private static final String ITEM_CUR_LANGUAGE = "cur_language";
+	private static final String ITEM_COLUMN_LAST_UPDATE_ANCHOR = "item_column_last_update_anchor";
+	private static final String ITEM_OLD_CLEAN_FINISH = "item_old_clean_finish";
 
 	private synchronized static SharedPreferences getInstance(Context ctx) {
 		if (mInstance == null) {
@@ -24,61 +26,38 @@ public class Prefs {
 		return getInstance(ctx);
 	}
 
-	public static void saveCurrentVersion(Context ctx, String version) {
+	public static void setColumnLastUpdateAnchor(Context ctx, String columnId,
+			long anchor) {
 		SharedPreferences pref = get(ctx);
-		SharedPreferences.Editor editor = pref.edit();
-		editor.putString(ITEM_VERSION, version);
+		Editor editor = pref.edit();
+		editor.putLong(ITEM_COLUMN_LAST_UPDATE_ANCHOR + "_" + columnId, anchor);
 		editor.commit();
 	}
 
-	// default value is null
-	public static String getCurrentVersion(Context ctx) {
+	public static String getColumnLastUpdateAnchor(Context ctx, String columnId) {
 		SharedPreferences pref = get(ctx);
-		return pref.getString(ITEM_VERSION, null);
+		long anchor = pref.getLong(ITEM_COLUMN_LAST_UPDATE_ANCHOR + "_"
+				+ columnId, -1L);
+		if (anchor == -1L) {
+			return ctx.getString(R.string.new_column_last_update_anchor_never);
+		}
+		return calcTimeSpan(ctx, anchor);
+
 	}
 
-	public static void saveConsumeTimestamp(Context ctx, long ts) {
+	private static String calcTimeSpan(Context ctx, long anchor) {
+		return DateUtils.getRelativeTimeSpanString(anchor).toString();
+	}
+
+	public static boolean isOldCleanFinish(Context ctx) {
 		SharedPreferences pref = get(ctx);
-		SharedPreferences.Editor editor = pref.edit();
-		editor.putLong(ITEM_CONSUME_POINTS_TS, ts);
+		return pref.getBoolean(ITEM_OLD_CLEAN_FINISH, false);
+	}
+
+	public static void setOldCleanFinish(Context ctx, boolean finish) {
+		SharedPreferences pref = get(ctx);
+		Editor editor = pref.edit();
+		editor.putBoolean(ITEM_OLD_CLEAN_FINISH, finish);
 		editor.commit();
 	}
-
-	// default value is -1L
-	public static long getConsumeTimestamp(Context ctx) {
-		SharedPreferences pref = get(ctx);
-		return pref.getLong(ITEM_CONSUME_POINTS_TS, -1L);
-	}
-
-	public static void saveInstallTimestamp(Context ctx) {
-		SharedPreferences pref = get(ctx);
-		SharedPreferences.Editor editor = pref.edit();
-		editor.putLong(ITEM_INSTALL_TS, System.currentTimeMillis());
-		editor.commit();
-	}
-
-	// default value is -1L
-	public static long getInstallTimestamp(Context ctx) {
-		SharedPreferences pref = get(ctx);
-		return pref.getLong(ITEM_INSTALL_TS, -1L);
-	}
-
-	public static void saveCurLangType(Context ctx, int type) {
-		SharedPreferences pref = get(ctx);
-		SharedPreferences.Editor editor = pref.edit();
-		editor.putInt(ITEM_CUR_LANGUAGE, type);
-		editor.commit();
-	}
-
-	/**
-	 * default value is {@code Constants#LANG_DEFAULT}
-	 * 
-	 * @param ctx
-	 * @return
-	 */
-	public static int getCurLangType(Context ctx) {
-		SharedPreferences pref = get(ctx);
-		return pref.getInt(ITEM_CUR_LANGUAGE, Constants.LANG_DEFAULT);
-	}
-
 }

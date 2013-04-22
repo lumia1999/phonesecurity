@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_grey" >
+
+    <include layout="@layout/new_banner" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/new_banner_layout" >
+
+        <me.maxwin.view.XListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/ad_layout"
+            android:divider="@drawable/new_list_item_divider"
+            android:fadingEdge="none"
+            android:listSelector="@null"
+            android:scrollingCache="false" >
+        </me.maxwin.view.XListView>
+
+        <RelativeLayout
+            android:id="@+id/ad_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal" >
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/new_loading_layout"
+        android:layout_below="@id/new_banner_layout"
+        layout="@layout/new_loading" />
+
+    <include
+        android:layout_above="@id/new_banner_layout"
+        layout="@layout/retry" />
+
+</RelativeLayout>
