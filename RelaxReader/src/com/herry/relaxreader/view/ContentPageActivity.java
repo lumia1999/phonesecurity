@@ -2,11 +2,10 @@ package com.herry.relaxreader.view;
 
 import java.util.List;
 
-import net.youmi.android.banner.AdSize;
-import net.youmi.android.banner.AdView;
-
 import me.maxwin.view.XListView;
 import me.maxwin.view.XListView.IXListViewListener;
+import net.youmi.android.banner.AdSize;
+import net.youmi.android.banner.AdView;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -469,5 +468,4 @@ public class ContentPageActivity extends FragmentActivity implements
 		private TextView txtView;
 		private ImageView iconView;
 	}
-
 }

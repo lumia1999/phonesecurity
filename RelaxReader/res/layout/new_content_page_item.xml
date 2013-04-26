@@ -12,7 +12,9 @@
         android:ellipsize="marquee"
         android:singleLine="true"
         android:text="title"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textColor="#e1c285"
+        android:textAppearance="?android:attr/textAppearanceSmall" 
+        android:layout_marginBottom="5dip"/>
 
     <TextView
         android:id="@+id/new_contnt_page_item_txt"
