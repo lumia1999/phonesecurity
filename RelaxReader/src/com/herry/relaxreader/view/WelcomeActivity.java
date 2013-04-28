@@ -3,12 +3,14 @@ package com.herry.relaxreader.view;
 import java.util.ArrayList;
 
 import net.youmi.android.AdManager;
-
+import net.youmi.android.spot.SpotManager;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -41,6 +43,23 @@ public class WelcomeActivity extends FragmentActivity implements
 	private GetColumnTask mGetColumnTask;
 	private boolean mShouldStartTsk;
 
+	private long start;
+	private long end;
+
+	private Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			ColumnResult result = (ColumnResult) msg.obj;
+			startActivity(new Intent(getApplicationContext(),
+					ContentPageActivity.class).putParcelableArrayListExtra(
+					ContentPageActivity.EXTRA_COLUMN_DATA,
+					(ArrayList<ColumnItem>) result.columnData));
+			finish();
+		}
+	};
+
 	@Override
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
@@ -50,6 +69,7 @@ public class WelcomeActivity extends FragmentActivity implements
 		FileHelper.cleanOldDir(this);
 		AdManager.getInstance(this).init("0025ccd4baca1bb2",
 				"6f8360d97e84aa86", false);
+		SpotManager.getInstance(this).loadSpotAds();
 	}
 
 	@Override
@@ -59,9 +79,10 @@ public class WelcomeActivity extends FragmentActivity implements
 		Log.d(TAG, "onResume");
 		if (Utils.isNetworkActive(this)) {
 			if (mShouldStartTsk) {
+				mShouldStartTsk = !mShouldStartTsk;
 				mGetColumnTask = new GetColumnTask(this, this);
 				mGetColumnTask.execute();
-				mShouldStartTsk = !mShouldStartTsk;
+				start = System.currentTimeMillis();
 			}
 		} else {
 			// show error dialog
@@ -105,6 +126,7 @@ public class WelcomeActivity extends FragmentActivity implements
 
 	@Override
 	public void onColumnFetchResult(ColumnResult result) {
+		end = System.currentTimeMillis();
 		if (Constants.DEBUG) {
 			Log.d(TAG, "result : " + result);
 		}
@@ -113,11 +135,13 @@ public class WelcomeActivity extends FragmentActivity implements
 			showErrorDialog(ErrorDialog.TYPE_SERVER_ERROR);
 			break;
 		case ColumnResult.CODE_SUCCESS:
-			startActivity(new Intent(getApplicationContext(),
-					ContentPageActivity.class).putParcelableArrayListExtra(
-					ContentPageActivity.EXTRA_COLUMN_DATA,
-					(ArrayList<ColumnItem>) result.columnData));
-			finish();
+			Message msg = mHandler.obtainMessage();
+			msg.obj = result;
+			long delay = 2000 - (end - start);
+			if (delay < 0) {
+				delay = 0;
+			}
+			mHandler.sendMessageDelayed(msg, delay);
 			break;
 		}
 	}
