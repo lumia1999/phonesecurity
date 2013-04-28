@@ -2,6 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/list_item_bg_selector"
+    android:clickable="false"
+    android:focusable="false"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:padding="5dip" >
 
@@ -9,12 +12,12 @@
         android:id="@+id/new_content_page_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dip"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:text="title"
-        android:textColor="#e1c285"
-        android:textAppearance="?android:attr/textAppearanceSmall" 
-        android:layout_marginBottom="5dip"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#890d0d" />
 
     <TextView
         android:id="@+id/new_contnt_page_item_txt"
@@ -26,13 +29,18 @@
         android:text="ttt"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <ImageView
-        android:id="@+id/new_content_page_item_icon"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/new_contnt_page_item_txt"
-        android:layout_margin="2dip"
-        android:background="@drawable/def_icon"
-        android:scaleType="centerCrop" />
+        android:padding="5dip" >
+
+        <ImageView
+            android:id="@+id/new_content_page_item_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/def_icon"
+            android:scaleType="centerCrop" />
+    </RelativeLayout>
 
 </RelativeLayout>

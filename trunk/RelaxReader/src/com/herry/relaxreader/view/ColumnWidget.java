@@ -70,14 +70,21 @@ public class ColumnWidget extends RelativeLayout implements OnClickListener {
 		TextView tv = new TextView(mCtx);
 		tv.setLayoutParams(params);
 		tv.setId(CHILD_TEXT_ID);
+		// tv.setTextColor(R.drawable.title_txt_color_selector);
 		tv.setSingleLine(true);
+		tv.setClickable(true);
+		tv.setFocusable(true);
 		tv.setTextAppearance(mCtx, android.R.style.TextAppearance_Medium);
+		tv.setTextColor(mCtx.getResources().getColor(
+				R.color.title_txt_normal_color));
 		tv.setText(R.string.new_column_init_txt);
 		addView(tv);
 		// add image
 		params = new LayoutParams(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT);
 		params.addRule(RelativeLayout.RIGHT_OF, CHILD_TEXT_ID);
+		params.addRule(RelativeLayout.CENTER_VERTICAL);
+		params.leftMargin = 5;
 		ImageView iv = new ImageView(mCtx);
 		iv.setBackgroundResource(R.drawable.new_icon_arrow_down);
 		iv.setLayoutParams(params);

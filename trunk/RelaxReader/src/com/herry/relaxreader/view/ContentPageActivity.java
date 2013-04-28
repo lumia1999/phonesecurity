@@ -6,6 +6,7 @@ import me.maxwin.view.XListView;
 import me.maxwin.view.XListView.IXListViewListener;
 import net.youmi.android.banner.AdSize;
 import net.youmi.android.banner.AdView;
+import net.youmi.android.spot.SpotManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -70,6 +71,7 @@ public class ContentPageActivity extends FragmentActivity implements
 
 	// ad layout
 	private RelativeLayout mAdLayout;
+	private int mPageCount;
 
 	// Handler using to update icon
 	private static final int MSG_ICON_DOWNLOADED = 1;
@@ -101,7 +103,9 @@ public class ContentPageActivity extends FragmentActivity implements
 						getApplicationContext(), (String) msg.obj,
 						FileHelper.getIconSize(getApplicationContext(), 90),
 						FileHelper.getIconSize(getApplicationContext(), 90));
-				if (bd != null) {
+				if (bd != null
+						&& mDataList.get(msg.arg1).getIconCachePath()
+								.equals((String) msg.obj)) {
 					viewHolder.iconView.setBackgroundDrawable(bd);
 				}
 			}
@@ -164,6 +168,7 @@ public class ContentPageActivity extends FragmentActivity implements
 	}
 
 	private void initUI() {
+		mPageCount = 0;
 		mAdLayout = (RelativeLayout) findViewById(R.id.ad_layout);
 		AdView adView = new AdView(this, AdSize.SIZE_320x50);
 		mAdLayout.addView(adView);
@@ -200,9 +205,6 @@ public class ContentPageActivity extends FragmentActivity implements
 		case R.id.retry:
 			retry();
 			break;
-		case 10001:
-			Toast.makeText(this, "Toast", Toast.LENGTH_SHORT).show();
-			break;
 		}
 	}
 
@@ -212,6 +214,7 @@ public class ContentPageActivity extends FragmentActivity implements
 				&& mGetPageTask.getStatus() != AsyncTask.Status.FINISHED) {
 			mGetPageTask.cancel(true);
 		}
+		mPageCount = 0;// reset
 		mColumnId = columnId;
 		mListView.setColumnId(mColumnId);
 		mListView.stopLoadMore();
@@ -315,6 +318,10 @@ public class ContentPageActivity extends FragmentActivity implements
 		} else {
 			findPagePosition(page);
 			mAdapter.notifyDataSetChanged();
+			mPageCount++;
+			if (mPageCount % 8 == 0) {
+				SpotManager.getInstance(this).showSpotAds(this);
+			}
 		}
 		List<IconItem> icons = FileHelper.collectIconInto(mColumnId, page);
 		if (icons != null) {
@@ -371,10 +378,14 @@ public class ContentPageActivity extends FragmentActivity implements
 		// Log.e(TAG, "notifyNoContent");
 		mListView.setPullLoadEnable(true);
 		mListView.setPullRefreshEnable(true);
-		if (mRequestParam.mOp == HttpUtils.OP_GET_UPDATE) {
-			mListView.stopRefresh();
+		if (mAdapter != null) {
+			if (mRequestParam.mOp == HttpUtils.OP_GET_UPDATE) {
+				mListView.stopRefresh();
+			} else {
+				mListView.stopLoadMore();
+			}
 		} else {
-			mListView.stopLoadMore();
+			// This situation should never happen after release
 		}
 	}
 
@@ -427,12 +438,18 @@ public class ContentPageActivity extends FragmentActivity implements
 				viewHolder.titleView.setVisibility(View.VISIBLE);
 				viewHolder.titleView.setText(item.getTitle());
 			}
+			if (item.getContent().equals("null") || item.getContent() == null
+					|| "".equals(item.getContent().trim())) {
+				viewHolder.txtView.setVisibility(View.GONE);
+			} else {
+				viewHolder.txtView.setVisibility(View.VISIBLE);
+				viewHolder.txtView.setText(item.getContent());
+			}
 			if (item.getIconUrl().equals("null")) {
 				viewHolder.iconView.setVisibility(View.GONE);
 			} else {
 				viewHolder.iconView.setVisibility(View.VISIBLE);
 				String iconCachePath = item.getIconCachePath();
-				Log.d(TAG, "iconCachePath : " + iconCachePath);
 				if (iconCachePath != null) {
 					BitmapDrawable bd = FileHelper
 							.decodeIconFile(getApplicationContext(),
@@ -458,7 +475,6 @@ public class ContentPageActivity extends FragmentActivity implements
 					}
 				});
 			}
-			viewHolder.txtView.setText(item.getContent());
 			return convertView;
 		}
 	}

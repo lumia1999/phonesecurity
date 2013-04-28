@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 
 import com.herry.relaxreader.R;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.common.Log;
 
 public class FullViewIconActivity extends Activity implements
 		OnImageViewTouchSingleTapListener, AnimationListener {
@@ -65,6 +66,15 @@ public class FullViewIconActivity extends Activity implements
 
 	@Override
 	public void onSingleTap() {
+		dismiss();
+	}
+
+	@Override
+	public void onBackPressed() {
+		dismiss();
+	}
+
+	private void dismiss() {
 		float duration = 0;
 		if (mImage.getScale() > 1) {
 			duration = 100 * mImage.getScale();
@@ -99,6 +109,7 @@ public class FullViewIconActivity extends Activity implements
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
+			Log.e(TAG, "handleMessage");
 			mImage.clearAnimation();
 			Animation anim = AnimationUtils.loadAnimation(
 					getApplicationContext(),

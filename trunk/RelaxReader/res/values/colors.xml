@@ -12,10 +12,14 @@
     <color name="loading_cycle_bg">#8e8e8e</color>
     <color name="finish">#FFB400</color>
     <color name="black">#000000</color>
+    <color name="title_txt_normal_color">#FFFFFF</color>
+    <color name="title_txt_pressed_color">#ee3d14</color>
 
     <drawable name="bg_grey">#a0a0a0</drawable>
     <drawable name="new_list_item_bg_normal">#d6d6d6</drawable>
     <drawable name="new_list_item_bg_pressed">#1d83a3</drawable>
-    <drawable name="new_list_item_yellow_divider">#F5F5DC</drawable>
+    <drawable name="content_bg_color">#eee2dc</drawable>
+    <drawable name="transparent">#00000000</drawable>
+    <drawable name="item_bg_pressed">#e1826d</drawable>
 
 </resources>
