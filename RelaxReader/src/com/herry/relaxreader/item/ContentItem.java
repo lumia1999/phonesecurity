@@ -77,5 +77,4 @@ public class ContentItem {
 				+ mIconCachePath + ", mId=" + mId + ",mPubtime : " + mPubtime
 				+ "]";
 	}
-
 }

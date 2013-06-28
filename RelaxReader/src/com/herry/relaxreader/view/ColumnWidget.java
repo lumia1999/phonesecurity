@@ -28,7 +28,7 @@ public class ColumnWidget extends RelativeLayout implements OnClickListener {
 	private static final String TAG = "ColumnWidget";
 
 	public interface OnColumnSelectListener {
-		void onColumnSelected(String columnId);
+		void onColumnSelected(ColumnItem column);
 	}
 
 	private Context mCtx;
@@ -203,8 +203,7 @@ public class ColumnWidget extends RelativeLayout implements OnClickListener {
 					if (!TextUtils.equals(oldTxt, item.getColumnName())) {
 						setTitle(pos);
 						if (mColumnSelectListener != null) {
-							mColumnSelectListener.onColumnSelected(item
-									.getColumnId());
+							mColumnSelectListener.onColumnSelected(item);
 						}
 					}
 				}
