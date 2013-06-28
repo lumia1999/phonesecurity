@@ -3,32 +3,50 @@ package com.herry.relaxreader.view;
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import it.sephiroth.android.library.imagezoom.ImageViewTouch.OnImageViewTouchSingleTapListener;
 import it.sephiroth.android.library.imagezoom.utils.DecodeUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.herry.relaxreader.R;
+import com.herry.relaxreader.util.FileHelper;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.common.Log;
 
 public class FullViewIconActivity extends Activity implements
-		OnImageViewTouchSingleTapListener, AnimationListener {
+		OnImageViewTouchSingleTapListener, AnimationListener, OnClickListener {
 	private static final String TAG = "FullViewIconActivity";
 	public static final String EXTRA_ICON_CACHE_PATH = "extra_icon_cache_path";
+	public static final String EXTRA_COLUMN_NAME = "extra_column_name";
 
 	private ProgressBar mProgressbar;
 	private ImageViewTouch mImage;
 	private String mIconCachePath;
+	private String mColumnName;
 	private Bitmap mBitmap;
+
+	// user option
+	private ImageView mSaveImg;
+	private ImageView mShareImg;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +55,7 @@ public class FullViewIconActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.new_fullview_icon);
 		mIconCachePath = getIntent().getStringExtra(EXTRA_ICON_CACHE_PATH);
+		mColumnName = getIntent().getStringExtra(EXTRA_COLUMN_NAME);
 		initUI();
 	}
 
@@ -62,10 +81,20 @@ public class FullViewIconActivity extends Activity implements
 		mImage.startAnimation(AnimationUtils.loadAnimation(this,
 				R.anim.animation_full_view_image_in));
 		mImage.setSingleTapListener(this);
+		mSaveImg = (ImageView) findViewById(R.id.save_image);
+		mShareImg = (ImageView) findViewById(R.id.share_image);
+		if (!FileHelper.isPicSaved(mIconCachePath)) {
+			mSaveImg.setOnClickListener(this);
+			mShareImg.setOnClickListener(this);
+		} else {
+			mSaveImg.setVisibility(View.GONE);
+			findViewById(R.id.save_layout).setVisibility(View.GONE);
+		}
 	}
 
 	@Override
 	public void onSingleTap() {
+		Log.e(TAG, "onSingleTap");
 		dismiss();
 	}
 
@@ -119,4 +148,83 @@ public class FullViewIconActivity extends Activity implements
 		}
 
 	};
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.save_image:
+			onSaveImage();
+			break;
+		case R.id.share_image:
+
+			break;
+		}
+	}
+
+	private void onSaveImage() {
+		String picDir = FileHelper.getPicSaveDir(this);
+		if (picDir == null) {
+			Toast.makeText(this, R.string.no_sdcard_mounted, Toast.LENGTH_SHORT)
+					.show();
+			return;
+		}
+		new AsyncTask<String, Void, String>() {
+
+			@Override
+			protected String doInBackground(String... params) {
+				File outFile = new File(params[0],
+						FileHelper.getIconCacheName(mIconCachePath));
+				File inFile = new File(mIconCachePath);
+				FileOutputStream fos = null;
+				FileInputStream fis = null;
+				try {
+					fis = new FileInputStream(inFile);
+					fos = new FileOutputStream(outFile);
+					int length = (int) inFile.length();
+					byte[] buffer = new byte[length];
+					fis.read(buffer);
+					fos.write(buffer);
+					return outFile.getAbsolutePath();
+				} catch (Exception e) {
+					return null;
+				} finally {
+					if (fis != null) {
+						try {
+							fis.close();
+						} catch (IOException e) {
+							//
+						}
+					}
+					if (fos != null) {
+						try {
+							fos.close();
+						} catch (IOException e) {
+							//
+						}
+					}
+				}
+			}
+
+			protected void onPostExecute(String result) {
+				if (result == null) {
+					Toast.makeText(getApplicationContext(),
+							R.string.save_image_fail_toast, Toast.LENGTH_SHORT)
+							.show();
+				} else {
+					Toast.makeText(
+							getApplicationContext(),
+							getString(R.string.save_image_success_toast)
+									.replace("{?}", result), Toast.LENGTH_SHORT)
+							.show();
+					findViewById(R.id.save_layout).setVisibility(View.GONE);
+					forceFileScan(result);
+				}
+			};
+		}.execute(picDir);
+	}
+
+	private void forceFileScan(String filePath) {
+		Uri data = Uri.parse("file://" + filePath);
+		sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, data));
+	}
 }

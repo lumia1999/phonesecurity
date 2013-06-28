@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -41,6 +42,11 @@ public class FileHelper {
 
 	// app offer consume timestamp save place
 	public static final String APPOFFER_CONSUME_TS = "consume.txt";
+
+	/**
+	 * picture saved directory
+	 */
+	public static final String PIC_DEF_SAVED_DIR = "Pictures";
 
 	/**
 	 * omit the last "/" if exists
@@ -221,12 +227,20 @@ public class FileHelper {
 		return columnDir.getAbsolutePath();
 	}
 
-	private static String getIconCacheName(String iconUrl) {
+	public static String getIconCacheName(String iconUrl) {
 		int index = iconUrl.lastIndexOf("/");
 		if (index == -1) {
 			return null;
 		}
 		return iconUrl.substring(index + 1);
+	}
+
+	public static String getIconSuffix(String iconCachePath) {
+		int index = iconCachePath.lastIndexOf(".");
+		if (index == -1) {
+			return null;
+		}
+		return iconCachePath.substring(index);// keep '.'
 	}
 
 	/**
@@ -338,4 +352,47 @@ public class FileHelper {
 	}
 
 	// ////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * picture save related
+	 */
+
+	public static String getPicSaveDir(Context ctx) {
+		if (isSdcardMounted()) {
+			File root = new File(getSdcardRootPathWithoutSlash()
+					+ File.separator + PIC_DEF_SAVED_DIR);
+			if (!root.exists()) {
+				root.mkdirs();
+			}
+			return root.getAbsolutePath();
+
+		} else {
+			return null;
+		}
+	}
+
+	private static boolean isSdcardMounted() {
+		String state = Environment.getExternalStorageState();
+		if (TextUtils.equals(state, Environment.MEDIA_MOUNTED)) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isPicSaved(String iconCachePath) {
+		if (isSdcardMounted()) {
+			File root = new File(getSdcardRootPathWithoutSlash()
+					+ File.separator + PIC_DEF_SAVED_DIR);
+			if (!root.exists()) {
+				return false;
+			}
+			File f = new File(root, getIconCacheName(iconCachePath));
+			if (f.exists()) {
+				return true;
+			}
+			return false;
+		} else {
+			return false;
+		}
+	}
 }

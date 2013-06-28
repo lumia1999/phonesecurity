@@ -8,6 +8,7 @@ import net.youmi.android.banner.AdSize;
 import net.youmi.android.banner.AdView;
 import net.youmi.android.spot.SpotManager;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -50,7 +51,7 @@ public class ContentPageActivity extends FragmentActivity implements
 
 	public static final String EXTRA_COLUMN_DATA = "extra_column_data";
 	private List<ColumnItem> mColumnData;
-	private String mColumnId;
+	private ColumnItem mCurrentColumnItem;
 	// title
 	private ColumnWidget mColumnWidget;
 
@@ -71,6 +72,8 @@ public class ContentPageActivity extends FragmentActivity implements
 
 	// ad layout
 	private RelativeLayout mAdLayout;
+	private AdView mAdView;
+	// for spot ad
 	private int mPageCount;
 
 	// Handler using to update icon
@@ -132,6 +135,12 @@ public class ContentPageActivity extends FragmentActivity implements
 	}
 
 	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		Log.e(TAG, "onConfigurationChanged");
+		super.onConfigurationChanged(newConfig);
+	}
+
+	@Override
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
@@ -155,7 +164,8 @@ public class ContentPageActivity extends FragmentActivity implements
 		} else {
 			if (mRequestParam.mOp == HttpUtils.OP_GET_UPDATE) {
 				// save the updated anchor
-				Prefs.setColumnLastUpdateAnchor(this, mColumnId,
+				Prefs.setColumnLastUpdateAnchor(this,
+						mCurrentColumnItem.getColumnId(),
 						System.currentTimeMillis());
 			}
 			int size = page.size();
@@ -170,8 +180,8 @@ public class ContentPageActivity extends FragmentActivity implements
 	private void initUI() {
 		mPageCount = 0;
 		mAdLayout = (RelativeLayout) findViewById(R.id.ad_layout);
-		AdView adView = new AdView(this, AdSize.SIZE_320x50);
-		mAdLayout.addView(adView);
+		mAdView = new AdView(this, AdSize.SIZE_320x50);
+		mAdLayout.addView(mAdView);
 		// 积分墙 TODO
 		// ImageView iv = new ImageView(this);
 		// iv.setBackgroundResource(R.drawable.ad_remove_bg);
@@ -184,9 +194,9 @@ public class ContentPageActivity extends FragmentActivity implements
 		mListView.setXListViewListener(this);
 		mListView.setPullLoadEnable(true);
 		mColumnWidget.fillData(mColumnData);
-		mColumnId = mColumnData.get(0).getColumnId();// TODO
+		mCurrentColumnItem = mColumnData.get(0);// TODO
 		mColumnWidget.setColumnSelectListener(this);
-		mListView.setColumnId(mColumnId);
+		mListView.setColumnId(mCurrentColumnItem.getColumnId());
 
 		mLoadingAnim = (ProgressBar) findViewById(R.id.pb_anim);
 		mLoadingLayout = (RelativeLayout) findViewById(R.id.new_loading_layout);
@@ -195,8 +205,8 @@ public class ContentPageActivity extends FragmentActivity implements
 		mRetryTxt = (TextView) findViewById(R.id.retry);
 		mRetryTxt.setOnClickListener(this);
 
-		mRequestParam = new ColumnPageParam(mColumnId, mInitItemId,
-				HttpUtils.PAGE_SIZE, HttpUtils.OP_GET_UPDATE);
+		mRequestParam = new ColumnPageParam(mCurrentColumnItem.getColumnId(),
+				mInitItemId, HttpUtils.PAGE_SIZE, HttpUtils.OP_GET_UPDATE);
 	}
 
 	@Override
@@ -209,17 +219,17 @@ public class ContentPageActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void onColumnSelected(String columnId) {
+	public void onColumnSelected(ColumnItem column) {
 		if (mGetPageTask != null
 				&& mGetPageTask.getStatus() != AsyncTask.Status.FINISHED) {
 			mGetPageTask.cancel(true);
 		}
 		mPageCount = 0;// reset
-		mColumnId = columnId;
-		mListView.setColumnId(mColumnId);
+		mCurrentColumnItem = column;
+		mListView.setColumnId(mCurrentColumnItem.getColumnId());
 		mListView.stopLoadMore();
 		mListView.stopRefresh();
-		mRequestParam.setColumnId(columnId);
+		mRequestParam.setColumnId(mCurrentColumnItem.getColumnId());
 		mRequestParam.setMaxId(mInitItemId);
 		mGetPageTask = new GetColumnPageTask(this, this);
 		mGetPageTask.execute(mRequestParam);
@@ -315,15 +325,17 @@ public class ContentPageActivity extends FragmentActivity implements
 			mListView.setAdapter(mAdapter);
 			mListView.setVisibility(View.VISIBLE);
 			mLoadingLayout.setVisibility(View.GONE);
+			mPageCount++;
 		} else {
 			findPagePosition(page);
 			mAdapter.notifyDataSetChanged();
 			mPageCount++;
-			if (mPageCount % 8 == 0) {
+			if (mPageCount % 5 == 0) {
 				SpotManager.getInstance(this).showSpotAds(this);
 			}
 		}
-		List<IconItem> icons = FileHelper.collectIconInto(mColumnId, page);
+		List<IconItem> icons = FileHelper.collectIconInto(
+				mCurrentColumnItem.getColumnId(), page);
 		if (icons != null) {
 			// download icons
 			for (IconItem icon : icons) {
@@ -432,20 +444,20 @@ public class ContentPageActivity extends FragmentActivity implements
 				viewHolder = (ViewHolder) convertView.getTag();
 			}
 			final ContentItem item = mDataList.get(position);
-			if (item.getTitle().equals("null") || item.getTitle() == null) {
+			if (item.getTitle() == null || item.getTitle().equals("null")) {
 				viewHolder.titleView.setVisibility(View.GONE);
 			} else {
 				viewHolder.titleView.setVisibility(View.VISIBLE);
 				viewHolder.titleView.setText(item.getTitle());
 			}
-			if (item.getContent().equals("null") || item.getContent() == null
+			if (item.getContent() == null || item.getContent().equals("null")
 					|| "".equals(item.getContent().trim())) {
 				viewHolder.txtView.setVisibility(View.GONE);
 			} else {
 				viewHolder.txtView.setVisibility(View.VISIBLE);
 				viewHolder.txtView.setText(item.getContent());
 			}
-			if (item.getIconUrl().equals("null")) {
+			if (item.getIconUrl() == null || item.getIconUrl().equals("null")) {
 				viewHolder.iconView.setVisibility(View.GONE);
 			} else {
 				viewHolder.iconView.setVisibility(View.VISIBLE);
@@ -460,6 +472,9 @@ public class ContentPageActivity extends FragmentActivity implements
 					if (bd != null) {
 						viewHolder.iconView.setBackgroundDrawable(bd);
 					}
+				} else {
+					viewHolder.iconView
+							.setBackgroundResource(R.drawable.def_icon);
 				}
 				viewHolder.iconView.setOnClickListener(new OnClickListener() {
 
@@ -470,7 +485,9 @@ public class ContentPageActivity extends FragmentActivity implements
 							startActivity(new Intent(getApplicationContext(),
 									FullViewIconActivity.class).putExtra(
 									FullViewIconActivity.EXTRA_ICON_CACHE_PATH,
-									iconCachePath));
+									iconCachePath).putExtra(
+									FullViewIconActivity.EXTRA_COLUMN_NAME,
+									mCurrentColumnItem.getColumnName()));
 						}
 					}
 				});

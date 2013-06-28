@@ -4,3 +4,5 @@ Android Market market 10000
 安卓市场 hiapk 10030 
 应用汇 appchina 10050 
 N多市场 nduoa 10060 
+
+木蚂蚁市场	 mumayi	 10070
