@@ -42,7 +42,7 @@ public class GetColumnTask extends AsyncTask<Void, Void, ColumnResult> {
 
 	@Override
 	protected ColumnResult doInBackground(Void... params) {
-		String url = HttpUtils.getColumnUrl();
+		String url = HttpUtils.getColumnUrl(mCtx);
 		HttpGet get = new HttpGet(url);
 		HttpResponse resp = HttpRequestBox.getInstance(mCtx).sendRequest(get);
 		if (resp == null) {

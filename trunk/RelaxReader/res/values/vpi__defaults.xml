@@ -72,4 +72,7 @@
 
     <color name="default_underline_indicator_selected_color">#FF33B5E5</color>
 
+    <dimen name="default_progressbar_width">20dip</dimen>
+    <dimen name="default_progressbar_height">20dip</dimen>
+
 </resources>

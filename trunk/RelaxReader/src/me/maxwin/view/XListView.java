@@ -217,6 +217,10 @@ public class XListView extends ListView implements OnScrollListener {
 		return mFooterView;
 	}
 
+	public int getHeaderHeight() {
+		return this.mHeaderViewHeight;
+	}
+
 	/**
 	 * set last refresh time
 	 * 
@@ -390,9 +394,6 @@ public class XListView extends ListView implements OnScrollListener {
 			mScrollListener.onScroll(view, firstVisibleItem, visibleItemCount,
 					totalItemCount);
 		}
-		// Log.d(TAG, "onScroll,firstVisibleItem :  " + firstVisibleItem
-		// + ",visibleItemCount : " + visibleItemCount
-		// + ",totalItemCount : " + totalItemCount);
 	}
 
 	public void setXListViewListener(IXListViewListener l) {
