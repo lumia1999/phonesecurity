@@ -1,7 +1,5 @@
 package com.herry.relaxreader.util;
 
-import com.herry.relaxreader.R;
-
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -12,7 +10,6 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -67,4 +64,20 @@ public class Utils {
 		return nInfo.isConnected();
 	}
 
+	private static String IMPORT_APP_VERSION = "01.013";
+
+	public static boolean isImportAppVersion(Context ctx) {
+		String version = "";
+		try {
+			version = ctx.getPackageManager().getPackageInfo(
+					ctx.getPackageName(), 0).versionName;
+			if (TextUtils.equals(version, IMPORT_APP_VERSION)) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (NameNotFoundException e) {
+			return false;
+		}
+	}
 }

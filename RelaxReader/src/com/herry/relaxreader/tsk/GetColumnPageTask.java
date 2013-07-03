@@ -43,7 +43,7 @@ public class GetColumnPageTask extends
 	@Override
 	protected List<ContentItem> doInBackground(ColumnPageParam... params) {
 		param = params[0];
-		String url = HttpUtils.formatColumnPageUrl(param.mColumnId,
+		String url = HttpUtils.formatColumnPageUrl(mCtx, param.mColumnId,
 				param.mMaxId, param.mPageSize, param.mOp);
 		HttpGet get = new HttpGet(url);
 		HttpResponse resp = HttpRequestBox.getInstance(mCtx).sendRequest(get);

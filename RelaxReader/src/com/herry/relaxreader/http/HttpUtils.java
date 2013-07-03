@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class HttpUtils {
+import android.content.Context;
 
-	private static final String HOST = "http://www.whatslaugh.com";
+import com.herry.relaxreader.util.Prefs;
+
+public class HttpUtils {
 
 	private static final String COLUMN_ENTRY = "/joke/client/queryCat.action";
 	private static final String PAGE_ENTRY = "/joke/client/queryJoke.action";
@@ -27,12 +29,12 @@ public class HttpUtils {
 	public static final int OP_GET_UPDATE = 0;
 	public static final int OP_GET_MORE = 1;
 
-	public static String getColumnUrl() {
-		return HOST + COLUMN_ENTRY;
+	public static String getColumnUrl(Context ctx) {
+		return Prefs.getCacheHost(ctx) + COLUMN_ENTRY;
 	}
 
-	public static String getPageUrl() {
-		return HOST + PAGE_ENTRY;
+	public static String getPageUrl(Context ctx) {
+		return Prefs.getCacheHost(ctx) + PAGE_ENTRY;
 	}
 
 	public static String parseResponseContent(InputStream is)
@@ -46,9 +48,9 @@ public class HttpUtils {
 		return sb.toString();
 	}
 
-	public static String formatColumnPageUrl(String columnId, int maxId,
-			int pageSize, int op) {
-		String url = getPageUrl();
+	public static String formatColumnPageUrl(Context ctx, String columnId,
+			int maxId, int pageSize, int op) {
+		String url = getPageUrl(ctx);
 		url += "?cat=" + columnId;
 		url += "&id=" + maxId;
 		url += "&n=" + pageSize;

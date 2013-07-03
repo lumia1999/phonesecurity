@@ -4,9 +4,12 @@ import java.util.ArrayList;
 
 import net.youmi.android.AdManager;
 import net.youmi.android.spot.SpotManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,13 +31,16 @@ import android.widget.TextView;
 
 import com.herry.relaxreader.R;
 import com.herry.relaxreader.item.ColumnItem;
+import com.herry.relaxreader.service.DynicIntentService;
 import com.herry.relaxreader.tsk.ColumnResult;
 import com.herry.relaxreader.tsk.GetColumnTask;
 import com.herry.relaxreader.tsk.GetColumnTask.OnColumnFetched;
 import com.herry.relaxreader.util.Constants;
 import com.herry.relaxreader.util.FileHelper;
+import com.herry.relaxreader.util.Prefs;
 import com.herry.relaxreader.util.Utils;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
 
 public class WelcomeActivity extends FragmentActivity implements
 		OnColumnFetched {
@@ -53,8 +60,8 @@ public class WelcomeActivity extends FragmentActivity implements
 			super.handleMessage(msg);
 			ColumnResult result = (ColumnResult) msg.obj;
 			startActivity(new Intent(getApplicationContext(),
-					ContentPageActivity.class).putParcelableArrayListExtra(
-					ContentPageActivity.EXTRA_COLUMN_DATA,
+					TitlesStyledActivity.class).putParcelableArrayListExtra(
+					TitlesStyledActivity.EXTRA_COLUMN_DATA,
 					(ArrayList<ColumnItem>) result.columnData));
 			finish();
 		}
@@ -70,6 +77,7 @@ public class WelcomeActivity extends FragmentActivity implements
 		AdManager.getInstance(this).init("0025ccd4baca1bb2",
 				"6f8360d97e84aa86", false);
 		SpotManager.getInstance(this).loadSpotAds();
+		// UmengUpdateAgent.update(this);
 	}
 
 	@Override
@@ -78,11 +86,13 @@ public class WelcomeActivity extends FragmentActivity implements
 		MobclickAgent.onResume(this);
 		Log.d(TAG, "onResume");
 		if (Utils.isNetworkActive(this)) {
-			if (mShouldStartTsk) {
-				mShouldStartTsk = !mShouldStartTsk;
-				mGetColumnTask = new GetColumnTask(this, this);
-				mGetColumnTask.execute();
-				start = System.currentTimeMillis();
+			if (Prefs.isCheckHostNeeded(this)) {
+				if (!mReceiverRegistered) {
+					registerReceiver();
+					getHost();
+				}
+			} else {
+				getColumns();
 			}
 		} else {
 			// show error dialog
@@ -93,7 +103,21 @@ public class WelcomeActivity extends FragmentActivity implements
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		Log.d(TAG, "onSaveInstanceState");
+		// Log.d(TAG, "onSaveInstanceState");
+	}
+
+	private void getHost() {
+		Intent i = new Intent(this, DynicIntentService.class);
+		startService(i);
+	}
+
+	private void getColumns() {
+		if (mShouldStartTsk) {
+			mShouldStartTsk = !mShouldStartTsk;
+			mGetColumnTask = new GetColumnTask(this, this);
+			mGetColumnTask.execute();
+			start = System.currentTimeMillis();
+		}
 	}
 
 	@Override
@@ -107,6 +131,14 @@ public class WelcomeActivity extends FragmentActivity implements
 		super.onStop();
 		Log.d(TAG, "onStop");
 		cancelTask();
+	}
+
+	@Override
+	public void finish() {
+		super.finish();
+		if (mReceiverRegistered) {
+			unregisterReceiver();
+		}
 	}
 
 	@Override
@@ -214,4 +246,36 @@ public class WelcomeActivity extends FragmentActivity implements
 			finish();
 		}
 	}
+
+	private boolean mReceiverRegistered = false;
+
+	private void registerReceiver() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(DynicIntentService.ACTION_REPORT_HOST);
+		registerReceiver(receiver, filter);
+		mReceiverRegistered = true;
+	}
+
+	private void unregisterReceiver() {
+		unregisterReceiver(receiver);
+	}
+
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action != null
+					&& TextUtils.equals(action,
+							DynicIntentService.ACTION_REPORT_HOST)) {
+				String newHost = intent
+						.getStringExtra(DynicIntentService.EXTRA_HOST);
+				if (newHost == null || "".equals(newHost.trim())) {
+					showErrorDialog(ErrorDialog.TYPE_SERVER_ERROR);
+				} else {
+					getColumns();
+				}
+			}
+		}
+	};
 }

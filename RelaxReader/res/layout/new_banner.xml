@@ -3,17 +3,33 @@
     android:id="@+id/new_banner_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/new_banner_bg" >
+    android:background="@drawable/new_banner_bg"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip" >
 
-    <com.herry.relaxreader.view.ColumnWidget
-        android:id="@+id/new_title"
+    <me.maxwin.view.RefreshLayout
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="3dip"
-        android:paddingBottom="4dip"
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip"
-        android:paddingTop="7dip" />
+        android:layout_centerVertical="true"
+        android:singleLine="true"
+        android:text="@string/app_name"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/title_txt_normal_color" />
+
+    <ImageView
+        android:id="@+id/setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/setting_bg_selector" />
 
 </RelativeLayout>

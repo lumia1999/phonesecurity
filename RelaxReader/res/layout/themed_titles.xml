@@ -21,26 +21,37 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <include layout="@layout/new_banner" />
+
     <me.maxwin.view.TitlePageIndicator
         android:id="@+id/indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/new_banner_bg"
-        android:padding="10dip"
-        android:textColor="@color/title_txt_normal_color"
+        android:background="@drawable/list_item_bg_normal"
+        android:textColor="#AA000000"
         android:textSize="16sp"
         app:footerColor="#FFAA2222"
         app:footerIndicatorHeight="5dp"
         app:footerIndicatorStyle="underline"
         app:footerLineHeight="2dp"
+        app:footerPadding="9dp"
         app:selectedBold="true"
-        app:selectedColor="@color/title_txt_normal_color"
-        app:selectedTextSize="18sp" />
+        app:selectedColor="#FF000000"
+        app:selectedTextSize="19sp"
+        app:topPadding="9dp" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+    <RelativeLayout
+        android:id="@+id/ad_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/content_bg_color"
+        android:gravity="center_horizontal" >
+    </RelativeLayout>
 
 </LinearLayout>

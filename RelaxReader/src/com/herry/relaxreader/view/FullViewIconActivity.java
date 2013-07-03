@@ -30,7 +30,6 @@ import android.widget.Toast;
 import com.herry.relaxreader.R;
 import com.herry.relaxreader.util.FileHelper;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.common.Log;
 
 public class FullViewIconActivity extends Activity implements
 		OnImageViewTouchSingleTapListener, AnimationListener, OnClickListener {
@@ -41,7 +40,6 @@ public class FullViewIconActivity extends Activity implements
 	private ProgressBar mProgressbar;
 	private ImageViewTouch mImage;
 	private String mIconCachePath;
-	private String mColumnName;
 	private Bitmap mBitmap;
 
 	// user option
@@ -55,7 +53,6 @@ public class FullViewIconActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.new_fullview_icon);
 		mIconCachePath = getIntent().getStringExtra(EXTRA_ICON_CACHE_PATH);
-		mColumnName = getIntent().getStringExtra(EXTRA_COLUMN_NAME);
 		initUI();
 	}
 
@@ -75,9 +72,18 @@ public class FullViewIconActivity extends Activity implements
 		mProgressbar = (ProgressBar) findViewById(android.R.id.progress);
 		mProgressbar.setVisibility(View.GONE);
 		mImage = (ImageViewTouch) findViewById(R.id.disp_image);
-		mBitmap = DecodeUtils.decode(getApplicationContext(),
-				Uri.parse(mIconCachePath), 1280, 1280);
-		mImage.setImageBitmap(mBitmap, true, null, 5.0f);
+		Uri uri = Uri.parse(mIconCachePath);
+		int[] imageSize = DecodeUtils.getImageBounds(getApplicationContext(),
+				uri);
+		int maxW = 0, maxH = 0;
+		if (imageSize != null) {
+			maxW = imageSize[0];
+			maxH = imageSize[1];
+		} else {
+			maxW = maxH = 1280;
+		}
+		mBitmap = DecodeUtils.decode(getApplicationContext(), uri, maxW, maxH);
+		mImage.setImageBitmap(mBitmap, true, null, 0f);
 		mImage.startAnimation(AnimationUtils.loadAnimation(this,
 				R.anim.animation_full_view_image_in));
 		mImage.setSingleTapListener(this);
@@ -94,7 +100,6 @@ public class FullViewIconActivity extends Activity implements
 
 	@Override
 	public void onSingleTap() {
-		Log.e(TAG, "onSingleTap");
 		dismiss();
 	}
 
@@ -107,6 +112,9 @@ public class FullViewIconActivity extends Activity implements
 		float duration = 0;
 		if (mImage.getScale() > 1) {
 			duration = 100 * mImage.getScale();
+			if (duration > 300) {
+				duration = 300;
+			}
 			mImage.zoomTo(1, duration);
 		}
 		mHandler.sendMessageDelayed(mHandler.obtainMessage(), (int) duration);
@@ -138,7 +146,6 @@ public class FullViewIconActivity extends Activity implements
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
-			Log.e(TAG, "handleMessage");
 			mImage.clearAnimation();
 			Animation anim = AnimationUtils.loadAnimation(
 					getApplicationContext(),

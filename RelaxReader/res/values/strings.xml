@@ -23,4 +23,9 @@
     <string name="save_image_fail_toast">保存图片失败</string>
     <string name="save_image_success_toast">图片保存于：{?}</string>
 
-</resources>
+    <!-- alarm message -->
+    <string name="important_version_alarm_msg">亲爱的用户们：\n团队初始阶段，因服务器搬迁问题\n造成这段时间无法访问\n给大家带来不便，非常抱歉\n唯有更加用心的聚集更多笑话\n给大家带来欢乐！</string>
+
+    <!-- quit string -->
+    <string name="quit_remind_txt">再按一次返回键将退出应用</string>
+</resources>

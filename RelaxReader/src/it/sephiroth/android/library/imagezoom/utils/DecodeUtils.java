@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.util.Log;
 
 public class DecodeUtils {
 
@@ -46,7 +46,6 @@ public class DecodeUtils {
 		if (decoded) {
 			int sampleSize = computeSampleSize(imageSize[0], imageSize[1],
 					(int) (maxW * 1.2), (int) (maxH * 1.2), orientation);
-
 			BitmapFactory.Options options = getDefaultOptions();
 			options.inSampleSize = sampleSize;
 
@@ -55,6 +54,20 @@ public class DecodeUtils {
 		}
 
 		return bitmap;
+	}
+
+	public static int[] getImageBounds(Context context, Uri uri) {
+		InputStream stream = openInputStream(context, uri);
+		if (stream == null) {
+			return null;
+		}
+		int[] imageSize = new int[2];
+		boolean decoded = decodeImageBounds(stream, imageSize);
+		IOUtils.closeSilently(stream);
+		if (decoded) {
+			return imageSize;
+		}
+		return null;
 	}
 
 	static Bitmap decodeBitmap(Context context, Uri uri,

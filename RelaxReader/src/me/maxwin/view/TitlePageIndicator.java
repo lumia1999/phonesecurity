@@ -37,6 +37,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 
 import com.herry.relaxreader.R;
 
@@ -152,6 +154,8 @@ public class TitlePageIndicator extends View implements PageIndicator {
 	private int mActivePointerId = INVALID_POINTER;
 	private boolean mIsDragging;
 
+	private Drawable mBackground;
+
 	private OnCenterItemClickListener mCenterItemClickListener;
 
 	public TitlePageIndicator(Context context) {
@@ -257,10 +261,16 @@ public class TitlePageIndicator extends View implements PageIndicator {
 
 		Drawable background = a
 				.getDrawable(R.styleable.TitlePageIndicator_android_background);
-		if (background != null) {
-			setBackgroundDrawable(background);
-		}
+		Animation mRotateUpAnim = new RotateAnimation(0.0f, -180.0f,
+				Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+				0.5f);
+		mRotateUpAnim.setDuration(50);
+		mRotateUpAnim.setFillAfter(true);
 
+		// if (background != null) {
+		// setBackgroundDrawable(background);
+		// }
+		mBackground = background;
 		a.recycle();
 
 		final ViewConfiguration configuration = ViewConfiguration.get(context);
@@ -412,6 +422,13 @@ public class TitlePageIndicator extends View implements PageIndicator {
 		final int count = mViewPager.getAdapter().getCount();
 		if (count == 0) {
 			return;
+		}
+		if (mBackground != null) {
+			canvas.save();
+			mBackground.setBounds(0, 0, getWidth(), getHeight());
+			canvas.rotate(180, getWidth() / 2, getHeight() / 2);
+			mBackground.draw(canvas);
+			canvas.restore();
 		}
 
 		// mCurrentPage is -1 on first start and after orientation changed. If
@@ -660,6 +677,7 @@ public class TitlePageIndicator extends View implements PageIndicator {
 		default:
 			break;
 		}
+		mPaintText.setTextSize(mTextSize);// reset
 	}
 
 	public boolean onTouchEvent(android.view.MotionEvent ev) {
