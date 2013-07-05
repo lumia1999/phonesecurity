@@ -275,6 +275,28 @@ public class XListView extends ListView implements OnScrollListener {
 		invalidate();
 	}
 
+	private void startRefresh() {
+		mHeaderView.setState(XListViewHeader.STATE_REFRESHING);
+		if (mListViewListener != null) {
+			mListViewListener.onRefresh();
+		}
+		mPullRefreshing = true;
+	}
+
+	/**
+	 * 
+	 * @return if refresh ongoing success,return true
+	 */
+	public boolean forceRefresh() {
+		if (mEnablePullRefresh) {
+			setSelection(0);
+			mHeaderView.setVisiableHeight(getHeaderHeight());
+			startRefresh();
+			return true;
+		}
+		return false;
+	}
+
 	private void updateFooterHeight(float delta) {
 		int height = mFooterView.getBottomMargin() + (int) delta;
 		if (mEnablePullLoad && !mPullLoading) {
@@ -338,11 +360,7 @@ public class XListView extends ListView implements OnScrollListener {
 				// invoke refresh
 				if (mEnablePullRefresh
 						&& mHeaderView.getVisiableHeight() > mHeaderViewHeight) {
-					mHeaderView.setState(XListViewHeader.STATE_REFRESHING);
-					if (mListViewListener != null) {
-						mListViewListener.onRefresh();
-					}
-					mPullRefreshing = true;
+					startRefresh();
 				}
 				resetHeaderHeight();
 			} else if (getLastVisiblePosition() == mTotalItemCount - 1) {

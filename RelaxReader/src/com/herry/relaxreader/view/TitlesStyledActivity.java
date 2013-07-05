@@ -51,6 +51,7 @@ public class TitlesStyledActivity extends FragmentActivity implements
 	private int mClickCount;
 	private ViewPager mPager;
 	private PageAdapter mAdapter;
+	private RefreshLayout mForceRefrechLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +72,8 @@ public class TitlesStyledActivity extends FragmentActivity implements
 		AdView mAdView = new AdView(this, AdSize.SIZE_320x50);
 		mAdLayout.addView(mAdView);
 		findViewById(R.id.setting).setOnClickListener(this);
-		RefreshLayout forceRefrechLayout = (RefreshLayout) findViewById(R.id.refresh);
-		forceRefrechLayout.setOnForceRefreshListener(this);
+		mForceRefrechLayout = (RefreshLayout) findViewById(R.id.refresh);
+		mForceRefrechLayout.setOnForceRefreshListener(this);
 		initState();
 		// notify version alarm if needed
 		Log.v(TAG, "version : " + Utils.isImportAppVersion(this)
@@ -95,7 +96,7 @@ public class TitlesStyledActivity extends FragmentActivity implements
 			long interval = mSecondClickAnchor - mFirstClickAnchor;
 			if (interval >= QUIT_CLICK_IGNORE_INTERVAL) {
 				mClickCount = 0;// reset
-			} else if (interval >= QUIT_CLICK_INTERVAL) {
+			} else {
 				super.onBackPressed();// quit
 			}
 			break;
@@ -113,6 +114,10 @@ public class TitlesStyledActivity extends FragmentActivity implements
 	public void onForceRefresh() {
 		int currentItem = mPager.getCurrentItem();
 		((PageListFragment) mFragments.get(currentItem)).onForceRefresh();
+	}
+
+	public void resetForceRefreshState() {
+		mForceRefrechLayout.adjustLayout(RefreshLayout.STATE_NORMAL);
 	}
 
 	private void initState() {

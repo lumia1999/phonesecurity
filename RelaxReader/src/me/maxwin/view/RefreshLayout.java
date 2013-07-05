@@ -15,8 +15,8 @@ public class RefreshLayout extends RelativeLayout implements OnClickListener {
 		public void onForceRefresh();
 	}
 
-	private static final int STATE_NORMAL = 1;
-	private static final int STATE_REFRESHING = 2;
+	public static final int STATE_NORMAL = 1;
+	public static final int STATE_REFRESHING = 2;
 	private int mState;
 
 	private ImageView mRefreshImage;
@@ -59,15 +59,14 @@ public class RefreshLayout extends RelativeLayout implements OnClickListener {
 		mProgressBar.setIndeterminateDrawable(getResources().getDrawable(
 				R.drawable.cust_progressbar_color));
 		addView(mProgressBar);
-		adjustLayout();
+		adjustLayout(STATE_NORMAL);
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (mState) {
 		case STATE_NORMAL:
-			mState = STATE_REFRESHING;
-			adjustLayout();
+			adjustLayout(STATE_REFRESHING);
 			if (mForceRefreshListener != null) {
 				mForceRefreshListener.onForceRefresh();
 			}
@@ -78,7 +77,8 @@ public class RefreshLayout extends RelativeLayout implements OnClickListener {
 		}
 	}
 
-	private void adjustLayout() {
+	public void adjustLayout(int state) {
+		mState = state;
 		switch (mState) {
 		case STATE_NORMAL:
 			mProgressBar.setVisibility(View.GONE);
