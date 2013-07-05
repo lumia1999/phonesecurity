@@ -68,6 +68,7 @@ public class PageListFragment extends ListFragment implements
 	private DownloadIconTask mDownloadIconTsk;
 
 	private boolean mInitRush;
+	private boolean mForceRefresh;
 
 	// Handler using to update icon
 	private static final int MSG_ICON_DOWNLOADED = 1;
@@ -117,6 +118,7 @@ public class PageListFragment extends ListFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mInitRush = true;
+		mForceRefresh = false;
 	}
 
 	@Override
@@ -181,8 +183,14 @@ public class PageListFragment extends ListFragment implements
 	}
 
 	public void onForceRefresh() {
-		mListView.setSelection(0);
-		mListView.getHeader().setVisiableHeight(mListView.getHeaderHeight());// TODO
+		if (!mForceRefresh) {
+			mForceRefresh = !mForceRefresh;
+			boolean forced = mListView.forceRefresh();
+			if (!forced) {
+				mAct.resetForceRefreshState();
+				mForceRefresh = !mForceRefresh;// reset
+			}
+		}
 	}
 
 	@Override
@@ -240,6 +248,10 @@ public class PageListFragment extends ListFragment implements
 				notifyNoContent();
 			} else {
 				onFillPage(page);
+			}
+			if (mForceRefresh) {
+				mAct.resetForceRefreshState();
+				mForceRefresh = !mForceRefresh;
 			}
 		}
 	}

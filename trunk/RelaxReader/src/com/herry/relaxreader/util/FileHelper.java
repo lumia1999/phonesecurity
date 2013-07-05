@@ -316,10 +316,68 @@ public class FileHelper {
 		op.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeFile(iconPath, op);
 		if (bitmap != null) {
-			return new BitmapDrawable(ctx.getResources(), bitmap);
+			int[] finalSize = calcBitmapFinalSize(ctx, bitmap);
+			if (finalSize == null) {
+				return null;
+			}
+			Bitmap b = Bitmap.createBitmap(bitmap, 0, 0, finalSize[0],
+					finalSize[1]);
+			bitmap = null;
+			return new BitmapDrawable(ctx.getResources(), b);
 		} else {
 			return null;
 		}
+	}
+
+	private static int[] calcBitmapFinalSize(Context ctx, Bitmap bitmap) {
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		if (width == -1 || height == -1) {
+			return null;
+		}
+		int[] finalSize = new int[2];
+		float sizeRatio = (width * 1.0f) / height;
+		DisplayMetrics dm = ctx.getResources().getDisplayMetrics();
+		int screenWidth = dm.widthPixels;
+		int screenHeight = dm.heightPixels;
+		if (sizeRatio > 1.0f) {
+			if (width > screenWidth / 2 || height > screenHeight / 2) {
+				if (height > screenHeight / 2) {
+					finalSize[1] = screenHeight / 4;
+					if (finalSize[1] > height) {
+						finalSize[1] = height;
+					}
+				} else {
+					finalSize[1] = height;
+				}
+				finalSize[0] = (int) (finalSize[1] * sizeRatio);
+				if (finalSize[0] > width / 3) {
+					finalSize[0] = width / 3;
+				}
+			} else {
+				finalSize[0] = width;
+				finalSize[1] = height;
+			}
+		} else {
+			if (width > screenWidth / 2 || height > screenHeight / 2) {
+				if (width > screenWidth / 2) {
+					finalSize[0] = screenWidth / 3;
+					if (finalSize[0] > width) {
+						finalSize[0] = width;
+					}
+				} else {
+					finalSize[0] = width;
+				}
+				finalSize[1] = (int) (finalSize[0] / sizeRatio);
+				if (finalSize[1] > height / 4) {
+					finalSize[1] = height / 4;
+				}
+			} else {
+				finalSize[0] = width;
+				finalSize[1] = height;
+			}
+		}
+		return finalSize;
 	}
 
 	public static int calculateInSampleSize(BitmapFactory.Options op,

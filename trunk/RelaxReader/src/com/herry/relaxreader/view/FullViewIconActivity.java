@@ -83,7 +83,7 @@ public class FullViewIconActivity extends Activity implements
 			maxW = maxH = 1280;
 		}
 		mBitmap = DecodeUtils.decode(getApplicationContext(), uri, maxW, maxH);
-		mImage.setImageBitmap(mBitmap, true, null, 0f);
+		mImage.setImageBitmap(mBitmap, true, mImage.getDisplayMatrix(), 0f);
 		mImage.startAnimation(AnimationUtils.loadAnimation(this,
 				R.anim.animation_full_view_image_in));
 		mImage.setSingleTapListener(this);

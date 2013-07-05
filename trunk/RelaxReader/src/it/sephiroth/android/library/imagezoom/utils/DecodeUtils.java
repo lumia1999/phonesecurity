@@ -262,6 +262,7 @@ public class DecodeUtils {
 		options.inPurgeable = true;
 		options.inInputShareable = true;
 		options.inTempStorage = new byte[16 * 1024];
+
 		return options;
 	}
 }
