@@ -20,6 +20,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:singleLine="true"
+        android:id="@+id/title"
         android:text="@string/app_name"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/title_txt_normal_color" />

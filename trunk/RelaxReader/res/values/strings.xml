@@ -28,4 +28,8 @@
 
     <!-- quit string -->
     <string name="quit_remind_txt">再按一次返回键将退出应用</string>
+    <string name="global_function_title_txt">系统功能</string>
+    <string name="sdcard_not_mounted">请检查存储卡是否装载正确</string>
+    <string name="about_us_desc_txt">介绍一些跟我们有关的详情</string>
+        
 </resources>
