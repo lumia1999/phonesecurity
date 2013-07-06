@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<functions>
+	<function id="0">
+		<title><![CDATA[图片保存]]></title>
+		<desc>?</desc>
+	</function>
+	<function id="1">
+		<title><![CDATA[检查更新]]></title>
+		<desc>?</desc>
+	</function>
+	<function id="2">
+		<title><![CDATA[关于我们]]></title>
+		<desc>?</desc>
+	</function>
+</functions>

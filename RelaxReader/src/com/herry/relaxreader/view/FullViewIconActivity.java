@@ -234,4 +234,5 @@ public class FullViewIconActivity extends Activity implements
 		Uri data = Uri.parse("file://" + filePath);
 		sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, data));
 	}
+
 }

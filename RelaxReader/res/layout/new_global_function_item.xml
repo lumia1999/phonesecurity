@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:padding="5dip" >
+
+    <TextView
+        android:id="@+id/function_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="dddd"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/function_item_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/function_item_title"
+        android:paddingTop="5dip"
+        android:text="dddddddddddd"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>
