@@ -91,23 +91,43 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
 		super.onLayout(changed, left, top, right, bottom);
-		mThisWidth = right - left;
-		mThisHeight = bottom - top;
-		Runnable r = mOnLayoutRunnable;
-		if (r != null) {
-			mOnLayoutRunnable = null;
-			r.run();
-		}
-		if (getDrawable() != null) {
-			if (mFitToScreen) {
-				getProperBaseMatrix2(getDrawable(), mBaseMatrix);
-				setMinZoom(1.0f);
-			} else {
-				getProperBaseMatrix(getDrawable(), mBaseMatrix);
-				setMinZoom(getMinZoom());
+		if (mThisWidth != (right - left) || mThisHeight != (bottom - top)) {
+			mThisWidth = right - left;
+			mThisHeight = bottom - top;
+			Log.e("ttt", "mThisWidth : " + mThisWidth + ",mThisHeight : "
+					+ mThisHeight);
+			Runnable r = mOnLayoutRunnable;
+			if (r != null) {
+				mOnLayoutRunnable = null;
+				r.run();
 			}
-			setImageMatrix(getImageViewMatrix());
-			zoomTo(getMinZoom());
+			Drawable d = getDrawable();
+			if (d != null) {
+				Log.e("ttt", "drawable : " + d);
+				adjustFitScreenProperty(d);
+				if (mFitToScreen) {
+					getProperBaseMatrix2(d, mBaseMatrix);
+					setMinZoom(1.0f);
+				} else {
+					getProperBaseMatrix(d, mBaseMatrix);
+					setMinZoom(getMinZoom());
+				}
+				setImageMatrix(getImageViewMatrix());
+				zoomTo(getMinZoom());
+			}
+		}
+	}
+
+	private void adjustFitScreenProperty(Drawable drawable) {
+		int drawableWidth = drawable.getIntrinsicWidth();
+		int drawableHeight = drawable.getIntrinsicHeight();
+		if (mThisWidth == -1 || mThisHeight == -1) {
+			return;
+		}
+		if (mThisHeight < drawableHeight) {
+			mFitToScreen = false;
+		} else {
+			mFitToScreen = true;
 		}
 	}
 
@@ -211,6 +231,7 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 			// Log.e("ttt", "bitmapWidth : " + drawable.getIntrinsicWidth()
 			// + ",bitmapHeight : " + drawable.getIntrinsicHeight());
 			float minZoom;
+			adjustFitScreenProperty(drawable);
 			if (mFitToScreen) {
 				getProperBaseMatrix2(drawable, mBaseMatrix);
 				minZoom = getScale(mBaseMatrix);
@@ -360,7 +381,6 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 			float tw = (viewWidth - w) / 2.0f;
 			float th = (viewHeight - h) / 2.0f;
 			matrix.postTranslate(tw, th);
-			// Log.d(LOG_TAG, "scale: null");
 		}
 	}
 
@@ -376,12 +396,13 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 		float w = bitmap.getIntrinsicWidth();
 		float h = bitmap.getIntrinsicHeight();
 		matrix.reset();
-		float widthScale = Math.min(viewWidth / w, MAX_ZOOM);
-		float heightScale = Math.min(viewHeight / h, MAX_ZOOM);
+		// float widthScale = Math.min(viewWidth / w, MAX_ZOOM);
+		// float heightScale = Math.min(viewHeight / h, MAX_ZOOM);
+		float widthScale = viewWidth / w;
+		float heightScale = viewHeight / h;
 		float scale = Math.min(widthScale, heightScale);
 		matrix.postScale(scale, scale);
-		matrix.postTranslate((viewWidth - w * scale) / MAX_ZOOM,
-				(viewHeight - h * scale) / MAX_ZOOM);
+		matrix.postTranslate(viewWidth - w * scale, viewHeight - h * scale);
 	}
 
 	protected float getValue(Matrix matrix, int whichValue) {
