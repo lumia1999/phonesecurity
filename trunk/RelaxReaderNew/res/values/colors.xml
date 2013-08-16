@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="orange">#ffffb400</color>
+    <color name="grey">#a0a0a0</color>
+    <color name="light_grey">#C8C8C8</color>
+    <color name="lighter_gray">#ddd</color>
+    <color name="background_color">#fff0f0f0</color>
+    <color name="list_view_bg_color">#00000000</color>
+    <color name="mix_yellow">#F5F5DC</color>
+    <color name="red">#FF0000</color>
+    <color name="loading_cycle_bg">#8e8e8e</color>
+    <color name="finish">#FFB400</color>
+    <color name="black">#000000</color>
+    <color name="title_txt_normal_color">#FFFFFF</color>
+    <color name="title_txt_pressed_color">#ee3d14</color>
+    <color name="tip_txt_color">#eee2dc</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#ffffff</color>
+
+    <drawable name="bg_grey">#a0a0a0</drawable>
+    <drawable name="new_list_item_bg_normal">#d6d6d6</drawable>
+    <drawable name="new_list_item_bg_pressed">#1d83a3</drawable>
+    <drawable name="content_bg_color">#eee2dc</drawable>
+    <drawable name="transparent">#00000000</drawable>
+    <drawable name="item_bg_pressed">#e1826d</drawable>
+    <drawable name="dropdown_item_divider">#b9b8b8</drawable>
+
+</resources>

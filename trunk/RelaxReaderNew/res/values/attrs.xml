@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="net.youmi.android.AdView">
+        <attr name="backgroundColor" format="color" />
+        <attr name="textColor" format="color" />
+        <attr name="backgroundTransparent" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="page.item.op">
+        <attr name="iconClicked" format="reference"></attr>
+        <attr name="iconClickable" format="reference"></attr>
+        <attr name="textColorClicked" format="color"></attr>
+        <attr name="textColorClickable" format="color"></attr>
+        <attr name="android:background"></attr>
+        <attr name="textSize" format="dimension"></attr>
+        <attr name="text" format="string"></attr>
+        <attr name="hintText" format="string"></attr>
+        <attr name="iconVisible" format="boolean"></attr>
+    </declare-styleable>
+
+</resources>

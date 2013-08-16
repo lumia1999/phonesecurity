@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="5dip"
+    android:paddingLeft="5dip"
+    android:paddingRight="5dip"
+    android:paddingTop="7dip" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <me.maxwin.view.PageItemOpView
+            android:id="@+id/new_content_page_item_op_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/op_vote_bg_selector"
+            app:hintText="@string/ding_hint_txt"
+            app:iconClickable="@drawable/icon_for_enable"
+            app:iconClicked="@drawable/icon_for_active"
+            app:text="200"
+            app:textColorClickable="#00ffff"
+            app:textColorClicked="#ff0000"
+            app:textSize="14sp" />
+
+        <me.maxwin.view.PageItemOpView
+            android:id="@+id/new_content_page_item_op_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dip"
+            android:background="@drawable/op_vote_bg_selector"
+            app:hintText="@string/cai_hint_txt"
+            app:iconClickable="@drawable/icon_against_enable"
+            app:iconClicked="@drawable/icon_against_active"
+            app:text="-2"
+            app:textColorClickable="#00ffff"
+            app:textColorClicked="#ff0000"
+            app:textSize="14sp" />
+    </LinearLayout>
+
+    <me.maxwin.view.PageItemOpView
+        android:id="@+id/new_content_page_item_op_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="7dip"
+        android:layout_marginRight="7dip"
+        android:layout_toLeftOf="@+id/new_content_page_item_op_more"
+        android:background="@drawable/op_comment_enable"
+        app:hintText="@string/comment_hint_txt"
+        app:iconClickable="@drawable/icon_against_enable"
+        app:iconClicked="@drawable/icon_against_active"
+        app:iconVisible="false"
+        app:text="0"
+        app:textColorClickable="#00ffff"
+        app:textColorClicked="#ff0000"
+        app:textSize="14sp" />
+
+    <me.maxwin.view.OptionView
+        android:id="@+id/new_content_page_item_op_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/op_more_bg_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="centerCrop" />
+
+</RelativeLayout>

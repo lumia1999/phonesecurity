@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="option_array">
+        <item>分享到微博</item>
+        <item>分享到微信</item>
+        <item>收藏</item>
+    </string-array>
+    <string-array name="share_weixin_option">
+        <item>用微信发给朋友</item>
+        <item>分享到微信朋友圈</item>
+    </string-array>
+
+</resources>

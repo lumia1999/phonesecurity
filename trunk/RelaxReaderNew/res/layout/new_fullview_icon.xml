@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <it.sephiroth.android.library.imagezoom.ImageViewTouch
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/disp_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" >
+    </it.sephiroth.android.library.imagezoom.ImageViewTouch>
+
+    <me.maxwin.view.GifView
+        android:id="@+id/gif_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="3dip" />
+
+    <ProgressBar
+        android:id="@android:id/progress"
+        style="?android:attr/progressBarStyleInverse"
+        android:layout_width="20dip"
+        android:layout_height="20dip"
+        android:layout_gravity="center"
+        android:indeterminateDrawable="@drawable/cust_progressbar_color"
+        android:indeterminateOnly="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="bottom" >
+
+        <RelativeLayout
+            android:id="@+id/save_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="5dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="5dip"
+            android:background="@drawable/image_download_bg" >
+
+            <ImageView
+                android:id="@+id/save_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/download_icon_selector"
+                android:scaleType="centerCrop" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/share_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dip"
+            android:background="@drawable/share_normal"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</FrameLayout>
