@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/content_bg_color" >
+
+    <include layout="@layout/new_banner" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/new_banner_layout" >
+
+        <me.maxwin.view.XListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/add_comment_layout"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="5dip"
+            android:divider="@drawable/new_list_item_divider"
+            android:fadingEdge="none"
+            android:listSelector="@null"
+            android:scrollingCache="false" >
+        </me.maxwin.view.XListView>
+
+        <RelativeLayout
+            android:id="@+id/add_comment_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:padding="5dip" >
+
+            <TextView
+                android:id="@+id/input_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="11111"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/input_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/input_tip"
+                android:layout_toLeftOf="@+id/send_comment_layout"
+                android:background="#ffffff"
+                android:gravity="top|left"
+                android:hint="@string/input_comment_hint_txt"
+                android:minLines="2"
+                android:paddingLeft="1dip"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <me.maxwin.view.SendCommentView
+                android:id="@+id/send_comment_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/input_tip"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dip"
+                android:background="@drawable/login_bg_selector" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/new_loading_layout"
+        android:layout_below="@+id/new_banner_layout"
+        layout="@layout/new_loading" />
+
+    <include
+        android:layout_above="@+id/new_banner_layout"
+        layout="@layout/retry" />
+
+</RelativeLayout>

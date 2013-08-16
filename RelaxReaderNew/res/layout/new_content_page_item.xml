@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_bg_normal"
+    android:clickable="false"
+    android:focusable="false"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:padding="5dip" >
+
+    <TextView
+        android:id="@+id/new_content_page_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dip"
+        android:ellipsize="marquee"
+        android:maxLines="2"
+        android:text="title"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#890d0d" />
+
+    <TextView
+        android:id="@+id/new_contnt_page_item_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_content_page_item_title"
+        android:lineSpacingMultiplier="1.3"
+        android:text="ttt"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <RelativeLayout
+        android:id="@+id/icon_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_contnt_page_item_txt"
+        android:padding="5dip" >
+
+        <com.herry.relaxreader.util.newutil.RecyclingImageView
+            android:id="@+id/new_content_page_item_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/def_icon"
+            android:scaleType="matrix" />
+    </RelativeLayout>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/icon_layout"
+        layout="@layout/new_content_page_item_op" />
+
+</RelativeLayout>

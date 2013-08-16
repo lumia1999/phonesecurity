@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<functions>	
+    <function id="4">
+		<title><![CDATA[精品推荐]]></title>
+		<desc>?</desc>
+	</function>
+	<function id="5">
+	    <title><![CDATA[提示音]]></title>
+	    <desc>?</desc>
+	</function>
+	<function id="0">
+		<title><![CDATA[图片保存]]></title>
+		<desc>?</desc>
+	</function>
+	<function id="1">
+		<title><![CDATA[当前版本]]></title>
+		<desc>?</desc>
+	</function>
+	<function id="3">
+	    <title><![CDATA[联系我们]]></title>
+	    <desc>?</desc>
+	</function>
+	<function id="2">
+		<title><![CDATA[关于我们]]></title>
+		<desc>?</desc>
+	</function>
+</functions>
